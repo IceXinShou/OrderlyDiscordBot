@@ -1,0 +1,100 @@
+##################################################
+################ General Settings ################
+##################################################
+
+GeneralSettings:
+  botToken: "NTc2NzQ3NDM1NjUzNTk1MTM2.XNa_6A.NQVX3VkyrfoNtCcilzmS0Spjfig"
+
+  noPermissionERROR: "你並沒有權限執行此動作, 請保持良民以捍衛自身權益"
+  helpBlockFooter: "原之序 | ORDERLY SERVER"
+
+  folder:
+    channelLogFolder: "channelLog"
+    configFolder: "configFolder"
+
+  # Can pass permission limit
+  botOwnerID:
+    - "286467027705790464" # WavJaby#3673
+    - "810822763601461318" # XinShou#0404
+    - "270062130470846465" # XinShou#8787
+    - "308721713066147840" # 阿正#6176
+    - "860182127798124594" # XinShou#1699
+
+  # watching / listening / playing / competing / streaming
+  activityMessage:
+    - "watching;原之序 | ORDERLY SERVER"
+    - "watching;https://discord.gg/ZV3PaCscc7"
+    - "watching;加入後請聯繫認識的人已通過完整流程"
+    - "playing;貓貓❤狗狗"
+    - "playing;麻麻❤新手"
+
+  # Will send command used message to console
+  debugMode: true
+
+
+##################################################
+################## ID Settings ###################
+##################################################
+
+IDSettings:
+  guildID: "858672865355890708"
+  logChannelID: "858672865816346634"
+  authChannelID: "860469251176792065"
+  consoleChannelID: "861936727329472512"
+  informationChannelID: "858672865444626439"
+
+  botRoleID: "858972360609366037"
+  logRoleID: "858672865355890715"
+  memberRoleID: "858672865385119757"
+  internalRoleID: "865566302773051454"
+
+  adminPermissionID: "858672865444626433"
+
+  # When member join the server will get role(s).
+  joinRoleID:
+    - "858707058530451476"
+    - "858703314606751764"
+    - "858701368457953360"
+    - "858672865385119755"
+
+  # When member pass the auth can get role(s).
+  confirmRoleID:
+    - "858672865385119757"
+    - "858704345448841226"
+
+
+##################################################
+################ Rooms Settings ##################
+##################################################
+
+RoomSettings:
+  defaultRoomName: "《🔊》%name% 房間"
+  defaultRoomChatName: "《📄》%name% 文字頻道"
+  defaultRoomBitrate: 128000
+
+  roomCategoryID:
+    - "862530693766316052"
+    - "865142236977823754"
+    - "865145008070852638"
+    - "865145523844284426"
+    - "865145543758970881"
+    - "865145566069522462"
+    - "865145587028721674"
+    - "865145607928938516"
+    - "865145631622692874"
+    - "865145649612062730"
+
+
+##################################################
+############## Services Settings #################
+##################################################
+
+ServiceSettings:
+  newServiceName: "《❗》%name% 客服"
+  defaultServiceMessage: "%reporter% 您好, 請說明您的問題, 工程組將會在不久後聯絡您"
+
+  serviceCategoryID:
+    - "864673016653807627"
+    -
+  serviceTagRoleID:
+    - "858672865409630245"

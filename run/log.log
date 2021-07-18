@@ -1,0 +1,3 @@
+[JDA MainWS-WriteThread] INFO net.dv8tion.jda.internal.requests.WebSocketClient - Connected to WebSocket
+[JDA MainWS-ReadThread] INFO net.dv8tion.jda.api.JDA - Finished Loading!
+{"C":"阿千","H":true,"M":"jasmine_7"}
