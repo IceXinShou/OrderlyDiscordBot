@@ -101,11 +101,11 @@ public class VoiceChannelCommand {
 
         // 判斷合理性
         if (!event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) {
-            event.reply("你並不是語音群主").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
         if (senderID.equals(targetMember.getId())) {
-            event.reply("你不能移除自己的權限!").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你不能移除自己的權限!", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
@@ -116,7 +116,7 @@ public class VoiceChannelCommand {
         if (ownerInfo.has(CHANNEL_ADMINS))
             admins = ownerInfo.getJSONArray(CHANNEL_ADMINS);
         else {
-            event.reply("此頻道無任何管理員存在").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("此頻道無任何管理員存在", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
@@ -132,9 +132,9 @@ public class VoiceChannelCommand {
             admins.remove(index);
             ownerInfo.put(CHANNEL_ADMINS, admins);
             voiceChannelDataFile.saveFile();
-            event.reply("權限移除成功").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("權限移除成功", 0x7fc89a)).setEphemeral(true).queue();
         } else {
-            event.reply("他並沒有權限").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("他並沒有權限", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
     }
@@ -148,15 +148,15 @@ public class VoiceChannelCommand {
 
         // 判斷合理性
         if (!event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) {
-            event.reply("你並不是語音群主").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
         if (senderID.equals(targetMember.getId())) {
-            event.reply("你不能提拔自己!").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你不能提拔自己!", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
-        event.reply("您確定要將管理員權限給 " + memberData.getJSONObject(targetMember.getId()).getString(CHINESE_NICK) + " ?")
+        event.replyEmbeds(createEmbed("您確定要將管理員權限給 " + memberData.getJSONObject(targetMember.getId()).getString(CHINESE_NICK) + " ?", 0x9740b9))
                 .addActionRow(//add component
                         Button.secondary(senderID + ":nevermind", "先不要!"),
                         Button.danger(senderID + ":vc_giveAdmin:" + targetMember.getId() + ":" + voiceChannelID, "Yes!"))
@@ -174,11 +174,11 @@ public class VoiceChannelCommand {
         TextChannel tc = guild.getTextChannelById(textChannelID);
 
         if (!vc.getId().equals(voiceChannelID)) {
-            event.reply("你並不是語音群主").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
         if (!(vc.getPermissionOverride(memberRole).getAllowed().contains(Permission.VIEW_CHANNEL))) {
-            event.reply("頻道已設置已經是不公開了").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("頻道已設置已經是不公開了", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
@@ -186,7 +186,7 @@ public class VoiceChannelCommand {
         tc.upsertPermissionOverride(memberRole).setDeny(Permission.VIEW_CHANNEL).queue();
 
 
-        event.reply("頻道已設置為不公開").setEphemeral(true).queue();
+        event.replyEmbeds(createEmbed("頻道已設置為不公開", 0xb8d8be)).setEphemeral(true).queue();
     }
 
     public void makeChannelPublic(SlashCommandEvent event) {
@@ -199,19 +199,19 @@ public class VoiceChannelCommand {
         TextChannel tc = guild.getTextChannelById(textChannelID);
 
         if (!vc.getId().equals(voiceChannelID)) {
-            event.reply("你並不是語音群主").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
         if ((vc.getPermissionOverride(memberRole).getAllowed().contains(Permission.VIEW_CHANNEL))) {
-            event.reply("頻道已設置已經是公開了").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("頻道已設置已經是公開了", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
         vc.upsertPermissionOverride(memberRole).setAllow(Permission.VIEW_CHANNEL).queue();
         tc.upsertPermissionOverride(memberRole).setAllow(Permission.VIEW_CHANNEL).queue();
 
-        event.reply("頻道已設置為公開").setEphemeral(true).queue();
+        event.replyEmbeds(createEmbed("頻道已設置為公開", 0x7fc89a)).setEphemeral(true).queue();
     }
 
     public void kick(SlashCommandEvent event) {
@@ -234,11 +234,11 @@ public class VoiceChannelCommand {
 
             if (member.getVoiceState().inVoiceChannel() && member.getVoiceState().getChannel().getId().equals(voiceChannelID))
                 guild.kickVoiceMember(member);
-            event.reply("已踢除").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("已踢除", 0xb8d8be)).setEphemeral(true).queue();
             return;
         } else if (ownerInfo.has(CHANNEL_ADMINS) && ownerInfo.getJSONArray(CHANNEL_ADMINS).toList().contains(event.getId())) {
             if (ownerInfo.getJSONArray(CHANNEL_ADMINS).toList().contains(member.getId())) {
-                event.reply("你無法踢出具有管理員權限的人").setEphemeral(true).queue();
+                event.replyEmbeds(createEmbed("你無法踢出具有管理員權限的人", 0xFF0000)).setEphemeral(true).queue();
                 return;
             } else {
                 vc.createPermissionOverride(member).setDeny(Permission.VIEW_CHANNEL).queue();
@@ -246,10 +246,10 @@ public class VoiceChannelCommand {
 
                 if (member.getVoiceState().inVoiceChannel() && member.getVoiceState().getChannel().getId().equals(voiceChannelID))
                     guild.kickVoiceMember(member);
-                event.reply("已踢除").setEphemeral(true).queue();
+                event.replyEmbeds(createEmbed("已踢除", 0xb8d8be)).setEphemeral(true).queue();
             }
         } else {
-            event.reply("你並不是語音群主或是管理員").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主或是管理員", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
     }
@@ -268,14 +268,14 @@ public class VoiceChannelCommand {
         JSONObject ownerInfo = voiceChannelData.getJSONObject(senderID);
 
         if ((ownerInfo.has(CHANNEL_ADMINS) && ownerInfo.getJSONArray(CHANNEL_ADMINS).toList().contains(event.getId())) || !event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) {
-            event.reply("你並不是語音群主或是管理員").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("你並不是語音群主或是管理員", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
         vc.createPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
         tc.createPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
 
-        event.reply("已邀請").setEphemeral(true).queue();
+        event.replyEmbeds(createEmbed("已邀請", 0xb8d8be)).setEphemeral(true).queue();
 
     }
 

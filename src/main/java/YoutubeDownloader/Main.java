@@ -1,7 +1,6 @@
 package main.java.YoutubeDownloader;
 
 import main.java.YoutubeDownloader.convert.ConvertVideo;
-import main.java.YoutubeDownloader.downloader.VideoDownloader;
 import main.java.YoutubeDownloader.util.Container;
 import main.java.YoutubeDownloader.util.ITag;
 import main.java.YoutubeDownloader.util.VideoQuality;
@@ -10,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
 
 public class Main {
     Main() {
@@ -65,7 +63,7 @@ public class Main {
         String title = videoInfo.getTitle();
         title = title.replaceAll("[/:*?\"><|]", "_");
 
-        new ConvertVideo(title+ ".mp4", tempVideo, tempAudio, outputDir);
+        new ConvertVideo(title + ".mp4", tempVideo, tempAudio, outputDir);
         System.out.println("done");
     }
 

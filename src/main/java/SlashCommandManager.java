@@ -26,8 +26,8 @@ import static main.java.command.InviteCommand.authChannel;
 import static main.java.command.InviteCommand.authChannelID;
 import static main.java.command.VoiceChannelCommand.voiceChannelData;
 import static main.java.event.Log.*;
+import static main.java.util.EmbedUtil.createEmbed;
 import static main.java.util.GuildUtil.guild;
-import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
 import static main.java.util.MessageFormatting.tagChannel;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
@@ -98,9 +98,9 @@ public class SlashCommandManager extends ListenerAdapter {
             if (channelID.equals(authChannelID))
                 createInviteCommand.onCommand(event);
             else {
-                event.reply("請到指定位置使用此指令 (" +
+                event.replyEmbeds(createEmbed("請到指定位置使用此指令 (" +
                         tagChannel(authChannelID) + ", " +
-                        tagChannel(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)) + ")")
+                        tagChannel(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)) + ")", 0xFF0000))
                         .setEphemeral(true).queue();
             }
             return;
@@ -131,7 +131,7 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
         }
-        event.reply("目前無法處理此命令").setEphemeral(true).queue();
+        event.replyEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).setEphemeral(true).queue();
     }
 
 

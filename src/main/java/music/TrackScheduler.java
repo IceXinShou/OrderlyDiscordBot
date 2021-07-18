@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     //setting
     private boolean repeat;
-    private int defaultVolume = 20;
+    private final int defaultVolume = 20;
 
     /**
      * @param player The audio player this scheduler uses
@@ -211,7 +212,7 @@ public class TrackScheduler extends AudioEventAdapter {
             while ((length = in.read(buff)) > 0) {
                 out.write(buff, 0, length);
             }
-            result = out.toString("UTF8");
+            result = out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             player.setVolume(defaultVolume);
             return;
@@ -224,12 +225,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
         //url percent decode
         String player_response = responseData.get("player_response");
-        try {
-            player_response = URLDecoder.decode(player_response, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            player.setVolume(defaultVolume);
-            return;
-        }
+        player_response = URLDecoder.decode(player_response, StandardCharsets.UTF_8);
 
         JSONObject playerResponse = new JSONObject(player_response);
         float loudness = playerResponse.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");

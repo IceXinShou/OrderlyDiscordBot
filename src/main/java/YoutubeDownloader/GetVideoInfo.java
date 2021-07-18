@@ -1,10 +1,10 @@
 package main.java.YoutubeDownloader;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import main.java.YoutubeDownloader.util.Container;
 import main.java.YoutubeDownloader.util.ITag;
 import main.java.YoutubeDownloader.util.VideoQuality;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class GetVideoInfo {
-    private Map<ITag, VideoObject> videoType = new HashMap<>();
+    private final Map<ITag, VideoObject> videoType = new HashMap<>();
     JSONObject videoDetails;
 
     public GetVideoInfo(String videoUrl) {
@@ -48,11 +49,7 @@ public class GetVideoInfo {
         }
         //url percent decode
         String player_response = responseData.get("player_response");
-        try {
-            player_response = URLDecoder.decode(player_response, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        player_response = URLDecoder.decode(player_response, StandardCharsets.UTF_8);
 
         //for decode signature
         YoutubeDecode decode = null;
@@ -85,7 +82,7 @@ public class GetVideoInfo {
             if (ITag.valueOf(data.getInt("itag")) == ITag.UNKNOWN) {
                 System.out.println("unknown itag:" + data.getInt("itag"));
                 System.out.println("mimeType:" + data.getString("mimeType"));
-                System.out.println("size:" +data.getInt("width") + "x" + data.getInt("height"));
+                System.out.println("size:" + data.getInt("width") + "x" + data.getInt("height"));
                 System.out.println("qualityLabel:" + data.getString("qualityLabel"));
                 System.out.println("have audio:" + data.has("mimeType"));
             }
@@ -193,18 +190,14 @@ public class GetVideoInfo {
             while ((length = in.read(buff)) > 0) {
                 out.write(buff, 0, length);
             }
-            return out.toString("UTF8");
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             return null;
         }
     }
 
     private String urlDecode(String input) {
-        try {
-            return URLDecoder.decode(input, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return URLDecoder.decode(input, StandardCharsets.UTF_8);
     }
 
     private String unicodeDecode(String input) {

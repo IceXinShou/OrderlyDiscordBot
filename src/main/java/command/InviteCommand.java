@@ -59,11 +59,11 @@ public class InviteCommand {
         String userId = event.getUser().getId();
         //還沒完成使用者設定
         if (!memberData.has(member.getId())) {
-            event.reply("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`").setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
-        event.reply("確定要邀請 " + member.getNickname() + " ?")
+        event.replyEmbeds(createEmbed("確定要邀請 " + event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname() + " ?", 0xbc153b))
                 .addActionRow( //add component
                         Button.secondary(userId + ":nevermind", "他誰 我不認識他"),
                         Button.danger(userId + ":invite:" + member.getId(), "我會為他負責"))
@@ -85,7 +85,7 @@ public class InviteCommand {
                         createEmbed(
                                 "增產報國!", emoji.cute.getAsMention() + event.getMember().getAsMention() + "  生出了 " + targetMember.getAsMention(),
                                 "成員誕生",
-                                targetMember.getNickname(), targetMember.getUser().getAvatarUrl(),
+                                event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), targetMember.getUser().getAvatarUrl(),
                                 OffsetDateTime.now(), 0xFFD1DC
                         )
                 ).queue();

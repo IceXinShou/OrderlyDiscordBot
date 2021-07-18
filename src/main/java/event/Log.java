@@ -55,7 +55,7 @@ public class Log extends ListenerAdapter {
                 createEmbed(
                         (emoji.rightArrow.getAsMention() + (event.getChannelJoined().getMembers().size() == 1 ? " 創立了一個房間" : " 進入 " + event.getChannelJoined().getName().substring(4, 6) + " 的房間")), null,
                         (event.getChannelJoined().getMembers().size() == 1 ? "創建房間" : "進入房間"),
-                        event.getMember().getNickname() == null? event.getMember().getUser().getAsTag():event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
+                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x34E718
                 )
         ).queue();
@@ -69,7 +69,7 @@ public class Log extends ListenerAdapter {
                         emoji.leftArrow.getAsMention() +
                                 " 退出 " + event.getChannelLeft().getName(), null,
                         "退出房間",
-                        event.getMember().getNickname() == null? event.getMember().getUser().getAsTag():event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
+                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0xFF5151
                 )
         ).queue();
@@ -111,7 +111,7 @@ public class Log extends ListenerAdapter {
                 createEmbed(
                         "更改訊息", null,
                         "更改訊息",
-                        event.getMember().getNickname() == null? event.getMember().getUser().getAsTag():event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
+                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x51FFFF
                 )
         ).queue();

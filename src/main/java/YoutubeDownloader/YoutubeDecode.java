@@ -1,6 +1,7 @@
 package main.java.YoutubeDownloader;
 
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -74,7 +75,7 @@ public class YoutubeDecode {
 
     }
 
-    public String decode(String signature){
+    public String decode(String signature) {
         //解譯signature
         for (String i : steps) {
             String funName = i.split("\\.")[1];

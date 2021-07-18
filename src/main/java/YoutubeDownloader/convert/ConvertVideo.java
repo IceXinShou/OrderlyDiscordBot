@@ -3,13 +3,8 @@ package main.java.YoutubeDownloader.convert;
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.FileDataSourceImpl;
 import com.googlecode.mp4parser.authoring.Movie;
-import com.googlecode.mp4parser.authoring.Mp4TrackImpl;
-import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
-import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
-import main.java.YoutubeDownloader.VideoObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +14,7 @@ import java.nio.channels.FileChannel;
 
 public class ConvertVideo extends File {
 
-    public ConvertVideo(String fileName , File videoFile, File audioFile, String outputDir) {
+    public ConvertVideo(String fileName, File videoFile, File audioFile, String outputDir) {
         super(outputDir + "/" + fileName);
         Movie video;
         Movie audio;

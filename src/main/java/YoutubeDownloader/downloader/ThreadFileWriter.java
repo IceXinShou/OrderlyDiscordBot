@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ThreadFileWriter {
-    private Map<Integer, ByteArrayOutputStream> outList = new HashMap<>();
-    private Map<Integer, Boolean> outDone = new HashMap<>();
+    private final Map<Integer, ByteArrayOutputStream> outList = new HashMap<>();
+    private final Map<Integer, Boolean> outDone = new HashMap<>();
     private int threadID = 0;
     private int threadStep = 0;
 
@@ -47,7 +47,7 @@ public class ThreadFileWriter {
             threadStep++;
         }
 
-        removeList.forEach(i->{
+        removeList.forEach(i -> {
             outList.remove(i);
             outDone.remove(i);
         });

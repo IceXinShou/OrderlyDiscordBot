@@ -56,6 +56,7 @@ public class EmbedUtil {
                 new MessageEmbed.Footer(footer, null, null),
                 null, fields);
     }
+
     public static MessageEmbed createEmbed(String description, int color) {
         return new MessageEmbed(null,
                 "",

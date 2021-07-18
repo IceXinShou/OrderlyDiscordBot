@@ -70,12 +70,13 @@ public class MusicCommands implements GuildMusicManager.Event {
         return commandState;
     }
 
-    private void checkVcState(SlashCommandEvent event){
+    private void checkVcState(SlashCommandEvent event) {
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.replyEmbeds(createEmbed("沒有在語音頻道", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
     }
+
     public void loadAndPlay(final SlashCommandEvent event, final GuildMusicManager manager, final String trackUrl) {
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
 
@@ -126,7 +127,7 @@ public class MusicCommands implements GuildMusicManager.Event {
 
     @Override
     public void addPlayerListToQueue(AudioPlaylist playlist, SlashCommandEvent event) {
-        event.replyEmbeds(createEmbed("加入 `" + playlist.getName() + "` ", 0xBCE9B6)).queue();
+        event.replyEmbeds(createEmbed("加入 `" + playlist.getName() + "` ", 0xBCE9B6)).setEphemeral(true).queue();
         if (!event.getGuild().getId().equals(guildID))
             logChannel.sendMessage("加入 `" + playlist.getName() + "` ").queue();
     }
@@ -160,7 +161,7 @@ public class MusicCommands implements GuildMusicManager.Event {
 
     @Override
     public void pause(boolean pause, SlashCommandEvent event) {
-        event.replyEmbeds(pause ? createEmbed("已暫停撥放", 0xFF3B7D) : createEmbed("已開始撥放", 0x75C44C)).queue();
+        event.replyEmbeds(pause ? createEmbed("已暫停撥放", 0xFF3B7D) : createEmbed("已開始撥放", 0x75C44C)).setEphemeral(true).queue();
     }
 
     @Override

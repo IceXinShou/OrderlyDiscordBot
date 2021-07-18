@@ -2,7 +2,6 @@ package main.java.command;
 
 import main.java.Main;
 import main.java.event.Log;
-import main.java.util.EmbedUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -22,6 +21,7 @@ import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.COUNT;
 import static main.java.event.Log.ignoreMessageID;
 import static main.java.event.Log.logChannel;
+import static main.java.util.EmbedUtil.createEmbed;
 
 public class ClearCommand {
 
@@ -32,7 +32,7 @@ public class ClearCommand {
 
     public void onCommand(SlashCommandEvent event) {
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            event.reply(noPermissionERROR).setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
             return;
         }
         OptionMapping amountOption = event.getOption(COUNT);
@@ -41,7 +41,7 @@ public class ClearCommand {
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // set number to 2~200
         //arg
         String userId = event.getUser().getId();
-        event.reply("確定刪除 " + amount + " 則訊息?")
+        event.replyEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
                 .addActionRow(//add component
                         Button.secondary(userId + ":nevermind", "先不要!"),
                         Button.danger(userId + ":delete:" + amount, "Yes!"))
@@ -87,7 +87,7 @@ public class ClearCommand {
                                 messageContent = messageContent.substring(0, 1021) + "...";
                             fields.add(new MessageEmbed.Field(memberNickName, messageContent, false)); // 加入最後一個訊息
                         }
-                        logChannel.sendMessage(EmbedUtil.createEmbed(
+                        logChannel.sendMessage(createEmbed(
                                 "刪除: ", null,
                                 "刪除訊息",
                                 Main.botNickname, Main.botAvatarUrl,
@@ -105,10 +105,10 @@ public class ClearCommand {
                 }
 
                 event.getChannel().sendMessage(
-                        emoji.yesEmoji.getAsMention() + ' ' + amount + " 則文字已刪除！"
+                        createEmbed(emoji.yesEmoji.getAsMention() + ' ' + amount + " 則文字已刪除！", 0xe3c6d6)
                 ).queue(m -> Log.deleteNoLog(m, 2));
             } catch (InterruptedException | ExecutionException e) {
-                logChannel.sendMessage(EmbedUtil.createEmbed(
+                logChannel.sendMessage(createEmbed(
                         "錯誤: ", null,
                         e.getMessage(),
                         Main.botNickname, Main.botAvatarUrl,

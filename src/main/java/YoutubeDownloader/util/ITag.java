@@ -118,9 +118,9 @@ public enum ITag {
     UNKNOWN(null, null, null, null);
 
     public Container container;
-    private AudioEncoding audioEncoding;
-    private VideoEncoding videoEncoding;
-    private VideoQuality videoQuality;
+    private final AudioEncoding audioEncoding;
+    private final VideoEncoding videoEncoding;
+    private final VideoQuality videoQuality;
 
     ITag(Container container, AudioEncoding audioEncoding, VideoEncoding videoEncoding, VideoQuality videoQuality) {
         this.container = container;

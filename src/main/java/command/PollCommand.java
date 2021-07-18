@@ -21,7 +21,7 @@ public class PollCommand {
 
         List<Emote> list = new ArrayList();
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            event.reply(noPermissionERROR).setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
@@ -39,7 +39,7 @@ public class PollCommand {
         event.getChannel().sendMessage(createEmbed(
                 event.getOption(QUESTION).getAsString(), null,
                 "成員投票",
-                event.getMember().getNickname() == null? event.getUser().getAsTag():event.getMember().getNickname(), event.getUser().getAvatarUrl(),
+                event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {
@@ -48,6 +48,6 @@ public class PollCommand {
             }
         });
 
-        event.reply("創建成功").setEphemeral(true).queue();
+        event.replyEmbeds(createEmbed("創建成功", 0x9740b9)).setEphemeral(true).queue();
     }
 }

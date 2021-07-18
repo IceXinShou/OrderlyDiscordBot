@@ -1,19 +1,19 @@
 package main.java.YoutubeDownloader;
 
-import org.json.JSONObject;
 import main.java.YoutubeDownloader.util.ITag;
+import org.json.JSONObject;
 
 public class VideoObject {
-    private ITag itag;
-    private String url;
-    private String mimeType;
-    private String quality;
-    private int bitrate;
-    private int averageBitrate;
-    private int contentLength;
-    private long lastModified;
-    private String projectionType;
-    private String approxDurationMs;
+    private final ITag itag;
+    private final String url;
+    private final String mimeType;
+    private final String quality;
+    private final int bitrate;
+    private final int averageBitrate;
+    private final int contentLength;
+    private final long lastModified;
+    private final String projectionType;
+    private final String approxDurationMs;
     //video
     private int width;
     private int height;

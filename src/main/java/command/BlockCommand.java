@@ -2,19 +2,9 @@ package main.java.command;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-
-import static main.java.BotSetting.memberRole;
-import static main.java.BotSetting.roomBitrate;
-import static main.java.command.VoiceChannelCommand.voiceChannelData;
-import static main.java.event.Join.memberData;
-import static main.java.util.GuildUtil.guild;
-import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
-import static main.java.util.JsonKeys.VOICE_CHANNEL_ID;
 
 public class BlockCommand extends ListenerAdapter {
 
@@ -110,7 +100,6 @@ public class BlockCommand extends ListenerAdapter {
 //            }
 
 
-
 //            for (String member : memberData.keySet()) {
 //                try {
 //                    VoiceChannel voiceChannel = guild.getVoiceChannelById(voiceChannelData.getJSONObject(member).getString(VOICE_CHANNEL_ID));
@@ -126,10 +115,6 @@ public class BlockCommand extends ListenerAdapter {
 //                    e.printStackTrace();
 //                }
 //            }
-
-
-
-
 
 
         }

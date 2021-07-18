@@ -16,9 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class VideoDownloader extends Thread {
 
-    private String url;
-    private File file;
-    private int fileSize;
+    private final String url;
+    private final File file;
+    private final int fileSize;
 
     public VideoDownloader(VideoObject videoObject, File file) {
         this.url = videoObject.getUrl();
@@ -26,7 +26,7 @@ public class VideoDownloader extends Thread {
         this.file = file;
     }
 
-    private CountDownLatch count = new CountDownLatch(1);
+    private final CountDownLatch count = new CountDownLatch(1);
 
     public CountDownLatch startDownload() {
         new Thread(this).start();
@@ -65,7 +65,7 @@ public class VideoDownloader extends Thread {
                         float nowLengthMB = (float) (downloadByte.addAndGet(length) / 1000) / 1000;
                         System.out.print("\rdone: " + executor.getCompletedTaskCount() +
                                 ", inThread: " + executor.getActiveCount() +
-                                ", Speed: " + String.format("%.1fMB/s",nowLengthMB / ((System.currentTimeMillis() - startTime) / 1000))
+                                ", Speed: " + String.format("%.1fMB/s", nowLengthMB / ((System.currentTimeMillis() - startTime) / 1000))
                         );
                     }
                     fileWriter.threadDone(threadID);
