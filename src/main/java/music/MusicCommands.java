@@ -74,6 +74,9 @@ public class MusicCommands implements GuildMusicManager.Event {
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.replyEmbeds(createEmbed("沒有在語音頻道", 0xFF0000)).setEphemeral(true).queue();
             return;
+        } else if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel() && event.getMember().getVoiceState().getChannel().equals(event.getGuild().getSelfMember().getVoiceState().getChannel())) {
+            event.replyEmbeds(createEmbed("機器人已被其他頻道所使用", 0xFF0000)).setEphemeral(true).queue();
+            return;
         }
     }
 
