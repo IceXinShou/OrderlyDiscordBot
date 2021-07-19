@@ -11,60 +11,42 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class schedules tracks for the audio player. It contains the queue of tracks.
  */
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    private final List<AudioTrack> queue;
+    private int lastIndex = 0;
+    private int index = 0;
 
     private GuildMusicManager.Event event;
-    private AudioTrack nowPlaying;
+    //now playing
+    public AudioTrack playingTrack;
+    public long startPlayTime;
 
     //setting
-    private boolean repeat;
+    public boolean repeat;
+    public boolean loop;
     private final int defaultVolume = 20;
+
+    public int loopStatus = 0;
 
     /**
      * @param player The audio player this scheduler uses
      */
     public TrackScheduler(AudioPlayer player) {
         this.player = player;
-        this.queue = new LinkedBlockingQueue<>();
-    }
-
-    /**
-     * Add the next track to queue or play right away if nothing is in the queue.
-     *
-     * @param track The track to play or add to queue.
-     * @param event
-     */
-    private void queue(AudioTrack track, SlashCommandEvent event, boolean showAdd) {
-        // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
-        // something is playing, it returns false and does nothing. In that case the player was already playing so this
-        // track goes to the queue instead.
-        if (!player.startTrack(track, true)) {
-            //加入序列
-            queue.offer(track);
-            if (showAdd)
-                this.event.addToQueue(track, event);
-        } else {
-            nowPlaying = track;
-            calculateNormalized(track, defaultVolume);
-            if (showAdd)
-                this.event.playStart(track, event);
-        }
+        this.queue = new ArrayList<>();
     }
 
     public void queue(AudioTrack track, SlashCommandEvent event) {
@@ -80,92 +62,126 @@ public class TrackScheduler extends AudioEventAdapter {
 
         for (int i = 1; i < trackList.size(); i++) {
             //加入序列
-            queue.offer(trackList.get(i));
+            queue.add(trackList.get(i));
         }
 
         this.event.addPlayerListToQueue(playlist, event);
     }
 
     /**
-     * Start the next track, stopping the current one if it is playing.
+     * Add the next track to queue or play right away if nothing is in the queue.
+     *
+     * @param track The track to play or add to queue.
      */
-    private void nextTrack(boolean manualNext, SlashCommandEvent event) {
-        // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
-        // giving null to startTrack, which is a valid argument and will simply stop the player.
-        AudioTrack track;
-        if (repeat)
-            track = nowPlaying.makeClone();
-        else
-            track = queue.poll();
-
-        if (!player.startTrack(track, false)) {
-            this.event.noMoreTrack(event);
+    private void queue(AudioTrack track, SlashCommandEvent event, boolean showAdd) {
+        // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
+        // something is playing, it returns false and does nothing. In that case the player was already playing so this
+        // track goes to the queue instead.
+        if (!player.startTrack(track, true)) {
+            //加入序列
+            queue.add(track);
+            if (showAdd)
+                this.event.addToQueue(track, event);
         } else {
-            if (manualNext)
-                this.event.skip(nowPlaying, event);
-            nowPlaying = track;
+            playingTrack = track;
+            startPlayTime = System.currentTimeMillis();
             calculateNormalized(track, defaultVolume);
-            this.event.playStart(track, null);
+            if (showAdd)
+                this.event.playStart(track, event);
         }
     }
 
+    private boolean playTrack() {
+        AudioTrack track;
+        if (repeat) {
+            index = lastIndex;
+            track = playingTrack.makeClone();
+        } else {
+            if (queue.size() == 0)
+                return false;
+
+            if (index < 0)
+                return false;
+            if (index == queue.size() && loop)
+                index = 0;
+
+            //取得歌曲
+            track = queue.get(index);
+        }
+
+        if (player.startTrack(track, false)) {
+            playingTrack = track;
+            startPlayTime = System.currentTimeMillis();
+            calculateNormalized(track, defaultVolume);
+            return true;
+        }
+        return false;
+    }
+
     public void nextTrack(SlashCommandEvent event) {
-        nextTrack(true, event);
+        lastIndex = index;
+        index++;
+        if (playTrack()) {
+            this.event.skip(playingTrack, event);
+            this.event.playStart(playingTrack, null);
+        } else {
+            this.event.noMoreTrack(event);
+        }
+//        nextTrack(true, event);
+    }
+
+    public void previousTrack(SlashCommandEvent event) {
+        lastIndex = index;
+        index--;
+        if (playTrack())
+            this.event.playStart(playingTrack, event);
+        else {
+            this.event.noMoreTrack(event);
+        }
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
-            nextTrack(false, null);
+            lastIndex = index;
+            index++;
+            if (playTrack()) {
+                this.event.playStart(playingTrack, null);
+            } else {
+                this.event.noMoreTrack(null);
+            }
         }
     }
-//
-//    private synchronized void calculateNormalized(){
-//        if(!audioTrack.getInfo().uri.contains("youtu")){
-//            normalizedVolume = targetVolume;
-//            return;
-//        }
-//
-//        String id = audioTrack.getInfo().uri.split("=")[1];
-//        String in = "";
-//        URL url = null;
-//        try {
-//            url = new URL(infoUri + id);
-//            Scanner scanner = new Scanner(url.openStream());
-//
-//            in = scanner.nextLine();
-//            Pattern pat = Pattern.compile("relative_loudness=(.*?)&");
-//            Matcher mat = pat.matcher(in);
-//
-//            if(!mat.find()) throw new Exception("No Loudness");
-//            float loudness = Float.valueOf(mat.group(1));
-//            double percent = ((95 + -7.22 * loudness) / 100);
-//            normalizedVolume = (int) Math.round(percent * targetVolume);
-//        } catch (Exception e) {
-//            normalizedVolume = targetVolume;
-//        }
-//
-//
-//    }
 
+    public List<AudioTrack> getQueue() {
+        return queue;
+    }
 
     public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
         repeat = !repeat;
-        event.repeat(nowPlaying, repeat, slashCommandEvent);
+        event.repeat(playingTrack, repeat, slashCommandEvent);
     }
 
-    private boolean pause = false;
+    /**
+     * pause
+     */
+    public boolean musicPause = false;
+    private long pauseStart;
 
     public void pause(SlashCommandEvent event) {
-        player.setPaused(pause = !pause);
-        this.event.pause(pause, event);
+        player.setPaused(musicPause = !musicPause);
+        if (musicPause)
+            pauseStart = System.currentTimeMillis();
+        else
+            startPlayTime += System.currentTimeMillis() - pauseStart;
+
+        this.event.pause(musicPause, event);
     }
 
-    public void setManagerEvent(GuildMusicManager.Event event) {
-        this.event = event;
-    }
-
+    /**
+     * volume control
+     */
     double percent = -1;
 
     public void changeVolume(Integer targetVolume, SlashCommandEvent event) {
@@ -231,6 +247,10 @@ public class TrackScheduler extends AudioEventAdapter {
         float loudness = playerResponse.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
         percent = ((95 + -7.22 * loudness) / 100);
         player.setVolume((int) Math.round(percent * defaultVolume) + 2);
+    }
+
+    public void setManagerEvent(GuildMusicManager.Event event) {
+        this.event = event;
     }
 
 }

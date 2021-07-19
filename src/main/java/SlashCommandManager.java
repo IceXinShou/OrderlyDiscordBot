@@ -1,7 +1,6 @@
 package main.java;
 
 import main.java.command.*;
-import main.java.event.Log;
 import main.java.music.MusicCommands;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -28,6 +27,7 @@ import static main.java.command.VoiceChannelCommand.voiceChannelData;
 import static main.java.event.Log.*;
 import static main.java.util.EmbedUtil.createEmbed;
 import static main.java.util.GuildUtil.guild;
+import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
 import static main.java.util.MessageFormatting.tagChannel;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
@@ -62,7 +62,6 @@ public class SlashCommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
-
         if (debugMode) {
             List<OptionMapping> options = event.getOptions();
             StringBuilder builder = new StringBuilder();
@@ -78,12 +77,15 @@ public class SlashCommandManager extends ListenerAdapter {
         // 取得輸入指令的頻道
         String channelID = event.getChannel().getId();
 
+        int type;
         // 語音指令
-        int type = voiceChannelCommand.onVoiceChannelCommand(event);
-        if (type == -1) { // 輸入的頻道錯誤
-            return;
-        } else if (type == 1) { // 已經執行完成並 return
-            return;
+        if (!channelID.equals(authChannelID)) {
+            type = voiceChannelCommand.onVoiceChannelCommand(event);
+            if (type == -1) { // 輸入的頻道錯誤
+                return;
+            } else if (type == 1) { // 已經執行完成並 return
+                return;
+            }
         }
 
         type = musicManager.onCommand(event);
@@ -143,13 +145,13 @@ public class SlashCommandManager extends ListenerAdapter {
         // 確認按按鈕的人是誰
         if (!authorId.equals(event.getUser().getId()))
             return;
-        event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
-        if (!args[1].equals("nevermind")) {
-            clearCommand.onButton(event, args);
-            createInviteCommand.onButton(event, args);
-            voiceChannelCommand.onButton(args);
-        }
-        Log.deleteNoLog(event);
+//        if (!args[1].equals("nevermind")) {
+        clearCommand.onButton(event, args);
+        createInviteCommand.onButton(event, args);
+        voiceChannelCommand.onButton(args);
+        musicManager.onButton(event, args);
+//        } else
+//            event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
     }
 
     /**
@@ -158,12 +160,12 @@ public class SlashCommandManager extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-
-//        System.out.println("[" + event.getGuild().getName() + "] Command Loading...");
-//        addPublicSlashCommand(event.getGuild().updateCommands());
-//        System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
-//        if (!event.getGuild().getId().equals(guildID)) return;
-        getGuildVariable(event.getGuild());
+        if (!event.getGuild().getId().equals(guildID)) {
+            System.out.println("[" + event.getGuild().getName() + "] Command Loading...");
+            addPublicSlashCommand(event.getGuild().updateCommands());
+            System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
+        } else
+            getGuildVariable(event.getGuild());
     }
 
     public void getGuildVariable(Guild guild) {
@@ -171,7 +173,7 @@ public class SlashCommandManager extends ListenerAdapter {
         addCommandEveryWhere(guild.getJDA().updateCommands());
 
         // 註冊主公會指令
-//        addOwnSlashCommand(guild.updateCommands());
+        addOwnSlashCommand(guild.updateCommands());
         Main.emoji.loadEmoji(guild);
         // 偵測管理員 ID
         Role role = guild.getRoleById(adminPermissionID);
@@ -286,6 +288,67 @@ public class SlashCommandManager extends ListenerAdapter {
                         .addOptions(new OptionData(USER, USER_TAG, "將你選的成員塞進伺服器或頻道")
                                 .setRequired(true))
         );
+        command.addCommands(
+                new CommandData("clear", "打掃垃圾")
+                        .addOptions(new OptionData(INTEGER, COUNT, "刪除介於 2 ~ 200 的訊息")
+                                .setRequired(true))
+        );
+        command.addCommands(
+                new CommandData("ban", "封鎖成員")
+                        .addOptions(new OptionData(USER, USER_TAG, "封禁你所選的成員")
+                                .setRequired(true))
+                        .addOptions(new OptionData(INTEGER, DAYS, "時間長度 (天)")
+                                .setRequired(false)) // 若未填則永久
+                        .addOptions(new OptionData(STRING, REASON, "原因")
+                                .setRequired(false)) // 若未填則無原因
+        );
+        command.addCommands(
+                new CommandData("unban", "解除封鎖成員")
+                        .addOptions(new OptionData(STRING, USER_ID, "解除封鎖你所選的成員")
+                                .setRequired(true))
+        );
+        command.addCommands(
+                new CommandData("play", "加入播放音樂")
+                        .addOptions(new OptionData(STRING, URL, "播放輸入的網址或歌曲名")
+                                .setRequired(false)) // 若未填則開始播放音樂
+        );
+        command.addCommands(
+                new CommandData("queue", "顯示播放列表")
+        );
+        command.addCommands(
+                new CommandData("skip", "切換至下一首")
+//                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
+//                                .setRequired(false)) // 若未填則至下一首
+        );
+        command.addCommands(
+                new CommandData("volume", "切換音量大小")
+                        .addOptions(new OptionData(INTEGER, COUNT, "未填則預設")
+                                .setRequired(false)) // 若未填則回覆預設
+        );
+        command.addCommands(
+                new CommandData("loop", "循環模式")
+        );
+        command.addCommands(
+                new CommandData("repeat", "單曲循環模式")
+        );
+        command.addCommands(
+                new CommandData("pause", "暫停撥放")
+        );
+        command.addCommands(
+                new CommandData("poll", "發起投票")
+                        .addOptions(new OptionData(STRING, QUESTION, "票選問題")
+                                .setRequired(true))
+                        .addOptions(new OptionData(STRING, CHOICE_A, "選項 A"))
+                        .addOptions(new OptionData(STRING, CHOICE_B, "選項 B"))
+                        .addOptions(new OptionData(STRING, CHOICE_C, "選項 C"))
+                        .addOptions(new OptionData(STRING, CHOICE_D, "選項 D"))
+                        .addOptions(new OptionData(STRING, CHOICE_E, "選項 E"))
+                        .addOptions(new OptionData(STRING, CHOICE_F, "選項 F"))
+                        .addOptions(new OptionData(STRING, CHOICE_G, "選項 G"))
+                        .addOptions(new OptionData(STRING, CHOICE_H, "選項 H"))
+                        .addOptions(new OptionData(STRING, CHOICE_I, "選項 I"))
+                        .addOptions(new OptionData(STRING, CHOICE_J, "選項 J"))
+        );
 
         command.queue();
     }
@@ -389,7 +452,7 @@ public class SlashCommandManager extends ListenerAdapter {
 //        command.addCommands(
 //                new CommandData("shuffle", "將歌單洗牌")
 //        );
-        command.queue();
+        command.complete();
 
     }
 
@@ -400,7 +463,7 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("join", "填寫專屬伺服器加入申請")
         );
-        command.queue();
+        command.complete();
     }
 
 }

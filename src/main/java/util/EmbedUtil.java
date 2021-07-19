@@ -27,6 +27,22 @@ public class EmbedUtil {
                 null, null);
     }
 
+    public static MessageEmbed createEmbed(String title, String description, String nickname, List<MessageEmbed.Field> fields, String avatarUrl, int color) {
+        return new MessageEmbed(null,
+                title,
+                description,
+                EmbedType.RICH,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                null,
+                null,
+                null, fields);
+    }
+
+
     public static MessageEmbed createEmbed(String title, MessageEmbed.Field field, String footer, String nickname, String avatarUrl, int color) {
         return new MessageEmbed(null,
                 title,
@@ -55,6 +71,36 @@ public class EmbedUtil {
                 null,
                 new MessageEmbed.Footer(footer, null, null),
                 null, fields);
+    }
+
+    public static MessageEmbed createEmbed(String title, String description, String footer, OffsetDateTime timeStamp, int color) {
+        return new MessageEmbed(null,
+                title,
+                description,
+                EmbedType.RICH,
+                timeStamp,
+                color,
+                null,
+                null,
+                null,
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                null, null);
+    }
+
+    public static MessageEmbed createEmbed(String title, String url, String description, String footer, OffsetDateTime timeStamp, int color) {
+        return new MessageEmbed(url,
+                title,
+                description,
+                EmbedType.RICH,
+                timeStamp,
+                color,
+                null,
+                null,
+                null,
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                null, null);
     }
 
     public static MessageEmbed createEmbed(String description, int color) {

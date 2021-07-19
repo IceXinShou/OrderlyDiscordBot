@@ -158,7 +158,6 @@ public class VoiceChannelCommand {
 
         event.replyEmbeds(createEmbed("您確定要將管理員權限給 " + memberData.getJSONObject(targetMember.getId()).getString(CHINESE_NICK) + " ?", 0x9740b9))
                 .addActionRow(//add component
-                        Button.secondary(senderID + ":nevermind", "先不要!"),
                         Button.danger(senderID + ":vc_giveAdmin:" + targetMember.getId() + ":" + voiceChannelID, "Yes!"))
                 .queue();
 

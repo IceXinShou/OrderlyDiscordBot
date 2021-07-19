@@ -53,8 +53,9 @@ public class Log extends ListenerAdapter {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessage(
                 createEmbed(
-                        (emoji.rightArrow.getAsMention() + (event.getChannelJoined().getMembers().size() == 1 ? " 創立了一個房間" : " 進入 " + event.getChannelJoined().getName().substring(4, 6) + " 的房間")), null,
-                        (event.getChannelJoined().getMembers().size() == 1 ? "創建房間" : "進入房間"),
+                        (emoji.rightArrow.getAsMention()
+                                + " 進入 " + event.getChannelJoined().getName().substring(0, 2) + " 的房間"), null,
+                        "進入房間",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x34E718
                 )

@@ -187,23 +187,27 @@ public class BotSetting {
                     }
 
                     originalConsole.print('\r' + builder.toString() + commandPr);
-                    printConsole(builder.toString());
+                    if (builder.length() > 0)
+                        printConsole(builder.toString());
                     logConsole.reset();
                 }
                 if (errConsole.size() > 0) {
                     String log = errConsole.toString(StandardCharsets.UTF_8);
-//                    String[] lines = log.split(System.lineSeparator());
-//                    StringBuilder builder = new StringBuilder();
-//                    for (String line : lines)
-//                        builder.append(time).append(line).append(System.lineSeparator());
-//                    originalErrConsole.println(builder);
-//                    printError(builder.toString());
-                    if (log.startsWith("[")) {
-                        System.out.print(log);
-                    } else {
-                        originalErrConsole.println("[ERROR]: " + log);
-                        printError("[ERROR]: " + log);
+                    String[] lines = log.split(System.lineSeparator());
+                    StringBuilder builder = new StringBuilder();
+                    for (String line : lines) {
+                        if (line.startsWith("[") && !line.contains("ERROR")) {
+                            out.println(line);
+                        } else {
+                            if(line.startsWith("["))
+                                builder.append(time).append("[ERROR] ");
+                            builder.append(line).append(System.lineSeparator());
+                        }
                     }
+
+                    originalErrConsole.print('\r' + builder.toString());
+                    if (builder.length() > 0)
+                        printError(builder.toString());
                     errConsole.reset();
                 }
 

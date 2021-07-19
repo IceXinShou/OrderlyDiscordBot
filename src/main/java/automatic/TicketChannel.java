@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.event.Join.memberData;
+import static main.java.util.EmbedUtil.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.CHINESE_NICK;
 import static main.java.util.MessageFormatting.tagRole;
@@ -42,7 +43,7 @@ public class TicketChannel extends ListenerAdapter {
 
                 m.createPermissionOverride(event.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
 
-                m.sendMessage(tagRole(serviceTagRoleID)).queue(n ->
+                m.sendMessage(createEmbed(tagRole(serviceTagRoleID), 0x9740b9)).queue(n ->
                         Log.deleteNoLog(n, 1)
                 );
 
@@ -55,5 +56,6 @@ public class TicketChannel extends ListenerAdapter {
             if (event.getMember().hasPermission(Permission.MANAGE_CHANNEL))
                 event.getTextChannel().delete().queue();
         }
+        event.deferEdit().queue();
     }
 }

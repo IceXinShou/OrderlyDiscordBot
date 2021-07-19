@@ -43,7 +43,6 @@ public class ClearCommand {
         String userId = event.getUser().getId();
         event.replyEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
                 .addActionRow(//add component
-                        Button.secondary(userId + ":nevermind", "先不要!"),
                         Button.danger(userId + ":delete:" + amount, "Yes!"))
                 .setEphemeral(true).queue();
     }

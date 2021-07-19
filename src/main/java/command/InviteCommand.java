@@ -63,11 +63,10 @@ public class InviteCommand {
             return;
         }
 
-        event.replyEmbeds(createEmbed("確定要邀請 " + event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname() + " ?", 0xbc153b))
+        event.replyEmbeds(createEmbed("確定要邀請 " + (member.getNickname() == null ? member.getUser().getAsTag() : member.getNickname()) + " ?", 0xbc153b))
                 .addActionRow( //add component
-                        Button.secondary(userId + ":nevermind", "他誰 我不認識他"),
                         Button.danger(userId + ":invite:" + member.getId(), "我會為他負責"))
-                .queue();
+                .setEphemeral(true).queue();
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
@@ -116,7 +115,6 @@ public class InviteCommand {
                         break;
                     }
                 }
-
             }
         }
     }

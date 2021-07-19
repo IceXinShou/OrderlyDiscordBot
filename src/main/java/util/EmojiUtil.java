@@ -19,7 +19,7 @@ public class EmojiUtil {
             rule, setting, ping, bell, lock, minecraftGrassBlock, nitro1, boost, discord, no1, partner,
             trashCan, leftArrow, rightArrow, join, leave, cute,
             borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
-            report, update, bot;
+            report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad;
 
     public void loadEmoji(Guild guild) {
         leaveEmoji = getEmoji("LeaveBlue", guild);
@@ -64,6 +64,12 @@ public class EmojiUtil {
         report = getEmoji("Report", guild);
         update = getEmoji("Update", guild);
         bot = getEmoji("Bot", guild);
+        voiceFull = getEmoji("VoiceBlueFull", guild);
+        voiceDown = getEmoji("VoiceBlueLow", guild);
+        next = getEmoji("NextBlue", guild);
+        back = getEmoji("BackBlue", guild);
+        pingGood = getEmoji("PingGood", guild);
+        pingBad = getEmoji("PingBad", guild);
 
         System.out.println(TAG + " Emoji loaded");
     }
