@@ -39,8 +39,13 @@ IDSettings:
   authChannelID: "000000000000000000"
   consoleChannelID: "000000000000000000"
   informationChannelID: "000000000000000000"
+
   botRoleID: "000000000000000000"
+  logRoleID: "000000000000000000"
   memberRoleID: "000000000000000000"
+  boostedRoleID: "000000000000000000"
+  internalRoleID: "000000000000000000"
+
   adminPermissionID: "000000000000000000"
 
   # When member join the server will get role(s).

@@ -149,7 +149,7 @@ public class Main {
                         return;
                     }
                     //name, url
-                    jda.getPresence().setActivity(Activity.of(type, msg[1], msg[2]));
+                    jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
                 } else {
                     jda.getPresence().setActivity(Activity.of(type, msg[1]));
                 }

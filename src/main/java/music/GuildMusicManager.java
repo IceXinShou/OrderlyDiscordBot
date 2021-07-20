@@ -4,6 +4,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 /**
@@ -24,26 +26,26 @@ public class GuildMusicManager {
      *
      * @param manager Audio player manager to use for creating the player.
      */
-    public GuildMusicManager(AudioPlayerManager manager) {
+    public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
         player = manager.createPlayer();
-        scheduler = new TrackScheduler(player);
+        scheduler = new TrackScheduler(player, guild);
         player.addListener(scheduler);
     }
 
     public interface Event {
-        void playStart(AudioTrack track, SlashCommandEvent event);
+        void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild);
 
         void addToQueue(AudioTrack track, SlashCommandEvent event);
 
         void addPlayerListToQueue(AudioPlaylist track, SlashCommandEvent event);
 
-        void noMoreTrack(SlashCommandEvent event);
+        void noMoreTrack(GenericInteractionCreateEvent event, Guild guild);
 
-        void skip(AudioTrack lastTrack, SlashCommandEvent event);
+        void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild);
 
         void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event);
 
-        void pause(boolean pause, SlashCommandEvent event);
+        void pause(boolean pause, SlashCommandEvent event, Guild guild);
 
         void volumeChange(int volume, SlashCommandEvent event);
     }

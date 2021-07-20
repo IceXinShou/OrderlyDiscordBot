@@ -22,11 +22,12 @@ GeneralSettings:
 
   # watching / listening / playing / competing / streaming
   activityMessage:
-    - "watching;原之序 | ORDERLY SERVER"
-    - "watching;https://discord.gg/ZV3PaCscc7"
-    - "watching;加入後請聯繫認識的人已通過完整流程"
-    - "playing;貓貓❤狗狗"
-    - "playing;麻麻❤新手"
+    - "listening;原之序 | ORDERLY SERVER"
+    - "listening;無損音質音樂"
+    - "listening;簡約投票系統"
+    - "listening;有任何問題歡迎通知 XinShou#0404"
+    - "competing;貓貓❤狗狗"
+    - "competing;麻麻❤新手"
 
   # Will send command used message to console
   debugMode: true
@@ -46,6 +47,7 @@ IDSettings:
   botRoleID: "858972360609366037"
   logRoleID: "858672865355890715"
   memberRoleID: "858672865385119757"
+  boostedRoleID: "858706338199896084"
   internalRoleID: "865566302773051454"
 
   adminPermissionID: "858672865444626433"

@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.json.JSONObject;
 
@@ -24,6 +25,7 @@ import java.util.Map;
  * This class schedules tracks for the audio player. It contains the queue of tracks.
  */
 public class TrackScheduler extends AudioEventAdapter {
+    private final Guild guild;
     private final AudioPlayer player;
     private final List<AudioTrack> queue;
     private int lastIndex = 0;
@@ -44,7 +46,8 @@ public class TrackScheduler extends AudioEventAdapter {
     /**
      * @param player The audio player this scheduler uses
      */
-    public TrackScheduler(AudioPlayer player) {
+    public TrackScheduler(AudioPlayer player, Guild guild) {
+        this.guild = guild;
         this.player = player;
         this.queue = new ArrayList<>();
     }
@@ -57,7 +60,7 @@ public class TrackScheduler extends AudioEventAdapter {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
-        //嘗試撥放
+        //嘗試播放
         queue(trackList.get(0), event, false);
 
         for (int i = 1; i < trackList.size(); i++) {
@@ -77,9 +80,9 @@ public class TrackScheduler extends AudioEventAdapter {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
+        queue.add(track);
         if (!player.startTrack(track, true)) {
             //加入序列
-            queue.add(track);
             if (showAdd)
                 this.event.addToQueue(track, event);
         } else {
@@ -87,7 +90,7 @@ public class TrackScheduler extends AudioEventAdapter {
             startPlayTime = System.currentTimeMillis();
             calculateNormalized(track, defaultVolume);
             if (showAdd)
-                this.event.playStart(track, event);
+                this.event.playStart(track, event, guild);
         }
     }
 
@@ -99,14 +102,22 @@ public class TrackScheduler extends AudioEventAdapter {
         } else {
             if (queue.size() == 0)
                 return false;
-
-            if (index < 0)
+            if (index < 0) {
+                index = lastIndex;
                 return false;
-            if (index == queue.size() && loop)
-                index = 0;
+            }
+
+            if (index == queue.size()) {
+                if (loop)
+                    index = 0;
+                else
+                    return false;
+            }
 
             //取得歌曲
             track = queue.get(index);
+            if (index < lastIndex)
+                track = track.makeClone();
         }
 
         if (player.startTrack(track, false)) {
@@ -122,11 +133,10 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index++;
         if (playTrack()) {
-            this.event.skip(playingTrack, event);
-            this.event.playStart(playingTrack, null);
-        } else {
-            this.event.noMoreTrack(event);
-        }
+            this.event.skip(playingTrack, event, guild);
+            this.event.playStart(playingTrack, event, guild);
+        } else
+            stopPlay(event);
 //        nextTrack(true, event);
     }
 
@@ -134,10 +144,9 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index--;
         if (playTrack())
-            this.event.playStart(playingTrack, event);
-        else {
-            this.event.noMoreTrack(event);
-        }
+            this.event.playStart(playingTrack, event, guild);
+        else
+            stopPlay(event);
     }
 
     @Override
@@ -147,15 +156,23 @@ public class TrackScheduler extends AudioEventAdapter {
             lastIndex = index;
             index++;
             if (playTrack()) {
-                this.event.playStart(playingTrack, null);
-            } else {
-                this.event.noMoreTrack(null);
-            }
+                this.event.playStart(playingTrack, null, guild);
+            } else
+                stopPlay(null);
+
         }
     }
 
+    public void stopPlay(SlashCommandEvent event) {
+        playingTrack = null;
+        musicPause = false;
+        player.setPaused(false);
+        player.stopTrack();
+        this.event.noMoreTrack(event, guild);
+    }
+
     public List<AudioTrack> getQueue() {
-        return queue;
+        return new ArrayList<>(queue).subList(index, queue.size());
     }
 
     public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
@@ -176,7 +193,7 @@ public class TrackScheduler extends AudioEventAdapter {
         else
             startPlayTime += System.currentTimeMillis() - pauseStart;
 
-        this.event.pause(musicPause, event);
+        this.event.pause(musicPause, event, guild);
     }
 
     /**
@@ -244,7 +261,11 @@ public class TrackScheduler extends AudioEventAdapter {
         player_response = URLDecoder.decode(player_response, StandardCharsets.UTF_8);
 
         JSONObject playerResponse = new JSONObject(player_response);
-        float loudness = playerResponse.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
+        float loudness;
+        if (playerResponse.getJSONObject("playerConfig").getJSONObject("audioConfig").has("loudnessDb"))
+            loudness = playerResponse.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
+        else
+            loudness = 0f;
         percent = ((95 + -7.22 * loudness) / 100);
         player.setVolume((int) Math.round(percent * defaultVolume) + 2);
     }

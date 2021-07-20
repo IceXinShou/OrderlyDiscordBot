@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static main.java.event.Log.consoleChannel;
+import static main.java.util.GuildUtil.guild;
 
 public class BotSetting {
     private final static String settingFileName = "settings.yml";
@@ -28,8 +29,9 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, newServiceName;
+            defaultServiceMessage, newServiceName, boostedRoleID;
     public static Boolean debugMode;
+    public static Role boostedRole;
 
     public static int roomBitrate;
 
@@ -86,7 +88,7 @@ public class BotSetting {
         memberRoleID = (String) IDSettings.get("memberRoleID");
         internalRoleID = (String) IDSettings.get("internalRoleID");
         logRoleID = (String) IDSettings.get("logRoleID");
-
+        boostedRoleID = (String) IDSettings.get("boostedRoleID");
         /**
          * Text
          */

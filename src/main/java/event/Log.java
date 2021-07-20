@@ -53,8 +53,8 @@ public class Log extends ListenerAdapter {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessage(
                 createEmbed(
-                        (emoji.rightArrow.getAsMention()
-                                + " 進入 " + event.getChannelJoined().getName().substring(0, 2) + " 的房間"), null,
+                        (emoji.rightArrow.getAsMention() + " 進入 " +
+                                event.getChannelJoined().getName()), null,
                         "進入房間",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x34E718
@@ -68,7 +68,8 @@ public class Log extends ListenerAdapter {
         logChannel.sendMessage(
                 createEmbed(
                         emoji.leftArrow.getAsMention() +
-                                " 退出 " + event.getChannelLeft().getName(), null,
+                                " 退出 " + event.getChannelLeft().getName()
+                        , null,
                         "退出房間",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0xFF5151

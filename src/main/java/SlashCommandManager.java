@@ -6,6 +6,7 @@ import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -168,6 +169,13 @@ public class SlashCommandManager extends ListenerAdapter {
             getGuildVariable(event.getGuild());
     }
 
+    @Override
+    public void onGuildMemberUpdateBoostTime(@NotNull GuildMemberUpdateBoostTimeEvent event) {
+        if (!event.getMember().getRoles().contains(boostedRole)) {
+            guild.addRoleToMember(event.getMember(), boostedRole).queue();
+        }
+    }
+
     public void getGuildVariable(Guild guild) {
         // 註冊全域指令
         addCommandEveryWhere(guild.getJDA().updateCommands());
@@ -184,6 +192,8 @@ public class SlashCommandManager extends ListenerAdapter {
 
         // get guild
         GuildUtil.guild = guild;
+
+        boostedRole = guild.getRoleById(boostedRoleID);
 
         // get bot nickname in main guild
         Main.botNickname = guild.getSelfMember().getNickname();
@@ -233,8 +243,7 @@ public class SlashCommandManager extends ListenerAdapter {
 
     }
 
-
-    private void addOwnSlashCommand(CommandListUpdateAction command) {
+    private void addOwnSlashCommand(CommandListUpdateAction command)    {
         command.addCommands(
                 new CommandData("promote", "提拔成員成為頻道管理員")
                         .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
@@ -332,7 +341,7 @@ public class SlashCommandManager extends ListenerAdapter {
                 new CommandData("repeat", "單曲循環模式")
         );
         command.addCommands(
-                new CommandData("pause", "暫停撥放")
+                new CommandData("pause", "暫停播放")
         );
         command.addCommands(
                 new CommandData("poll", "發起投票")
@@ -348,6 +357,9 @@ public class SlashCommandManager extends ListenerAdapter {
                         .addOptions(new OptionData(STRING, CHOICE_H, "選項 H"))
                         .addOptions(new OptionData(STRING, CHOICE_I, "選項 I"))
                         .addOptions(new OptionData(STRING, CHOICE_J, "選項 J"))
+        );
+        command.addCommands(
+                new CommandData("previous", "播放上一首音樂")
         );
 
         command.queue();
@@ -398,7 +410,7 @@ public class SlashCommandManager extends ListenerAdapter {
                 new CommandData("repeat", "單曲循環模式")
         );
         command.addCommands(
-                new CommandData("pause", "暫停撥放")
+                new CommandData("pause", "暫停播放")
         );
         command.addCommands(
                 new CommandData("poll", "發起投票")
@@ -415,7 +427,9 @@ public class SlashCommandManager extends ListenerAdapter {
                         .addOptions(new OptionData(STRING, CHOICE_I, "選項 I"))
                         .addOptions(new OptionData(STRING, CHOICE_J, "選項 J"))
         );
-//        );
+        command.addCommands(
+                new CommandData("previous", "播放上一首音樂")
+        );
 //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")
 //                        .addOptions(new OptionData(STRING, URL, "強制插入並播放輸入的網址或歌曲名")
@@ -447,7 +461,7 @@ public class SlashCommandManager extends ListenerAdapter {
 //                new CommandData("random", "將歌單洗牌")
 //        );
 //        command.addCommands(
-//                new CommandData("playing", "目前撥放數據")
+//                new CommandData("playing", "目前播放數據")
 //        );
 //        command.addCommands(
 //                new CommandData("shuffle", "將歌單洗牌")

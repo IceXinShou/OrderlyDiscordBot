@@ -1,19 +1,36 @@
 package main.java.command;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.Component;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static main.java.BotSetting.botOwnerID;
+import static main.java.util.EmbedUtil.createEmbed;
 
 public class BlockCommand extends ListenerAdapter {
 
+    Map<String, List<ActionRow>> games = new HashMap<>();
+    Map<String, String[]> Ids = new HashMap<>();
+
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        super.onGuildMessageReceived(event);
+        if (event.getMember() == null || event.getMember().getUser().isBot())
+            return;
+
         Message message = event.getMessage();
 
-        if (message.getContentRaw().equals("owo") && event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+        if (message.getContentRaw().startsWith("owo") && botOwnerID.contains(event.getMember().getId())) {
 
 //
 //            /**
@@ -116,7 +133,62 @@ public class BlockCommand extends ListenerAdapter {
 //                }
 //            }
 
-
+            List<ActionRow> game = gameButtons(3);
+            event.getChannel().sendMessage(createEmbed("**OOXX大賽!**", 0xFF0000))
+                    .setActionRows(game)
+                    .queue(m -> {
+                        games.put(m.getId(), game);
+                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
+                    });
         }
+    }
+
+    public List<ActionRow> gameButtons(int size) {
+        List<ActionRow> actionRow = new ArrayList<>();
+        List<Component> components = new ArrayList<>();
+        for (int i = 0; i < size * size; i++) {
+            components.add(Button.secondary("OOXXgame;" + i, "空"));
+            if (i % size == size - 1) {
+                actionRow.add(ActionRow.of(components));
+                components.clear();
+            }
+        }
+        return actionRow;
+    }
+
+
+    @Override
+    public void onButtonClick(@NotNull ButtonClickEvent event) {
+        String[] args = event.getComponentId().split(";");
+        if (!args[0].equals("OOXXgame"))
+            return;
+
+        String messageID = event.getMessage().getId();
+
+        List<ActionRow> game = games.get(messageID);
+        if (games.get(messageID) == null){
+            event.deferEdit().queue();
+            return;
+        }
+        int size = game.size();
+        int y = Integer.parseInt(args[1]) / size;
+        int x = Integer.parseInt(args[1]) % size;
+
+        List<Component> newButtons = new ArrayList<>();
+        List<Button> buttons = game.get(y).getButtons();
+        for (int i = 0; i < size; i++) {
+            if (!(i == x && buttons.get(i).getStyle() == ButtonStyle.SECONDARY))
+                newButtons.add(buttons.get(i));
+            else if (event.getUser().getId().equals(Ids.get(messageID)[0]))
+                newButtons.add(Button.primary("OOXXgame;" + size * y + i + ";BLUE", "BLUE"));
+            else if (event.getUser().getId().equals(Ids.get(messageID)[1])) {
+                newButtons.add(Button.danger("OOXXgame;" + size * y + i + ";RED", "RED"));
+            } else
+                newButtons.add(buttons.get(i));
+        }
+        game.set(y, ActionRow.of(newButtons));
+
+
+        event.getHook().editOriginalComponents(game).queue();
     }
 }
