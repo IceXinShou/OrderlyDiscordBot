@@ -202,6 +202,7 @@ public class TrackScheduler extends AudioEventAdapter {
     double percent = -1;
 
     public void changeVolume(Integer targetVolume, SlashCommandEvent event) {
+
         if (targetVolume == null)
             targetVolume = defaultVolume;
 

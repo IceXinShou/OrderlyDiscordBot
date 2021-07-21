@@ -108,7 +108,7 @@ public class MusicCommands implements GuildMusicManager.Event {
                     .append("] **").append("━".repeat(playPercent))
                     .append("❚")
                     .append("─".repeat(15 - playPercent))
-                    .append("** [").append(timeCalculator((int) (trackInfo.length / 1000)))
+                    .append("** [").append(trackInfo.isStream ? "LIVE" : (timeCalculator((int) (trackInfo.length / 1000))))
                     .append("]**\n");
         }
         //音量顯示
@@ -126,7 +126,7 @@ public class MusicCommands implements GuildMusicManager.Event {
         else
             nowPlaying = createEmbed("**[沒有歌曲正在被撥放]**",
                     "", "",
-                    null, 0xe5b849);
+                    null, 0xFF0000);
 
         //歌曲列表
         List<MessageEmbed.Field> fields = new ArrayList<>();
@@ -135,7 +135,7 @@ public class MusicCommands implements GuildMusicManager.Event {
         else
             scheduler.getQueue().forEach((track) -> {
                 long songLength = track.getInfo().length / 1000;
-                fields.add(new MessageEmbed.Field(track.getInfo().title, timeCalculator(songLength), false));
+                fields.add(new MessageEmbed.Field(track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : "**[" + (timeCalculator(songLength)) + "**[", false));
             });
 
         return new MessageEmbed[]{createEmbed("歌曲列表", "",
@@ -149,7 +149,7 @@ public class MusicCommands implements GuildMusicManager.Event {
     public ActionRow controlButtons(String senderID, Boolean pauseStatus, int loopStatus) {
         return ActionRow.of(
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange", "",
-                        loopStatus == 0 ? Emoji.fromUnicode("➡️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
+                        loopStatus == 0 ? Emoji.fromUnicode("⏮️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause", "",
                         pauseStatus ? Emoji.fromUnicode("▶️") : Emoji.fromUnicode("⏸️")),
                 Button.of(ButtonStyle.SECONDARY, senderID + ":nextToPlay", "", Emoji.fromUnicode("⏭️")),
