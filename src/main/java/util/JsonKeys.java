@@ -12,9 +12,6 @@ public class JsonKeys {
     public final static String CHINESE_NICK = "C";
     public final static String ENGLISH_NICK = "E";
     public final static String MINECRAFT_ID = "M";
-    public final static String INVITER_USERID = "I";
-    public final static String INVITER_USERNAME = "U";
-    public final static String INVITE_MAX_USE = "M";
     public final static String PLAY_MINECRAFT = "H";
     public final static String EDIT_TIMES = "E";
 

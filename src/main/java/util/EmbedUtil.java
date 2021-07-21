@@ -88,16 +88,16 @@ public class EmbedUtil {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(String title, String url, String description, String footer, OffsetDateTime timeStamp, int color) {
+    public static MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color) {
         return new MessageEmbed(url,
                 title,
                 description,
                 EmbedType.RICH,
-                timeStamp,
+                null,
                 color,
                 null,
                 null,
-                null,
+                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
                 null,
                 new MessageEmbed.Footer(footer, null, null),
                 null, null);
@@ -107,6 +107,20 @@ public class EmbedUtil {
         return new MessageEmbed(null,
                 "",
                 description,
+                EmbedType.RICH,
+                null,
+                color,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null, null);
+    }
+    public static MessageEmbed createEmbed(int color, String title) {
+        return new MessageEmbed(null,
+                title,
+                "",
                 EmbedType.RICH,
                 null,
                 color,

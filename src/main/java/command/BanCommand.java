@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
+import static main.java.BotSetting.botOwnerID;
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.SlashCommandOption.DAYS;
 import static main.java.SlashCommandOption.USER_TAG;
@@ -21,7 +22,7 @@ public class BanCommand {
             return;
         }
 
-        Member selfMember = guild.getSelfMember();
+        Member selfMember = event.getGuild().getSelfMember();
         if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
             event.replyEmbeds(createEmbed("機器人並沒有權限封禁成員", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -32,12 +33,17 @@ public class BanCommand {
             return;
         }
 
+        if (member != null && botOwnerID.contains(member.getId())) {
+            event.replyEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).setEphemeral(true).queue();
+            return;
+        }
+
         int delDays = 0;
         User user = event.getOption(USER_TAG).getAsUser();
         OptionMapping option = event.getOption(DAYS);
         if (option != null)
             delDays = (int) Math.max(0, Math.min(7, option.getAsLong()));
-        guild.ban(user, delDays)
+        event.getGuild().ban(user, delDays)
                 .flatMap(v -> event.replyEmbeds(createEmbed("封禁成員 " + user.getAsTag(), 0xffb1b3)).setEphemeral(true))
                 .queue();
     }

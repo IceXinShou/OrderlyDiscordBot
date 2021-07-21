@@ -29,6 +29,9 @@ GeneralSettings:
     - "competing;貓貓❤狗狗"
     - "competing;麻麻❤新手"
 
+  # Youtube API KEY (https://console.cloud.google.com/apis/)
+  apiKey: AIzaSyA6KoqXbs5ZI2Zqlo-BcUPULQDBe8fVWPw
+
   # Will send command used message to console
   debugMode: true
 
@@ -97,6 +100,21 @@ ServiceSettings:
 
   serviceCategoryID:
     - "864673016653807627"
-    -
+
   serviceTagRoleID:
     - "858672865409630245"
+
+
+##################################################
+################### MutiBot ######################
+##################################################
+
+MutiBot:
+  tokens:
+    - "NjA4MDgwNjE4ODk4ODQ5ODI1.XUi9NQ.K8XYERpv6Lsn5KSv3ORgBXOeUGc" # 狗
+    - "ODY3MzExMjU5NTkzOTk4MzQ3.YPfQjg.X7kJLIEXrjOXLpCm8y75nmjARiQ" # 貓
+    - "NjM1NDc0MDE3MDM3NDUxMjc1.XaxlTA.3HDGP6fzHwaJTwxDqdRdgBq7qis" # 豬
+    - "Njc5MzMwNzU4MTkxNDgwODY0.XkvyEg.La_10QDAWVoGL0DsuofwUQCpke4" # 螈
+    - "ODY3MzEyMzI3MDQ0NjI4NDgw.YPfRjA.pvtrfv3OzDqiLNGz9c_4unX-310" # 狐
+
+  randomBot: true

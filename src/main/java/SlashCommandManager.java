@@ -1,7 +1,7 @@
 package main.java;
 
 import main.java.command.*;
-import main.java.music.MusicCommands;
+import mutiBot.music.MusicCommands;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;

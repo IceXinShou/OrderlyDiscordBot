@@ -1,5 +1,6 @@
 package main.java.command;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static main.java.BotSetting.botOwnerID;
-import static main.java.util.EmbedUtil.createEmbed;
 
 public class BlockCommand extends ListenerAdapter {
 
@@ -133,13 +133,30 @@ public class BlockCommand extends ListenerAdapter {
 //                }
 //            }
 
-            List<ActionRow> game = gameButtons(3);
-            event.getChannel().sendMessage(createEmbed("**OOXX大賽!**", 0xFF0000))
-                    .setActionRows(game)
-                    .queue(m -> {
-                        games.put(m.getId(), game);
-                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
-                    });
+//            List<ActionRow> game = gameButtons(3);
+//            event.getChannel().sendMessage(createEmbed("**OOXX大賽!**", 0xFF0000))
+//                    .setActionRows(game)
+//                    .queue(m -> {
+//                        games.put(m.getId(), game);
+//                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
+//                    });
+
+//            event.getGuild().getSelfMember().modifyNickname("我叫做序之徒").queue();
+
+//            event.getJDA().getGuildById("847433514248699914").retrieveMemberById("234395307759108106").complete().kick().queue();
+//
+//            for (Member m : event.getGuild().getSelfMember().getVoiceState().getChannel().getMembers()) {
+//                if (m.getUser().isBot())
+//                    try {
+//                        m.kick().queue();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//            }
+
+            event.getGuild().leave().queue();
+
         }
     }
 

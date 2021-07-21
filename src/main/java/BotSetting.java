@@ -28,8 +28,8 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, newServiceName, boostedRoleID;
-    public static Boolean debugMode;
+            defaultServiceMessage, newServiceName, boostedRoleID, apiKEY;
+    public static boolean debugMode;
     public static Role boostedRole;
 
     public static int roomBitrate;
@@ -88,9 +88,12 @@ public class BotSetting {
         internalRoleID = (String) IDSettings.get("internalRoleID");
         logRoleID = (String) IDSettings.get("logRoleID");
         boostedRoleID = (String) IDSettings.get("boostedRoleID");
+
+
         /**
          * Text
          */
+        apiKEY = (String) GeneralSettings.get("apiKey");
         helpBlockFooter = (String) GeneralSettings.get("helpBlockFooter");
         noPermissionERROR = (String) GeneralSettings.get("noPermissionERROR");
         if (activityMessages.size() > 0) activityMessages.clear();

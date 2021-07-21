@@ -16,7 +16,7 @@ public class UnBanCommand {
 
         try {
 
-            Member selfMember = guild.getSelfMember();
+            Member selfMember = event.getGuild().getSelfMember();
 
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
                 event.replyEmbeds(createEmbed("我必須要有封禁權限才可以解除封鎖", 0xFF0000)).setEphemeral(true).queue();
@@ -25,7 +25,7 @@ public class UnBanCommand {
                 return;
             }
             try {
-                guild.unban(event.getOption(USER_ID).getAsString()).queue();
+                event.getGuild().unban(event.getOption(USER_ID).getAsString()).queue();
                 event.replyEmbeds(createEmbed("已成功解除封鎖", 0xc5ffd2)).setEphemeral(true).queue();
             } catch (Exception ex) {
                 if (ex instanceof PermissionException) {

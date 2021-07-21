@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static main.java.BotSetting.botOwnerID;
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.COUNT;
@@ -31,7 +32,7 @@ public class ClearCommand {
      */
 
     public void onCommand(SlashCommandEvent event) {
-        if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE) && !botOwnerID.contains(event.getMember().getId())) {
             event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
             return;
         }
@@ -71,7 +72,7 @@ public class ClearCommand {
                     Message thisMessage = deleteMessage.get(i);
                     String messageContent = thisMessage.getContentRaw();
                     String memberNickName;
-                    if (thisMessage.getMember() == null)
+                    if (thisMessage.getMember().getNickname() == null)
                         memberNickName = "名字找無";
                     else
                         memberNickName = thisMessage.getMember().getNickname();
