@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import static main.java.event.Log.consoleChannel;
-import static main.java.util.GuildUtil.guild;
 
 public class BotSetting {
     private final static String settingFileName = "settings.yml";
@@ -201,7 +200,7 @@ public class BotSetting {
                         if (line.startsWith("[") && !line.contains("ERROR")) {
                             out.println(line);
                         } else {
-                            if(line.startsWith("["))
+                            if (line.startsWith("["))
                                 builder.append(time).append("[ERROR] ");
                             builder.append(line).append(System.lineSeparator());
                         }

@@ -186,14 +186,23 @@ public class TrackScheduler extends AudioEventAdapter {
     public boolean musicPause = false;
     private long pauseStart;
 
-    public void pause(SlashCommandEvent event) {
-        player.setPaused(musicPause = !musicPause);
-        if (musicPause)
-            pauseStart = System.currentTimeMillis();
-        else
-            startPlayTime += System.currentTimeMillis() - pauseStart;
+    public void pause(SlashCommandEvent event, Boolean play) {
+        if (play) {
+            if (musicPause) {
+                startPlayTime += System.currentTimeMillis() - pauseStart;
+                player.setPaused(false);
+                musicPause = false;
+            }
+        } else {
 
-        this.event.pause(musicPause, event, guild);
+            player.setPaused(musicPause = !musicPause);
+            if (musicPause)
+                pauseStart = System.currentTimeMillis();
+            else
+                startPlayTime += System.currentTimeMillis() - pauseStart;
+
+            this.event.pause(musicPause, event, guild);
+        }
     }
 
     /**

@@ -2,7 +2,6 @@ package main.java.event;
 
 import main.java.Main;
 import main.java.funtion.JsonFileManager;
-import main.java.util.EmbedUtil;
 import main.java.util.GuildUtil;
 import main.java.util.QuestionStep;
 import net.dv8tion.jda.api.entities.*;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static main.java.BotSetting.configFolder;

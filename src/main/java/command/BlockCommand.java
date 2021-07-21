@@ -166,7 +166,7 @@ public class BlockCommand extends ListenerAdapter {
         String messageID = event.getMessage().getId();
 
         List<ActionRow> game = games.get(messageID);
-        if (games.get(messageID) == null){
+        if (games.get(messageID) == null) {
             event.deferEdit().queue();
             return;
         }

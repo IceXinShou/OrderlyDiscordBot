@@ -51,11 +51,11 @@ public class MusicCommands implements GuildMusicManager.Event {
             case "play": //
                 if (checkVcState(event)) {
                     if (event.getOption(URL) == null) {
-                        event.replyEmbeds(createEmbed("未知的參數", 0xFF0000)).setEphemeral(true).queue();
+                        getGuildAudioPlayer(event.getGuild()).scheduler.pause(event, true);
+                        event.replyEmbeds(createEmbed("已開始播放", 0xbde3ae)).setEphemeral(true).queue();
                         break;
                     }
-                    String url = event.getOption(URL).getAsString();
-                    loadAndPlay(event, getGuildAudioPlayer(event.getGuild()), url);
+                    loadAndPlay(event, getGuildAudioPlayer(event.getGuild()), event.getOption(URL).getAsString());
                 }
                 break;
             case "skip":
@@ -72,11 +72,11 @@ public class MusicCommands implements GuildMusicManager.Event {
                 break;
             case "pause":
                 if (checkVcState(event))
-                    getGuildAudioPlayer(event.getGuild()).scheduler.pause(event);
+                    getGuildAudioPlayer(event.getGuild()).scheduler.pause(event, false);
                 break;
             case "queue":
                 if (checkVcState(event))
-                    queue(event);
+                    queue(event, false);
                 break;
             case "volume":
                 if (checkVcState(event)) {
@@ -93,11 +93,11 @@ public class MusicCommands implements GuildMusicManager.Event {
     }
 
     public MessageEmbed[] playStatus(Member member, TrackScheduler scheduler) {
-        //憲政撥放資料
+        //憲政播放資料
         StringBuilder progress = new StringBuilder();
         MessageEmbed nowPlaying;
         AudioTrackInfo trackInfo = null;
-        //有歌曲正在撥放
+        //有歌曲正在播放
         if (scheduler.playingTrack != null) {
             //進度顯示
             trackInfo = scheduler.playingTrack.getInfo();
@@ -117,14 +117,14 @@ public class MusicCommands implements GuildMusicManager.Event {
                 .append("**音量: **")
                 .append("◆".repeat(volumePercent))
                 .append("◇".repeat(20 - volumePercent))
-                .append(scheduler.loopStatus == 0 ? " <順序撥放>" : (scheduler.loopStatus == 1 ? " <循環撥放>" : " <單曲循環>"));
+                .append(scheduler.loopStatus == 0 ? " <順序播放>" : (scheduler.loopStatus == 1 ? " <循環播放>" : " <單曲循環>"));
         //組裝
         if (scheduler.playingTrack != null)
             nowPlaying = createEmbed("**" + trackInfo.title + "**", trackInfo.uri,
                     progress.toString(), "",
                     null, 0xe5b849);
         else
-            nowPlaying = createEmbed("**[沒有歌曲正在被撥放]**",
+            nowPlaying = createEmbed("**[沒有歌曲正在被播放]**",
                     "", "",
                     null, 0xFF0000);
 
@@ -157,7 +157,7 @@ public class MusicCommands implements GuildMusicManager.Event {
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp", "", Emoji.fromUnicode("\uD83D\uDD0A")));
     }
 
-    public void queue(GenericInteractionCreateEvent event) {
+    public void queue(GenericInteractionCreateEvent event, Boolean play) {
         TrackScheduler scheduler = getGuildAudioPlayer(event.getGuild()).scheduler;
         if (scheduler.playingTrack == null) {
             event.replyEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).setEphemeral(true).queue();
@@ -165,6 +165,10 @@ public class MusicCommands implements GuildMusicManager.Event {
         }
 
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
+
+        if (play) {
+            scheduler.pause(null, true);
+        }
 
         event.replyEmbeds(embed[0], embed[1])
                 .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
@@ -203,7 +207,7 @@ public class MusicCommands implements GuildMusicManager.Event {
                 break;
             }
             case "musicPause":
-                scheduler.pause(null);
+                scheduler.pause(null, false);
                 editButton = true;
                 break;
             case "nextToPlay":
@@ -290,7 +294,7 @@ public class MusicCommands implements GuildMusicManager.Event {
     @Override
     public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild) {
         if (event != null) {
-            queue(event);
+            queue(event, true);
         }
         if (guild.getId().equals(guildID))
             logChannel.sendMessage("開始播放 `" + track.getInfo().title + "`").queue();

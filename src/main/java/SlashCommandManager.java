@@ -243,7 +243,7 @@ public class SlashCommandManager extends ListenerAdapter {
 
     }
 
-    private void addOwnSlashCommand(CommandListUpdateAction command)    {
+    private void addOwnSlashCommand(CommandListUpdateAction command) {
         command.addCommands(
                 new CommandData("promote", "提拔成員成為頻道管理員")
                         .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
