@@ -7,8 +7,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.SlashCommandOption.USER_ID;
-import static main.java.util.EmbedUtil.createEmbed;
-import static main.java.util.GuildUtil.guild;
+import static main.java.util.Funtions.createEmbed;
 
 public class UnBanCommand {
 

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static main.java.Main.emoji;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;

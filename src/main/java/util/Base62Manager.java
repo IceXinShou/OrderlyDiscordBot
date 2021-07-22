@@ -13,7 +13,7 @@ public class Base62Manager {
         return sBuilder.toString();
     }
 
-    public static long base64decode(String b62) {
+    public static long base62decode(String b62) {
         long[] ret = new long[]{0, 1};
         b62.chars().forEach(character -> {
             if (characters.indexOf(character) == -1) { // 不合理的字

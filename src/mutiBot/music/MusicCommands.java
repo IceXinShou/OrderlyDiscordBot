@@ -28,7 +28,7 @@ import static main.java.BotSetting.apiKEY;
 import static main.java.SlashCommandOption.COUNT;
 import static main.java.SlashCommandOption.URL;
 import static main.java.event.Log.logChannel;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 
 public class MusicCommands implements GuildMusicManager.Event {
@@ -414,6 +414,4 @@ public class MusicCommands implements GuildMusicManager.Event {
 
         return musicManager;
     }
-
-
 }

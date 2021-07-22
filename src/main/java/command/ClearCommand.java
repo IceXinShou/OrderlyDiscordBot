@@ -22,7 +22,7 @@ import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.COUNT;
 import static main.java.event.Log.ignoreMessageID;
 import static main.java.event.Log.logChannel;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 
 public class ClearCommand {
 

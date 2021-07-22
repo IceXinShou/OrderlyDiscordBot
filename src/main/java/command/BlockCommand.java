@@ -1,6 +1,5 @@
 package main.java.command;
 
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.java.BotSetting.botOwnerID;
+import static main.java.util.Funtions.isBotOwner;
 
 public class BlockCommand extends ListenerAdapter {
 
@@ -30,7 +29,7 @@ public class BlockCommand extends ListenerAdapter {
 
         Message message = event.getMessage();
 
-        if (message.getContentRaw().startsWith("owo") && botOwnerID.contains(event.getMember().getId())) {
+        if (message.getContentRaw().startsWith("owo") && isBotOwner(event)) {
 
 //
 //            /**

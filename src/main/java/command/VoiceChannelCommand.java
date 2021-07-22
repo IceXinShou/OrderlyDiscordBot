@@ -20,11 +20,9 @@ import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.CHANNEL_TAG;
 import static main.java.SlashCommandOption.USER_TAG;
 import static main.java.event.Join.memberData;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.*;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.*;
-import static main.java.util.MessageFormatting.tagChannel;
-import static main.java.util.MessageFormatting.tagUser;
 
 public class VoiceChannelCommand {
 
@@ -56,12 +54,10 @@ public class VoiceChannelCommand {
         switch (event.getName()) {
             // Voice Channel
             case "unpromote":
-                if (inVC(event))
-                    unpromote(event);
+                unpromote(event);
                 break;
             case "promote":
-                if (inVC(event))
-                    promote(event);
+                promote(event);
                 break;
             case "state":
             case "status":
@@ -70,20 +66,22 @@ public class VoiceChannelCommand {
                     info(event);
                 break;
             case "public":
-                if (inVC(event))
-                    makeChannelPublic(event);
+                makeChannelPublic(event);
                 break;
             case "private":
-                if (inVC(event) && event.getTextChannel().equals(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)))
-                    makeChannelPrivate(event);
+                makeChannelPrivate(event);
                 break;
             case "invite":
                 if (inVC(event))
                     invite(event);
                 break;
-            case "kick":
+            case "black":
                 if (inVC(event))
-                    kick(event);
+                    black(event);
+                break;
+            case "remove":
+                if (inVC(event))
+                    remove(event);
                 break;
             default:
                 commandState = 0;
@@ -94,27 +92,20 @@ public class VoiceChannelCommand {
     public void unpromote(SlashCommandEvent event) {
 
         Member targetMember = event.getOption(USER_TAG).getAsMember();
+
         String senderID = event.getUser().getId();
 
-
-        String voiceChannelID = voiceChannelData.getJSONObject(senderID).getString(VOICE_CHANNEL_ID);
+        JSONObject channelData = voiceChannelData.getJSONObject(senderID);
 
         // 判斷合理性
-        if (!event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) {
-            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
-            return;
-        }
         if (senderID.equals(targetMember.getId())) {
             event.replyEmbeds(createEmbed("你不能移除自己的權限!", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
-
-        JSONObject ownerInfo = voiceChannelData.getJSONObject(senderID);
-
         JSONArray admins;
-        if (ownerInfo.has(CHANNEL_ADMINS))
-            admins = ownerInfo.getJSONArray(CHANNEL_ADMINS);
+        if (channelData.has(CHANNEL_ADMINS))
+            admins = channelData.getJSONArray(CHANNEL_ADMINS);
         else {
             event.replyEmbeds(createEmbed("此頻道無任何管理員存在", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -130,7 +121,7 @@ public class VoiceChannelCommand {
 
         if (index > -1) {
             admins.remove(index);
-            ownerInfo.put(CHANNEL_ADMINS, admins);
+            channelData.put(CHANNEL_ADMINS, admins);
             voiceChannelDataFile.saveFile();
             event.replyEmbeds(createEmbed("權限移除成功", 0x7fc89a)).setEphemeral(true).queue();
         } else {
@@ -140,17 +131,13 @@ public class VoiceChannelCommand {
     }
 
     public void promote(SlashCommandEvent event) {
+
         Member targetMember = event.getOption(USER_TAG).getAsMember();
+
         String senderID = event.getUser().getId();
 
-
-        String voiceChannelID = voiceChannelData.getJSONObject(senderID).getString(VOICE_CHANNEL_ID);
-
         // 判斷合理性
-        if (!event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) {
-            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
-            return;
-        }
+
         if (senderID.equals(targetMember.getId())) {
             event.replyEmbeds(createEmbed("你不能提拔自己!", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -158,24 +145,18 @@ public class VoiceChannelCommand {
 
         event.replyEmbeds(createEmbed("您確定要將管理員權限給 " + memberData.getJSONObject(targetMember.getId()).getString(CHINESE_NICK) + " ?", 0x9740b9))
                 .addActionRow(//add component
-                        Button.danger(senderID + ":vc_giveAdmin:" + targetMember.getId() + ":" + voiceChannelID, "Yes!"))
-                .queue();
+                        Button.danger(senderID + ":vc_giveAdmin:" + targetMember.getId() + ":" + voiceChannelData.getJSONObject(senderID).getString(VOICE_CHANNEL_ID), "Yes!"))
+                .setEphemeral(true).queue();
 
     }
 
     public void makeChannelPrivate(SlashCommandEvent event) {
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
-        String voiceChannelID = channelData.getString(VOICE_CHANNEL_ID);
-        String textChannelID = channelData.getString(TEXT_CHANNEL_ID);
 
-        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
-        TextChannel tc = guild.getTextChannelById(textChannelID);
+        VoiceChannel vc = guild.getVoiceChannelById(channelData.getString(VOICE_CHANNEL_ID));
+        TextChannel tc = guild.getTextChannelById(channelData.getString(TEXT_CHANNEL_ID));
 
-        if (!vc.getId().equals(voiceChannelID)) {
-            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
-            return;
-        }
         if (!(vc.getPermissionOverride(memberRole).getAllowed().contains(Permission.VIEW_CHANNEL))) {
             event.replyEmbeds(createEmbed("頻道已設置已經是不公開了", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -194,13 +175,8 @@ public class VoiceChannelCommand {
         String voiceChannelID = channelData.getString(VOICE_CHANNEL_ID);
         String textChannelID = channelData.getString(TEXT_CHANNEL_ID);
 
-        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
+        VoiceChannel vc = guild.getVoiceChannelById(voiceChannelID);
         TextChannel tc = guild.getTextChannelById(textChannelID);
-
-        if (!vc.getId().equals(voiceChannelID)) {
-            event.replyEmbeds(createEmbed("你並不是語音群主", 0xFF0000)).setEphemeral(true).queue();
-            return;
-        }
 
         if ((vc.getPermissionOverride(memberRole).getAllowed().contains(Permission.VIEW_CHANNEL))) {
             event.replyEmbeds(createEmbed("頻道已設置已經是公開了", 0xFF0000)).setEphemeral(true).queue();
@@ -213,7 +189,7 @@ public class VoiceChannelCommand {
         event.replyEmbeds(createEmbed("頻道已設置為公開", 0x7fc89a)).setEphemeral(true).queue();
     }
 
-    public void kick(SlashCommandEvent event) {
+    public void black(SlashCommandEvent event) {
 
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
@@ -246,6 +222,46 @@ public class VoiceChannelCommand {
                 if (member.getVoiceState().inVoiceChannel() && member.getVoiceState().getChannel().getId().equals(voiceChannelID))
                     guild.kickVoiceMember(member);
                 event.replyEmbeds(createEmbed("已踢除", 0xb8d8be)).setEphemeral(true).queue();
+            }
+        } else {
+            event.replyEmbeds(createEmbed("你並不是語音群主或是管理員", 0xFF0000)).setEphemeral(true).queue();
+            return;
+        }
+    }
+
+    public void remove(SlashCommandEvent event) {
+
+        String senderID = event.getUser().getId();
+        JSONObject channelData = voiceChannelData.getJSONObject(senderID);
+        String textChannelID = channelData.getString(TEXT_CHANNEL_ID);
+        String voiceChannelID = channelData.getString(VOICE_CHANNEL_ID);
+
+        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
+        TextChannel tc = guild.getTextChannelById(textChannelID);
+
+        Member member = event.getOption(USER_TAG).getAsMember();
+
+        JSONObject ownerInfo = voiceChannelData.getJSONObject(senderID);
+
+        if (event.getMember().getVoiceState().getChannel().getId().equals(voiceChannelID)) { // 群主
+            vc.createPermissionOverride(member).reset().queue();
+            tc.createPermissionOverride(member).reset().queue();
+
+            if (member.getVoiceState().inVoiceChannel() && member.getVoiceState().getChannel().getId().equals(voiceChannelID))
+                guild.kickVoiceMember(member);
+            event.replyEmbeds(createEmbed("已從房間名單移除", 0xb8d8be)).setEphemeral(true).queue();
+            return;
+        } else if (ownerInfo.has(CHANNEL_ADMINS) && ownerInfo.getJSONArray(CHANNEL_ADMINS).toList().contains(event.getId())) {
+            if (ownerInfo.getJSONArray(CHANNEL_ADMINS).toList().contains(member.getId())) {
+                event.replyEmbeds(createEmbed("你無法移除具有管理員權限的人", 0xFF0000)).setEphemeral(true).queue();
+                return;
+            } else {
+                vc.createPermissionOverride(member).setDeny(Permission.VIEW_CHANNEL).queue();
+                tc.createPermissionOverride(member).setDeny(Permission.VIEW_CHANNEL).queue();
+
+                if (member.getVoiceState().inVoiceChannel() && member.getVoiceState().getChannel().getId().equals(voiceChannelID))
+                    guild.kickVoiceMember(member);
+                event.replyEmbeds(createEmbed("已移除", 0xb8d8be)).setEphemeral(true).queue();
             }
         } else {
             event.replyEmbeds(createEmbed("你並不是語音群主或是管理員", 0xFF0000)).setEphemeral(true).queue();

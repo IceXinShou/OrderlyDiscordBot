@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.event.Join.memberData;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
+import static main.java.util.Funtions.tagRole;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.CHINESE_NICK;
-import static main.java.util.MessageFormatting.tagRole;
 
 public class TicketChannel extends ListenerAdapter {
     @Override

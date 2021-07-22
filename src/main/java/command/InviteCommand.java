@@ -22,7 +22,7 @@ import static main.java.SlashCommandOption.USER_TAG;
 import static main.java.command.VoiceChannelCommand.*;
 import static main.java.event.Join.memberData;
 import static main.java.event.Log.logChannel;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.*;
 

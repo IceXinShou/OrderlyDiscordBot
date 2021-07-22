@@ -13,7 +13,7 @@ import java.util.List;
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.QUESTION;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 
 public class PollCommand {
 

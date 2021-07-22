@@ -1,10 +1,12 @@
 package main.java;
 
 import main.java.command.*;
-import mutiBot.music.MusicCommands;
 import main.java.util.GuildUtil;
+import mutiBot.music.MusicCommands;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -26,11 +28,11 @@ import static main.java.command.InviteCommand.authChannel;
 import static main.java.command.InviteCommand.authChannelID;
 import static main.java.command.VoiceChannelCommand.voiceChannelData;
 import static main.java.event.Log.*;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
+import static main.java.util.Funtions.tagChannel;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
-import static main.java.util.MessageFormatting.tagChannel;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 /**
@@ -137,7 +139,6 @@ public class SlashCommandManager extends ListenerAdapter {
         event.replyEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).setEphemeral(true).queue();
     }
 
-
     @Override
     public void onButtonClick(ButtonClickEvent event) {
         //button的id
@@ -155,15 +156,11 @@ public class SlashCommandManager extends ListenerAdapter {
 //            event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
     }
 
-    /**
-     * 公取得事件
-     */
-
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         if (!event.getGuild().getId().equals(guildID)) {
             System.out.println("[" + event.getGuild().getName() + "] Command Loading...");
-            addPublicSlashCommand(event.getGuild().updateCommands());
+            addPublicSlashCommand(event.getGuild());
             System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
         } else
             getGuildVariable(event.getGuild());
@@ -176,12 +173,26 @@ public class SlashCommandManager extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
+
+        if (event.getGuild().getId().equals(guildID))
+            addOwnSlashCommand(event.getGuild());
+        else
+            addPublicSlashCommand(event.getGuild());
+
+        event.getGuild().getOwner().getUser().openPrivateChannel().queue(i -> {
+            i.sendMessage(createEmbed("您已邀請 <**" + event.getGuild().getSelfMember().getUser().getName() + "**> 進入 <**" + event.getGuild().getName() + "**>", 0xFF0000)).queue();
+            i.sendMessage(createEmbed("You have invited <**" + event.getGuild().getSelfMember().getUser().getName() + "**> join <**" + event.getGuild().getName() + "**> Discord Server", 0xFF0000)).queue();
+        });
+    }
+
     public void getGuildVariable(Guild guild) {
         // 註冊全域指令
-        addCommandEveryWhere(guild.getJDA().updateCommands());
+        addCommandEveryWhere(guild.getJDA());
 
         // 註冊主公會指令
-        addOwnSlashCommand(guild.updateCommands());
+        addOwnSlashCommand(guild);
         Main.emoji.loadEmoji(guild);
         // 偵測管理員 ID
         Role role = guild.getRoleById(adminPermissionID);
@@ -243,40 +254,49 @@ public class SlashCommandManager extends ListenerAdapter {
 
     }
 
-    private void addOwnSlashCommand(CommandListUpdateAction command) {
+
+    private void addOwnSlashCommand(Guild guild) {
+
+        CommandListUpdateAction command = guild.updateCommands();
+
         command.addCommands(
-                new CommandData("promote", "提拔成員成為頻道管理員")
+                new CommandData("promote", "提拔成員成為房間管理員")
                         .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
                                 .setRequired(true))
         );
         command.addCommands(
-                new CommandData("unpromote", "移除管理員權限成為頻道成員")
+                new CommandData("unpromote", "移除房間管理員權限")
                         .addOptions(new OptionData(USER, USER_TAG, "壓下去吧")
                                 .setRequired(true))
         );
         command.addCommands(
-                new CommandData("private", "將你所在的語音頻道改為私人")
+                new CommandData("private", "將你所在的房間改為私人")
         );
         command.addCommands(
-                new CommandData("public", "將你所在的語音頻道改為公開")
+                new CommandData("public", "將你所在的房間改為公開")
         );
         command.addCommands(
-                new CommandData("info", "列出頻道數據")
+                new CommandData("info", "列出房間數據")
                         .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
                                 .setRequired(false)) // 若未填則列出所在頻道數據
         );
         command.addCommands(
-                new CommandData("state", "列出頻道數據")
+                new CommandData("state", "列出房間數據")
                         .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
                                 .setRequired(false)) // 若未填則列出所在頻道數據
         );
         command.addCommands(
-                new CommandData("status", "列出頻道數據")
+                new CommandData("status", "列出房間數據")
                         .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
                                 .setRequired(false)) // 若未填則列出所在頻道數據
         );
         command.addCommands(
-                new CommandData("kick", "移除成員語音權限")
+                new CommandData("black", "將成員設入房間黑名單")
+                        .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
+                                .setRequired(true))
+        );
+        command.addCommands(
+                new CommandData("remove", "移除成員房間間黑名單")
                         .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
                                 .setRequired(true))
         );
@@ -365,7 +385,10 @@ public class SlashCommandManager extends ListenerAdapter {
         command.queue();
     }
 
-    private void addPublicSlashCommand(CommandListUpdateAction command) {
+    private void addPublicSlashCommand(Guild guild) {
+
+        CommandListUpdateAction command = guild.updateCommands();
+
         command.addCommands(
                 new CommandData("clear", "打掃垃圾")
                         .addOptions(new OptionData(INTEGER, COUNT, "刪除介於 2 ~ 200 的訊息")
@@ -470,7 +493,10 @@ public class SlashCommandManager extends ListenerAdapter {
 
     }
 
-    public void addCommandEveryWhere(CommandListUpdateAction command) {
+    public void addCommandEveryWhere(JDA jda) {
+
+        CommandListUpdateAction command = jda.updateCommands();
+
         command.addCommands(
                 new CommandData("nick", "更改專屬伺服器暱稱")
         );

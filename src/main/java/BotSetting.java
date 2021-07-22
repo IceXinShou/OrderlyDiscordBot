@@ -149,7 +149,7 @@ public class BotSetting {
         System.out.println(TAG + " Settings reloaded");
     }
 
-    private final String commandPr = ">";
+    private final String commandPr = "> ";
     private final PrintStream originalConsole = System.out;
 
     public void sendNoneToConsole() {

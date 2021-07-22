@@ -10,6 +10,7 @@ import javax.security.auth.login.LoginException;
 
 import static main.java.BotSetting.botToken;
 
+
 public class NewBot {
 
     public NewBot() {
@@ -46,7 +47,7 @@ public class NewBot {
 
     }
 
-    public void play(){
+    public void play() {
 
     }
 }

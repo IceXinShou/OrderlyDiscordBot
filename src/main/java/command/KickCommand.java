@@ -5,11 +5,10 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
-import static main.java.BotSetting.botOwnerID;
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.SlashCommandOption.USER_TAG;
-import static main.java.util.EmbedUtil.createEmbed;
-import static main.java.util.GuildUtil.guild;
+import static main.java.util.Funtions.createEmbed;
+import static main.java.util.Funtions.isBotOwner;
 
 public class KickCommand {
 
@@ -29,7 +28,7 @@ public class KickCommand {
             return;
         }
 
-        if (member != null && botOwnerID.contains(member.getId())) {
+        if (member != null && isBotOwner(event)) {
             event.replyEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).setEphemeral(true).queue();
             return;
         }

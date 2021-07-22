@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import static main.java.BotSetting.configFolder;
 import static main.java.BotSetting.joinRoleID;
 import static main.java.Main.emoji;
-import static main.java.util.EmbedUtil.createEmbed;
+import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
