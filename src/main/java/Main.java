@@ -35,7 +35,7 @@ public class Main {
     public static EmojiUtil emoji = new EmojiUtil();
     private final String TAG = "[Main]";
 
-    //interval
+    // interval
     private ScheduledExecutorService threadPool;
     private int currentIndex = 0;
 
@@ -49,11 +49,12 @@ public class Main {
                 .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
                 .setCompression(Compression.ZLIB) // Disable compression (not recommended)
-                .setLargeThreshold(250);
+                .setLargeThreshold(250)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES);
 
-        JDA jda = builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES).build();
+        JDA jda = builder.build();
 
-        //註冊event
+        // 註冊event
         jda.addEventListener(new Log());
         jda.addEventListener(new Join());
         jda.addEventListener(new GeneralReplay());
@@ -64,16 +65,16 @@ public class Main {
         jda.addEventListener(commandManager);
 
 
-        //bot自己的資料
+        // bot自己的資料
         botID = jda.getSelfUser().getId();
         botAvatarUrl = jda.getSelfUser().getAvatarUrl();
         self = jda.getSelfUser();
-        //開始切換狀態
+        // 開始切換狀態
         startChangeActivity(jda);
 
-        //啟動完畢
+        // 啟動完畢
         System.out.println(TAG + " 已啟動");
-        //平行處理 不然會卡住
+        // 平行處理 不然會卡住
         new Thread(() -> {
             while (true) {
                 Scanner scanner = new Scanner(System.in);
@@ -87,16 +88,16 @@ public class Main {
                         System.out.println(TAG + " 已停止");
                         return;
                     case "reload":
-                        //load new setting
+                        // load new setting
                         setting.reloadConfig();
                         Guild guild = jda.getGuildById(GuildUtil.guildID);
                         if (guild == null) {
                             System.err.println(TAG + " 無法找到公會: " + GuildUtil.guildID);
                             break;
                         }
-                        //get guild variable from setting
+                        // get guild variable from setting
                         commandManager.getGuildVariable(guild);
-                        //開始自動切換
+                        // 開始自動切換
                         startChangeActivity(jda);
                         System.out.println(TAG + " 重新載入完成");
                         break;
@@ -131,26 +132,15 @@ public class Main {
             threadPool.shutdown();
 
         threadPool = Executors.newSingleThreadScheduledExecutor();
-        //run thread
+        // run thread
         threadPool.scheduleWithFixedDelay(() -> {
             String[] msg = activityMessages.get(currentIndex);
             try {
-                if (msg.length < 2) {
-                    System.err.println(TAG + " parameter not found");
-                    threadPool.shutdown();
-                    return;
-                }
-
-                Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
-                if (msg[1].equals("STREAMING")) {
-                    if (msg.length < 3) {
-                        System.err.println(TAG + " url not found");
-                        threadPool.shutdown();
-                        return;
-                    }
-                    //name, url
+                if (msg[0].equals("STREAMING")) {
+                    // name, url
                     jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
                 } else {
+                    Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
                     jda.getPresence().setActivity(Activity.of(type, msg[1]));
                 }
             } catch (IllegalArgumentException e) {

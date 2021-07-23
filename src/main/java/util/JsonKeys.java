@@ -15,7 +15,7 @@ public class JsonKeys {
     public final static String PLAY_MINECRAFT = "H";
     public final static String EDIT_TIMES = "E";
 
-    //for voice channel
+    // for voice channel
     public final static String VOICE_CHANNEL_ID = "VC";
     public final static String TEXT_CHANNEL_ID = "TC";
     public final static String CHANNEL_ADMINS = "A";

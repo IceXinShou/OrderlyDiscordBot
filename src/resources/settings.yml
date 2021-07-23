@@ -25,8 +25,8 @@ GeneralSettings:
     channelLogFolder: "channelLog"
     configFolder: "configFolder"
 
-  # Youtube API KEY (https://console.cloud.google.com/apis/)
-  apiKey: Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot
+  # Youtube API KEY (https:// console.cloud.google.com/apis/)
+  apiKey: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
 
   # Will send command used message to console.
   debugMode: true
@@ -100,7 +100,7 @@ ServiceSettings:
 ################### MutiBot ######################
 ##################################################
 
-MutiBot:
+MultiBot:
   tokens:
     - "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
     - "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"

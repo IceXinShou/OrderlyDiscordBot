@@ -40,6 +40,7 @@ public class BotSetting {
     public static List<String> serviceCategoryID = new ArrayList<>();
     public static List<String> roomCategoryID = new ArrayList<>();
     public static List<String> botOwnerID = new ArrayList<>();
+    public static List<String> multiMusicBotTokens = new ArrayList<>();
     public static Role memberRole;
 
     public static List<String[]> activityMessages = new ArrayList<>();
@@ -50,11 +51,12 @@ public class BotSetting {
     public static Map<String, Object> ServiceSettings;
     public static Map<String, Object> RoomSettings;
     public static Map<String, Object> GeneralSettings;
-    //console
+    public static Map<String, Object> MultiBot;
+    // console
     public static ByteArrayOutputStream logConsole, errConsole;
     private final String TAG = "[Setting]";
 
-    BotSetting() {
+    public BotSetting() {
         setLog();
         loadConfigFile();
         loadVariable();
@@ -65,14 +67,17 @@ public class BotSetting {
         Map<String, Object> RoomSettings = (Map<String, Object>) settings.get("RoomSettings");
         Map<String, Object> ServiceSettings = (Map<String, Object>) settings.get("ServiceSettings");
 
-
-        botToken = (String) GeneralSettings.get("botToken");
-
         /**
          * Bol
          */
-
         debugMode = (Boolean) GeneralSettings.get("debugMode");
+
+        /**
+         * Token
+         */
+        botToken = (String) GeneralSettings.get("botToken");
+        if (multiMusicBotTokens.size() > 0) multiMusicBotTokens.clear();
+        multiMusicBotTokens.addAll((List<String>) MultiBot.get("tokens"));
 
         /**
          * ID
@@ -89,6 +94,15 @@ public class BotSetting {
         logRoleID = (String) IDSettings.get("logRoleID");
         boostedRoleID = (String) IDSettings.get("boostedRoleID");
 
+        if (serviceTagRoleID.size() > 0) serviceTagRoleID.clear();
+        serviceTagRoleID.addAll((List<String>) ServiceSettings.get("serviceTagRoleID"));
+        if (serviceCategoryID.size() > 0) serviceCategoryID.clear();
+        serviceCategoryID.addAll((List<String>) ServiceSettings.get("serviceCategoryID"));
+        if (roomCategoryID.size() > 0) roomCategoryID.clear();
+        roomCategoryID.addAll((List<String>) RoomSettings.get("roomCategoryID"));
+        if (botOwnerID.size() > 0) botOwnerID.clear();
+        botOwnerID.addAll((List<String>) GeneralSettings.get("botOwnerID"));
+
 
         /**
          * Text
@@ -104,6 +118,14 @@ public class BotSetting {
             else {
                 args[0] = args[0].toUpperCase();
             }
+            if (args[0].equals("STREAMING")) {
+                if (args.length < 3) {
+                    System.err.println(TAG + " url not found");
+                }
+            }
+            if (args.length < 2) {
+                System.err.println(TAG + " parameter not found");
+            }
             activityMessages.add(args);
         }
 
@@ -111,7 +133,6 @@ public class BotSetting {
         /**
          * Room
          */
-
         defaultRoomName = (String) RoomSettings.get("defaultRoomName");
         defaultRoomChatName = (String) RoomSettings.get("defaultRoomChatName");
         roomBitrate = (Integer) RoomSettings.get("defaultRoomBitrate");
@@ -119,21 +140,18 @@ public class BotSetting {
         /**
          * Services
          */
-
         defaultServiceMessage = (String) ServiceSettings.get("defaultServiceMessage");
         newServiceName = (String) ServiceSettings.get("newServiceName");
-
 
         /**
          * File
          */
-
         Map<String, Object> folder = (Map<String, Object>) GeneralSettings.get("folder");
 
         channelLogFolder = new File((String) folder.get("channelLogFolder"));
         configFolder = new File((String) folder.get("configFolder"));
 
-        //create folder
+        // create folder
         if (!channelLogFolder.exists())
             channelLogFolder.mkdir();
 
@@ -158,9 +176,9 @@ public class BotSetting {
     }
 
     private void setLog() {
-        //原本的console
+        // 原本的console
         PrintStream originalErrConsole = System.err;
-        //新的console
+        // 新的console
         logConsole = new ByteArrayOutputStream();
         errConsole = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(logConsole, true, StandardCharsets.UTF_8);
@@ -168,14 +186,14 @@ public class BotSetting {
         System.setOut(out);
         System.setErr(err);
 
-        //暫存 給discord console用的
+        // 暫存 給discord console用的
         consoleBuff = new StringBuilder();
         errBuff = new StringBuilder();
 
         originalConsole.print(commandPr);
         logConsole.reset();
 
-        //把log的東西print出來
+        // 把log的東西print出來
         new Thread(() -> {
             while (true) {
                 String time = ('[' + OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ");
@@ -270,6 +288,7 @@ public class BotSetting {
         ServiceSettings = (Map<String, Object>) settings.get("ServiceSettings");
         RoomSettings = (Map<String, Object>) settings.get("RoomSettings");
         GeneralSettings = (Map<String, Object>) settings.get("GeneralSettings");
+        MultiBot = (Map<String, Object>) settings.get("MultiBot");
         System.out.println(TAG + " Setting file loaded");
     }
 
@@ -288,4 +307,5 @@ public class BotSetting {
         }
         return null;
     }
+
 }

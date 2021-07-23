@@ -2,7 +2,7 @@ package main.java;
 
 import main.java.command.*;
 import main.java.util.GuildUtil;
-import mutiBot.music.MusicCommands;
+import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -40,7 +41,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
  */
 
 public class SlashCommandManager extends ListenerAdapter {
-    private final String TAG = "[Command]";
+    private final String TAG = "[SlashCommandManager]";
 
     public Integer adminPermissionPos;
     BanCommand banCommand;
@@ -49,7 +50,7 @@ public class SlashCommandManager extends ListenerAdapter {
     VoiceChannelCommand voiceChannelCommand;
     UnBanCommand unBanCommand;
     KickCommand kickCommand;
-    MusicCommands musicManager;
+    MultiMusicBotManager musicManager;
     PollCommand pollCommand;
 
     SlashCommandManager() {
@@ -59,8 +60,9 @@ public class SlashCommandManager extends ListenerAdapter {
         createInviteCommand = new InviteCommand();
         voiceChannelCommand = new VoiceChannelCommand();
         kickCommand = new KickCommand();
-        musicManager = new MusicCommands();
+//        musicManager = new MusicCommands();
         pollCommand = new PollCommand();
+        System.out.println(TAG + " Listener loaded!");
     }
 
     @Override
@@ -141,7 +143,7 @@ public class SlashCommandManager extends ListenerAdapter {
 
     @Override
     public void onButtonClick(ButtonClickEvent event) {
-        //button的id
+        // button的id
         String[] args = event.getComponentId().split(":");
         String authorId = args[0];
         // 確認按按鈕的人是誰
@@ -157,13 +159,23 @@ public class SlashCommandManager extends ListenerAdapter {
     }
 
     @Override
+    public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
+        String[] args = event.getComponentId().split(":");
+        if (args[1].equals("searchResult")) {
+            musicManager.onSelectMenu(event, args);
+        }
+    }
+
+    @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        if (!event.getGuild().getId().equals(guildID)) {
+        if (event.getGuild().getId().equals(guildID)) {
+            getGuildVariable(event.getGuild());
+            musicManager = new MultiMusicBotManager();
+        } else {
             System.out.println("[" + event.getGuild().getName() + "] Command Loading...");
             addPublicSlashCommand(event.getGuild());
             System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
-        } else
-            getGuildVariable(event.getGuild());
+        }
     }
 
     @Override
@@ -182,8 +194,11 @@ public class SlashCommandManager extends ListenerAdapter {
             addPublicSlashCommand(event.getGuild());
 
         event.getGuild().getOwner().getUser().openPrivateChannel().queue(i -> {
-            i.sendMessage(createEmbed("您已邀請 <**" + event.getGuild().getSelfMember().getUser().getName() + "**> 進入 <**" + event.getGuild().getName() + "**>", 0xFF0000)).queue();
-            i.sendMessage(createEmbed("You have invited <**" + event.getGuild().getSelfMember().getUser().getName() + "**> join <**" + event.getGuild().getName() + "**> Discord Server", 0xFF0000)).queue();
+            try {
+                i.sendMessageEmbeds(createEmbed("您已邀請 <**" + event.getGuild().getSelfMember().getUser().getName() + "**> 進入 <**" + event.getGuild().getName() + "**>", 0xFF0000)).queue();
+                i.sendMessageEmbeds(createEmbed("You have invited <**" + event.getGuild().getSelfMember().getUser().getName() + "**> join <**" + event.getGuild().getName() + "**> Discord Server", 0xFF0000)).queue();
+            } catch (Exception e) {
+            }
         });
     }
 
@@ -210,21 +225,21 @@ public class SlashCommandManager extends ListenerAdapter {
         Main.botNickname = guild.getSelfMember().getNickname();
 
 
-        //get LogChannel
+        // get LogChannel
         logChannel = guild.getTextChannelById(logChannelID);
         if (logChannel == null)
             System.err.println(TAG + " 無法取得記錄頻道 ID: " + logChannelID);
-        //get ConsoleChannel
+        // get ConsoleChannel
         consoleChannel = guild.getTextChannelById(consoleChannelID);
         if (consoleChannel == null)
             System.err.println(TAG + " 無法取得控制台頻道 ID: " + consoleChannelID);
 
-        //get AuthenticateChannel
+        // get AuthenticateChannel
         authChannel = guild.getTextChannelById(authChannelID);
         if (authChannel == null)
             System.err.println(TAG + " 無法取得認證頻道 ID: " + authChannelID);
 
-        //Role
+        // Role
         if (joinRoleID.size() > 0) joinRoleID.clear();
         for (String roleID : (List<String>) IDSettings.get("joinRoleID"))
             joinRoleID.add(guild.getRoleById(roleID));
@@ -237,21 +252,7 @@ public class SlashCommandManager extends ListenerAdapter {
         logRole = guild.getRoleById(logRoleID);
         internalRole = guild.getRoleById(internalRoleID);
 
-        if (serviceTagRoleID.size() > 0) serviceTagRoleID.clear();
-        serviceTagRoleID.addAll((List<String>) ServiceSettings.get("serviceTagRoleID"));
-
-        if (serviceCategoryID.size() > 0) serviceCategoryID.clear();
-        serviceCategoryID.addAll((List<String>) ServiceSettings.get("serviceCategoryID"));
-
-        if (roomCategoryID.size() > 0) roomCategoryID.clear();
-        roomCategoryID.addAll((List<String>) RoomSettings.get("roomCategoryID"));
-
-        if (botOwnerID.size() > 0) botOwnerID.clear();
-        botOwnerID.addAll((List<String>) GeneralSettings.get("botOwnerID"));
-
-
         System.out.println(TAG + " Command Variable loaded");
-
     }
 
 

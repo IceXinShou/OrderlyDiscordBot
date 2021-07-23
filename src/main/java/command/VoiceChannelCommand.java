@@ -29,7 +29,7 @@ public class VoiceChannelCommand {
     public static JsonFileManager voiceChannelDataFile;
     public static JSONObject voiceChannelData;
 
-    //channelOwnerID, channelID
+    // channelOwnerID, channelID
     public static Map<String, String> vcChannelOwner = new HashMap<>();
     public static Map<String, String> tcChannelOwner = new HashMap<>();
     public static List<String> textChannel = new ArrayList<>();
@@ -144,7 +144,7 @@ public class VoiceChannelCommand {
         }
 
         event.replyEmbeds(createEmbed("您確定要將管理員權限給 " + memberData.getJSONObject(targetMember.getId()).getString(CHINESE_NICK) + " ?", 0x9740b9))
-                .addActionRow(//add component
+                .addActionRow(// add component
                         Button.danger(senderID + ":vc_giveAdmin:" + targetMember.getId() + ":" + voiceChannelData.getJSONObject(senderID).getString(VOICE_CHANNEL_ID), "Yes!"))
                 .setEphemeral(true).queue();
 
@@ -310,7 +310,7 @@ public class VoiceChannelCommand {
 
         StringBuilder adminsBuilder = new StringBuilder();
 
-        //to String
+        // to String
         if (vcInfo.has(CHANNEL_ADMINS))
             vcInfo.getJSONArray(CHANNEL_ADMINS).toList().forEach((obj) -> {
                 String memberID = (String) obj;
@@ -336,16 +336,16 @@ public class VoiceChannelCommand {
     }
 
     private boolean inVC(SlashCommandEvent event) {
-        //不在語音頻道內或指令頻道
+        // 不在語音頻道內或指令頻道
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.replyEmbeds(createEmbed("你並沒有處於任何語音頻道", 0xFF0000)).setEphemeral(true).queue();
             commandState = -1;
             return false;
         }
 
-        //確認有沒有在專屬於語音頻道的文字頻道內發送指令
+        // 確認有沒有在專屬於語音頻道的文字頻道內發送指令
         VoiceChannel senderVC = event.getMember().getVoiceState().getChannel();
-        //沒有在任何的專屬語音頻道
+        // 沒有在任何的專屬語音頻道
         if (!vcChannelOwner.containsKey(senderVC.getId())) {
             event.replyEmbeds(createEmbed("請在房間語音頻道內使用此指令", 0xFF0000)).setEphemeral(true).queue();
             commandState = -1;
@@ -355,7 +355,7 @@ public class VoiceChannelCommand {
         String vcOwnerID = vcChannelOwner.get(senderVC.getId());
         JSONObject vcInfo = voiceChannelData.getJSONObject(vcOwnerID);
         String vcTextChannel = vcInfo.getString(TEXT_CHANNEL_ID);
-        //如果不在指令頻道也不在專屬的頻道
+        // 如果不在指令頻道也不在專屬的頻道
         if (!vcTextChannel.equals(event.getChannel().getId())) {
             event.replyEmbeds(createEmbed("請到 " + tagChannel(vcTextChannel) + " 來執行此指令", 0xFF0000)).setEphemeral(true).queue();
             commandState = -1;

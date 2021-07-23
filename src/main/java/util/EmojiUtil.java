@@ -21,21 +21,23 @@ public class EmojiUtil {
             borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
             report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad;
 
+    public static Emote[] dotEmojis = new Emote[10];
+
     public void loadEmoji(Guild guild) {
         leaveEmoji = getEmoji("LeaveBlue", guild);
         joinEmoji = getEmoji("JoinBlue", guild);
         yesEmoji = getEmoji("Yes_Tick", guild);
         noEmoji = getEmoji("No_Tick", guild);
-        dot1 = getEmoji("DotPink", guild);
-        dot2 = getEmoji("DotBrown", guild);
-        dot3 = getEmoji("DotOrange", guild);
-        dot4 = getEmoji("DotGreen", guild);
-        dot5 = getEmoji("DotBlue", guild);
-        dot6 = getEmoji("DotRed", guild);
-        dot7 = getEmoji("DotYellow", guild);
-        dot8 = getEmoji("DotPurple", guild);
-        dot9 = getEmoji("DotGray", guild);
-        dot10 = getEmoji("DotBlack", guild);
+        dotEmojis[0] = getEmoji("DotPink", guild);
+        dotEmojis[1] = getEmoji("DotBrown", guild);
+        dotEmojis[2] = getEmoji("DotOrange", guild);
+        dotEmojis[3] = getEmoji("DotGreen", guild);
+        dotEmojis[4] = getEmoji("DotBlue", guild);
+        dotEmojis[5] = getEmoji("DotRed", guild);
+        dotEmojis[6] = getEmoji("DotYellow", guild);
+        dotEmojis[7] = getEmoji("DotPurple", guild);
+        dotEmojis[8] = getEmoji("DotGray", guild);
+        dotEmojis[9] = getEmoji("DotBlack", guild);
         rule = getEmoji("RuleBlue", guild);
         setting = getEmoji("SettingBlue", guild);
         ping = getEmoji("PingBlue", guild);

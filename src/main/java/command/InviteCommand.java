@@ -37,12 +37,12 @@ public class InviteCommand {
      */
 
     public InviteCommand() {
-        //族譜
+        // 族譜
         genealogyFile = new JsonFileManager(configFolder + "/genealogy.json");
         genealogyData = genealogyFile.data;
     }
 
-    //加入族譜
+    // 加入族譜
     private void addMemberToGenealogy(Member inviter, String invitedUserID) {
         JSONArray invited;
         if (genealogyData.has(inviter.getId()))
@@ -57,23 +57,23 @@ public class InviteCommand {
     public void onCommand(SlashCommandEvent event) {
         Member member = event.getOption(USER_TAG).getAsMember();
         String userId = event.getUser().getId();
-        //還沒完成使用者設定
+        // 還沒完成使用者設定
         if (!memberData.has(member.getId())) {
             event.replyEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).setEphemeral(true).queue();
             return;
         }
 
         event.replyEmbeds(createEmbed("確定要邀請 " + (member.getNickname() == null ? member.getUser().getAsTag() : member.getNickname()) + " ?", 0xbc153b))
-                .addActionRow( //add component
+                .addActionRow( // add component
                         Button.danger(userId + ":invite:" + member.getId(), "我會為他負責"))
                 .setEphemeral(true).queue();
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
         if (args[1].equals("invite")) {
-            //這個user已經設定好伺服器暱稱
+            // 這個user已經設定好伺服器暱稱
             if (memberData.has(args[2])) {
-                //加role
+                // 加role
                 for (Role role : confirmRoleID) {
                     guild.addRoleToMember(args[2], role).queue();
                 }
@@ -94,9 +94,9 @@ public class InviteCommand {
                 for (int i = 0; i <= roomCategoryID.size(); i++) {
                     Category category = guild.getCategoryById(roomCategoryID.get(i));
                     if (category.getChannels().size() < 49) {
-                        //新增私人頻道
+                        // 新增私人頻道
                         guild.createVoiceChannel(defaultRoomName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).queue(nvc -> {
-                            //創建專屬文字頻道
+                            // 創建專屬文字頻道
                             guild.createTextChannel(defaultRoomChatName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).setBitrate(roomBitrate)
                                     .queue(ntc -> {
                                         nvc.createPermissionOverride(targetMember).setAllow(allow).queue();

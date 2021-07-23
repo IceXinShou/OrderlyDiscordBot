@@ -40,10 +40,10 @@ public class ClearCommand {
         int amount = amountOption == null
                 ? 100 // default 100
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // set number to 2~200
-        //arg
+        // arg
         String userId = event.getUser().getId();
         event.replyEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
-                .addActionRow(//add component
+                .addActionRow(// add component
                         Button.danger(userId + ":delete:" + amount, "Yes!"))
                 .setEphemeral(true).queue();
     }
@@ -87,7 +87,7 @@ public class ClearCommand {
                                 messageContent = messageContent.substring(0, 1021) + "...";
                             fields.add(new MessageEmbed.Field(memberNickName, messageContent, false)); // 加入最後一個訊息
                         }
-                        logChannel.sendMessage(createEmbed(
+                        logChannel.sendMessageEmbeds(createEmbed(
                                 "刪除: ", null,
                                 "刪除訊息",
                                 Main.botNickname, Main.botAvatarUrl,
@@ -104,11 +104,11 @@ public class ClearCommand {
                     }
                 }
 
-                event.getChannel().sendMessage(
+                event.getChannel().sendMessageEmbeds(
                         createEmbed(emoji.yesEmoji.getAsMention() + ' ' + amount + " 則文字已刪除！", 0xe3c6d6)
                 ).queue(m -> Log.deleteNoLog(m, 2));
             } catch (InterruptedException | ExecutionException e) {
-                logChannel.sendMessage(createEmbed(
+                logChannel.sendMessageEmbeds(createEmbed(
                         "錯誤: ", null,
                         e.getMessage(),
                         Main.botNickname, Main.botAvatarUrl,

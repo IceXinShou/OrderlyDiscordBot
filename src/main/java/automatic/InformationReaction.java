@@ -78,7 +78,7 @@ public class InformationReaction extends ListenerAdapter {
 //                        emoji.borderLeftBottom.getAsMention() + emoji.borderBottom.getAsMention().repeat(7)
 //                        , false));
 //
-//                guild.getTextChannelById("858672865444626439").sendMessage(createEmbed(
+//                guild.getTextChannelById("858672865444626439").sendMessageEmbeds(createEmbed(
 //                        "原之序 | ORDERLY SERVER", null,
 //                        "",
 //                        "", "",

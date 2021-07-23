@@ -1,0 +1,279 @@
+package multiBot;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import multiBot.music.GuildMusicManager;
+import multiBot.music.TrackScheduler;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.managers.DirectAudioController;
+import net.dv8tion.jda.internal.entities.GuildImpl;
+import net.dv8tion.jda.internal.managers.AudioManagerImpl;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static main.java.BotSetting.apiKEY;
+import static main.java.util.Funtions.createEmbed;
+import static multiBot.music.TrackScheduler.getUrlData;
+
+public class MusicBot {
+    private final JDA jda;
+    private final GuildMusicManager.Event event;
+    private final MultiMusicBotManager musicBotManager;
+    private final String TAG;
+
+    // music
+    private final AudioPlayerManager playerManager;
+    public Map<String, GuildMusicManager> musicManagers;
+
+    public MusicBot(JDA jda, MultiMusicBotManager musicBotManager, GuildMusicManager.Event event) {
+        this.jda = jda;
+        this.event = event;
+        this.musicBotManager = musicBotManager;
+        this.TAG = "[" + jda.getSelfUser().getName() + "]";
+
+        this.musicManagers = new HashMap<>();
+        this.playerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(playerManager);
+        AudioSourceManagers.registerLocalSource(playerManager);
+    }
+
+
+    /**
+     * command player control
+     */
+    private void play(AudioPlaylist playlist, VoiceChannel vc, GuildMusicManager manager, SlashCommandEvent event) {
+        if (!event.getGuild().getAudioManager().isConnected())
+            event.getGuild().getAudioManager().openAudioConnection(vc);
+
+        manager.scheduler.addPlayListToQueue(playlist, event);
+    }
+
+    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, SlashCommandEvent event) {
+//        if (!event.getGuild().getAudioManager().isConnected())
+//            event.getGuild().getAudioManager().openAudioConnection(vc);
+
+
+//        event.getGuild().getAudioManager().setSendingHandler(manager.getSendHandler());
+//        DirectAudioController audioManager = jda.getDirectAudioController();
+//        audioManager.connect(vc);
+//        System.out.println(jda.getAudioManagers());
+//        jda.getAudioManagers().get
+
+        jda.getDirectAudioController().connect(vc);
+
+        manager.scheduler.queue(track, event);
+    }
+
+    public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {
+        getGuildAudioPlayer(guild).scheduler.changeVolume(volume, event);
+    }
+
+    public void nextTrack(SlashCommandEvent event) {
+        getGuildAudioPlayer(event.getGuild()).scheduler.nextTrack(event);
+    }
+
+    public void playPrevious(SlashCommandEvent event) {
+        if (!event.getGuild().getAudioManager().isConnected())
+            event.getGuild().getAudioManager().openAudioConnection(event.getMember().getVoiceState().getChannel());
+
+        getGuildAudioPlayer(event.getGuild()).scheduler.previousTrack(event);
+    }
+
+    public void toggleRepeat(SlashCommandEvent event) {
+        getGuildAudioPlayer(event.getGuild()).scheduler.toggleRepeat(event);
+    }
+
+    public void pause(SlashCommandEvent event, Guild guild, boolean play) {
+        getGuildAudioPlayer(guild).scheduler.pause(event, play);
+    }
+
+    public void loadAndPlay(final SlashCommandEvent event, final String trackUrl) {
+        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
+        GuildMusicManager manager = getGuildAudioPlayer(event.getGuild());
+
+        // 取得音樂
+        playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                play(track, vc, manager, event);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                play(playlist, vc, manager, event);
+            }
+
+            @Override
+            public void noMatches() {
+                event.replyEmbeds(createEmbed("查無此網址: " + trackUrl, 0xFF0000)).setEphemeral(true).queue();
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
+                event.replyEmbeds(createEmbed("無法播放此網址: " + exception.getMessage(), 0xFF0000)).setEphemeral(true).queue();
+            }
+        });
+
+    }
+
+    public void queue(SlashCommandEvent event) {
+        TrackScheduler scheduler = getGuildAudioPlayer(event.getGuild()).scheduler;
+        if (scheduler.playingTrack == null) {
+            event.replyEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).setEphemeral(true).queue();
+            return;
+        }
+
+        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
+
+
+        event.replyEmbeds(embed[0], embed[1])
+                .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+                .setEphemeral(true).queue();
+
+    }
+
+
+    /**
+     * display
+     */
+
+    public MessageEmbed[] playStatus(Member member, TrackScheduler scheduler) {
+        // 憲政播放資料
+        StringBuilder progress = new StringBuilder();
+        MessageEmbed nowPlaying;
+        // 有歌曲正在播放
+        if (scheduler.playingTrack != null) {
+            // 進度顯示
+            AudioTrackInfo trackInfo = scheduler.playingTrack.getInfo();
+            int nowPlayingTime = (int) ((System.currentTimeMillis() - scheduler.startPlayTime) / 1000);
+            int playPercent = (int) ((nowPlayingTime / (float) (trackInfo.length / 1000)) * 15);
+
+
+            JSONObject urlInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
+                    trackInfo.identifier + "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
+            JSONObject statistics = urlInfo.getJSONObject("statistics");
+
+            progress.append("\n\n**[")
+                    .append(timeCalculator(nowPlayingTime))
+                    .append("] **").append("━".repeat(playPercent))
+                    .append("❚")
+                    .append("─".repeat(15 - playPercent))
+                    .append("** [").append(trackInfo.isStream ? "LIVE" : (timeCalculator((int) (trackInfo.length / 1000))))
+                    .append("]**\n");
+
+            // 音量顯示
+            int volumePercent = (int) (getGuildAudioPlayer(member.getGuild()).player.getVolume() / 5f);
+            progress.append("\n")
+                    .append("**音量: **")
+                    .append("◆".repeat(volumePercent))
+                    .append("◇".repeat(20 - volumePercent))
+                    .append(scheduler.loopStatus == 0 ? " <順序播放>\n" : (scheduler.loopStatus == 1 ? " <循環播放>\n" : " <單曲循環>\n"));
+
+            // 組裝
+            nowPlaying = createEmbed("**" + trackInfo.title + "**", trackInfo.uri,
+                    progress.toString(),
+                    new StringBuilder()
+                            .append(" \uD83D\uDC40 ")
+                            .append(String.format("%,d", Long.parseLong(statistics.getString("viewCount"))))
+                            .append(" | \uD83D\uDC4D ").append(String.format("%,d", Long.parseLong(statistics.getString("likeCount"))))
+                            .append(" | \uD83D\uDC4E ").append(String.format("%,d", Long.parseLong(statistics.getString("dislikeCount"))))
+                            .append(" | \uD83D\uDCAC ").append(String.format("%,d", Long.parseLong(statistics.getString("commentCount"))))
+                            .append(" | \uD83D\uDD0A").append(String.format("%.2f db", scheduler.loudness)).toString()
+
+                    , trackInfo.author, urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"),
+                    0xe5b849);
+        } else {
+            nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
+        }
+        // 歌曲列表
+        List<MessageEmbed.Field> fields = new ArrayList<>();
+        if (scheduler.getQueue().size() == 0)
+            fields.add(new MessageEmbed.Field("無", "", false));
+        else
+            scheduler.getQueue().forEach((track) -> {
+                long songLength = track.getInfo().length / 1000;
+                fields.add(new MessageEmbed.Field(track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : "**[" + (timeCalculator(songLength)) + "]**", false));
+            });
+
+        return new MessageEmbed[]{createEmbed("歌曲列表", "",
+                "",
+                fields,
+                null,
+                0x7fc89a),
+                nowPlaying};
+    }
+
+    public ActionRow controlButtons(String senderID, boolean pauseStatus, int loopStatus) {
+        return ActionRow.of(
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange", "",
+                        loopStatus == 0 ? Emoji.fromUnicode("➡️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause", "",
+                        pauseStatus ? Emoji.fromUnicode("▶️") : Emoji.fromUnicode("⏸️")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":nextToPlay", "", Emoji.fromUnicode("⏭️")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown", "", Emoji.fromUnicode("\uD83D\uDD09")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp", "", Emoji.fromUnicode("\uD83D\uDD0A")));
+    }
+
+    /**
+     * functions
+     */
+
+    private String timeCalculator(long songLength) {
+        StringBuilder builder = new StringBuilder();
+
+        int hr = (int) songLength / 3600;
+        int min = (int) ((songLength / 60) % 60);
+        int sec = (int) songLength % 60;
+
+        if (hr > 0)
+            builder.append(hr < 10 ? "0" + hr : hr).append(':');
+        builder.append(min < 10 ? "0" + min : min).append(':');
+        builder.append(sec < 10 ? "0" + sec : sec);
+
+        return builder.toString();
+    }
+
+    AudioManager audioManager;
+    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+        GuildMusicManager musicManager = musicManagers.get(guild.getId());
+
+        if (musicManager == null) {
+            musicManager = new GuildMusicManager(playerManager, guild);
+            musicManager.scheduler.setManagerEvent(event);
+            musicManagers.put(guild.getId(), musicManager);
+        }
+
+        audioManager = new AudioManagerImpl((GuildImpl) guild);
+        audioManager.setSendingHandler(musicManager.getSendHandler());
+
+//        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+
+        return musicManager;
+    }
+
+    public void setActivity(String[] msg) {
+        if (msg[0].equals("STREAMING")) {
+            // name, url
+            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
+        } else {
+            Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
+            jda.getPresence().setActivity(Activity.of(type, msg[1]));
+        }
+    }
+}

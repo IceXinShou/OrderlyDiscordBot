@@ -124,15 +124,15 @@ public class Log extends ListenerAdapter {
         if (!event.getGuild().getId().equals(guildID)) return;
         if (ignoreMessageID.contains(event.getMessageId())) return;
 
-        //get message
+        // get message
         JSONObject channelLog = clh.getChannelFileManager(event.getChannel().getId()).data;
         String nickname, avatarUrl, message, dateString;
-        //有訊息資料
+        // 有訊息資料
         if (channelLog.has(event.getMessageId())) {
-            //取得訊息資料
+            // 取得訊息資料
             JSONObject messageLog = channelLog.getJSONObject(event.getMessageId());
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-            //get message time
+            // get message time
             OffsetDateTime offsetDateTime;
             if (messageLog.get(TIME) instanceof String)
                 offsetDateTime = OffsetDateTime.parse(messageLog.getString(TIME));
@@ -140,7 +140,7 @@ public class Log extends ListenerAdapter {
                 offsetDateTime = (OffsetDateTime) messageLog.get(TIME);
             dateString = dateTimeFormatter.format(offsetDateTime);
 
-            //get user nickname
+            // get user nickname
             Member member = guild.retrieveMemberById(messageLog.getString(SENDER)).complete();
             if (member == null) {
                 nickname = "未知姓名";

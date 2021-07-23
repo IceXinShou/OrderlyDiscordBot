@@ -43,7 +43,7 @@ public class TicketChannel extends ListenerAdapter {
 
                 m.createPermissionOverride(event.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
 
-                m.sendMessage(createEmbed(tagRole(serviceTagRoleID), 0x9740b9)).queue(n ->
+                m.sendMessageEmbeds(createEmbed(tagRole(serviceTagRoleID), 0x9740b9)).queue(n ->
                         Log.deleteNoLog(n, 1)
                 );
 

@@ -44,10 +44,10 @@ public class Join extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
-        //打開私聊
+        // 打開私聊
         event.getUser().openPrivateChannel().queue((channel) -> {
             if (memberData.has(event.getUser().getId())) {
-                channel.sendMessage(createEmbed("您已完成過暱稱設定 (Your NickName had been Set)", 0xe5b849)).queue();
+                channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定 (Your NickName had been Set)", 0xe5b849)).queue();
                 initMemberOnJoin(channel, event.getUser().getId());
                 FollowRoles(event.getUser().getId(), channel);
             } else {
@@ -73,17 +73,17 @@ public class Join extends ListenerAdapter {
         if (messageID.equals(progress.getMessageID())) {
             switch (progress.getStep()) {
                 case 0:
-                    event.getChannel().sendMessage(createEmbed("您發現了錯誤, 請回報給工作人員 (You Found A Bug, Please Report To Developers) (ERROR: 001)", 0xFF0000)).queue();
+                    event.getChannel().sendMessageEmbeds(createEmbed("您發現了錯誤, 請回報給工作人員 (You Found A Bug, Please Report To Developers) (ERROR: 001)", 0xFF0000)).queue();
                     break;
                 case 2:
-                    //yes
+                    // yes
                     if (reaction.equals(emoji.yesEmoji.getAsMention())) {
                         progress.playMinecraft = true;
                         showUserInfo(event.getChannel(), event.getUser(), progress);
                         getMinecraftID(userID, event.getChannel());
                         break;
                     }
-                    //no
+                    // no
                     else if (reaction.equals(emoji.noEmoji.getAsMention())) {
                         progress.playMinecraft = false;
                         showUserInfo(event.getChannel(), event.getUser(), progress);
@@ -92,23 +92,23 @@ public class Join extends ListenerAdapter {
                     }
                     break;
                 case 7:
-                    //yes
+                    // yes
                     if (reaction.equals(emoji.yesEmoji.getAsMention())) {
-                        //更改nickname和處存資料到檔案
+                        // 更改nickname和處存資料到檔案
                         Member member = GuildUtil.guild.retrieveMemberById(userID).complete();
                         if (progress.playMinecraft)
                             changeNickName(member, progress.chineseNick, progress.minecraftID);
                         else
                             changeNickName(member, progress.chineseNick, progress.englishNick);
-                        //儲存user至檔案
+                        // 儲存user至檔案
                         saveMember(member);
                         userProgress.remove(userID);
-                        event.getChannel().sendMessage(createEmbed("歡迎加入我們~~ (Welcome To Join Us!)", 0x9740b9)).queue();
+                        event.getChannel().sendMessageEmbeds(createEmbed("歡迎加入我們~~ (Welcome To Join Us!)", 0x9740b9)).queue();
                         break;
                     }
-                    //no
+                    // no
                     else if (reaction.equals(emoji.noEmoji.getAsMention())) {
-                        event.getChannel().sendMessage(createEmbed("由於您的抉擇，我們無法讓您加入伺服器 (Because Of Your Choice, We Can Not Let You In!)", 0xFF0000)).queue();
+                        event.getChannel().sendMessageEmbeds(createEmbed("由於您的抉擇，我們無法讓您加入伺服器 (Because Of Your Choice, We Can Not Let You In!)", 0xFF0000)).queue();
                         userProgress.remove(userID);
                         break;
                     }
@@ -160,7 +160,7 @@ public class Join extends ListenerAdapter {
             }
         }
 
-        privateChannel.sendMessage(createEmbed(
+        privateChannel.sendMessageEmbeds(createEmbed(
                 "原之序 | ORDERLY SERVER", "伺服器暱稱" + (settingDone ? "已完成設定" : "設定中"),
                 "原序之徒 | ORDERLY DISCIPLE",
                 nickname, user.getAvatarUrl(),
@@ -171,13 +171,13 @@ public class Join extends ListenerAdapter {
 
     }
 
-    //儲存使用者到資料
+    // 儲存使用者到資料
     private void saveMember(Member member) {
         QuestionStep progress = userProgress.get(member.getId());
 
         JSONObject memberInfo = new JSONObject();
         memberInfo.put(PLAY_MINECRAFT, progress.playMinecraft);
-        //後面的名字
+        // 後面的名字
         if (progress.playMinecraft)
             memberInfo.put(MINECRAFT_ID, progress.minecraftID);
         else
@@ -201,12 +201,12 @@ public class Join extends ListenerAdapter {
         String message = event.getMessage().getContentRaw();
         PrivateChannel channel = event.getChannel();
 
-        //手動設定
+        // 手動設定
         if (message.equalsIgnoreCase("j")) {
             if (memberData.has(userID)) {
-                channel.sendMessage(createEmbed("您已完成過暱稱設定,開始重新設定 (You Have Setting Before, Let's Reset!)", 0xe5b849)).complete();
+                channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定,開始重新設定 (You Have Setting Before, Let's Reset!)", 0xe5b849)).complete();
                 initMemberOnJoin(channel, userID);
-                //傳送設定檔
+                // 傳送設定檔
                 askForMinecraftID(userID, channel, false);
             } else {
                 initMemberOnJoin(channel, userID);
@@ -214,7 +214,7 @@ public class Join extends ListenerAdapter {
             return;
         }
 
-        //問題回答
+        // 問題回答
         QuestionStep progress = userProgress.getOrDefault(userID, new QuestionStep(0, ""));
         List<Message> lastMessage = channel.getHistory().retrievePast(2).complete();
         if (lastMessage.get(1) == null) return;
@@ -222,7 +222,7 @@ public class Join extends ListenerAdapter {
         if (questionMessageID.equals(progress.getMessageID())) {
             switch (progress.getStep()) {
                 case 0:
-                    channel.sendMessage(createEmbed("您發現了錯誤, 請回報給工作人員 (You Found A Bug, Please Report To Developers) (ERROR: 002)", 0xFF0000)).queue();
+                    channel.sendMessageEmbeds(createEmbed("您發現了錯誤, 請回報給工作人員 (You Found A Bug, Please Report To Developers) (ERROR: 002)", 0xFF0000)).queue();
                     break;
                 case 1:
                     askForMinecraftID(userID, channel, true);
@@ -248,7 +248,7 @@ public class Join extends ListenerAdapter {
                         showUserInfo(channel, event.getAuthor(), progress);
                         FollowRoles(userID, channel);
                     } else {
-                        channel.sendMessage(createEmbed("輸入錯誤！(Wrong Type)", 0xFF0000)).queue();
+                        channel.sendMessageEmbeds(createEmbed("輸入錯誤！(Wrong Type)", 0xFF0000)).queue();
                         progress.chineseNick = null;
                         getChineseNickName(userID, channel);
                     }
@@ -262,21 +262,21 @@ public class Join extends ListenerAdapter {
      */
 
     private void initMemberOnJoin(PrivateChannel channel, String userID) {
-        //已經有user的資料
+        // 已經有user的資料
         if (memberData.has(userID)) {
-            //加入以儲存的user資料
+            // 加入以儲存的user資料
             QuestionStep progress = new QuestionStep(0, null);
             JSONObject userData = memberData.getJSONObject(userID);
-            //有玩minecraft
+            // 有玩minecraft
             if (progress.playMinecraft = userData.getBoolean(PLAY_MINECRAFT))
                 progress.minecraftID = userData.getString(MINECRAFT_ID);
             else
                 progress.englishNick = userData.getString(ENGLISH_NICK);
             progress.chineseNick = userData.getString(CHINESE_NICK);
-            //加入progress
+            // 加入progress
             userProgress.put(userID, progress);
         } else {
-            channel.sendMessage(createEmbed("歡迎您來到 <" + guild.getName() + "> , 在正式進入前還需要通過驗證！(Welcome To Server, Before Your Join, You Must Auth Your Account!)", 0x9740b9)).queue();
+            channel.sendMessageEmbeds(createEmbed("歡迎您來到 <" + guild.getName() + "> , 在正式進入前還需要通過驗證！(Welcome To Server, Before Your Join, You Must Auth Your Account!)", 0x9740b9)).queue();
             for (Role i : joinRoleID) {
                 guild.addRoleToMember(userID, i).queue();
             }
@@ -285,17 +285,17 @@ public class Join extends ListenerAdapter {
     }
 
     private void askForMinecraftID(String userID, PrivateChannel channel, boolean newAccount) {
-        channel.sendMessage(createEmbed("請問您是否有遊玩 **Minecraft**？(Have You Ever Played Minecraft?)", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請問您是否有遊玩 **Minecraft**？(Have You Ever Played Minecraft?)", 0xe5b849)).queue(messageContent -> {
             messageContent.addReaction(emoji.yesEmoji).queue();
             messageContent.addReaction(emoji.noEmoji).queue();
-            //新加入的人
+            // 新加入的人
             if (newAccount) {
                 QuestionStep step = new QuestionStep(2, channel.getId());
                 step.setStep(2);
                 step.setMessageID(messageContent.getId());
                 userProgress.put(userID, step);
             }
-            //修改資料
+            // 修改資料
             else {
                 QuestionStep step = userProgress.get(userID);
                 step.setStep(2);
@@ -305,7 +305,7 @@ public class Join extends ListenerAdapter {
     }
 
     private void getMinecraftID(String userID, PrivateChannel channel) {
-        channel.sendMessage(createEmbed("請輸入您的 **Minecraft ID**：(Please Type Your Minecraft ID)", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請輸入您的 **Minecraft ID**：(Please Type Your Minecraft ID)", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
             step.setStep(4);
             step.setMessageID(messageContent.getId());
@@ -314,7 +314,7 @@ public class Join extends ListenerAdapter {
     }
 
     private void getEnglishNickName(String userID, PrivateChannel channel) {
-        channel.sendMessage(createEmbed("請輸入您的**英文暱稱**：(Please Type Your English Nick)", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請輸入您的**英文暱稱**：(Please Type Your English Nick)", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
             step.setStep(5);
             step.setMessageID(messageContent.getId());
@@ -323,7 +323,7 @@ public class Join extends ListenerAdapter {
     }
 
     private void getChineseNickName(String userID, PrivateChannel channel) {
-        channel.sendMessage(createEmbed("請輸入您的**兩字中文暱稱**：(Please Type Your Two Word Chinese Name)", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請輸入您的**兩字中文暱稱**：(Please Type Your Two Word Chinese Name)", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
             step.setStep(6);
             step.setMessageID(messageContent.getId());
@@ -332,7 +332,7 @@ public class Join extends ListenerAdapter {
     }
 
     private void FollowRoles(String userID, PrivateChannel channel) {
-        channel.sendMessage(createEmbed("請問您是否會**遵從管理員指示並服從**？(Will You Follow The Server Rules And Be Good?)", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請問您是否會**遵從管理員指示並服從**？(Will You Follow The Server Rules And Be Good?)", 0xe5b849)).queue(messageContent -> {
             messageContent.addReaction(emoji.yesEmoji).queue();
             messageContent.addReaction(emoji.noEmoji).queue();
             QuestionStep step = userProgress.get(userID);
