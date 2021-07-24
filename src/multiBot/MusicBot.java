@@ -12,14 +12,11 @@ import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
-import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.managers.DirectAudioController;
-import net.dv8tion.jda.internal.entities.GuildImpl;
-import net.dv8tion.jda.internal.managers.AudioManagerImpl;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -32,20 +29,23 @@ import static main.java.util.Funtions.createEmbed;
 import static multiBot.music.TrackScheduler.getUrlData;
 
 public class MusicBot {
+    private final String TAG;
     private final JDA jda;
+    private final String botID;
     private final GuildMusicManager.Event event;
     private final MultiMusicBotManager musicBotManager;
-    private final String TAG;
+
 
     // music
     private final AudioPlayerManager playerManager;
     public Map<String, GuildMusicManager> musicManagers;
 
     public MusicBot(JDA jda, MultiMusicBotManager musicBotManager, GuildMusicManager.Event event) {
+        this.TAG = "[" + jda.getSelfUser().getName() + "]";
         this.jda = jda;
+        this.botID = jda.getSelfUser().getId();
         this.event = event;
         this.musicBotManager = musicBotManager;
-        this.TAG = "[" + jda.getSelfUser().getName() + "]";
 
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
@@ -57,55 +57,42 @@ public class MusicBot {
     /**
      * command player control
      */
-    private void play(AudioPlaylist playlist, VoiceChannel vc, GuildMusicManager manager, SlashCommandEvent event) {
-        if (!event.getGuild().getAudioManager().isConnected())
-            event.getGuild().getAudioManager().openAudioConnection(vc);
-
-        manager.scheduler.addPlayListToQueue(playlist, event);
+    private void play(AudioPlaylist playlist, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event) {
+        connectVC(manager.guild, vc);
+        manager.scheduler.addPlayListToQueue(playlist, event, this);
     }
 
-    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, SlashCommandEvent event) {
-//        if (!event.getGuild().getAudioManager().isConnected())
-//            event.getGuild().getAudioManager().openAudioConnection(vc);
-
-
-//        event.getGuild().getAudioManager().setSendingHandler(manager.getSendHandler());
-//        DirectAudioController audioManager = jda.getDirectAudioController();
-//        audioManager.connect(vc);
-//        System.out.println(jda.getAudioManagers());
-//        jda.getAudioManagers().get
-
-        jda.getDirectAudioController().connect(vc);
-
-        manager.scheduler.queue(track, event);
+    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event) {
+        connectVC(manager.guild, vc);
+        manager.scheduler.queue(track, event, this);
     }
 
     public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {
-        getGuildAudioPlayer(guild).scheduler.changeVolume(volume, event);
+        getMusicManager(guild).scheduler.changeVolume(volume, event);
     }
 
     public void nextTrack(SlashCommandEvent event) {
-        getGuildAudioPlayer(event.getGuild()).scheduler.nextTrack(event);
+        getMusicManager(event.getGuild()).scheduler.nextTrack(event);
     }
 
     public void playPrevious(SlashCommandEvent event) {
-        if (!event.getGuild().getAudioManager().isConnected())
-            event.getGuild().getAudioManager().openAudioConnection(event.getMember().getVoiceState().getChannel());
+        Guild guild = jda.getGuildById(event.getGuild().getId());
+        connectVC(guild, event.getMember().getVoiceState().getChannel());
 
-        getGuildAudioPlayer(event.getGuild()).scheduler.previousTrack(event);
+        getMusicManager(event.getGuild()).scheduler.previousTrack(event);
     }
 
     public void toggleRepeat(SlashCommandEvent event) {
-        getGuildAudioPlayer(event.getGuild()).scheduler.toggleRepeat(event);
+        getMusicManager(event.getGuild()).scheduler.toggleRepeat(event);
     }
 
     public void pause(SlashCommandEvent event, Guild guild, boolean play) {
-        getGuildAudioPlayer(guild).scheduler.pause(event, play);
+        getMusicManager(guild).scheduler.pause(event, play);
     }
 
-    public void loadAndPlay(final SlashCommandEvent event, final String trackUrl) {
+    public void loadAndPlay(final GenericInteractionCreateEvent event, final String trackUrl) {
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
-        GuildMusicManager manager = getGuildAudioPlayer(event.getGuild());
+        GuildMusicManager manager = getMusicManager(jda.getGuildById(event.getGuild().getId()));
 
         // 取得音樂
         playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
@@ -132,8 +119,8 @@ public class MusicBot {
 
     }
 
-    public void queue(SlashCommandEvent event) {
-        TrackScheduler scheduler = getGuildAudioPlayer(event.getGuild()).scheduler;
+    public void displayQueue(GenericInteractionCreateEvent event) {
+        TrackScheduler scheduler = getMusicManager(event.getGuild()).scheduler;
         if (scheduler.playingTrack == null) {
             event.replyEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -145,9 +132,7 @@ public class MusicBot {
         event.replyEmbeds(embed[0], embed[1])
                 .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
                 .setEphemeral(true).queue();
-
     }
-
 
     /**
      * display
@@ -178,7 +163,7 @@ public class MusicBot {
                     .append("]**\n");
 
             // 音量顯示
-            int volumePercent = (int) (getGuildAudioPlayer(member.getGuild()).player.getVolume() / 5f);
+            int volumePercent = (int) (getMusicManager(member.getGuild()).player.getVolume() / 5f);
             progress.append("\n")
                     .append("**音量: **")
                     .append("◆".repeat(volumePercent))
@@ -221,13 +206,13 @@ public class MusicBot {
 
     public ActionRow controlButtons(String senderID, boolean pauseStatus, int loopStatus) {
         return ActionRow.of(
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange", "",
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange:" + botID, "",
                         loopStatus == 0 ? Emoji.fromUnicode("➡️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause", "",
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause:" + botID, "",
                         pauseStatus ? Emoji.fromUnicode("▶️") : Emoji.fromUnicode("⏸️")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":nextToPlay", "", Emoji.fromUnicode("⏭️")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown", "", Emoji.fromUnicode("\uD83D\uDD09")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp", "", Emoji.fromUnicode("\uD83D\uDD0A")));
+                Button.of(ButtonStyle.SECONDARY, senderID + ":nextToPlay:" + botID, "", Emoji.fromUnicode("⏭️")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown:" + botID, "", Emoji.fromUnicode("\uD83D\uDD09")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp:" + botID, "", Emoji.fromUnicode("\uD83D\uDD0A")));
     }
 
     /**
@@ -249,8 +234,16 @@ public class MusicBot {
         return builder.toString();
     }
 
-    AudioManager audioManager;
-    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+    private void connectVC(Guild guild, VoiceChannel vc) {
+        if (!guild.getAudioManager().isConnected())
+            guild.getAudioManager().openAudioConnection(vc);
+    }
+
+    public GuildMusicManager getMusicManager(String guildID) {
+        return getMusicManager(jda.getGuildById(guildID));
+    }
+
+    private GuildMusicManager getMusicManager(Guild guild) {
         GuildMusicManager musicManager = musicManagers.get(guild.getId());
 
         if (musicManager == null) {
@@ -258,11 +251,6 @@ public class MusicBot {
             musicManager.scheduler.setManagerEvent(event);
             musicManagers.put(guild.getId(), musicManager);
         }
-
-        audioManager = new AudioManagerImpl((GuildImpl) guild);
-        audioManager.setSendingHandler(musicManager.getSendHandler());
-
-//        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
 
         return musicManager;
     }
@@ -275,5 +263,9 @@ public class MusicBot {
             Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
             jda.getPresence().setActivity(Activity.of(type, msg[1]));
         }
+    }
+
+    public String getID() {
+        return botID;
     }
 }

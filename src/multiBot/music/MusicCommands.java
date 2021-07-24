@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -345,7 +346,7 @@ public class MusicCommands implements GuildMusicManager.Event {
      * event
      */
     @Override
-    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild) {
+    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot) {
         if (event != null) {
             queue(event, true);
         }
@@ -418,14 +419,14 @@ public class MusicCommands implements GuildMusicManager.Event {
         if (!event.getGuild().getAudioManager().isConnected())
             event.getGuild().getAudioManager().openAudioConnection(vc);
 
-        manager.scheduler.addPlayListToQueue(playlist, event);
+        manager.scheduler.addPlayListToQueue(playlist, event, null);
     }
 
     private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event) {
         if (!event.getGuild().getAudioManager().isConnected())
             event.getGuild().getAudioManager().openAudioConnection(vc);
 
-        manager.scheduler.queue(track, event);
+        manager.scheduler.queue(track, event, null);
     }
 
     private void playPrevious(SlashCommandEvent event) {
@@ -444,7 +445,7 @@ public class MusicCommands implements GuildMusicManager.Event {
             musicManagers.put(guild.getId(), musicManager);
         }
 
-        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+//        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
 
         return musicManager;
     }

@@ -78,9 +78,7 @@ public class Main {
         new Thread(() -> {
             while (true) {
                 Scanner scanner = new Scanner(System.in);
-//                System.out.println();
                 String command = scanner.nextLine();
-//                System.out.println(command);
                 switch (command) {
                     case "stop":
                         jda.shutdown();
@@ -101,21 +99,6 @@ public class Main {
                         startChangeActivity(jda);
                         System.out.println(TAG + " 重新載入完成");
                         break;
-//                    case "test":
-//                        for (String memberID : Join.memberData.keySet()) {
-//                            Member member;
-//                            try {
-//                                member = GuildUtil.guild.retrieveMemberById(memberID).complete();
-//                            } catch (Exception e) {
-//                                continue;
-//                            }
-//                            JSONObject obj = Join.memberData.getJSONObject(member.getId());
-//                            obj.put(JsonKeys.CHINESE_NICK, member.getNickname().substring(0,2));
-//                            Join.memberData.put(member.getId(), obj);
-//                            System.out.println(member.getNickname().substring(0,2));
-//                        }
-//                        Join.memberFile.saveFile();
-//                        break;
                     default:
                         if (command.length() == 0)
                             setting.sendNoneToConsole();

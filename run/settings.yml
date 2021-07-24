@@ -45,7 +45,9 @@ IDSettings:
   logChannelID: "858672865816346634"
   authChannelID: "860469251176792065"
   consoleChannelID: "861936727329472512"
+  controllerChannelID: "868320517000663120"
   informationChannelID: "858672865444626439"
+
 
   botRoleID: "858972360609366037"
   logRoleID: "858672865355890715"
@@ -112,9 +114,9 @@ ServiceSettings:
 MultiBot:
   tokens:
     - "NjA4MDgwNjE4ODk4ODQ5ODI1.XUi9NQ.K8XYERpv6Lsn5KSv3ORgBXOeUGc" # 犬
-#    - "ODY3MzEyMzI3MDQ0NjI4NDgw.YPfRjA.pvtrfv3OzDqiLNGz9c_4unX-310" # 狐
-#    - "Njc5MzMwNzU4MTkxNDgwODY0.XkvyEg.La_10QDAWVoGL0DsuofwUQCpke4" # 螈
-#    - "NjM1NDc0MDE3MDM3NDUxMjc1.XaxlTA.3HDGP6fzHwaJTwxDqdRdgBq7qis" # 豬
-#    - "ODY3MzExMjU5NTkzOTk4MzQ3.YPfQjg.X7kJLIEXrjOXLpCm8y75nmjARiQ" # 貓
+    - "ODY3MzEyMzI3MDQ0NjI4NDgw.YPfRjA.pvtrfv3OzDqiLNGz9c_4unX-310" # 狐
+    - "Njc5MzMwNzU4MTkxNDgwODY0.XkvyEg.La_10QDAWVoGL0DsuofwUQCpke4" # 螈
+    - "NjM1NDc0MDE3MDM3NDUxMjc1.XaxlTA.3HDGP6fzHwaJTwxDqdRdgBq7qis" # 豬
+    - "ODY3MzExMjU5NTkzOTk4MzQ3.YPfQjg.X7kJLIEXrjOXLpCm8y75nmjARiQ" # 貓
 
   randomBot: true

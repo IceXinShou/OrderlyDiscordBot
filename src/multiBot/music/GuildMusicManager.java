@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -21,6 +22,8 @@ public class GuildMusicManager {
      */
     public final TrackScheduler scheduler;
 
+    public final Guild guild;
+
     /**
      * Creates a player and a track scheduler.
      *
@@ -29,11 +32,13 @@ public class GuildMusicManager {
     public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
         player = manager.createPlayer();
         scheduler = new TrackScheduler(player, guild);
+        this.guild = guild;
+        guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
         player.addListener(scheduler);
     }
 
     public interface Event {
-        void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild);
+        void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot);
 
         void addToQueue(AudioTrack track, GenericInteractionCreateEvent event);
 
@@ -48,12 +53,5 @@ public class GuildMusicManager {
         void pause(boolean pause, SlashCommandEvent event, Guild guild);
 
         void volumeChange(int volume, SlashCommandEvent event);
-    }
-
-    /**
-     * @return Wrapper around AudioPlayer to use it as an AudioSendHandler.
-     */
-    public AudioPlayerSendHandler getSendHandler() {
-        return new AudioPlayerSendHandler(player);
     }
 }

@@ -4,6 +4,7 @@ import main.java.command.InviteCommand;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -28,8 +29,9 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, newServiceName, boostedRoleID, apiKEY;
+            defaultServiceMessage, newServiceName, boostedRoleID, apiKEY, controllerChannelID;
     public static boolean debugMode;
+    public static TextChannel controllerChannel;
     public static Role boostedRole;
 
     public static int roomBitrate;
@@ -93,6 +95,7 @@ public class BotSetting {
         internalRoleID = (String) IDSettings.get("internalRoleID");
         logRoleID = (String) IDSettings.get("logRoleID");
         boostedRoleID = (String) IDSettings.get("boostedRoleID");
+        controllerChannelID = (String) IDSettings.get("controllerChannelID");
 
         if (serviceTagRoleID.size() > 0) serviceTagRoleID.clear();
         serviceTagRoleID.addAll((List<String>) ServiceSettings.get("serviceTagRoleID"));

@@ -15,9 +15,6 @@ public class Funtions {
 
     /**
      * boolean
-     *
-     * @param event
-     * @return
      */
 
     public static boolean isBotOwner(GenericInteractionCreateEvent event) {
@@ -154,9 +151,6 @@ public class Funtions {
 
     /**
      * Tag
-     *
-     * @param ID
-     * @return
      */
 
     public static String tagUser(String ID) {

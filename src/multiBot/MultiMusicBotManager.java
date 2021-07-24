@@ -1,7 +1,12 @@
 package multiBot;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import multiBot.music.GuildMusicManager;
+import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
@@ -9,6 +14,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageUpdateAction;
 import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.json.JSONArray;
@@ -37,7 +43,7 @@ public class MultiMusicBotManager {
     private int currentIndex = 0;
     private final MusicBotEvent event = new MusicBotEvent();
 
-    // botID, jda
+    // botID, MusicBot
     private final Map<String, MusicBot> bots = new LinkedHashMap<>();
 
     public MultiMusicBotManager() {
@@ -47,11 +53,30 @@ public class MultiMusicBotManager {
         System.out.println(TAG + " MultiMusicBot loaded!");
     }
 
-    private int commandState;
+    private int commandState = 0;
 
     public int onCommand(SlashCommandEvent event) {
-        MusicBot bot = (MusicBot) bots.values().toArray()[0];
-        commandState = 1;
+
+//        MusicBot bot = (MusicBot) bots.values().toArray()[0];
+//        commandState = 1;
+
+
+        MusicBot bot = null;
+
+        for (Object i : bots.values().toArray()) {
+            MusicBot thisBot = (MusicBot) i;
+            GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
+            if (manager.scheduler.playingTrack == null) {
+                bot = (MusicBot) i;
+                commandState = 1;
+                break;
+            }
+        }
+
+        if (bot == null) {
+            event.replyEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).setEphemeral(true).queue();
+            return commandState;
+        }
 
         switch (event.getName()) {
             // 全域頻道
@@ -68,7 +93,7 @@ public class MultiMusicBotManager {
 
                         String keyWord = URLEncoder.encode(event.getOption(URL).getAsString(), StandardCharsets.UTF_8);
 
-                        SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult");
+                        SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
 
                         JSONObject result = new JSONObject(
                                 getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" +
@@ -81,8 +106,11 @@ public class MultiMusicBotManager {
                             String title = snippet.getString("title");
                             if (title.length() > 25)
                                 title = title.substring(0, 24) + "…";
-
-                            builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
+                            try {
+                                builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
                         event.reply("搜尋結果").addActionRow(builder.build()).setEphemeral(true).queue();
                     }
@@ -106,7 +134,7 @@ public class MultiMusicBotManager {
                 break;
             case "queue":
                 if (checkVcState(event))
-                    bot.queue(event);
+                    bot.displayQueue(event);
                 break;
             case "volume":
                 if (checkVcState(event)) {
@@ -128,64 +156,66 @@ public class MultiMusicBotManager {
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
-//        if (!checkVcState(event))
-//            return;
-//
-//        AudioPlayer player = getGuildAudioPlayer(event.getGuild()).player;
-//        TrackScheduler scheduler = getGuildAudioPlayer(event.getGuild()).scheduler;
-//        int volume;
-//        switch (args[1]) {
-//            case "musicLoopChange": {
-//                switch ((scheduler.loopStatus = (scheduler.loopStatus + 1) % 3)) {
-//                    case 0:
-//                        scheduler.repeat = false;
-//                        scheduler.loop = false;
-//                        break;
-//                    case 1:
-//                        scheduler.repeat = false;
-//                        scheduler.loop = true;
-//                        break;
-//                    case 2:
-//                        scheduler.repeat = true;
-//                        scheduler.loop = false;
-//                        break;
-//                    default:
-//                        return;
-//                }
-//                break;
-//            }
-//            case "musicPause":
-//                scheduler.pause(null, false);
-//                break;
-//            case "nextToPlay":
-//                scheduler.nextTrack(null);
-//                break;
-//            case "musicVolumeUp":
-//                volume = player.getVolume() + 5;
-//                player.setVolume(Math.min(volume, 100));
-//                break;
-//            case "musicVolumeDown":
-//                volume = player.getVolume() - 5;
-//                player.setVolume(Math.max(volume, 0));
-//                break;
-//            default:
-//                return;
-//        }
-//
-//        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
-//        WebhookMessageUpdateAction<Message> message = event.getHook().editOriginalEmbeds(embed[0], embed[1]);
-//        message.setActionRows(controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus));
-//        message.queue();
+        if (!checkVcState(event))
+            return;
+
+        MusicBot bot = bots.get(args[2]);
+        GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
+        AudioPlayer player = manager.player;
+        TrackScheduler scheduler = manager.scheduler;
+        int volume;
+        switch (args[1]) {
+            case "musicLoopChange": {
+                switch ((scheduler.loopStatus = (scheduler.loopStatus + 1) % 3)) {
+                    case 0:
+                        scheduler.repeat = false;
+                        scheduler.loop = false;
+                        break;
+                    case 1:
+                        scheduler.repeat = false;
+                        scheduler.loop = true;
+                        break;
+                    case 2:
+                        scheduler.repeat = true;
+                        scheduler.loop = false;
+                        break;
+                    default:
+                        return;
+                }
+                break;
+            }
+            case "musicPause":
+                scheduler.pause(null, false);
+                break;
+            case "nextToPlay":
+                scheduler.nextTrack(null);
+                break;
+            case "musicVolumeUp":
+                volume = player.getVolume() + 5;
+                player.setVolume(Math.min(volume, 100));
+                break;
+            case "musicVolumeDown":
+                volume = player.getVolume() - 5;
+                player.setVolume(Math.max(volume, 0));
+                break;
+            default:
+                return;
+        }
+
+        MessageEmbed[] embed = bot.playStatus(event.getMember(), scheduler);
+        WebhookMessageUpdateAction<Message> message = event.getHook().editOriginalEmbeds(embed[0], embed[1]);
+        message.setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus));
+        message.queue();
 
     }
 
-
     public void onSelectMenu(SelectionMenuEvent event, String[] args) {
-//        if (!event.getMember().getVoiceState().inVoiceChannel())
-//            event.replyEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000));
-//        else if (!args[0].equals(event.getUser().getId()))
-//            event.replyEmbeds(createEmbed("此為其他成員的觸發項目", 0xFF0000));
-//        else loadAndPlay(event, getGuildAudioPlayer(event.getGuild()), "https://youtu.be/" + event.getValues().get(0));
+        MusicBot bot = bots.get(args[2]);
+        if (!event.getMember().getVoiceState().inVoiceChannel())
+            event.replyEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000));
+        else if (!args[0].equals(event.getUser().getId()))
+            event.replyEmbeds(createEmbed("此為其他成員的觸發項目", 0xFF0000));
+        else bot.loadAndPlay(event, "https://youtu.be/" + event.getValues().get(0));
     }
 
     public boolean checkVcState(GenericInteractionCreateEvent event) {
@@ -226,12 +256,11 @@ public class MultiMusicBotManager {
 
         try {
             JDA jda = builder.build();
-
             bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, event));
 
             System.out.println(TAG + " " + jda.getSelfUser().getAsTag() + " Enabled");
         } catch (LoginException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return;
         }
     }

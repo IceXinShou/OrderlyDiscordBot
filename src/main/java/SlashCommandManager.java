@@ -255,7 +255,6 @@ public class SlashCommandManager extends ListenerAdapter {
         System.out.println(TAG + " Command Variable loaded");
     }
 
-
     private void addOwnSlashCommand(Guild guild) {
 
         CommandListUpdateAction command = guild.updateCommands();

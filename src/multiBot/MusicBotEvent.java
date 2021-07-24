@@ -14,10 +14,10 @@ import static main.java.util.GuildUtil.guildID;
 
 public class MusicBotEvent implements GuildMusicManager.Event {
     @Override
-    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild) {
-//        if (event != null) {
-//            queue(event, true);
-//        }
+    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot) {
+        if (musicBot != null) {
+            musicBot.displayQueue(event);
+        }
         if (guild.getId().equals(guildID))
             logChannel.sendMessage("開始播放 `" + track.getInfo().title + "`").queue();
     }

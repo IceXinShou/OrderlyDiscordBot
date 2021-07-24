@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -52,12 +53,12 @@ public class TrackScheduler extends AudioEventAdapter {
         this.queue = new ArrayList<>();
     }
 
-    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event) {
+    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
         // 嘗試播放
-        queue(trackList.get(0), event);
+        queue(trackList.get(0), event, musicBot);
 
         for (int i = 1; i < trackList.size(); i++) {
             // 加入序列
@@ -70,9 +71,10 @@ public class TrackScheduler extends AudioEventAdapter {
     /**
      * Add the next track to queue or play right away if nothing is in the queue.
      *
-     * @param track The track to play or add to queue.
+     * @param track    The track to play or add to queue.
+     * @param musicBot
      */
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot) {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
@@ -81,10 +83,11 @@ public class TrackScheduler extends AudioEventAdapter {
             // 加入序列
             this.event.addToQueue(track, event);
         } else {
+            // 開始撥放
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
             calculateNormalized(track, defaultVolume);
-            this.event.playStart(track, event, guild);
+            this.event.playStart(track, event, guild, musicBot);
         }
     }
 
@@ -128,9 +131,10 @@ public class TrackScheduler extends AudioEventAdapter {
         index++;
         if (playTrack()) {
             this.event.skip(playingTrack, event, guild);
-            this.event.playStart(playingTrack, event, guild);
-        } else
+            this.event.playStart(playingTrack, event, guild, null);
+        } else {
             stopPlay(event);
+        }
 //        nextTrack(true, event);
     }
 
@@ -138,7 +142,7 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index--;
         if (playTrack())
-            this.event.playStart(playingTrack, event, guild);
+            this.event.playStart(playingTrack, event, guild, null);
         else
             stopPlay(event);
     }

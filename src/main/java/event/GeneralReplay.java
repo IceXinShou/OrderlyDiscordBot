@@ -37,9 +37,6 @@ public class GeneralReplay extends ListenerAdapter {
             case "欸":
                 channel.sendMessage("穿山甲欸").queue(i -> Log.deleteNoLog(i, 1));
                 break;
-            case "大屌萌妹":
-                channel.sendMessage("你好呀~").queue(i -> Log.deleteNoLog(i, 1));
-                break;
             case "好無聊":
                 channel.sendMessage("起來嗨!").queue(i -> Log.deleteNoLog(i, 1));
                 break;

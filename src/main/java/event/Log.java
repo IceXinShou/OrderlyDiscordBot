@@ -216,7 +216,7 @@ public class Log extends ListenerAdapter {
 
     public static void logError(String errorMessage) {
         if (errorMessage == null)
-            logChannel.sendMessage(
+            logChannel.sendMessageEmbeds(
                     createEmbed(
                             "ERROR!!!", errorMessage,
                             "錯誤",
