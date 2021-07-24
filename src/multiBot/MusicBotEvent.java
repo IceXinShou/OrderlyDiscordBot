@@ -13,6 +13,13 @@ import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 
 public class MusicBotEvent implements GuildMusicManager.Event {
+    private MultiMusicBotManager musicBotManager;
+
+
+    public MusicBotEvent(MultiMusicBotManager musicBotManager) {
+        this.musicBotManager = musicBotManager;
+    }
+
     @Override
     public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot) {
         if (musicBot != null) {
@@ -47,12 +54,14 @@ public class MusicBotEvent implements GuildMusicManager.Event {
 
     @Override
     public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild) {
-        if (guild.getAudioManager().isConnected())
+        if (guild.getAudioManager().isConnected()) {
+            // 從頻道移除bot
+            musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
             guild.getAudioManager().closeAudioConnection();
+        }
 
-        MessageEmbed embed = createEmbed("已停止播放", 0xFF3B7D);
         if (event instanceof SlashCommandEvent)
-            event.replyEmbeds(embed).setEphemeral(true).queue();
+            event.replyEmbeds(createEmbed("已停止播放", 0xFF3B7D)).setEphemeral(true).queue();
         if (guild.getId().equals(guildID))
             logChannel.sendMessage("停止播放").queue();
     }

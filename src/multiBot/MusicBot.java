@@ -235,12 +235,18 @@ public class MusicBot {
     }
 
     private void connectVC(Guild guild, VoiceChannel vc) {
-        if (!guild.getAudioManager().isConnected())
+        if (!guild.getAudioManager().isConnected()) {
             guild.getAudioManager().openAudioConnection(vc);
+            // 新增bot到頻道
+            musicBotManager.setBotToChannel(guild.getId(), vc.getId(), this);
+        }
     }
 
     public GuildMusicManager getMusicManager(String guildID) {
-        return getMusicManager(jda.getGuildById(guildID));
+        Guild guild = jda.getGuildById(guildID);
+        if (guild == null)
+            return null;
+        return getMusicManager(guild);
     }
 
     private GuildMusicManager getMusicManager(Guild guild) {

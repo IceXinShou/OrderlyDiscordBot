@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -41,9 +42,12 @@ public class MultiMusicBotManager {
     private static final String TAG = "[MultiMusicBot]";
     private ScheduledExecutorService threadPool;
     private int currentIndex = 0;
-    private final MusicBotEvent event = new MusicBotEvent();
+    private final MusicBotEvent musicEvent = new MusicBotEvent(this);
 
-    // botID, MusicBot
+    //          GuildID ChannelID   MusicBot
+    private Map<String, Map<String, MusicBot>> channelBot = new HashMap<>();
+
+    //                botID, MusicBot
     private final Map<String, MusicBot> bots = new LinkedHashMap<>();
 
     public MultiMusicBotManager() {
@@ -56,88 +60,42 @@ public class MultiMusicBotManager {
     private int commandState = 0;
 
     public int onCommand(SlashCommandEvent event) {
+        Map<String, MusicBot> botInGuild = channelBot.get(event.getGuild().getId());
+        MusicBot bot;
+        if (botInGuild == null)
+            bot = null;
+        else
+            bot = botInGuild.get(event.getMember().getVoiceState().getChannel().getId());
 
-//        MusicBot bot = (MusicBot) bots.values().toArray()[0];
-//        commandState = 1;
-
-
-        MusicBot bot = null;
-
-        for (Object i : bots.values().toArray()) {
-            MusicBot thisBot = (MusicBot) i;
-            GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
-            if (manager.scheduler.playingTrack == null) {
-                bot = (MusicBot) i;
-                commandState = 1;
-                break;
-            }
-        }
-
-        if (bot == null) {
-            event.replyEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).setEphemeral(true).queue();
-            return commandState;
-        }
+        commandState = 1;
 
         switch (event.getName()) {
             // 全域頻道
             case "play":
-                if (checkVcState(event)) {
-                    OptionMapping url;
-                    // 開始撥放
-                    if ((url = event.getOption(URL)) == null) {
-                        bot.pause(event, event.getGuild(), true);
-                        event.replyEmbeds(createEmbed("已開始播放", 0xbde3ae)).setEphemeral(true).queue();
-                    } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
-                        bot.loadAndPlay(event, url.getAsString());
-                    } else {
-
-                        String keyWord = URLEncoder.encode(event.getOption(URL).getAsString(), StandardCharsets.UTF_8);
-
-                        SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
-
-                        JSONObject result = new JSONObject(
-                                getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" +
-                                        keyWord + "&key=" + apiKEY));
-
-                        JSONArray videoInfo = result.getJSONArray("items");
-
-                        for (Object vinfo : videoInfo) {
-                            JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
-                            String title = snippet.getString("title");
-                            if (title.length() > 25)
-                                title = title.substring(0, 24) + "…";
-                            try {
-                                builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                        event.reply("搜尋結果").addActionRow(builder.build()).setEphemeral(true).queue();
-                    }
-                }
+                play(event, bot);
                 break;
             case "skip":
-                if (checkVcState(event))
+                if (checkVcState(event, bot))
                     bot.nextTrack(event);
                 break;
             case "previous":
-                if (checkVcState(event))
+                if (checkVcState(event, bot))
                     bot.playPrevious(event);
                 break;
             case "repeat":
-                if (checkVcState(event))
+                if (checkVcState(event, bot))
                     bot.toggleRepeat(event);
                 break;
             case "pause":
-                if (checkVcState(event))
+                if (checkVcState(event, bot))
                     bot.pause(event, event.getGuild(), false);
                 break;
             case "queue":
-                if (checkVcState(event))
+                if (checkVcState(event, bot))
                     bot.displayQueue(event);
                 break;
             case "volume":
-                if (checkVcState(event)) {
+                if (checkVcState(event, bot)) {
                     Integer volume = null;
                     if (event.getOption(COUNT) != null)
                         if (event.getOption(COUNT).getAsLong() <= 100)
@@ -153,6 +111,67 @@ public class MultiMusicBotManager {
                 commandState = 0;
         }
         return commandState;
+    }
+
+    private void play(SlashCommandEvent event, MusicBot bot) {
+        if (checkVcState(event)) {
+            if (bot == null)
+                // 取得機器人
+                for (Object i : bots.values().toArray()) {
+                    MusicBot thisBot = (MusicBot) i;
+                    GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
+                    if (manager != null && manager.scheduler.playingTrack == null) {
+                        bot = (MusicBot) i;
+                        commandState = 1;
+                        break;
+                    }
+                }
+//            else {
+//                event.replyEmbeds(createEmbed(0xFF0000, "已有機器人在此頻道")).setEphemeral(true).queue();
+//                commandState = -1;
+//                return;
+//            }
+
+
+            if (bot == null) {
+                event.replyEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).setEphemeral(true).queue();
+                commandState = -1;
+                return;
+            }
+
+            OptionMapping url;
+            // 開始撥放
+            if ((url = event.getOption(URL)) == null) {
+                bot.pause(event, event.getGuild(), true);
+                event.replyEmbeds(createEmbed("已開始播放", 0xbde3ae)).setEphemeral(true).queue();
+            } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
+                bot.loadAndPlay(event, url.getAsString());
+            } else {
+
+                String keyWord = URLEncoder.encode(event.getOption(URL).getAsString(), StandardCharsets.UTF_8);
+
+                SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
+
+                JSONObject result = new JSONObject(
+                        getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" +
+                                keyWord + "&key=" + apiKEY));
+
+                JSONArray videoInfo = result.getJSONArray("items");
+
+                for (Object vinfo : videoInfo) {
+                    JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
+                    String title = snippet.getString("title");
+                    if (title.length() > 25)
+                        title = title.substring(0, 24) + "…";
+                    try {
+                        builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                event.reply("搜尋結果").addActionRow(builder.build()).setEphemeral(true).queue();
+            }
+        }
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
@@ -218,14 +237,37 @@ public class MultiMusicBotManager {
         else bot.loadAndPlay(event, "https://youtu.be/" + event.getValues().get(0));
     }
 
-    public boolean checkVcState(GenericInteractionCreateEvent event) {
+    private boolean checkVcState(GenericInteractionCreateEvent event, MusicBot botsInChannel) {
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.replyEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).setEphemeral(true).queue();
+            commandState = -1;
             return false;
-        } else if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel() && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getSelfMember().getVoiceState().getChannel())) {
-            event.replyEmbeds(createEmbed("機器人已被其他頻道所使用", 0xFF0000)).setEphemeral(true).queue();
+        } else if (botsInChannel == null) {
+            event.replyEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒..."));
+            commandState = -1;
             return false;
-        } else return true;
+        }
+        return true;
+    }
+
+    private boolean checkVcState(GenericInteractionCreateEvent event) {
+        if (!event.getMember().getVoiceState().inVoiceChannel()) {
+            event.replyEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).setEphemeral(true).queue();
+            commandState = -1;
+            return false;
+        }
+        return true;
+    }
+
+    public void setBotToChannel(String guildID, String ChannelID, MusicBot musicBot) {
+        Map<String, MusicBot> botInGuild = channelBot.get(guildID);
+        if (botInGuild == null) {
+            HashMap<String, MusicBot> map = new HashMap<>();
+            map.put(ChannelID, musicBot);
+            channelBot.put(guildID, map);
+        } else {
+            botInGuild.put(ChannelID, musicBot);
+        }
     }
 
     private void newBot(String botToken) {
@@ -256,7 +298,7 @@ public class MultiMusicBotManager {
 
         try {
             JDA jda = builder.build();
-            bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, event));
+            bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, musicEvent));
 
             System.out.println(TAG + " " + jda.getSelfUser().getAsTag() + " Enabled");
         } catch (LoginException e) {
