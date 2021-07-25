@@ -20,9 +20,9 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot) {
+    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble) {
         if (musicBot != null) {
-            musicBot.displayQueue(event);
+            musicBot.displayQueue(event, searchAble);
         }
         if (guild.getId().equals(guildID))
             logChannel.sendMessage("開始播放 `" + track.getInfo().title + "`").queue();

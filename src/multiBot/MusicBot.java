@@ -62,9 +62,9 @@ public class MusicBot {
         manager.scheduler.addPlayListToQueue(playlist, event, this);
     }
 
-    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event) {
+    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean searchAble) {
         connectVC(manager.guild, vc);
-        manager.scheduler.queue(track, event, this, -1);
+        manager.scheduler.queue(track, event, this, -1, searchAble);
     }
 
     public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {
@@ -90,7 +90,7 @@ public class MusicBot {
         getMusicManager(guild).scheduler.pause(event, play);
     }
 
-    public void loadAndPlay(final GenericInteractionCreateEvent event, final String trackUrl) {
+    public void loadAndPlay(final GenericInteractionCreateEvent event, final String trackUrl, boolean searchAble) {
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
         GuildMusicManager manager = getMusicManager(jda.getGuildById(event.getGuild().getId()));
 
@@ -98,7 +98,7 @@ public class MusicBot {
         playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                play(track, vc, manager, event);
+                play(track, vc, manager, event, searchAble);
             }
 
             @Override
@@ -119,7 +119,7 @@ public class MusicBot {
 
     }
 
-    public void displayQueue(GenericInteractionCreateEvent event) {
+    public void displayQueue(GenericInteractionCreateEvent event, boolean searchAble) {
         TrackScheduler scheduler = getMusicManager(event.getGuild()).scheduler;
         if (scheduler.playingTrack == null) {
             event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
@@ -128,10 +128,12 @@ public class MusicBot {
 
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
 
-
-        event.getHook().editOriginalEmbeds(embed[0], embed[1])
-                .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
-                .queue();
+        if (searchAble)
+            event.replyEmbeds(embed[0], embed[1]).addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus)).setEphemeral(true).queue();
+        else
+            event.getHook().editOriginalComponents().setEmbeds(embed[0], embed[1])
+                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+                    .queue();
     }
 
     /**

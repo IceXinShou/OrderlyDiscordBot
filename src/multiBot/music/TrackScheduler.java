@@ -63,18 +63,18 @@ public class TrackScheduler extends AudioEventAdapter {
             queue.add(trackList.get(i));
         }
         // 嘗試播放
-        queue(trackList.get(0), event, musicBot, 0);
+        queue(trackList.get(0), event, musicBot, 0, false);
 
         this.event.addPlayerListToQueue(playlist, event);
     }
 
     /**
      * Add the next track to queue or play right away if nothing is in the queue.
-     *
-     * @param track    The track to play or add to queue.
+     *  @param track    The track to play or add to queue.
      * @param musicBot
+     * @param searchAble
      */
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean searchAble) {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
@@ -90,7 +90,7 @@ public class TrackScheduler extends AudioEventAdapter {
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
             calculateNormalized(track, defaultVolume);
-            this.event.playStart(track, event, guild, musicBot);
+            this.event.playStart(track, event, guild, musicBot, searchAble);
         }
     }
 
@@ -134,7 +134,7 @@ public class TrackScheduler extends AudioEventAdapter {
         index++;
         if (playTrack()) {
             this.event.skip(playingTrack, event, guild);
-            this.event.playStart(playingTrack, event, guild, null);
+            this.event.playStart(playingTrack, event, guild, null, false);
         } else {
             stopPlay(event);
         }
@@ -145,7 +145,7 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index--;
         if (playTrack())
-            this.event.playStart(playingTrack, event, guild, null);
+            this.event.playStart(playingTrack, event, guild, null, false);
         else
             stopPlay(event);
     }

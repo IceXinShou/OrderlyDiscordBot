@@ -38,7 +38,7 @@ public class GuildMusicManager {
     }
 
     public interface Event {
-        void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot);
+        void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble);
 
         void addToQueue(AudioTrack track, GenericInteractionCreateEvent event);
 
