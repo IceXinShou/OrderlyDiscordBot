@@ -102,7 +102,7 @@ public class MultiMusicBotManager {
                         if (event.getOption(COUNT).getAsLong() <= 100)
                             volume = (int) event.getOption(COUNT).getAsLong();
                         else {
-                            event.replyEmbeds(createEmbed("未知的數值", 0xFF0000)).setEphemeral(true).queue();
+                            event.getHook().editOriginalEmbeds(createEmbed("未知的數值", 0xFF0000)).queue();
                             break;
                         }
                     bot.changeVolume(volume, event.getGuild(), event);
@@ -128,14 +128,14 @@ public class MultiMusicBotManager {
                     }
                 }
 //            else {
-//                event.replyEmbeds(createEmbed(0xFF0000, "已有機器人在此頻道")).setEphemeral(true).queue();
+//                event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, "已有機器人在此頻道")).queue();
 //                commandState = -1;
 //                return;
 //            }
 
 
             if (bot == null) {
-                event.replyEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).setEphemeral(true).queue();
+                event.getHook().editOriginalEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).queue();
                 commandState = -1;
                 return;
             }
@@ -144,7 +144,7 @@ public class MultiMusicBotManager {
             // 開始撥放
             if ((url = event.getOption(NAME)) == null) {
                 bot.pause(event, event.getGuild(), true);
-                event.replyEmbeds(createEmbed("已開始播放", 0xbde3ae)).setEphemeral(true).queue();
+                event.getHook().editOriginalEmbeds(createEmbed("已開始播放", 0xbde3ae)).queue();
             } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                 bot.loadAndPlay(event, url.getAsString());
             } else {
@@ -232,19 +232,20 @@ public class MultiMusicBotManager {
     public void onSelectMenu(SelectionMenuEvent event, String[] args) {
         MusicBot bot = bots.get(args[2]);
         if (!event.getMember().getVoiceState().inVoiceChannel())
-            event.replyEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000));
+            event.getHook().editOriginalEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000));
         else if (!args[0].equals(event.getUser().getId()))
-            event.replyEmbeds(createEmbed("此為其他成員的觸發項目", 0xFF0000));
+            event.getHook().editOriginalEmbeds(createEmbed("此為其他成員的觸發項目", 0xFF0000));
         else bot.loadAndPlay(event, "https://youtu.be/" + event.getValues().get(0));
     }
 
     private boolean checkVcState(GenericInteractionCreateEvent event, MusicBot botsInChannel) {
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
-            event.replyEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).queue();
             commandState = -1;
             return false;
         } else if (botsInChannel == null) {
-            event.replyEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).queue();
+//            event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).setEphemeral(true).queue();
             commandState = -1;
             return false;
         }
@@ -253,7 +254,7 @@ public class MultiMusicBotManager {
 
     private boolean checkVcState(GenericInteractionCreateEvent event) {
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
-            event.replyEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("請在語音頻道內使用此指令", 0xFF0000)).queue();
             commandState = -1;
             return false;
         }

@@ -69,6 +69,8 @@ public class SlashCommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
+        event.deferReply(true).queue();
+
         if (debugMode) {
             List<OptionMapping> options = event.getOptions();
             StringBuilder builder = new StringBuilder();
@@ -107,10 +109,10 @@ public class SlashCommandManager extends ListenerAdapter {
             if (channelID.equals(authChannelID))
                 createInviteCommand.onCommand(event);
             else {
-                event.replyEmbeds(createEmbed("請到指定位置使用此指令 (" +
+                event.getHook().editOriginalEmbeds(createEmbed("請到指定位置使用此指令 (" +
                         tagChannel(authChannelID) + ", " +
                         tagChannel(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)) + ")", 0xFF0000))
-                        .setEphemeral(true).queue();
+                        .queue();
             }
             return;
         }
@@ -140,11 +142,11 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
             case "help" -> {
-                pollCommand.onCommand(event);
+                helpCommand.onCommand(event);
                 return;
             }
         }
-        event.replyEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
     }
 
     @Override

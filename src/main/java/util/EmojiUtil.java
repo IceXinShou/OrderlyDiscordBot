@@ -15,7 +15,6 @@ public class EmojiUtil {
     public Emote
             leaveEmoji, joinEmoji,
             yesEmoji, noEmoji,
-            dot1, dot2, dot3, dot4, dot5, dot6, dot7, dot8, dot9, dot10,
             rule, setting, ping, bell, lock, minecraftGrassBlock, nitro1, boost, discord, no1, partner,
             trashCan, leftArrow, rightArrow, join, leave, cute,
             borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,

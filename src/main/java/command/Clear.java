@@ -33,7 +33,7 @@ public class Clear {
 
     public void onCommand(SlashCommandEvent event) {
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE) && !botOwnerID.contains(event.getMember().getId())) {
-            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
             return;
         }
         OptionMapping amountOption = event.getOption(COUNT);
@@ -42,10 +42,9 @@ public class Clear {
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // set number to 2~200
         // arg
         String userId = event.getUser().getId();
-        event.replyEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
-                .addActionRow(// add component
-                        Button.danger(userId + ":delete:" + amount, "Yes!"))
-                .setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
+                .setActionRow(Button.danger(userId + ":delete:" + amount, "Yes!"))
+                .queue();
     }
 
 

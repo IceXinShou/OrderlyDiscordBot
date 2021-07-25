@@ -18,7 +18,7 @@ public class Poll {
     public void onCommand(SlashCommandEvent event) {
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
             return;
         }
 
@@ -38,6 +38,6 @@ public class Poll {
             }
         });
 
-        event.replyEmbeds(createEmbed("創建成功", 0x9740b9)).setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("創建成功", 0x9740b9)).queue();
     }
 }

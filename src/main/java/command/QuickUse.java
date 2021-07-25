@@ -43,9 +43,9 @@ public class QuickUse extends ListenerAdapter {
             helpBlockChinese.addField(emoji.no1.getAsMention() + " 初衷", "以紀律為核心發展的伺服器，希望每位成員可以共同帶動伺服器發展", false);
             helpBlockChinese.addField(emoji.partner.getAsMention() + " 憧憬", "成員們可以在此平等的交流，有任何問題都可以互相幫助", false);
             helpBlockChinese.addField(emoji.discord.getAsMention() + " 加入方式",
-                    emoji.dot4.getAsMention() + "" +
+                    emoji.dotEmojis[4].getAsMention() + "" +
                             "邀請者要為被邀請的成員之行為負責並持續 1 個月\n" +
-                            emoji.dot7.getAsMention() + "" +
+                            emoji.dotEmojis[7].getAsMention() + "" +
                             "加入時，需輸入正確的**二字中文暱稱**與 **Minecraft / English 名字**\n" +
                             emoji.dot6.getAsMention() + "" +
                             "必須詳閱並同意規則與注意事項，如有疑慮，隨時可向管理員反應", false);
@@ -65,9 +65,9 @@ public class QuickUse extends ListenerAdapter {
             helpBlockEnglish.addField(emoji.no1.getAsMention() + " Original Goal", "A server with orderly as the core, hope that every member can drive the development of the server together!", false);
             helpBlockEnglish.addField(emoji.partner.getAsMention() + " Longing", "Members can communicate equally here, and they can help each other if they have any questions!", false);
             helpBlockEnglish.addField(emoji.discord.getAsMention() + " How To Join",
-                    emoji.dot4.getAsMention() + "" +
+                    emoji.dotEmojis[4].getAsMention() + "" +
                             "The inviter is **responsible for the behavior of the invited member** and lasts for 1 month\n" +
-                            emoji.dot7.getAsMention() + "" +
+                            emoji.dotEmojis[7].getAsMention() + "" +
                             "You have to enter the **correct two-character Chinese nickname **and **Minecraft / English name**\n" +
                             emoji.dot6.getAsMention() + "" +
                             "You must read and agree to the rules. If you have any doubts, you can respond to the developer at any time", false);

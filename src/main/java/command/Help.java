@@ -10,6 +10,6 @@ import static main.java.util.Funtions.createEmbed;
 public class Help {
 
     public void onCommand(SlashCommandEvent event) {
-        event.replyEmbeds(createEmbed("使用說明：", "", "", "", "", helpFields, OffsetDateTime.now(), 0x00FFFF)).setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("使用說明：", "", "", "", "", helpFields, OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 }

@@ -108,12 +108,12 @@ public class MusicBot {
 
             @Override
             public void noMatches() {
-                event.replyEmbeds(createEmbed("查無此網址: " + trackUrl, 0xFF0000)).setEphemeral(true).queue();
+                event.getHook().editOriginalEmbeds(createEmbed("查無此網址: " + trackUrl, 0xFF0000)).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                event.replyEmbeds(createEmbed("無法播放此網址: " + exception.getMessage(), 0xFF0000)).setEphemeral(true).queue();
+                event.getHook().editOriginalEmbeds(createEmbed("無法播放此網址: " + exception.getMessage(), 0xFF0000)).queue();
             }
         });
 
@@ -122,16 +122,16 @@ public class MusicBot {
     public void displayQueue(GenericInteractionCreateEvent event) {
         TrackScheduler scheduler = getMusicManager(event.getGuild()).scheduler;
         if (scheduler.playingTrack == null) {
-            event.replyEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
             return;
         }
 
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
 
 
-        event.replyEmbeds(embed[0], embed[1])
-                .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
-                .setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(embed[0], embed[1])
+                .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+                .queue();
     }
 
     /**

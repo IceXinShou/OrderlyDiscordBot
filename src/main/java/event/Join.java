@@ -132,29 +132,29 @@ public class Join extends ListenerAdapter {
         List<MessageEmbed.Field> fields = new ArrayList<>();
         boolean settingDone = true;
         if (progress.chineseNick != null) {
-            fields.add(new MessageEmbed.Field(emoji.dot7.getAsMention() + " 中文暱稱: ", progress.chineseNick, false));
+            fields.add(new MessageEmbed.Field(emoji.dotEmojis[7].getAsMention() + " 中文暱稱: ", progress.chineseNick, false));
             nickname = progress.chineseNick + " - ";
         } else {
-            fields.add(new MessageEmbed.Field(emoji.dot7.getAsMention() + " 中文暱稱: ", "未設置", false));
+            fields.add(new MessageEmbed.Field(emoji.dotEmojis[7].getAsMention() + " 中文暱稱: ", "未設置", false));
             nickname = "未設置 - ";
             settingDone = false;
         }
 
         if (progress.playMinecraft) {
             if (progress.minecraftID != null) {
-                fields.add(new MessageEmbed.Field(emoji.dot4.getAsMention() + " Minecraft ID: ", progress.minecraftID, false));
+                fields.add(new MessageEmbed.Field(emoji.dotEmojis[4].getAsMention() + " Minecraft ID: ", progress.minecraftID, false));
                 nickname += progress.minecraftID;
             } else {
-                fields.add(new MessageEmbed.Field(emoji.dot4.getAsMention() + " Minecraft ID: ", "未設置", false));
+                fields.add(new MessageEmbed.Field(emoji.dotEmojis[4].getAsMention() + " Minecraft ID: ", "未設置", false));
                 nickname += "未設置";
                 settingDone = false;
             }
         } else {
             if (progress.englishNick != null) {
-                fields.add(new MessageEmbed.Field(emoji.dot4.getAsMention() + " 英文暱稱: ", progress.englishNick, false));
+                fields.add(new MessageEmbed.Field(emoji.dotEmojis[4].getAsMention() + " 英文暱稱: ", progress.englishNick, false));
                 nickname += progress.englishNick;
             } else {
-                fields.add(new MessageEmbed.Field(emoji.dot4.getAsMention() + " 英文暱稱: ", "未設置", false));
+                fields.add(new MessageEmbed.Field(emoji.dotEmojis[4].getAsMention() + " 英文暱稱: ", "未設置", false));
                 nickname += "未設置";
                 settingDone = false;
             }

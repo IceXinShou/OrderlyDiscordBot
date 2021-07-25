@@ -59,14 +59,13 @@ public class Invite {
         String userId = event.getUser().getId();
         // 還沒完成使用者設定
         if (!memberData.has(member.getId())) {
-            event.replyEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).queue();
             return;
         }
 
-        event.replyEmbeds(createEmbed("確定要邀請 " + (member.getNickname() == null ? member.getUser().getAsTag() : member.getNickname()) + " ?", 0xbc153b))
-                .addActionRow( // add component
-                        Button.danger(userId + ":invite:" + member.getId(), "我會為他負責"))
-                .setEphemeral(true).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("確定要邀請 " + (member.getNickname() == null ? member.getUser().getAsTag() : member.getNickname()) + " ?", 0xbc153b))
+                .setActionRow(Button.danger(userId + ":invite:" + member.getId(), "我會為他負責"))
+                .queue();
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {

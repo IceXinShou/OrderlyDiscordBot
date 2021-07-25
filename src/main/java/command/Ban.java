@@ -18,23 +18,23 @@ public class Ban {
         Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
 
         if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
-            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
             return;
         }
 
         Member selfMember = event.getGuild().getSelfMember();
         if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
-            event.replyEmbeds(createEmbed("機器人並沒有權限封禁成員", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("機器人並沒有權限封禁成員", 0xFF0000)).queue();
             return;
         }
 
         if (user != null && !selfMember.canInteract(member)) {
-            event.replyEmbeds(createEmbed("此成員的力量大到讓我無法執行此動作", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("此成員的力量大到讓我無法執行此動作", 0xFF0000)).queue();
             return;
         }
 
         if (user != null && isBotOwner(event)) {
-            event.replyEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).queue();
             return;
         }
 
@@ -43,7 +43,7 @@ public class Ban {
         if (option != null)
             delDays = (int) Math.max(0, Math.min(7, option.getAsLong()));
         event.getGuild().ban(user, delDays)
-                .flatMap(v -> event.replyEmbeds(createEmbed("封禁成員 " + user.getAsTag(), 0xffb1b3)).setEphemeral(true))
+                .flatMap(v -> event.getHook().editOriginalEmbeds(createEmbed("封禁成員 " + user.getAsTag(), 0xffb1b3)))
                 .queue();
     }
 }

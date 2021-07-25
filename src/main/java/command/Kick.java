@@ -16,33 +16,33 @@ public class Kick {
         Member selfMember = event.getGuild().getSelfMember();
 
         if (!selfMember.hasPermission(Permission.KICK_MEMBERS)) {
-            event.replyEmbeds(createEmbed("我必須要有踢出權限才可以踢出成員", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("我必須要有踢出權限才可以踢出成員", 0xFF0000)).queue();
             return;
         } else if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-            event.replyEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
             return;
         }
         Member member = event.getOption(USER_TAG).getAsMember();
         if (member != null && !selfMember.canInteract(member)) {
-            event.replyEmbeds(createEmbed("無法踢出此成員, 他的權限太高了", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("無法踢出此成員, 他的權限太高了", 0xFF0000)).queue();
             return;
         }
 
         if (member != null && isBotOwner(event)) {
-            event.replyEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).setEphemeral(true).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).queue();
             return;
         }
 
 
         event.getGuild().kick(member).queue(
-                success -> event.replyEmbeds(createEmbed("已踢出", 0xffd2c5)).setEphemeral(true).queue(),
+                success -> event.getHook().editOriginalEmbeds(createEmbed("已踢出", 0xffd2c5)).queue(),
                 error -> {
                     if (error instanceof PermissionException) {
-                        event.replyEmbeds(
-                                createEmbed("權限錯誤" + member.getEffectiveName() + ": " + error.getMessage(), 0xFF0000)).setEphemeral(true).queue();
+                        event.getHook().editOriginalEmbeds(
+                                createEmbed("權限錯誤" + member.getEffectiveName() + ": " + error.getMessage(), 0xFF0000)).queue();
                     } else {
-                        event.replyEmbeds(
-                                createEmbed("未知的錯誤" + member.getEffectiveName() + ": <" + error.getClass().getSimpleName() + ">: " + error.getMessage(), 0xFF0000)).setEphemeral(true).queue();
+                        event.getHook().editOriginalEmbeds(
+                                createEmbed("未知的錯誤" + member.getEffectiveName() + ": <" + error.getClass().getSimpleName() + ">: " + error.getMessage(), 0xFF0000)).queue();
                     }
                 });
     }
