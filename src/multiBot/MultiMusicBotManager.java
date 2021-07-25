@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 import static main.java.BotSetting.*;
 import static main.java.SlashCommandOption.COUNT;
-import static main.java.SlashCommandOption.URL;
+import static main.java.SlashCommandOption.NAME;
 import static main.java.util.Funtions.createEmbed;
 import static multiBot.music.TrackScheduler.getUrlData;
 
@@ -45,7 +45,7 @@ public class MultiMusicBotManager {
     private final MusicBotEvent musicEvent = new MusicBotEvent(this);
 
     //          GuildID ChannelID   MusicBot
-    private Map<String, Map<String, MusicBot>> channelBot = new HashMap<>();
+    private final Map<String, Map<String, MusicBot>> channelBot = new HashMap<>();
 
     //                botID, MusicBot
     private final Map<String, MusicBot> bots = new LinkedHashMap<>();
@@ -91,6 +91,7 @@ public class MultiMusicBotManager {
                     bot.pause(event, event.getGuild(), false);
                 break;
             case "queue":
+            case "playing":
                 if (checkVcState(event, bot))
                     bot.displayQueue(event);
                 break;
@@ -141,14 +142,14 @@ public class MultiMusicBotManager {
 
             OptionMapping url;
             // 開始撥放
-            if ((url = event.getOption(URL)) == null) {
+            if ((url = event.getOption(NAME)) == null) {
                 bot.pause(event, event.getGuild(), true);
                 event.replyEmbeds(createEmbed("已開始播放", 0xbde3ae)).setEphemeral(true).queue();
             } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                 bot.loadAndPlay(event, url.getAsString());
             } else {
 
-                String keyWord = URLEncoder.encode(event.getOption(URL).getAsString(), StandardCharsets.UTF_8);
+                String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), StandardCharsets.UTF_8);
 
                 SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
 
@@ -243,7 +244,7 @@ public class MultiMusicBotManager {
             commandState = -1;
             return false;
         } else if (botsInChannel == null) {
-            event.replyEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒..."));
+            event.replyEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).setEphemeral(true).queue();
             commandState = -1;
             return false;
         }

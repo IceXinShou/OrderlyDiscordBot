@@ -64,7 +64,7 @@ public class MusicBot {
 
     private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event) {
         connectVC(manager.guild, vc);
-        manager.scheduler.queue(track, event, this);
+        manager.scheduler.queue(track, event, this, -1);
     }
 
     public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {

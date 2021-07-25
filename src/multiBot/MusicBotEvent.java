@@ -4,7 +4,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import multiBot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
@@ -13,7 +12,7 @@ import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 
 public class MusicBotEvent implements GuildMusicManager.Event {
-    private MultiMusicBotManager musicBotManager;
+    private final MultiMusicBotManager musicBotManager;
 
 
     public MusicBotEvent(MultiMusicBotManager musicBotManager) {

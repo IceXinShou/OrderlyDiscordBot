@@ -2,7 +2,7 @@ package main.java;
 
 import main.java.automatic.InformationReaction;
 import main.java.automatic.TicketChannel;
-import main.java.command.BlockCommand;
+import main.java.command.QuickUse;
 import main.java.event.GeneralReplay;
 import main.java.event.Join;
 import main.java.event.Log;
@@ -60,7 +60,7 @@ public class Main {
         jda.addEventListener(new GeneralReplay());
         jda.addEventListener(new TicketChannel());
         jda.addEventListener(new InformationReaction());
-        jda.addEventListener(new BlockCommand());
+        jda.addEventListener(new QuickUse());
         SlashCommandManager commandManager = new SlashCommandManager();
         jda.addEventListener(commandManager);
 
@@ -79,7 +79,7 @@ public class Main {
             while (true) {
                 Scanner scanner = new Scanner(System.in);
                 String command = scanner.nextLine();
-                switch (command) {
+                switch (command.toLowerCase()) {
                     case "stop":
                         jda.shutdown();
                         threadPool.shutdown();

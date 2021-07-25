@@ -19,15 +19,16 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static main.java.BotSetting.*;
 import static main.java.SlashCommandOption.*;
 import static main.java.automatic.InformationReaction.internalRole;
 import static main.java.automatic.InformationReaction.logRole;
-import static main.java.command.InviteCommand.authChannel;
-import static main.java.command.InviteCommand.authChannelID;
-import static main.java.command.VoiceChannelCommand.voiceChannelData;
+import static main.java.command.Invite.authChannel;
+import static main.java.command.Invite.authChannelID;
+import static main.java.command.VoiceChannel.voiceChannelData;
 import static main.java.event.Log.*;
 import static main.java.util.Funtions.createEmbed;
 import static main.java.util.Funtions.tagChannel;
@@ -44,24 +45,25 @@ public class SlashCommandManager extends ListenerAdapter {
     private final String TAG = "[SlashCommandManager]";
 
     public Integer adminPermissionPos;
-    BanCommand banCommand;
-    ClearCommand clearCommand;
-    InviteCommand createInviteCommand;
-    VoiceChannelCommand voiceChannelCommand;
-    UnBanCommand unBanCommand;
-    KickCommand kickCommand;
+    Ban banCommand;
+    Clear clearCommand;
+    Invite createInviteCommand;
+    VoiceChannel voiceChannelCommand;
+    UnBan unBanCommand;
+    Kick kickCommand;
     MultiMusicBotManager musicManager;
-    PollCommand pollCommand;
+    Poll pollCommand;
+    Help helpCommand;
 
     SlashCommandManager() {
-        banCommand = new BanCommand();
-        unBanCommand = new UnBanCommand();
-        clearCommand = new ClearCommand();
-        createInviteCommand = new InviteCommand();
-        voiceChannelCommand = new VoiceChannelCommand();
-        kickCommand = new KickCommand();
-//        musicManager = new MusicCommands();
-        pollCommand = new PollCommand();
+        banCommand = new Ban();
+        unBanCommand = new UnBan();
+        clearCommand = new Clear();
+        createInviteCommand = new Invite();
+        voiceChannelCommand = new VoiceChannel();
+        kickCommand = new Kick();
+        pollCommand = new Poll();
+        helpCommand = new Help();
         System.out.println(TAG + " Listener loaded!");
     }
 
@@ -137,6 +139,10 @@ public class SlashCommandManager extends ListenerAdapter {
                 pollCommand.onCommand(event);
                 return;
             }
+            case "help" -> {
+                pollCommand.onCommand(event);
+                return;
+            }
         }
         event.replyEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).setEphemeral(true).queue();
     }
@@ -192,15 +198,19 @@ public class SlashCommandManager extends ListenerAdapter {
             addOwnSlashCommand(event.getGuild());
         else
             addPublicSlashCommand(event.getGuild());
-
-        event.getGuild().getOwner().getUser().openPrivateChannel().queue(i -> {
-            try {
-                i.sendMessageEmbeds(createEmbed("您已邀請 <**" + event.getGuild().getSelfMember().getUser().getName() + "**> 進入 <**" + event.getGuild().getName() + "**>", 0xFF0000)).queue();
-                i.sendMessageEmbeds(createEmbed("You have invited <**" + event.getGuild().getSelfMember().getUser().getName() + "**> join <**" + event.getGuild().getName() + "**> Discord Server", 0xFF0000)).queue();
-            } catch (Exception e) {
-            }
-        });
+        try {
+            event.getGuild().getOwner().getUser().openPrivateChannel().queue(i ->
+                    i.sendMessageEmbeds(createEmbed("您已邀請 <**" +
+                            event.getGuild().getSelfMember().getUser().getName() +
+                            "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
+                            "You have invited <**" + event.getGuild().getSelfMember().getUser().getName() +
+                            "**> join <**" + event.getGuild().getName() +
+                            "**> Discord Server", "", "", "", "", helpFields, OffsetDateTime.now(), 0x00FFFF)).queue());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
+
 
     public void getGuildVariable(Guild guild) {
         // 註冊全域指令
@@ -338,7 +348,7 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("play", "加入播放音樂")
-                        .addOptions(new OptionData(STRING, URL, "播放輸入的網址或歌曲名")
+                        .addOptions(new OptionData(STRING, NAME, "播放輸入的網址或歌曲名")
                                 .setRequired(false)) // 若未填則開始播放音樂
         );
         command.addCommands(
@@ -380,6 +390,12 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("previous", "播放上一首音樂")
+        );
+        command.addCommands(
+                new CommandData("help", "顯示幫助列表")
+        );
+        command.addCommands(
+                new CommandData("playing", "顯示播放列表")
         );
 
         command.queue();
@@ -410,7 +426,7 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("play", "加入播放音樂")
-                        .addOptions(new OptionData(STRING, URL, "播放輸入的網址或歌曲名")
+                        .addOptions(new OptionData(STRING, NAME, "播放輸入的網址或歌曲名")
                                 .setRequired(false)) // 若未填則開始播放音樂
         );
         command.addCommands(
@@ -453,9 +469,15 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("previous", "播放上一首音樂")
         );
+        command.addCommands(
+                new CommandData("help", "顯示幫助列表")
+        );
+        command.addCommands(
+                new CommandData("playing", "顯示播放列表")
+        );
 //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")
-//                        .addOptions(new OptionData(STRING, URL, "強制插入並播放輸入的網址或歌曲名")
+//                        .addOptions(new OptionData(STRING, NAME, "強制插入並播放輸入的網址或歌曲名")
 //                                .setRequired(true))
 //        );
 //        command.addCommands(
@@ -464,27 +486,10 @@ public class SlashCommandManager extends ListenerAdapter {
 //                                .setRequired(false)) // 若未填則移除全部歌曲並繼續播放音樂
 //        );
 //        command.addCommands(
-//                new CommandData("connect", "連接至語音頻道")
-//        );
-//        command.addCommands(
-//                new CommandData("join", "連接至語音頻道")
-//        );
-//        command.addCommands(
-//                new CommandData("summon", "連接至語音頻道")
-//        );
-//        command.addCommands(
-//                new CommandData("disconnect", "取消連線至語音頻道")
-//        );
-//        command.addCommands(
-//                new CommandData("leave", "取消連線至語音頻道")
-//        command.addCommands(
 //                new CommandData("stop", "停止播放並清除列表")
 //        );
 //        command.addCommands(
 //                new CommandData("random", "將歌單洗牌")
-//        );
-//        command.addCommands(
-//                new CommandData("playing", "目前播放數據")
 //        );
 //        command.addCommands(
 //                new CommandData("shuffle", "將歌單洗牌")

@@ -9,6 +9,7 @@ public class SlashCommandOption {
     public final static String REASON = "reason";
     public final static String WHICH = "which";
     public final static String URL = "url";
+    public final static String NAME = "name";
     public final static String DAYS = "days";
     public final static String USER_ID = "user_id";
     public final static String QUESTION = "question";

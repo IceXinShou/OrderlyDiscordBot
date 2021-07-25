@@ -57,13 +57,13 @@ public class TrackScheduler extends AudioEventAdapter {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
-        // 嘗試播放
-        queue(trackList.get(0), event, musicBot);
 
+        // 加入序列
         for (int i = 1; i < trackList.size(); i++) {
-            // 加入序列
             queue.add(trackList.get(i));
         }
+        // 嘗試播放
+        queue(trackList.get(0), event, musicBot, 0);
 
         this.event.addPlayerListToQueue(playlist, event);
     }
@@ -74,11 +74,14 @@ public class TrackScheduler extends AudioEventAdapter {
      * @param track    The track to play or add to queue.
      * @param musicBot
      */
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position) {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
-        queue.add(track);
+        if (position != -1)
+            queue.add(position, track);
+        else
+            queue.add(track);
         if (!player.startTrack(track, true)) {
             // 加入序列
             this.event.addToQueue(track, event);
@@ -261,7 +264,7 @@ public class TrackScheduler extends AudioEventAdapter {
             while ((length = in.read(buff)) > 0) {
                 out.write(buff, 0, length);
             }
-            return out.toString("UTF8");
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return null;
