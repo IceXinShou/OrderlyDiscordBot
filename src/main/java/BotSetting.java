@@ -22,7 +22,6 @@ import static main.java.event.Log.consoleChannel;
 
 public class BotSetting {
     private final static String settingFileName = "settings.yml";
-    public static List<MessageEmbed.Field> helpFields = new ArrayList<>();
     public static String botToken,
             helpBlockFooter,
             adminPermissionID, botRoleID,
@@ -161,42 +160,6 @@ public class BotSetting {
             configFolder.mkdir();
 
         System.out.println(TAG + " Variable loaded");
-        /**
-         * Help Fields
-         */
-
-        helpFields.add(new MessageEmbed.Field("",
-                """
-                        **__指令__ | __Commands__**
-
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                        ┃　**音樂 | Music**
-                        ┃
-                        ┃　　`/play (URL | NAME)` | 播放網址或查詢音樂
-                        ┃　　`/previous` | 播放前一首音樂
-                        ┃　　`/pause` | 暫停播放
-                        ┃　　`/skip` | 播放下一首音樂
-                        ┃　　`/loop` | 切換循環模式
-                        ┃　　`/repeat` | 切換單曲循環模式
-                        ┃　　`/queue` | 顯示播放數據或列表
-                        ┃　　`/playing` | 顯示播放數據或列表
-                        ┃　　`/volume (COUNT)` | 更改音樂音量 (1-100)
-                        ┗"""
-                , false));
-
-
-        helpFields.add(new MessageEmbed.Field("",
-                """
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                        ┃　**通用 | General**
-                        ┃
-                        ┃　　`/clear <COUNT>` | 刪除訊息
-                        ┃　　`/ban <@>` | 封鎖成員
-                        ┃　　`/unban <ID>` | 解除封鎖成員
-                        ┃　　`/poll <Q> (A) ...` | 發起投票
-                        ┗"""
-                , false));
-
     }
 
     public void reloadConfig() {

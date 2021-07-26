@@ -128,12 +128,17 @@ public class MusicBot {
 
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
 
-        if (searchAble)
-            event.replyEmbeds(embed[0], embed[1]).addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus)).setEphemeral(true).queue();
-        else
+        if (searchAble) {
+            event.replyEmbeds(embed[0], embed[1]).addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+                    .setEphemeral(true).queue();
+        } else
             event.getHook().editOriginalComponents().setEmbeds(embed[0], embed[1])
                     .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
                     .queue();
+    }
+
+    public void disconnect(SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.stopPlay(event);
     }
 
     /**
@@ -212,7 +217,7 @@ public class MusicBot {
                         loopStatus == 0 ? Emoji.fromUnicode("➡️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause:" + botID, "",
                         pauseStatus ? Emoji.fromUnicode("▶️") : Emoji.fromUnicode("⏸️")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":nextToPlay:" + botID, "", Emoji.fromUnicode("⏭️")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicNext:" + botID, "", Emoji.fromUnicode("⏭️")),
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown:" + botID, "", Emoji.fromUnicode("\uD83D\uDD09")),
                 Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp:" + botID, "", Emoji.fromUnicode("\uD83D\uDD0A")));
     }
@@ -276,4 +281,5 @@ public class MusicBot {
     public String getID() {
         return botID;
     }
+
 }

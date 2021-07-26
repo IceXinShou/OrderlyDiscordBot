@@ -23,8 +23,8 @@ import static main.java.util.JsonKeys.CHINESE_NICK;
 public class TicketChannel extends ListenerAdapter {
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent event) {
-        String memberName = memberData.getJSONObject(event.getUser().getId()).getString(CHINESE_NICK);
         if (event.getComponentId().equals("newTicket")) {
+            String memberName = memberData.getJSONObject(event.getUser().getId()).getString(CHINESE_NICK);
             Category category = null;
             int i = 0;
             for (; i < serviceCategoryID.size(); i++) {
@@ -56,6 +56,5 @@ public class TicketChannel extends ListenerAdapter {
             if (event.getMember().hasPermission(Permission.MANAGE_CHANNEL))
                 event.getTextChannel().delete().queue();
         }
-        event.deferEdit().queue();
     }
 }

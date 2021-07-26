@@ -71,10 +71,12 @@ public class Clear {
                     Message thisMessage = deleteMessage.get(i);
                     String messageContent = thisMessage.getContentRaw();
                     String memberNickName;
-                    if (thisMessage.getMember().getNickname() == null)
+                    if (thisMessage.getMember() == null)
+                        memberNickName = "找無成員";
+                    else if (thisMessage.getMember().getNickname() == null)
                         memberNickName = "名字找無";
                     else
-                        memberNickName = thisMessage.getMember().getNickname();
+                        memberNickName = "無";
 
                     if (messageContent.length() == 0)
                         messageContent = "找無";

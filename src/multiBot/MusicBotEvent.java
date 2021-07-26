@@ -46,9 +46,10 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     public void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild) {
         if (event != null) {
             event.getHook().editOriginalEmbeds(createEmbed("已跳過", 0xD3DAFF)).queue();
+            if (guild.getId().equals(guildID))
+                logChannel.sendMessage("跳過 `" + lastTrack.getInfo().title + "`").queue();
         }
-        if (guild.getId().equals(guildID))
-            logChannel.sendMessage("跳過 `" + lastTrack.getInfo().title + "`").queue();
+
     }
 
     @Override

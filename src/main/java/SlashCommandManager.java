@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static main.java.BotSetting.*;
 import static main.java.SlashCommandOption.*;
@@ -145,6 +146,10 @@ public class SlashCommandManager extends ListenerAdapter {
                 helpCommand.onCommand(event);
                 return;
             }
+            case "ping" -> {
+                event.getHook().editOriginalEmbeds(createEmbed("Ping: " + event.getJDA().getGatewayPing(), 0x00FFFF)).queue();
+                return;
+            }
         }
         event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
     }
@@ -207,12 +212,11 @@ public class SlashCommandManager extends ListenerAdapter {
                             "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
                             "You have invited <**" + event.getGuild().getSelfMember().getUser().getName() +
                             "**> join <**" + event.getGuild().getName() +
-                            "**> Discord Server", "", "", "", "", helpFields, OffsetDateTime.now(), 0x00FFFF)).queue());
+                            "**> Discord Server", "", "", "", "", helpCommand.summonFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
-
 
     public void getGuildVariable(Guild guild) {
         // 註冊全域指令
@@ -399,6 +403,15 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("playing", "顯示播放列表")
         );
+        command.addCommands(
+                new CommandData("leave", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("disconnect", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("stop", "退出語音頻道")
+        );
 
         command.queue();
     }
@@ -477,6 +490,15 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("playing", "顯示播放列表")
         );
+        command.addCommands(
+                new CommandData("leave", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("disconnect", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("stop", "退出語音頻道")
+        );
 //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")
 //                        .addOptions(new OptionData(STRING, NAME, "強制插入並播放輸入的網址或歌曲名")
@@ -486,9 +508,6 @@ public class SlashCommandManager extends ListenerAdapter {
 //                new CommandData("remove", "移除音樂")
 //                        .addOptions(new OptionData(INTEGER, WHICH, "移除全部或是指定的歌曲")
 //                                .setRequired(false)) // 若未填則移除全部歌曲並繼續播放音樂
-//        );
-//        command.addCommands(
-//                new CommandData("stop", "停止播放並清除列表")
 //        );
 //        command.addCommands(
 //                new CommandData("random", "將歌單洗牌")
@@ -503,14 +522,16 @@ public class SlashCommandManager extends ListenerAdapter {
     public void addCommandEveryWhere(JDA jda) {
 
         CommandListUpdateAction command = jda.updateCommands();
-
         command.addCommands(
-                new CommandData("nick", "更改專屬伺服器暱稱")
+                new CommandData("nick", "更改專屬伺服器暱稱").setDefaultEnabled(false)
         );
         command.addCommands(
-                new CommandData("join", "填寫專屬伺服器加入申請")
+                new CommandData("join", "填寫專屬伺服器加入申請").setDefaultEnabled(false)
         );
-        command.complete();
+        command.addCommands(
+                new CommandData("ping", "延遲測試").setDefaultEnabled(true)
+        );
+        command.queue();
     }
 
 }

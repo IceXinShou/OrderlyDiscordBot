@@ -5,7 +5,6 @@ import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -14,7 +13,6 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageUpdateAction;
 import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.json.JSONArray;
@@ -91,6 +89,12 @@ public class MultiMusicBotManager {
             case "pause":
                 if (checkVcState(event, bot))
                     bot.pause(event, event.getGuild(), false);
+                break;
+            case "stop":
+            case "leave":
+            case "disconnect":
+                if (checkVcState(event, bot))
+                    bot.disconnect(event, event.getGuild());
                 break;
             case "queue":
             case "playing":
@@ -179,8 +183,9 @@ public class MultiMusicBotManager {
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
-        if (!checkVcState(event))
+        if (!checkVcState(event) || !args[1].startsWith("music")) {
             return;
+        }
 
         MusicBot bot = bots.get(args[2]);
         GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
@@ -210,7 +215,7 @@ public class MultiMusicBotManager {
             case "musicPause":
                 scheduler.pause(null, false);
                 break;
-            case "nextToPlay":
+            case "musicNext":
                 scheduler.nextTrack(null);
                 break;
             case "musicVolumeUp":
@@ -222,14 +227,10 @@ public class MultiMusicBotManager {
                 player.setVolume(Math.max(volume, 0));
                 break;
             default:
-                return;
         }
 
         MessageEmbed[] embed = bot.playStatus(event.getMember(), scheduler);
-        WebhookMessageUpdateAction<Message> message = event.getHook().editOriginalEmbeds(embed[0], embed[1]);
-        message.setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus));
-        message.queue();
-
+        event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus)).queue();
     }
 
     public void onSelectMenu(SelectionMenuEvent event, String[] args) {
