@@ -86,7 +86,8 @@ public class MusicBotEvent implements GuildMusicManager.Event {
 
     @Override
     public void volumeChange(int volume, SlashCommandEvent event) {
-        event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
+        if (event != null)
+            event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
     }
 
 }

@@ -1,7 +1,8 @@
 package main.java.command;
 
+import main.java.util.EmojiUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -16,8 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.java.util.Funtions.createEmbed;
+import static main.java.Main.emoji;
+import static main.java.command.Invite.authChannelID;
 import static main.java.util.Funtions.isBotOwner;
+import static main.java.util.Funtions.tagChannel;
 
 public class QuickUse extends ListenerAdapter {
     Map<String, List<ActionRow>> games = new HashMap<>();
@@ -36,24 +39,24 @@ public class QuickUse extends ListenerAdapter {
             /**
              * Chinese
              */
-            /*
+
             EmbedBuilder helpBlockChinese = new EmbedBuilder();
             helpBlockChinese.setTitle("原之序 | ORDERLY SERVER");
             helpBlockChinese.setFooter("新手 XinShou");
             helpBlockChinese.addField(emoji.no1.getAsMention() + " 初衷", "以紀律為核心發展的伺服器，希望每位成員可以共同帶動伺服器發展", false);
             helpBlockChinese.addField(emoji.partner.getAsMention() + " 憧憬", "成員們可以在此平等的交流，有任何問題都可以互相幫助", false);
-            helpBlockChinese.addField(emoji.discord.getAsMention() + " 加入方式",
-                    emoji.dotEmojis[4].getAsMention() + "" +
-                            "邀請者要為被邀請的成員之行為負責並持續 1 個月\n" +
-                            emoji.dotEmojis[7].getAsMention() + "" +
-                            "加入時，需輸入正確的**二字中文暱稱**與 **Minecraft / English 名字**\n" +
-                            emoji.dot6.getAsMention() + "" +
-                            "必須詳閱並同意規則與注意事項，如有疑慮，隨時可向管理員反應", false);
+            helpBlockChinese.addField(emoji.discord.getAsMention() + " 加入方式", "" +
+                    EmojiUtil.dotEmojis[6].getAsMention() + "" +
+                    "必須詳閱並同意規則與注意事項，如有疑慮，隨時可向管理員反應\n\n" +
+                    EmojiUtil.dotEmojis[4].getAsMention() + "" +
+                    "邀請者要為被邀請的成員之行為負責並持續 1 個月\n\n" +
+                    EmojiUtil.dotEmojis[5].getAsMention() + "" +
+                    "請邀請者在 <" + tagChannel(authChannelID) + "> 使用指令將被邀請者邀請進來\n", false);
             helpBlockChinese.addBlankField(false);
             helpBlockChinese.addField(emoji.minecraftGrassBlock.getAsMention() + " 此為暫定公告，尚未正式開放！", "目前伺服器尚在籌備中，有意願加入的成員可以在此等待，感謝您", false);
             helpBlockChinese.setColor(0X00FFFF);
             helpBlockChinese.setTimestamp(event.getMessage().getTimeCreated());
-*/
+
 
             /**
              * English
@@ -76,9 +79,9 @@ public class QuickUse extends ListenerAdapter {
             helpBlockEnglish.setColor(0X00FFFF);
             helpBlockEnglish.setTimestamp(event.getMessage().getTimeCreated());
 */
-/*
-            event.getChannel().sendMessage(helpBlockChinese.build()).queue();
-            event.getChannel().sendMessage(helpBlockEnglish.build()).queue();
+
+            event.getChannel().editMessageEmbedsById("860430606512029716", helpBlockChinese.build()).queue();
+/*            event.getChannel().sendMessage(helpBlockEnglish.build()).queue();
 
             MessageBuilder builder = new MessageBuilder();
             builder.setContent("如果有任何問題或是投訴可點擊下方按鈕" + "(亂按的ban掉");

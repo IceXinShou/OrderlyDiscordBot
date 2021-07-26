@@ -46,7 +46,7 @@ public class Main {
          * init bot
          */
         JDABuilder builder = JDABuilder.createDefault(botToken)
-                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
+//                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
                 .setCompression(Compression.ZLIB) // Disable compression (not recommended)
                 .setLargeThreshold(250)

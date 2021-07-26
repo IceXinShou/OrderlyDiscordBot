@@ -55,6 +55,7 @@ public class SlashCommandManager extends ListenerAdapter {
     MultiMusicBotManager musicManager;
     Poll pollCommand;
     Help helpCommand;
+    BotInfo botInfo;
 
     SlashCommandManager() {
         banCommand = new Ban();
@@ -65,6 +66,7 @@ public class SlashCommandManager extends ListenerAdapter {
         kickCommand = new Kick();
         pollCommand = new Poll();
         helpCommand = new Help();
+        botInfo = new BotInfo();
         System.out.println(TAG + " Listener loaded!");
     }
 
@@ -148,6 +150,10 @@ public class SlashCommandManager extends ListenerAdapter {
             }
             case "ping" -> {
                 event.getHook().editOriginalEmbeds(createEmbed("Ping: " + event.getJDA().getGatewayPing(), 0x00FFFF)).queue();
+                return;
+            }
+            case "botinfo" -> {
+                botInfo.onCommand(event);
                 return;
             }
         }
@@ -412,6 +418,9 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
         );
+        command.addCommands(
+                new CommandData("botinfo", "顯示機器人訊息")
+        );
 
         command.queue();
     }
@@ -498,6 +507,9 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("botinfo", "顯示機器人訊息")
         );
 //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")

@@ -103,7 +103,7 @@ public class MultiMusicBotManager {
                 break;
             case "volume":
                 if (checkVcState(event, bot)) {
-                    Integer volume = null;
+                    Integer volume = 50;
                     if (event.getOption(COUNT) != null)
                         if (event.getOption(COUNT).getAsLong() <= 100)
                             volume = (int) event.getOption(COUNT).getAsLong();
@@ -219,12 +219,12 @@ public class MultiMusicBotManager {
                 scheduler.nextTrack(null);
                 break;
             case "musicVolumeUp":
-                volume = player.getVolume() + 5;
-                player.setVolume(Math.min(volume, 100));
+                volume = scheduler.getVolume() + 5;
+                scheduler.setVolume(Math.min(volume, 100), null);
                 break;
             case "musicVolumeDown":
-                volume = player.getVolume() - 5;
-                player.setVolume(Math.max(volume, 0));
+                volume = scheduler.getVolume() - 5;
+                scheduler.setVolume(Math.max(volume, 0), null);
                 break;
             default:
         }

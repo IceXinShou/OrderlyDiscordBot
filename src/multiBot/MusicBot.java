@@ -68,7 +68,7 @@ public class MusicBot {
     }
 
     public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {
-        getMusicManager(guild).scheduler.changeVolume(volume, event);
+        getMusicManager(guild).scheduler.setVolume(volume, event);
     }
 
     public void nextTrack(SlashCommandEvent event) {
@@ -170,7 +170,7 @@ public class MusicBot {
                     .append("]**\n");
 
             // 音量顯示
-            int volumePercent = (int) (getMusicManager(member.getGuild()).player.getVolume() / 5f);
+            int volumePercent = (int) (getMusicManager(member.getGuild()).scheduler.getVolume() / 5);
             progress.append("\n")
                     .append("**音量: **")
                     .append("◆".repeat(volumePercent))
@@ -178,6 +178,8 @@ public class MusicBot {
                     .append(scheduler.loopStatus == 0 ? " <順序播放>\n" : (scheduler.loopStatus == 1 ? " <循環播放>\n" : " <單曲循環>\n"));
 
             // 組裝
+
+
             nowPlaying = createEmbed("**" + trackInfo.title + "**", trackInfo.uri,
                     progress.toString(),
                     new StringBuilder()
@@ -187,8 +189,7 @@ public class MusicBot {
                             .append(" | \uD83D\uDC4E ").append(String.format("%,d", Long.parseLong(statistics.getString("dislikeCount"))))
                             .append(" | \uD83D\uDCAC ").append(String.format("%,d", Long.parseLong(statistics.getString("commentCount"))))
                             .append(" | \uD83D\uDD0A").append(String.format("%.2f db", scheduler.loudness)).toString()
-
-                    , trackInfo.author, urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"),
+                    , trackInfo.author, urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"), urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"),
                     0xe5b849);
         } else {
             nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");

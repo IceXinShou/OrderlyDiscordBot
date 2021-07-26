@@ -149,6 +149,21 @@ public class Funtions {
                 null, null);
     }
 
+    public static MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, String image, int color) {
+        return new MessageEmbed(url,
+                title,
+                description,
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                new MessageEmbed.ImageInfo(image, null, 720, 404), null);
+    }
+
     /**
      * Tag
      */

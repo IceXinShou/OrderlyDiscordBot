@@ -22,12 +22,7 @@ GeneralSettings:
 
   # watching / listening / playing / competing / streaming
   activityMessage:
-    - "listening;原之序 | ORDERLY SERVER"
-    - "listening;無損音質音樂"
-    - "listening;簡約投票系統"
-    - "listening;有任何問題歡迎通知 XinShou#0404"
-    - "competing;貓貓❤狗狗"
-    - "competing;麻麻❤新手"
+    - "competing;/help"
 
   # Youtube API KEY (https:// console.cloud.google.com/apis/)
   apiKey: "AIzaSyA6KoqXbs5ZI2Zqlo-BcUPULQDBe8fVWPw"

@@ -40,7 +40,7 @@ public class TrackScheduler extends AudioEventAdapter {
     // setting
     public boolean repeat;
     public boolean loop;
-    private final int defaultVolume = 20;
+    private final int defaultVolume = 40;
 
     public int loopStatus = 0;
 
@@ -70,9 +70,8 @@ public class TrackScheduler extends AudioEventAdapter {
 
     /**
      * Add the next track to queue or play right away if nothing is in the queue.
-     *  @param track    The track to play or add to queue.
-     * @param musicBot
-     * @param searchAble
+     *
+     * @param track The track to play or add to queue.
      */
     public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean searchAble) {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
@@ -89,7 +88,7 @@ public class TrackScheduler extends AudioEventAdapter {
             // 開始撥放
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
-            calculateNormalized(track, defaultVolume);
+            calculateNormalized(track);
             this.event.playStart(track, event, guild, musicBot, searchAble);
         }
     }
@@ -123,7 +122,7 @@ public class TrackScheduler extends AudioEventAdapter {
         if (player.startTrack(track, false)) {
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
-            calculateNormalized(track, defaultVolume);
+            calculateNormalized(track);
             return true;
         }
         return false;
@@ -205,23 +204,32 @@ public class TrackScheduler extends AudioEventAdapter {
     /**
      * volume control
      */
+    private int range = 2;
     private double percent = -1;
-    public float loudness = 0f;
+    public float loudness = 0;
+    private int volume;
 
-    public void changeVolume(Integer targetVolume, SlashCommandEvent event) {
-
+    public void setVolume(Integer targetVolume, SlashCommandEvent event) {
         if (targetVolume == null)
             targetVolume = defaultVolume;
 
-        if (percent > -1) {
-            player.setVolume((int) Math.round(percent * targetVolume));
-        } else
-            player.setVolume(targetVolume);
+        volume = targetVolume;
+
+        if (percent > -1)
+            player.setVolume((int) (Math.round(percent * targetVolume) / range));
+        else
+            player.setVolume(targetVolume / range);
 
         this.event.volumeChange(targetVolume, event);
     }
 
-    private void calculateNormalized(AudioTrack audioTrack, int defaultVolume) {
+    public int getVolume() {
+        return volume;
+    }
+
+
+    //https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
+    private void calculateNormalized(AudioTrack audioTrack) {
         String videoID = audioTrack.getInfo().identifier;
 
         // get video info
@@ -230,7 +238,7 @@ public class TrackScheduler extends AudioEventAdapter {
         String result = getUrl(url, payload);
 
         if (result == null) {
-            player.setVolume(defaultVolume);
+            player.setVolume(defaultVolume / range);
             return;
         }
 
@@ -238,7 +246,8 @@ public class TrackScheduler extends AudioEventAdapter {
         if (playerResponse.has("loudnessDb"))
             loudness = playerResponse.getFloat("loudnessDb");
         percent = ((95 + -7.22 * loudness) / 100);
-        player.setVolume((int) Math.round(percent * defaultVolume) + 2);
+        volume = defaultVolume;
+        player.setVolume((int) Math.round(percent * defaultVolume) / range);
     }
 
     public String getUrl(String input, String payload) {
