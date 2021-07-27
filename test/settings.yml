@@ -11,6 +11,7 @@ GeneralSettings:
   folder:
     channelLogFolder: "channelLog"
     configFolder: "configFolder"
+    levelFolder: "levelFolder"
 
   # Can pass permission limit
   botOwnerID:

@@ -3,7 +3,6 @@ package main.java;
 import main.java.command.Invite;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import org.yaml.snakeyaml.Yaml;
 
@@ -46,6 +45,7 @@ public class BotSetting {
 
     public static List<String[]> activityMessages = new ArrayList<>();
     public static File channelLogFolder;
+    public static File levelFolder;
     public static File configFolder;
     public static Map<String, Object> settings;
     public static Map<String, Object> IDSettings;
@@ -150,6 +150,7 @@ public class BotSetting {
         Map<String, Object> folder = (Map<String, Object>) GeneralSettings.get("folder");
 
         channelLogFolder = new File((String) folder.get("channelLogFolder"));
+        levelFolder = new File((String) folder.get("levelFolder"));
         configFolder = new File((String) folder.get("configFolder"));
 
         // create folder
@@ -158,6 +159,9 @@ public class BotSetting {
 
         if (!configFolder.exists())
             configFolder.mkdir();
+
+        if (!levelFolder.exists())
+            levelFolder.mkdir();
 
         System.out.println(TAG + " Variable loaded");
     }

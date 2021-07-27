@@ -10,6 +10,7 @@ public class JsonKeys {
     public final static String SENDER = "S";
     public final static String TIME = "T";
     public final static String CHINESE_NICK = "C";
+    public final static String COUNT = "N";
     public final static String ENGLISH_NICK = "E";
     public final static String MINECRAFT_ID = "M";
     public final static String PLAY_MINECRAFT = "H";

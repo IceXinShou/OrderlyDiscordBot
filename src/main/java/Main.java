@@ -1,6 +1,7 @@
 package main.java;
 
 import main.java.automatic.InformationReaction;
+import main.java.automatic.Level;
 import main.java.automatic.TicketChannel;
 import main.java.command.QuickUse;
 import main.java.event.GeneralReplay;
@@ -26,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import static main.java.BotSetting.activityMessages;
 import static main.java.BotSetting.botToken;
 
-
 public class Main {
     public static String botID;
     public static String botNickname, botAvatarUrl;
@@ -46,7 +46,7 @@ public class Main {
          * init bot
          */
         JDABuilder builder = JDABuilder.createDefault(botToken)
-//                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
+                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
                 .setCompression(Compression.ZLIB) // Disable compression (not recommended)
                 .setLargeThreshold(250)
@@ -61,6 +61,7 @@ public class Main {
         jda.addEventListener(new TicketChannel());
         jda.addEventListener(new InformationReaction());
         jda.addEventListener(new QuickUse());
+        jda.addEventListener(new Level());
         SlashCommandManager commandManager = new SlashCommandManager();
         jda.addEventListener(commandManager);
 

@@ -51,7 +51,7 @@ public class Log extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
-        logChannel.sendMessage(
+        logChannel.sendMessageEmbeds(
                 createEmbed(
                         (emoji.rightArrow.getAsMention() + " 進入 " +
                                 event.getChannelJoined().getName()), null,
@@ -65,7 +65,7 @@ public class Log extends ListenerAdapter {
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
-        logChannel.sendMessage(
+        logChannel.sendMessageEmbeds(
                 createEmbed(
                         emoji.leftArrow.getAsMention() +
                                 " 退出 " + event.getChannelLeft().getName()
@@ -83,8 +83,11 @@ public class Log extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        String channelID = event.getMessage().getChannel().getId();
 
-        JsonFileManager channelFileManager = clh.getChannelFileManager(event.getChannel().getId());
+        if (channelID.equals(consoleChannelID) || channelID.equals(logChannelID) || event.getMessage().getContentRaw().length() == 0)
+            return;
+        JsonFileManager channelFileManager = clh.getChannelFileManager(channelID);
         JSONObject data = channelFileManager.data;
         JSONObject messageContent = new JSONObject()
                 .put(MESSAGE, event.getMessage().getContentRaw()) // Message
@@ -109,7 +112,7 @@ public class Log extends ListenerAdapter {
         data.put(event.getMessage().getId(), messageContent);
         channelFileManager.saveFile();
 
-        logChannel.sendMessage(
+        logChannel.sendMessageEmbeds(
                 createEmbed(
                         "更改訊息", null,
                         "更改訊息",
@@ -149,7 +152,7 @@ public class Log extends ListenerAdapter {
                 avatarUrl = member.getUser().getAvatarUrl();
                 nickname = member.getNickname();
                 if (nickname == null)
-                    nickname = member.getUser().getName();
+                    nickname = member.getUser().getAsTag();
             }
             message = messageLog.getString(MESSAGE);
         } else {
@@ -159,7 +162,7 @@ public class Log extends ListenerAdapter {
             avatarUrl = Main.self.getDefaultAvatarUrl();
         }
 
-        logChannel.sendMessage(
+        logChannel.sendMessageEmbeds(
                 createEmbed(event.getChannel().getName()
                         , message,
                         "刪除訊息",
@@ -176,7 +179,7 @@ public class Log extends ListenerAdapter {
     @Override
     public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
-        logChannel.sendMessage(
+        logChannel.sendMessageEmbeds(
                 createEmbed(
                         "新增權限: ", event.getRoles().get(0).toString(),
                         "新增權限",

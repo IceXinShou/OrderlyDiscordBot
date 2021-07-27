@@ -86,8 +86,12 @@ public class MusicBot {
         getMusicManager(event.getGuild()).scheduler.toggleRepeat(event);
     }
 
-    public void pause(SlashCommandEvent event, Guild guild, boolean play) {
-        getMusicManager(guild).scheduler.pause(event, play);
+    public void pause(SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.pause(event);
+    }
+
+    public void play(SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.play(event);
     }
 
     public void loadAndPlay(final GenericInteractionCreateEvent event, final String trackUrl, boolean searchAble) {
@@ -188,7 +192,7 @@ public class MusicBot {
                             .append(" | \uD83D\uDC4D ").append(String.format("%,d", Long.parseLong(statistics.getString("likeCount"))))
                             .append(" | \uD83D\uDC4E ").append(String.format("%,d", Long.parseLong(statistics.getString("dislikeCount"))))
                             .append(" | \uD83D\uDCAC ").append(String.format("%,d", Long.parseLong(statistics.getString("commentCount"))))
-                            .append(" | \uD83D\uDD0A").append(String.format("%.2f db", scheduler.loudness)).toString()
+                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", scheduler.loudness)).toString()
                     , trackInfo.author, urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"), urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"),
                     0xe5b849);
         } else {

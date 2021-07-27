@@ -180,7 +180,6 @@ public class QuickUse extends ListenerAdapter {
         return actionRow;
     }
 
-
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent event) {
         String[] args = event.getComponentId().split(";");

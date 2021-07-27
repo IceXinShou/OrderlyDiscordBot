@@ -1,11 +1,13 @@
 package main.java.command;
 
 import main.java.funtion.JsonFileManager;
+import main.java.util.EmojiUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 import org.json.JSONArray;
@@ -19,7 +21,6 @@ import java.util.Map;
 
 import static main.java.BotSetting.configFolder;
 import static main.java.BotSetting.memberRole;
-import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.CHANNEL_TAG;
 import static main.java.SlashCommandOption.USER_TAG;
 import static main.java.event.Join.memberData;
@@ -326,8 +327,8 @@ public class VoiceChannel {
 
         Member vcOwner = guild.retrieveMemberById(vcOwnerID).complete();
         List<MessageEmbed.Field> fields = new ArrayList<>();
-        fields.add(new MessageEmbed.Field(emoji.dotEmojis[4].getAsMention() + " 主人: ", tagUser(vcOwnerID), false));
-        fields.add(new MessageEmbed.Field(emoji.dotEmojis[7].getAsMention() + " 管理員: ", adminsBuilder.toString(), false));
+        fields.add(new MessageEmbed.Field(EmojiUtil.dotEmojis[4].getAsMention() + " 主人: ", tagUser(vcOwnerID), false));
+        fields.add(new MessageEmbed.Field(EmojiUtil.dotEmojis[7].getAsMention() + " 管理員: ", adminsBuilder.toString(), false));
 
         event.getHook().editOriginalEmbeds(createEmbed(
                 vcName + " 的資訊", null,
@@ -367,8 +368,9 @@ public class VoiceChannel {
         return true;
     }
 
-    public void onButton(String[] args) {
+    public void onButton(ButtonClickEvent event, String[] args) {
         if (args[1].equals("vc_giveAdmin")) {
+            event.deferEdit().setEmbeds(createEmbed("添加成功", 0x9740b9)).setActionRows().queue();
             JSONObject ownerInfo = voiceChannelData.getJSONObject(args[0]);
 
             JSONArray admins;

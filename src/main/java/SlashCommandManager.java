@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static main.java.BotSetting.*;
 import static main.java.SlashCommandOption.*;
@@ -56,6 +55,7 @@ public class SlashCommandManager extends ListenerAdapter {
     Poll pollCommand;
     Help helpCommand;
     BotInfo botInfo;
+    Support support;
 
     SlashCommandManager() {
         banCommand = new Ban();
@@ -67,6 +67,7 @@ public class SlashCommandManager extends ListenerAdapter {
         pollCommand = new Poll();
         helpCommand = new Help();
         botInfo = new BotInfo();
+        support = new Support();
         System.out.println(TAG + " Listener loaded!");
     }
 
@@ -156,6 +157,10 @@ public class SlashCommandManager extends ListenerAdapter {
                 botInfo.onCommand(event);
                 return;
             }
+            case "support" -> {
+                support.onCommand(event);
+                return;
+            }
         }
         event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
     }
@@ -171,7 +176,7 @@ public class SlashCommandManager extends ListenerAdapter {
 //        if (!args[1].equals("nevermind")) {
         clearCommand.onButton(event, args);
         createInviteCommand.onButton(event, args);
-        voiceChannelCommand.onButton(args);
+        voiceChannelCommand.onButton(event, args);
         musicManager.onButton(event, args);
 //        } else
 //            event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
@@ -214,9 +219,9 @@ public class SlashCommandManager extends ListenerAdapter {
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().queue(i ->
                     i.sendMessageEmbeds(createEmbed("您已邀請 <**" +
-                            event.getGuild().getSelfMember().getUser().getName() +
+                            event.getGuild().getSelfMember().getUser().getAsTag() +
                             "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
-                            "You have invited <**" + event.getGuild().getSelfMember().getUser().getName() +
+                            "You have invited <**" + event.getGuild().getSelfMember().getUser().getAsTag() +
                             "**> join <**" + event.getGuild().getName() +
                             "**> Discord Server", "", "", "", "", helpCommand.summonFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
         } catch (Exception e) {
@@ -421,6 +426,10 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("botinfo", "顯示機器人訊息")
         );
+        command.addCommands(
+                new CommandData("support", "傳送問題回報")
+                        .addOptions(new OptionData(STRING, MESSAGE, "訊息內容").setRequired(true))
+        );
 
         command.queue();
     }
@@ -510,6 +519,11 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("botinfo", "顯示機器人訊息")
+        );
+        command.addCommands(
+                new CommandData("support", "傳送問題回報")
+                        .addOptions(new OptionData(STRING, MESSAGE, "訊息內容")
+                                .setRequired(true))
         );
 //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")

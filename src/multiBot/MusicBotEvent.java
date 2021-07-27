@@ -20,7 +20,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void playStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble) {
+    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble) {
         if (musicBot != null) {
             musicBot.displayQueue(event, searchAble);
         }
@@ -76,7 +76,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void pause(boolean pause, SlashCommandEvent event, Guild guild) {
+    public void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild) {
         if (event != null) {
             event.getHook().editOriginalEmbeds(pause ? createEmbed("已暫停播放", 0xFF3B7D) : createEmbed("已開始播放", 0x75C44C)).queue();
         }

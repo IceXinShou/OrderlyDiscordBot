@@ -7,6 +7,7 @@ public class SlashCommandOption {
     public final static String CHANNEL_TAG = "channel";
     public final static String BOL = "toggle";
     public final static String REASON = "reason";
+    public final static String MESSAGE = "message";
     public final static String WHICH = "which";
     public final static String URL = "url";
     public final static String NAME = "name";

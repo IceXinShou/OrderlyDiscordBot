@@ -81,15 +81,15 @@ public class TrackScheduler extends AudioEventAdapter {
             queue.add(position, track);
         else
             queue.add(track);
-        if (!player.startTrack(track, true)) {
-            // 加入序列
-            this.event.addToQueue(track, event);
-        } else {
+        if (player.startTrack(track, true)) {
             // 開始撥放
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
             calculateNormalized(track);
-            this.event.playStart(track, event, guild, musicBot, searchAble);
+            this.event.trackStart(track, event, guild, musicBot, searchAble);
+        } else {
+            // 加入序列
+            this.event.addToQueue(track, event);
         }
     }
 
@@ -133,7 +133,7 @@ public class TrackScheduler extends AudioEventAdapter {
         index++;
         if (playTrack()) {
             this.event.skip(playingTrack, event, guild);
-            this.event.playStart(playingTrack, event, guild, null, false);
+            this.event.trackStart(playingTrack, event, guild, null, false);
         } else {
             stopPlay(event);
         }
@@ -144,7 +144,7 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index--;
         if (playTrack())
-            this.event.playStart(playingTrack, event, guild, null, false);
+            this.event.trackStart(playingTrack, event, guild, null, false);
         else
             stopPlay(event);
     }
@@ -183,21 +183,38 @@ public class TrackScheduler extends AudioEventAdapter {
     public boolean musicPause = false;
     private long pauseStart;
 
-    public void pause(SlashCommandEvent event, boolean play) {
-        if (play) {
-            if (musicPause) {
-                startPlayTime += System.currentTimeMillis() - pauseStart;
-                player.setPaused(false);
-                musicPause = false;
-            }
-        } else {
-            player.setPaused(musicPause = !musicPause);
-            if (musicPause)
-                pauseStart = System.currentTimeMillis();
-            else
-                startPlayTime += System.currentTimeMillis() - pauseStart;
+    public void pause(SlashCommandEvent event) {
+        if(!musicPause) {
+            pauseStart = System.currentTimeMillis();
+            player.setPaused(true);
+            musicPause = true;
+        }
+        this.event.pauseStateChange(true, event, guild);
+    }
 
-            this.event.pause(musicPause, event, guild);
+    public void play(SlashCommandEvent event) {
+        if(musicPause) {
+            startPlayTime += System.currentTimeMillis() - pauseStart;
+            player.setPaused(false);
+            musicPause = false;
+        }
+        this.event.pauseStateChange(false, event, guild);
+    }
+
+    public void switchPause() {
+        player.setPaused(musicPause = !musicPause);
+        if (musicPause)
+            pauseStart = System.currentTimeMillis();
+        else
+            startPlayTime += System.currentTimeMillis() - pauseStart;
+
+        this.event.pauseStateChange(musicPause, null, guild);
+    }
+
+    public void calculatePauseTime() {
+        if (musicPause) {
+            startPlayTime += System.currentTimeMillis() - pauseStart;
+            pauseStart = System.currentTimeMillis();
         }
     }
 

@@ -88,7 +88,7 @@ public class MultiMusicBotManager {
                 break;
             case "pause":
                 if (checkVcState(event, bot))
-                    bot.pause(event, event.getGuild(), false);
+                    bot.pause(event, event.getGuild());
                 break;
             case "stop":
             case "leave":
@@ -121,6 +121,7 @@ public class MultiMusicBotManager {
     }
 
     private void play(SlashCommandEvent event, MusicBot bot) {
+        System.out.println("platy");
         if (checkVcState(event)) {
             if (bot == null)
                 // 取得機器人
@@ -149,7 +150,7 @@ public class MultiMusicBotManager {
             OptionMapping url;
             // 開始撥放
             if ((url = event.getOption(NAME)) == null) {
-                bot.pause(event, event.getGuild(), true);
+                bot.play(event, event.getGuild());
                 event.getHook().editOriginalEmbeds(createEmbed("已開始播放", 0xbde3ae)).queue();
             } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                 bot.loadAndPlay(event, url.getAsString(), false);
@@ -183,13 +184,12 @@ public class MultiMusicBotManager {
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {
-        if (!checkVcState(event) || !args[1].startsWith("music")) {
+        if (args[1].startsWith("music") && !checkVcState(event)) {
             return;
         }
 
         MusicBot bot = bots.get(args[2]);
         GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
-        AudioPlayer player = manager.player;
         TrackScheduler scheduler = manager.scheduler;
         int volume;
         switch (args[1]) {
@@ -213,7 +213,7 @@ public class MultiMusicBotManager {
                 break;
             }
             case "musicPause":
-                scheduler.pause(null, false);
+                scheduler.switchPause();
                 break;
             case "musicNext":
                 scheduler.nextTrack(null);
@@ -229,6 +229,8 @@ public class MultiMusicBotManager {
             default:
         }
 
+        // 如果是等待的話要加時間
+        scheduler.calculatePauseTime();
         MessageEmbed[] embed = bot.playStatus(event.getMember(), scheduler);
         event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus)).queue();
     }

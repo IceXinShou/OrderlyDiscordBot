@@ -71,7 +71,7 @@ public class Invite {
     public void onButton(ButtonClickEvent event, String[] args) {
         if (args[1].equals("invite")) {
             // 這個user已經設定好伺服器暱稱
-            if (memberData.has(args[2])) {
+            if (memberData.has(args[2]) && !voiceChannelData.has(args[2])) {
                 // 加role
                 for (Role role : confirmRoleID) {
                     guild.addRoleToMember(args[2], role).queue();
@@ -94,9 +94,9 @@ public class Invite {
                     Category category = guild.getCategoryById(roomCategoryID.get(i));
                     if (category.getChannels().size() < 49) {
                         // 新增私人頻道
-                        guild.createVoiceChannel(defaultRoomName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).queue(nvc -> {
+                        guild.createVoiceChannel(defaultRoomName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).setBitrate(roomBitrate).queue(nvc -> {
                             // 創建專屬文字頻道
-                            guild.createTextChannel(defaultRoomChatName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).setBitrate(roomBitrate)
+                            guild.createTextChannel(defaultRoomChatName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category)
                                     .queue(ntc -> {
                                         nvc.createPermissionOverride(targetMember).setAllow(allow).queue();
                                         ntc.createPermissionOverride(targetMember).setAllow(allow).queue();
@@ -114,7 +114,9 @@ public class Invite {
                         break;
                     }
                 }
-            }
+                event.deferEdit().setEmbeds(createEmbed("添加成功", 0x9740b9)).setActionRows().queue();
+            } else
+                event.deferEdit().setEmbeds(createEmbed("添加失敗", 0xFF0000)).setActionRows().queue();
         }
     }
 }
