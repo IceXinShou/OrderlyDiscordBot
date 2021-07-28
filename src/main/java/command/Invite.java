@@ -1,8 +1,6 @@
 package main.java.command;
 
 import main.java.funtion.JsonFileManager;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,18 +11,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 
-import static main.java.BotSetting.*;
+import static main.java.BotSetting.configFolder;
+import static main.java.BotSetting.confirmRoleID;
 import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.USER_TAG;
-import static main.java.command.VoiceChannel.*;
+import static main.java.command.VoiceChannel.voiceChannelData;
 import static main.java.event.Join.memberData;
 import static main.java.event.Log.logChannel;
 import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
-import static main.java.util.JsonKeys.*;
 
 public class Invite {
     public static String authChannelID;

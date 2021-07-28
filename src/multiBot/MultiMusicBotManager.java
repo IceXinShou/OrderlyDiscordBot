@@ -236,7 +236,7 @@ public class MultiMusicBotManager {
         try {
             event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus,
                     bot.getMusicManager(event.getGuild().getId()).guild.getSelfMember().getVoiceState().getChannel().getId())).queue();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }

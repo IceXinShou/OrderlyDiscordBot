@@ -185,7 +185,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private long pauseStart;
 
     public void pause(SlashCommandEvent event) {
-        if(!musicPause) {
+        if (!musicPause) {
             pauseStart = System.currentTimeMillis();
             player.setPaused(true);
             musicPause = true;
@@ -194,7 +194,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void play(SlashCommandEvent event) {
-        if(musicPause) {
+        if (musicPause) {
             startPlayTime += System.currentTimeMillis() - pauseStart;
             player.setPaused(false);
             musicPause = false;
@@ -222,7 +222,7 @@ public class TrackScheduler extends AudioEventAdapter {
     /**
      * volume control
      */
-    private int range = 2;
+    private final int range = 2;
     private double percent = -1;
     public float loudness = 0;
     private int volume;

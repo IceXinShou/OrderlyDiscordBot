@@ -1,8 +1,6 @@
 package main.java.command;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,13 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.java.BotSetting.roomBitrate;
-import static main.java.command.VoiceChannel.voiceChannelData;
-import static main.java.event.Join.memberData;
 import static main.java.util.Funtions.isBotOwner;
-import static main.java.util.GuildUtil.guild;
-import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
-import static main.java.util.JsonKeys.VOICE_CHANNEL_ID;
 
 public class QuickUse extends ListenerAdapter {
     Map<String, List<ActionRow>> games = new HashMap<>();
@@ -169,17 +161,6 @@ public class QuickUse extends ListenerAdapter {
 //            }
 
 //            event.getGuild().leave().queue();
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
