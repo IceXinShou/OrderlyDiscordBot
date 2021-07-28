@@ -1,6 +1,5 @@
 package multiBot;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
@@ -94,7 +93,7 @@ public class MultiMusicBotManager {
             case "leave":
             case "disconnect":
                 if (checkVcState(event, bot))
-                    bot.disconnect(event, event.getGuild());
+                    bot.disconnect(event);
                 break;
             case "queue":
             case "playing":
@@ -121,7 +120,6 @@ public class MultiMusicBotManager {
     }
 
     private void play(SlashCommandEvent event, MusicBot bot) {
-        System.out.println("platy");
         if (checkVcState(event)) {
             if (bot == null)
                 // 取得機器人
@@ -187,6 +185,9 @@ public class MultiMusicBotManager {
         if (args[1].startsWith("music") && !checkVcState(event)) {
             return;
         }
+        if (!event.getMember().getVoiceState().getChannel().getId().equals(args[3])) {
+            event.deferEdit().setEmbeds(createEmbed("未知的頻道按鈕", 0xFF0000)).setActionRows().queue();
+        }
 
         MusicBot bot = bots.get(args[2]);
         GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
@@ -232,7 +233,12 @@ public class MultiMusicBotManager {
         // 如果是等待的話要加時間
         scheduler.calculatePauseTime();
         MessageEmbed[] embed = bot.playStatus(event.getMember(), scheduler);
-        event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus)).queue();
+        try {
+            event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus,
+                    bot.getMusicManager(event.getGuild().getId()).guild.getSelfMember().getVoiceState().getChannel().getId())).queue();
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
     }
 
     public void onSelectMenu(SelectionMenuEvent event, String[] args) {

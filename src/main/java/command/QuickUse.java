@@ -1,8 +1,8 @@
 package main.java.command;
 
-import main.java.util.EmojiUtil;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,10 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.java.Main.emoji;
-import static main.java.command.Invite.authChannelID;
+import static main.java.BotSetting.roomBitrate;
+import static main.java.command.VoiceChannel.voiceChannelData;
+import static main.java.event.Join.memberData;
 import static main.java.util.Funtions.isBotOwner;
-import static main.java.util.Funtions.tagChannel;
+import static main.java.util.GuildUtil.guild;
+import static main.java.util.JsonKeys.TEXT_CHANNEL_ID;
+import static main.java.util.JsonKeys.VOICE_CHANNEL_ID;
 
 public class QuickUse extends ListenerAdapter {
     Map<String, List<ActionRow>> games = new HashMap<>();
@@ -40,7 +43,7 @@ public class QuickUse extends ListenerAdapter {
              * Chinese
              */
 
-            EmbedBuilder helpBlockChinese = new EmbedBuilder();
+/*            EmbedBuilder helpBlockChinese = new EmbedBuilder();
             helpBlockChinese.setTitle("原之序 | ORDERLY SERVER");
             helpBlockChinese.setFooter("新手 XinShou");
             helpBlockChinese.addField(emoji.no1.getAsMention() + " 初衷", "以紀律為核心發展的伺服器，希望每位成員可以共同帶動伺服器發展", false);
@@ -56,7 +59,7 @@ public class QuickUse extends ListenerAdapter {
             helpBlockChinese.addField(emoji.minecraftGrassBlock.getAsMention() + " 此為暫定公告，尚未正式開放！", "目前伺服器尚在籌備中，有意願加入的成員可以在此等待，感謝您", false);
             helpBlockChinese.setColor(0X00FFFF);
             helpBlockChinese.setTimestamp(event.getMessage().getTimeCreated());
-
+*/
 
             /**
              * English
@@ -80,7 +83,7 @@ public class QuickUse extends ListenerAdapter {
             helpBlockEnglish.setTimestamp(event.getMessage().getTimeCreated());
 */
 
-            event.getChannel().editMessageEmbedsById("860430606512029716", helpBlockChinese.build()).queue();
+//            event.getChannel().editMessageEmbedsById("860430606512029716", helpBlockChinese.build()).queue();
 /*            event.getChannel().sendMessage(helpBlockEnglish.build()).queue();
 
             MessageBuilder builder = new MessageBuilder();
@@ -121,50 +124,66 @@ public class QuickUse extends ListenerAdapter {
                 }
             }
 */
-/*
-
-            for (String member : memberData.keySet()) {
-                try {
-                    VoiceChannel voiceChannel = guild.getVoiceChannelById(voiceChannelData.getJSONObject(member).getString(VOICE_CHANNEL_ID));
-                    TextChannel textChannel = guild.getTextChannelById(voiceChannelData.getJSONObject(member).getString(TEXT_CHANNEL_ID));
-
-                    System.out.println(voiceChannel);
-                    System.out.println(textChannel);
-
-                    voiceChannel.getManager().setBitrate(roomBitrate).queue();
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            for (String member : memberData.keySet()) {
+//                try {
+//                    VoiceChannel voiceChannel = guild.getVoiceChannelById(voiceChannelData.getJSONObject(member).getString(VOICE_CHANNEL_ID));
+//                    TextChannel textChannel = guild.getTextChannelById(voiceChannelData.getJSONObject(member).getString(TEXT_CHANNEL_ID));
+//
+//                    System.out.println(voiceChannel);
+//                    System.out.println(textChannel);
+//
+//                    voiceChannel.getManager().setBitrate(roomBitrate).queue();
+//
+//                    System.out.println(voiceChannel.getName() + " Deleting");
+//                    voiceChannel.delete().complete();
+//                    System.out.println(textChannel.getName() + " Deleting");
+//                    textChannel.delete().complete();
+//
+//                } catch (Exception e) {
+//                    System.err.println(e.getMessage());
+//                }
+//            }
 
-            List<ActionRow> game = gameButtons(3);
-            event.getChannel().sendMessageEmbeds(createEmbed("**OOXX大賽!**", 0xFF0000))
-                    .setActionRows(game)
-                    .queue(m -> {
-                        games.put(m.getId(), game);
-                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
-                    });
+//            List<ActionRow> game = gameButtons(3);
+//            event.getChannel().sendMessageEmbeds(createEmbed("**OOXX大賽!**", 0xFF0000))
+//                    .setActionRows(game)
+//                    .queue(m -> {
+//                        games.put(m.getId(), game);
+//                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
+//                    });
 
-            event.getGuild().getSelfMember().modifyNickname("我叫做序之徒").queue();
+//            event.getGuild().getSelfMember().modifyNickname("我叫做序之徒").queue();
 
-            event.getJDA().getGuildById("847433514248699914").retrieveMemberById("234395307759108106").complete().kick().queue();
+//            event.getJDA().getGuildById("847433514248699914").retrieveMemberById("234395307759108106").complete().kick().queue();
 
-            for (Member m : event.getGuild().getSelfMember().getVoiceState().getChannel().getMembers()) {
-                if (m.getUser().isBot() && !m.getUser().getId().equals(m.getGuild().getSelfMember().getId()))
-                    try {
-                        m.kick().queue();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//            for (Member m : event.getGuild().getSelfMember().getVoiceState().getChannel().getMembers()) {
+//                if (m.getUser().isBot() && !m.getUser().getId().equals(m.getGuild().getSelfMember().getId()))
+//                    try {
+//                        m.kick().queue();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//            }
 
-            }
-*/
 //            event.getGuild().leave().queue();
 
 
+
+
+
+
+
+
+
+
+
+
+
         }
+
     }
 
     public List<ActionRow> gameButtons(int size) {

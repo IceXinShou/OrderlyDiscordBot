@@ -87,33 +87,6 @@ public class Invite {
                                 OffsetDateTime.now(), 0xFFD1DC
                         )
                 ).queue();
-                Collection<Permission> allow = new ArrayList<>();
-                allow.add(Permission.VIEW_CHANNEL);
-
-                for (int i = 0; i <= roomCategoryID.size(); i++) {
-                    Category category = guild.getCategoryById(roomCategoryID.get(i));
-                    if (category.getChannels().size() < 49) {
-                        // 新增私人頻道
-                        guild.createVoiceChannel(defaultRoomName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category).setBitrate(roomBitrate).queue(nvc -> {
-                            // 創建專屬文字頻道
-                            guild.createTextChannel(defaultRoomChatName.replace("%name%", memberData.getJSONObject(args[2]).getString(CHINESE_NICK)), category)
-                                    .queue(ntc -> {
-                                        nvc.createPermissionOverride(targetMember).setAllow(allow).queue();
-                                        ntc.createPermissionOverride(targetMember).setAllow(allow).queue();
-
-                                        vcChannelOwner.put(nvc.getId(), args[2]);
-                                        tcChannelOwner.put(ntc.getId(), args[2]);
-                                        textChannel.add(ntc.getId());
-                                        JSONObject vcInfo = new JSONObject();
-                                        vcInfo.put(VOICE_CHANNEL_ID, nvc.getId());
-                                        vcInfo.put(TEXT_CHANNEL_ID, ntc.getId());
-                                        voiceChannelData.put(args[2], vcInfo);
-                                        voiceChannelDataFile.saveFile();
-                                    });
-                        });
-                        break;
-                    }
-                }
                 event.deferEdit().setEmbeds(createEmbed("添加成功", 0x9740b9)).setActionRows().queue();
             } else
                 event.deferEdit().setEmbeds(createEmbed("添加失敗", 0xFF0000)).setActionRows().queue();

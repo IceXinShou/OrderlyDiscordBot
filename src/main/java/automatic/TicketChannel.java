@@ -48,13 +48,15 @@ public class TicketChannel extends ListenerAdapter {
                 );
 
                 MessageBuilder builder = new MessageBuilder();
-                builder.setContent(defaultServiceMessage.replace("%reporter%", memberName));
+                builder.setContent(defaultServiceMessage.replace("%reporter%", event.getMember().getAsMention()));
                 builder.setActionRows(ActionRow.of(Button.of(ButtonStyle.DANGER, "deleteChannel", "刪除頻道", Emoji.fromEmote(emoji.trashCan))));
                 m.sendMessage(builder.build()).queue();
             });
         } else if (event.getComponentId().equals("deleteChannel")) {
             if (event.getMember().hasPermission(Permission.MANAGE_CHANNEL))
                 event.getTextChannel().delete().queue();
+            else
+                event.deferReply().addEmbeds(createEmbed(event.getMember().getAsMention() + " 嘗試刪除此頻道, 卻因沒有頻道權限而被拒絕", 0xFF0000)).queue();
         }
     }
 }

@@ -11,18 +11,25 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
+import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static main.java.BotSetting.apiKEY;
 import static main.java.util.Funtions.createEmbed;
@@ -53,7 +60,6 @@ public class MusicBot {
         AudioSourceManagers.registerLocalSource(playerManager);
     }
 
-
     /**
      * command player control
      */
@@ -78,7 +84,6 @@ public class MusicBot {
     public void playPrevious(SlashCommandEvent event) {
         Guild guild = jda.getGuildById(event.getGuild().getId());
         connectVC(guild, event.getMember().getVoiceState().getChannel());
-
         getMusicManager(event.getGuild()).scheduler.previousTrack(event);
     }
 
@@ -124,7 +129,8 @@ public class MusicBot {
     }
 
     public void displayQueue(GenericInteractionCreateEvent event, boolean searchAble) {
-        TrackScheduler scheduler = getMusicManager(event.getGuild()).scheduler;
+        GuildMusicManager musicManager = getMusicManager(event.getGuild());
+        TrackScheduler scheduler = musicManager.scheduler;
         if (scheduler.playingTrack == null) {
             event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
             return;
@@ -132,22 +138,33 @@ public class MusicBot {
 
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
 
+        String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (searchAble) {
-            event.replyEmbeds(embed[0], embed[1]).addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+            event.replyEmbeds(embed[0], embed[1])
+                    .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .setEphemeral(true).queue();
         } else
-            event.getHook().editOriginalComponents().setEmbeds(embed[0], embed[1])
-                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus))
+            event.getHook().editOriginalComponents()
+                    .setEmbeds(embed[0], embed[1])
+                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
     }
 
-    public void disconnect(SlashCommandEvent event, Guild guild) {
-        getMusicManager(guild).scheduler.stopPlay(event);
+    public void disconnect(SlashCommandEvent event) {
+        getMusicManager(event.getGuild()).scheduler.stopPlay(event);
     }
 
     /**
      * display
      */
+    private JSONObject videoInfo;
+
+    public void updateVideoInfo(Guild guild) {
+        GuildMusicManager musicManager = getMusicManager(guild);
+        AudioTrackInfo trackInfo = musicManager.scheduler.playingTrack.getInfo();
+        videoInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
+                trackInfo.identifier + "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
+    } // https://www.googleapis.com/youtube/v3/channels?part=snippet&id=UCJrOtniJ0-NWz37R30urifQ&key=AIzaSyA6KoqXbs5ZI2Zqlo-BcUPULQDBe8fVWPw
 
     public MessageEmbed[] playStatus(Member member, TrackScheduler scheduler) {
         // 憲政播放資料
@@ -158,42 +175,62 @@ public class MusicBot {
             // 進度顯示
             AudioTrackInfo trackInfo = scheduler.playingTrack.getInfo();
             int nowPlayingTime = (int) ((System.currentTimeMillis() - scheduler.startPlayTime) / 1000);
-            int playPercent = (int) ((nowPlayingTime / (float) (trackInfo.length / 1000)) * 15);
+            int playPercent = (int) ((nowPlayingTime / (float) (trackInfo.length / 1000)) * 20);
 
-
-            JSONObject urlInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
-                    trackInfo.identifier + "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
-            JSONObject statistics = urlInfo.getJSONObject("statistics");
+            JSONObject statistics = videoInfo.getJSONObject("statistics");
+            JSONObject snippet = videoInfo.getJSONObject("snippet");
+            JSONObject thumbnails = snippet.getJSONObject("thumbnails");
 
             progress.append("\n\n**[")
                     .append(timeCalculator(nowPlayingTime))
                     .append("] **").append("━".repeat(playPercent))
                     .append("❚")
-                    .append("─".repeat(15 - playPercent))
+                    .append("─".repeat(20 - playPercent))
                     .append("** [").append(trackInfo.isStream ? "LIVE" : (timeCalculator((int) (trackInfo.length / 1000))))
                     .append("]**\n");
 
             // 音量顯示
-            int volumePercent = (int) (getMusicManager(member.getGuild()).scheduler.getVolume() / 5);
+            int volumePercent = (getMusicManager(member.getGuild()).scheduler.getVolume() / 5);
             progress.append("\n")
                     .append("**音量: **")
                     .append("◆".repeat(volumePercent))
                     .append("◇".repeat(20 - volumePercent))
                     .append(scheduler.loopStatus == 0 ? " <順序播放>\n" : (scheduler.loopStatus == 1 ? " <循環播放>\n" : " <單曲循環>\n"));
 
+
+            String quality = "default";
+            if (thumbnails.has("high"))
+                quality = "high";
+            else if (thumbnails.has("medium"))
+                quality = "medium";
+
+            String channelImageUrl = thumbnails.getJSONObject("default").getString("url");
+
+            JSONObject channelThumbnails = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" +
+                    snippet.getString("channelId") + "&key=" + apiKEY))
+                    .getJSONArray("items").getJSONObject(0).getJSONObject("snippet").getJSONObject("thumbnails");
+            if (channelThumbnails.has("high"))
+                channelImageUrl = channelThumbnails.getJSONObject("high").getString("url");
+            else if (channelThumbnails.has("medium"))
+                channelImageUrl = channelThumbnails.getJSONObject("medium").getString("url");
+            else if (channelThumbnails.has("default"))
+                channelImageUrl = channelThumbnails.getJSONObject("default").getString("url");
+
+
             // 組裝
-
-
             nowPlaying = createEmbed("**" + trackInfo.title + "**", trackInfo.uri,
                     progress.toString(),
                     new StringBuilder()
-                            .append(" \uD83D\uDC40 ")
-                            .append(String.format("%,d", Long.parseLong(statistics.getString("viewCount"))))
+                            .append(" \uD83D\uDC40 ").append(String.format("%,d", Long.parseLong(statistics.getString("viewCount"))))
                             .append(" | \uD83D\uDC4D ").append(String.format("%,d", Long.parseLong(statistics.getString("likeCount"))))
                             .append(" | \uD83D\uDC4E ").append(String.format("%,d", Long.parseLong(statistics.getString("dislikeCount"))))
                             .append(" | \uD83D\uDCAC ").append(String.format("%,d", Long.parseLong(statistics.getString("commentCount"))))
-                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", scheduler.loudness)).toString()
-                    , trackInfo.author, urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"), urlInfo.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url"),
+                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", scheduler.loudness))
+                            .append(" | \uD83D\uDCC5 ").append(OffsetDateTime.parse(snippet.getString("publishedAt")).format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+
+                            // "publishedAt": "2021-06-11T15:00:11Z",
+                            .toString()
+                    , trackInfo.author, channelImageUrl, thumbnails.getJSONObject(quality).getString("url"),
                     0xe5b849);
         } else {
             nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
@@ -216,15 +253,15 @@ public class MusicBot {
                 nowPlaying};
     }
 
-    public ActionRow controlButtons(String senderID, boolean pauseStatus, int loopStatus) {
+    public ActionRow controlButtons(String senderID, boolean pauseStatus, int loopStatus, String channelID) {
         return ActionRow.of(
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange:" + botID, "",
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicLoopChange:" + botID + ":" + channelID, "",
                         loopStatus == 0 ? Emoji.fromUnicode("➡️") : (loopStatus == 1 ? Emoji.fromUnicode("\uD83D\uDD01") : Emoji.fromUnicode("\uD83D\uDD02"))),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause:" + botID, "",
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicPause:" + botID + ":" + channelID, "",
                         pauseStatus ? Emoji.fromUnicode("▶️") : Emoji.fromUnicode("⏸️")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicNext:" + botID, "", Emoji.fromUnicode("⏭️")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown:" + botID, "", Emoji.fromUnicode("\uD83D\uDD09")),
-                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp:" + botID, "", Emoji.fromUnicode("\uD83D\uDD0A")));
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicNext:" + botID + ":" + channelID, "", Emoji.fromUnicode("⏭️")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeDown:" + botID + ":" + channelID, "", Emoji.fromUnicode("\uD83D\uDD09")),
+                Button.of(ButtonStyle.SECONDARY, senderID + ":musicVolumeUp:" + botID + ":" + channelID, "", Emoji.fromUnicode("\uD83D\uDD0A")));
     }
 
     /**
@@ -249,6 +286,30 @@ public class MusicBot {
     private void connectVC(Guild guild, VoiceChannel vc) {
         if (!guild.getAudioManager().isConnected()) {
             guild.getAudioManager().openAudioConnection(vc);
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            guild.getAudioManager().setConnectionListener(new ConnectionListener() {
+                @Override
+                public void onPing(long l) {
+
+                }
+
+                @Override
+                public void onStatusChange(@NotNull ConnectionStatus connectionStatus) {
+                    if (connectionStatus == ConnectionStatus.CONNECTED)
+                        countDownLatch.countDown();
+                }
+
+                @Override
+                public void onUserSpeaking(@NotNull User user, boolean b) {
+
+                }
+            });
+            try {
+                countDownLatch.await(1000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            guild.getAudioManager().setConnectionListener(null);
             // 新增bot到頻道
             musicBotManager.setBotToChannel(guild.getId(), vc.getId(), this);
         }
@@ -263,13 +324,11 @@ public class MusicBot {
 
     private GuildMusicManager getMusicManager(Guild guild) {
         GuildMusicManager musicManager = musicManagers.get(guild.getId());
-
         if (musicManager == null) {
             musicManager = new GuildMusicManager(playerManager, guild);
             musicManager.scheduler.setManagerEvent(event);
             musicManagers.put(guild.getId(), musicManager);
         }
-
         return musicManager;
     }
 

@@ -22,6 +22,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble) {
         if (musicBot != null) {
+            musicBot.updateVideoInfo(guild);
             musicBot.displayQueue(event, searchAble);
         }
         if (guild.getId().equals(guildID))

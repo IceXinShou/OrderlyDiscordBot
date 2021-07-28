@@ -161,7 +161,7 @@ public class Funtions {
                 new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
                 null,
                 new MessageEmbed.Footer(footer, null, null),
-                new MessageEmbed.ImageInfo(image, null, 720, 404), null);
+                new MessageEmbed.ImageInfo(image, null, 0, 0), null);
     }
 
     /**

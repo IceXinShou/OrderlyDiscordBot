@@ -75,6 +75,38 @@ public class SlashCommandManager extends ListenerAdapter {
     public void onSlashCommand(SlashCommandEvent event) {
         event.deferReply(true).queue();
 
+
+        // 如果找不到伺服器 ->
+
+        if (event.getGuild() == null) {
+            if (debugMode) {
+                List<OptionMapping> options = event.getOptions();
+                StringBuilder builder = new StringBuilder();
+                for (OptionMapping option : options) {
+                    builder.append(" ").append(option.getAsString());
+                }
+
+                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: /" + event.getName() + builder);
+            }
+
+
+            switch (event.getName()) {
+                case "ping" -> {
+                    event.getHook().editOriginalEmbeds(createEmbed("Ping: " + event.getJDA().getGatewayPing(), 0x00FFFF)).queue();
+                    return;
+                }
+                case "support" -> {
+                    support.onCommand(event);
+                    return;
+                }
+                case "botinfo" -> {
+                    botInfo.onCommand(event);
+                    return;
+                }
+            }
+            event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
+        }
+
         if (debugMode) {
             List<OptionMapping> options = event.getOptions();
             StringBuilder builder = new StringBuilder();
@@ -84,8 +116,6 @@ public class SlashCommandManager extends ListenerAdapter {
 
             System.out.println("[" + event.getGuild().getName() + "] " + event.getUser().getAsTag() + " issued command: /" + event.getName() + builder);
         }
-        // 如果找不到伺服器 -> return
-        if (guild == null) return;
 
         // 取得輸入指令的頻道
         String channelID = event.getChannel().getId();
@@ -114,8 +144,8 @@ public class SlashCommandManager extends ListenerAdapter {
                 createInviteCommand.onCommand(event);
             else {
                 event.getHook().editOriginalEmbeds(createEmbed("請到指定位置使用此指令 (" +
-                        tagChannel(authChannelID) + ", " +
-                        tagChannel(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)) + ")", 0xFF0000))
+                                tagChannel(authChannelID) + ", " +
+                                tagChannel(voiceChannelData.getJSONObject(event.getId()).getString(TEXT_CHANNEL_ID)) + ")", 0xFF0000))
                         .queue();
             }
             return;
@@ -286,47 +316,47 @@ public class SlashCommandManager extends ListenerAdapter {
 
         CommandListUpdateAction command = guild.updateCommands();
 
-        command.addCommands(
-                new CommandData("promote", "提拔成員成為房間管理員")
-                        .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
-                                .setRequired(true))
-        );
-        command.addCommands(
-                new CommandData("unpromote", "移除房間管理員權限")
-                        .addOptions(new OptionData(USER, USER_TAG, "壓下去吧")
-                                .setRequired(true))
-        );
-        command.addCommands(
-                new CommandData("private", "將你所在的房間改為私人")
-        );
-        command.addCommands(
-                new CommandData("public", "將你所在的房間改為公開")
-        );
-        command.addCommands(
-                new CommandData("info", "列出房間數據")
-                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
-                                .setRequired(false)) // 若未填則列出所在頻道數據
-        );
-        command.addCommands(
-                new CommandData("state", "列出房間數據")
-                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
-                                .setRequired(false)) // 若未填則列出所在頻道數據
-        );
-        command.addCommands(
-                new CommandData("status", "列出房間數據")
-                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
-                                .setRequired(false)) // 若未填則列出所在頻道數據
-        );
-        command.addCommands(
-                new CommandData("black", "將成員設入房間黑名單")
-                        .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
-                                .setRequired(true))
-        );
-        command.addCommands(
-                new CommandData("remove", "移除成員房間間黑名單")
-                        .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
-                                .setRequired(true))
-        );
+//        command.addCommands(
+//                new CommandData("promote", "提拔成員成為房間管理員")
+//                        .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
+//                                .setRequired(true))
+//        );
+//        command.addCommands(
+//                new CommandData("unpromote", "移除房間管理員權限")
+//                        .addOptions(new OptionData(USER, USER_TAG, "壓下去吧")
+//                                .setRequired(true))
+//        );
+//        command.addCommands(
+//                new CommandData("private", "將你所在的房間改為私人")
+//        );
+//        command.addCommands(
+//                new CommandData("public", "將你所在的房間改為公開")
+//        );
+//        command.addCommands(
+//                new CommandData("info", "列出房間數據")
+//                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
+//                                .setRequired(false)) // 若未填則列出所在頻道數據
+//        );
+//        command.addCommands(
+//                new CommandData("state", "列出房間數據")
+//                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
+//                                .setRequired(false)) // 若未填則列出所在頻道數據
+//        );
+//        command.addCommands(
+//                new CommandData("status", "列出房間數據")
+//                        .addOptions(new OptionData(CHANNEL, CHANNEL_TAG, "頻道")
+//                                .setRequired(false)) // 若未填則列出所在頻道數據
+//        );
+//        command.addCommands(
+//                new CommandData("black", "將成員設入房間黑名單")
+//                        .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
+//                                .setRequired(true))
+//        );
+//        command.addCommands(
+//                new CommandData("remove", "移除成員房間間黑名單")
+//                        .addOptions(new OptionData(USER, USER_TAG, "不要再進來煩了!")
+//                                .setRequired(true))
+//        );
         command.addCommands(
                 new CommandData("warn", "警告成員")
                         .addOptions(new OptionData(USER, USER_TAG, "封禁你所選的成員")
@@ -423,13 +453,6 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
         );
-        command.addCommands(
-                new CommandData("botinfo", "顯示機器人訊息")
-        );
-        command.addCommands(
-                new CommandData("support", "傳送問題回報")
-                        .addOptions(new OptionData(STRING, MESSAGE, "訊息內容").setRequired(true))
-        );
 
         command.queue();
     }
@@ -517,15 +540,7 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
         );
-        command.addCommands(
-                new CommandData("botinfo", "顯示機器人訊息")
-        );
-        command.addCommands(
-                new CommandData("support", "傳送問題回報")
-                        .addOptions(new OptionData(STRING, MESSAGE, "訊息內容")
-                                .setRequired(true))
-        );
-//        command.addCommands(
+        //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")
 //                        .addOptions(new OptionData(STRING, NAME, "強制插入並播放輸入的網址或歌曲名")
 //                                .setRequired(true))
@@ -557,7 +572,14 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("ping", "延遲測試").setDefaultEnabled(true)
         );
+        command.addCommands(
+                new CommandData("support", "傳送問題回報")
+                        .addOptions(new OptionData(STRING, MESSAGE, "訊息內容").setRequired(true))
+        );
+        command.addCommands(
+                new CommandData("botinfo", "顯示機器人訊息")
+        );
+
         command.queue();
     }
-
 }

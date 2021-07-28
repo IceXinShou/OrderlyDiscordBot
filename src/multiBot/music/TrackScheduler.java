@@ -161,6 +161,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void stopPlay(SlashCommandEvent event) {
+        queue.clear();
         playingTrack = null;
         musicPause = false;
         player.setPaused(false);

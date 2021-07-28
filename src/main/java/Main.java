@@ -2,6 +2,7 @@ package main.java;
 
 import main.java.automatic.InformationReaction;
 import main.java.automatic.Level;
+import main.java.automatic.Room;
 import main.java.automatic.TicketChannel;
 import main.java.command.QuickUse;
 import main.java.event.GeneralReplay;
@@ -62,6 +63,7 @@ public class Main {
         jda.addEventListener(new InformationReaction());
         jda.addEventListener(new QuickUse());
         jda.addEventListener(new Level());
+        jda.addEventListener(new Room());
         SlashCommandManager commandManager = new SlashCommandManager();
         jda.addEventListener(commandManager);
 
