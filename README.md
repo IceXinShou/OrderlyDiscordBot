@@ -1,0 +1,2 @@
+# DiscordBot
+A Powerful Bot
