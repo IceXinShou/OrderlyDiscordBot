@@ -93,6 +93,14 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
+    public void remove(int index, SlashCommandEvent event) {
+        if (index < 1 || this.index + index + 1 > queue.size()) {
+            this.event.remove(null, event);
+            return;
+        }
+        this.event.remove(queue.remove(this.index + index), event);
+    }
+
     private boolean playTrack() {
         AudioTrack track;
         if (repeat) {
@@ -125,6 +133,8 @@ public class TrackScheduler extends AudioEventAdapter {
             calculateNormalized(track);
             return true;
         }
+
+        System.out.println(index);
         return false;
     }
 
@@ -171,7 +181,14 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public List<AudioTrack> getQueue() {
-        return new ArrayList<>(queue).subList(index, queue.size());
+        if (index + 1 == queue.size())
+            return new ArrayList<>();
+        List<AudioTrack> out = new ArrayList<>();
+        List<AudioTrack> sub = queue.subList(index + 1, queue.size());
+        for (int i = sub.size() - 1; i > -1; i--) {
+            out.add(sub.get(i));
+        }
+        return out;
     }
 
     public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
@@ -245,7 +262,6 @@ public class TrackScheduler extends AudioEventAdapter {
     public int getVolume() {
         return volume;
     }
-
 
     //https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
     private void calculateNormalized(AudioTrack audioTrack) {

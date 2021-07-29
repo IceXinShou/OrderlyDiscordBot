@@ -48,10 +48,13 @@ public class GuildMusicManager {
 
         void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild);
 
+        void remove(AudioTrack removedTrack, SlashCommandEvent event);
+
         void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event);
 
         void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild);
 
         void volumeChange(int volume, SlashCommandEvent event);
+
     }
 }

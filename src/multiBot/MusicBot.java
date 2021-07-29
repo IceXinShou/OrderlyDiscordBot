@@ -99,6 +99,11 @@ public class MusicBot {
         getMusicManager(guild).scheduler.play(event);
     }
 
+    public void remove(SlashCommandEvent event) {
+        int index = (int) event.getOption("index").getAsLong();
+        getMusicManager(event.getGuild().getId()).scheduler.remove(index, event);
+    }
+
     public void loadAndPlay(final GenericInteractionCreateEvent event, final String trackUrl, boolean searchAble) {
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
         GuildMusicManager manager = getMusicManager(jda.getGuildById(event.getGuild().getId()));
@@ -347,5 +352,4 @@ public class MusicBot {
     public String getID() {
         return botID;
     }
-
 }

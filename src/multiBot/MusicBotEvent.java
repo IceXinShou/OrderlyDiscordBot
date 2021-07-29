@@ -57,6 +57,15 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
+    public void remove(AudioTrack removedTrack, SlashCommandEvent event) {
+
+        if (removedTrack == null)
+            event.getHook().editOriginalEmbeds(createEmbed("移除失敗", 0xFF0000)).queue();
+        else
+            event.getHook().editOriginalEmbeds(createEmbed(removedTrack.getInfo().title + "已移除", 0x00FFFF)).queue();
+    }
+
+    @Override
     public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild) {
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
