@@ -3,6 +3,7 @@ package main.java;
 public class SlashCommandOption {
     // clear command option
     public final static String COUNT = "count";
+    public final static String INDEX = "index";
     public final static String USER_TAG = "user";
     public final static String CHANNEL_TAG = "channel";
     public final static String BOL = "toggle";

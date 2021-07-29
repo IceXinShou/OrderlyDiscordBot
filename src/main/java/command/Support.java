@@ -9,7 +9,7 @@ import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
 
 public class Support {
-    public void onCommand(SlashCommandEvent event) {
+    public void onMemberCommand(SlashCommandEvent event) {
         event.getHook().editOriginalEmbeds(createEmbed("傳送中...", 0x00FFFF)).queue();
         try {
             guild.getTextChannelById("858672866283356217").sendMessageEmbeds(

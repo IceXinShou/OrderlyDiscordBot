@@ -239,11 +239,13 @@ public class MusicBot {
         List<MessageEmbed.Field> fields = new ArrayList<>();
         if (scheduler.getQueue().size() == 0)
             fields.add(new MessageEmbed.Field("無", "", false));
-        else
-            scheduler.getQueue().forEach((track) -> {
-                long songLength = track.getInfo().length / 1000;
-                fields.add(new MessageEmbed.Field(track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : "**[" + (timeCalculator(songLength)) + "]**", false));
-            });
+        else {
+            List<AudioTrack> inQueue = scheduler.getQueue();
+            int index = inQueue.size();
+            for (AudioTrack track : inQueue) {
+                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : ""/*"**[" + (timeCalculator(songLength)) + "]**"*/, false));
+            }
+        }
 
         return new MessageEmbed[]{createEmbed("歌曲列表", "",
                 "",

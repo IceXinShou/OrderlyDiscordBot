@@ -44,7 +44,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 public class SlashCommandManager extends ListenerAdapter {
     private final String TAG = "[SlashCommandManager]";
 
-    public Integer adminPermissionPos;
+    Integer adminPermissionPos;
     Ban banCommand;
     Clear clearCommand;
     Invite createInviteCommand;
@@ -96,7 +96,7 @@ public class SlashCommandManager extends ListenerAdapter {
                     return;
                 }
                 case "support" -> {
-                    support.onCommand(event);
+                    support.onMemberCommand(event);
                     return;
                 }
                 case "botinfo" -> {
@@ -122,14 +122,14 @@ public class SlashCommandManager extends ListenerAdapter {
 
         int type;
         // 語音指令
-        if (!channelID.equals(authChannelID)) {
-            type = voiceChannelCommand.onVoiceChannelCommand(event);
-            if (type == -1) { // 輸入的頻道錯誤
-                return;
-            } else if (type == 1) { // 已經執行完成並 return
-                return;
-            }
-        }
+//        if (!channelID.equals(authChannelID)) {
+//            type = voiceChannelCommand.onVoiceChannelCommand(event);
+//            if (type == -1) { // 輸入的頻道錯誤
+//                return;
+//            } else if (type == 1) { // 已經執行完成並 return
+//                return;
+//            }
+//        }
 
         type = musicManager.onCommand(event);
         if (type == -1) { // 輸入的頻道錯誤
@@ -176,11 +176,22 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
             case "help" -> {
-                helpCommand.onCommand(event);
+                helpCommand.onMemberCommand(event);
                 return;
             }
             case "ping" -> {
-                event.getHook().editOriginalEmbeds(createEmbed("Ping: " + event.getJDA().getGatewayPing(), 0x00FFFF)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed("Pong!  \uD83C\uDFD3",
+                        "⌛ : xx ms\n\n⏱️ :  ms", "", "", "", OffsetDateTime.now(), 0x00FFFF)).queue(
+                        i -> event.getHook().editOriginalEmbeds(createEmbed("Pong!  \uD83C\uDFD3",
+                                        "⌛ : " + (Integer.parseInt(String.valueOf(i.getTimeCreated().toInstant().toEpochMilli() -
+                                                event.getInteraction().getTimeCreated().toInstant().toEpochMilli() -
+                                                event.getJDA().getGatewayPing())) < 0 ? "1" : Integer.parseInt(String.valueOf(i.getTimeCreated().toInstant().toEpochMilli() -
+                                                event.getInteraction().getTimeCreated().toInstant().toEpochMilli() -
+                                                event.getJDA().getGatewayPing()))) +
+                                                " ms\n\n⏱️ : " +
+                                                event.getJDA().getGatewayPing() + " ms", "", "", "", OffsetDateTime.now(), 0x00FFFF))
+                                .queue()
+                );
                 return;
             }
             case "botinfo" -> {
@@ -188,7 +199,11 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
             case "support" -> {
-                support.onCommand(event);
+                support.onMemberCommand(event);
+                return;
+            }
+            case "announcement" -> {
+                helpCommand.onAnnouncementCommand(event);
                 return;
             }
         }
@@ -253,7 +268,7 @@ public class SlashCommandManager extends ListenerAdapter {
                             "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
                             "You have invited <**" + event.getGuild().getSelfMember().getUser().getAsTag() +
                             "**> join <**" + event.getGuild().getName() +
-                            "**> Discord Server", "", "", "", "", helpCommand.summonFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
+                            "**> Discord Server", "", "", "", "", helpCommand.summonMemberFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -399,10 +414,20 @@ public class SlashCommandManager extends ListenerAdapter {
                                 .setRequired(false)) // 若未填則開始播放音樂
         );
         command.addCommands(
+                new CommandData("p", "加入播放音樂")
+                        .addOptions(new OptionData(STRING, NAME, "播放輸入的網址或歌曲名")
+                                .setRequired(false)) // 若未填則開始播放音樂
+        );
+        command.addCommands(
                 new CommandData("queue", "顯示播放列表")
         );
         command.addCommands(
                 new CommandData("skip", "切換至下一首")
+//                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
+//                                .setRequired(false)) // 若未填則至下一首
+        );
+        command.addCommands(
+                new CommandData("s", "切換至下一首")
 //                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
 //                                .setRequired(false)) // 若未填則至下一首
         );
@@ -436,9 +461,6 @@ public class SlashCommandManager extends ListenerAdapter {
                         .addOptions(new OptionData(STRING, CHOICE_J, "選項 J"))
         );
         command.addCommands(
-                new CommandData("previous", "播放上一首音樂")
-        );
-        command.addCommands(
                 new CommandData("help", "顯示幫助列表")
         );
         command.addCommands(
@@ -452,6 +474,14 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("announcement", "將機器人使用教學傳送至此頻道")
+        );
+        command.addCommands(
+                new CommandData("remove", "移除指定歌曲")
+                        .addOptions(new OptionData(INTEGER, INDEX, "歌曲編號")
+                        .setRequired(true)) // 若未填則回覆預設
         );
 
         command.queue();
@@ -486,10 +516,20 @@ public class SlashCommandManager extends ListenerAdapter {
                                 .setRequired(false)) // 若未填則開始播放音樂
         );
         command.addCommands(
+                new CommandData("p", "加入播放音樂")
+                        .addOptions(new OptionData(STRING, NAME, "播放輸入的網址或歌曲名")
+                                .setRequired(false)) // 若未填則開始播放音樂
+        );
+        command.addCommands(
                 new CommandData("queue", "顯示播放列表")
         );
         command.addCommands(
                 new CommandData("skip", "切換至下一首")
+//                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
+//                                .setRequired(false)) // 若未填則至下一首
+        );
+        command.addCommands(
+                new CommandData("s", "切換至下一首")
 //                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
 //                                .setRequired(false)) // 若未填則至下一首
         );
@@ -523,9 +563,6 @@ public class SlashCommandManager extends ListenerAdapter {
                         .addOptions(new OptionData(STRING, CHOICE_J, "選項 J"))
         );
         command.addCommands(
-                new CommandData("previous", "播放上一首音樂")
-        );
-        command.addCommands(
                 new CommandData("help", "顯示幫助列表")
         );
         command.addCommands(
@@ -539,6 +576,9 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("stop", "退出語音頻道")
+        );
+        command.addCommands(
+                new CommandData("announcement", "將機器人使用教學傳送至此頻道")
         );
         //        command.addCommands(
 //                new CommandData("playnow", "強制播放音樂")
@@ -556,6 +596,12 @@ public class SlashCommandManager extends ListenerAdapter {
 //        command.addCommands(
 //                new CommandData("shuffle", "將歌單洗牌")
 //        );
+
+        command.addCommands(
+                new CommandData("remove", "移除指定歌曲")
+                        .addOptions(new OptionData(INTEGER, INDEX, "歌曲編號")
+                                .setRequired(true)) // 若未填則回覆預設
+        );
         command.complete();
 
     }
@@ -570,7 +616,7 @@ public class SlashCommandManager extends ListenerAdapter {
                 new CommandData("join", "填寫專屬伺服器加入申請").setDefaultEnabled(false)
         );
         command.addCommands(
-                new CommandData("ping", "延遲測試").setDefaultEnabled(true)
+                new CommandData("ping", "延遲測試")
         );
         command.addCommands(
                 new CommandData("support", "傳送問題回報")

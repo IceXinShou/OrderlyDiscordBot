@@ -30,8 +30,11 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event) {
-        event.getHook().editOriginalEmbeds(createEmbed("加入播放清單: `" + track.getInfo().title + "`", 0xBCE9B6)).queue();
+    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean searchAble) {
+        if (searchAble)
+            event.replyEmbeds(createEmbed("加入播放清單: `" + track.getInfo().title + "`", 0xBCE9B6)).setEphemeral(true).queue();
+        else
+            event.getHook().editOriginalEmbeds(createEmbed("加入播放清單: `" + track.getInfo().title + "`", 0xBCE9B6)).queue();
         if (!event.getGuild().getId().equals(guildID))
             logChannel.sendMessage("加入播放清單: `" + track.getInfo().title + "` ").queue();
     }

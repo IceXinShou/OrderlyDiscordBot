@@ -20,7 +20,7 @@ public class UnBan {
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
                 event.getHook().editOriginalEmbeds(createEmbed("我必須要有封禁權限才可以解除封鎖", 0xFF0000)).queue();
             } else if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
-                event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(BAN_MEMBERS)`", 0xFF0000)).queue();
                 return;
             }
             try {

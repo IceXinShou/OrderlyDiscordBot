@@ -70,12 +70,18 @@ public class MultiMusicBotManager {
 
         switch (event.getName()) {
             // 全域頻道
+            case "p":
             case "play":
                 play(event, bot);
                 break;
             case "skip":
+            case "s":
                 if (checkVcState(event, bot))
                     bot.nextTrack(event);
+                break;
+            case "remove":
+                if (checkVcState(event, bot))
+                    bot.remove(event);
                 break;
             case "previous":
                 if (checkVcState(event, bot))
@@ -160,7 +166,7 @@ public class MultiMusicBotManager {
 
                 JSONObject result = new JSONObject(
                         getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" +
-                                keyWord + "&key=" + apiKEY));
+                                keyWord + "&key=" + apiKEY + "&type=video"));
 
                 JSONArray videoInfo = result.getJSONArray("items");
 

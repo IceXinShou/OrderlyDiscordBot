@@ -89,7 +89,7 @@ public class TrackScheduler extends AudioEventAdapter {
             this.event.trackStart(track, event, guild, musicBot, searchAble);
         } else {
             // 加入序列
-            this.event.addToQueue(track, event);
+            this.event.addToQueue(track, event, searchAble);
         }
     }
 
@@ -162,6 +162,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void stopPlay(SlashCommandEvent event) {
         queue.clear();
+        index = 0;
         playingTrack = null;
         musicPause = false;
         player.setPaused(false);

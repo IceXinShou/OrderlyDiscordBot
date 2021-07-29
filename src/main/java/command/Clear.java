@@ -33,7 +33,7 @@ public class Clear {
 
     public void onCommand(SlashCommandEvent event) {
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE) && !botOwnerID.contains(event.getMember().getId())) {
-            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(MESSAGE_MANAGE)`", 0xFF0000)).queue();
             return;
         }
         OptionMapping amountOption = event.getOption(COUNT);

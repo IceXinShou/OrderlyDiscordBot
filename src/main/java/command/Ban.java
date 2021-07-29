@@ -18,7 +18,7 @@ public class Ban {
         Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
 
         if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
-            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(BAN_MEMBERS)`", 0xFF0000)).queue();
             return;
         }
 

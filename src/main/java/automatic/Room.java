@@ -46,14 +46,14 @@ public class Room extends ListenerAdapter {
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         if (!event.getGuild().getId().equals(guildID))
             return;
-        if (event.getChannelJoined().getId().equals("869925166522716211"))
-            newChannel(event);
         if (voiceState.containsKey(event.getMember().getId()))
             if (voiceState.get(event.getMember().getId()).get(0).equals(event.getChannelLeft().getId())) {
                 event.getChannelLeft().delete().queue();
                 event.getGuild().getTextChannelById(voiceState.get(event.getMember().getId()).get(1)).delete().queue();
                 voiceState.remove(event.getMember().getId());
             }
+        if (event.getChannelJoined().getId().equals("869925166522716211"))
+            newChannel(event);
     }
 
     /**
@@ -70,13 +70,13 @@ public class Room extends ListenerAdapter {
 
         guild.createVoiceChannel(defaultRoomName.replace("%name%", memberData.getJSONObject(event.getMember().getId()).getString(CHINESE_NICK)), category).setBitrate(roomBitrate)
                 .queue(nvc -> {
-                    guild.moveVoiceMember(event.getMember(), nvc).queue();
                     // 創建專屬文字頻道
                     guild.createTextChannel(defaultRoomChatName.replace("%name%", memberData.getJSONObject(event.getMember().getId()).getString(CHINESE_NICK)), category)
                             .queue(ntc -> {
+                                voiceState.put(event.getMember().getId(), List.of(nvc.getId(), ntc.getId()));
                                 nvc.createPermissionOverride(event.getMember()).setAllow(allow).queue();
                                 ntc.createPermissionOverride(event.getMember()).setAllow(allow).queue();
-                                voiceState.put(event.getMember().getId(), List.of(nvc.getId(), ntc.getId()));
+                                guild.moveVoiceMember(event.getMember(), nvc).queue();
                             });
                 });
     }

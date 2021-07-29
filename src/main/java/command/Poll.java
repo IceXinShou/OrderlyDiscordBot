@@ -17,8 +17,8 @@ public class Poll {
 
     public void onCommand(SlashCommandEvent event) {
 
-        if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
+        if (!event.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(MANAGE_CHANNEL)`", 0xFF0000)).queue();
             return;
         }
 

@@ -19,7 +19,7 @@ public class Kick {
             event.getHook().editOriginalEmbeds(createEmbed("我必須要有踢出權限才可以踢出成員", 0xFF0000)).queue();
             return;
         } else if (!event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(KICK_MEMBERS)`", 0xFF0000)).queue();
             return;
         }
         Member member = event.getOption(USER_TAG).getAsMember();
