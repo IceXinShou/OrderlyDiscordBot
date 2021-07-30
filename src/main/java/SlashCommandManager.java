@@ -75,7 +75,7 @@ public class SlashCommandManager extends ListenerAdapter {
 
     @Override
     public void onGuildInviteCreate(@NotNull GuildInviteCreateEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] "+event.getInvite().getInviter().getAsTag()+" Created InviteCode : " + event.getUrl());
+        System.out.println("[" + event.getGuild().getName() + "] " + event.getInvite().getInviter().getAsTag() + " Created InviteCode : " + event.getUrl());
     }
 
     @Override
@@ -253,9 +253,15 @@ public class SlashCommandManager extends ListenerAdapter {
             getGuildVariable(event.getGuild());
             musicManager = new MultiMusicBotManager();
         } else {
-            System.out.println("[" + event.getGuild().getName() + "] Command Loading...");
-            addPublicSlashCommand(event.getGuild());
-            System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
+            System.out.println("[" + event.getGuild().getName() + "] Owner: " + event.getGuild().getOwner().getUser().getAsTag() + " Loading...");
+            try {
+                addPublicSlashCommand(event.getGuild());
+                System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
+            } catch (Exception e) {
+                System.err.println("[" + event.getGuild().getName() + "] Command Update Failed!");
+                System.err.println(e.getMessage());
+            }
+
         }
     }
 
@@ -496,7 +502,7 @@ public class SlashCommandManager extends ListenerAdapter {
         command.addCommands(
                 new CommandData("remove", "移除指定歌曲")
                         .addOptions(new OptionData(INTEGER, INDEX, "歌曲編號")
-                        .setRequired(true)) // 若未填則回覆預設
+                                .setRequired(true)) // 若未填則回覆預設
         );
 
         command.queue();

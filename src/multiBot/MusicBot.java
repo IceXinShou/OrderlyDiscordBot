@@ -169,7 +169,7 @@ public class MusicBot {
         AudioTrackInfo trackInfo = musicManager.scheduler.playingTrack.getInfo();
         videoInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
                 trackInfo.identifier + "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
-    } // https://www.googleapis.com/youtube/v3/channels?part=snippet&id=UCJrOtniJ0-NWz37R30urifQ&key=AIzaSyA6KoqXbs5ZI2Zqlo-BcUPULQDBe8fVWPw
+    }
 
     public MessageEmbed[] playStatus(Member member, TrackScheduler scheduler) {
         // 憲政播放資料
