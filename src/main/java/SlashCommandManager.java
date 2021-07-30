@@ -253,7 +253,7 @@ public class SlashCommandManager extends ListenerAdapter {
             getGuildVariable(event.getGuild());
             musicManager = new MultiMusicBotManager();
         } else {
-            System.out.println("[" + event.getGuild().getName() + "] Owner: " + event.getGuild().getOwner().getUser().getAsTag() + " Loading...");
+            System.out.println("[" + event.getGuild().getName() + "] Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + " Loading...");
             try {
                 addPublicSlashCommand(event.getGuild());
                 System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
@@ -280,7 +280,7 @@ public class SlashCommandManager extends ListenerAdapter {
         else
             addPublicSlashCommand(event.getGuild());
         try {
-            event.getGuild().getOwner().getUser().openPrivateChannel().queue(i ->
+            event.getGuild().retrieveOwner().complete().getUser().openPrivateChannel().queue(i ->
                     i.sendMessageEmbeds(createEmbed("您已邀請 <**" +
                             event.getGuild().getSelfMember().getUser().getAsTag() +
                             "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
