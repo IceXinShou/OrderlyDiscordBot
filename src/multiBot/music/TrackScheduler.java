@@ -114,7 +114,7 @@ public class TrackScheduler extends AudioEventAdapter {
                 return false;
             }
 
-            if (index == queue.size()) {
+            if (index >= queue.size()) {
                 if (loop)
                     index = 0;
                 else
@@ -134,7 +134,6 @@ public class TrackScheduler extends AudioEventAdapter {
             return true;
         }
 
-        System.out.println(index);
         return false;
     }
 
@@ -181,7 +180,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public List<AudioTrack> getQueue() {
-        if (index + 1 == queue.size())
+        if (index + 1 >= queue.size())
             return new ArrayList<>();
         List<AudioTrack> out = new ArrayList<>();
         List<AudioTrack> sub = queue.subList(index + 1, queue.size());
