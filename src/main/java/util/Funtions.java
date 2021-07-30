@@ -180,7 +180,7 @@ public class Funtions {
         return "<@&" + ID + '>';
     }
 
-    public static String tagUser(List<String> ID) {
+    public static String tagUsers(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -188,7 +188,7 @@ public class Funtions {
         return n.toString();
     }
 
-    public static String tagChannel(List<String> ID) {
+    public static String tagChannels(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -196,12 +196,23 @@ public class Funtions {
         return n.toString();
     }
 
-    public static String tagRole(List<String> ID) {
+    public static String tagRoles(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
         }
         return n.toString();
+    }
+
+    public static String toUnicode(String input) {
+        StringBuilder b = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            if (c >= 128)
+                b.append("\\u").append(String.format("%04X", (int) c));
+            else
+                b.append(c);
+        }
+        return b.toString();
     }
 
 }

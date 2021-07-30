@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,10 +29,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static main.java.BotSetting.*;
 import static main.java.SlashCommandOption.COUNT;
 import static main.java.SlashCommandOption.NAME;
 import static main.java.util.Funtions.createEmbed;
+import static main.java.util.Funtions.toUnicode;
 import static multiBot.music.TrackScheduler.getUrlData;
 
 
@@ -74,8 +77,8 @@ public class MultiMusicBotManager {
             case "play":
                 play(event, bot);
                 break;
-            case "skip":
             case "s":
+            case "skip":
                 if (checkVcState(event, bot))
                     bot.nextTrack(event);
                 break;
@@ -101,6 +104,7 @@ public class MultiMusicBotManager {
                 if (checkVcState(event, bot))
                     bot.disconnect(event);
                 break;
+            case "q":
             case "queue":
             case "playing":
                 if (checkVcState(event, bot))
@@ -126,18 +130,19 @@ public class MultiMusicBotManager {
     }
 
     private void play(SlashCommandEvent event, MusicBot bot) {
-        if (checkVcState(event)) {
-            if (bot == null)
-                // 取得機器人
-                for (Object i : bots.values().toArray()) {
-                    MusicBot thisBot = (MusicBot) i;
-                    GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
-                    if (manager != null && manager.scheduler.playingTrack == null) {
-                        bot = (MusicBot) i;
-                        commandState = 1;
-                        break;
+        if (event.getOptions().size() > 0)
+            if (checkVcState(event)) {
+                if (bot == null)
+                    // 取得機器人
+                    for (Object i : bots.values().toArray()) {
+                        MusicBot thisBot = (MusicBot) i;
+                        GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
+                        if (manager != null && manager.scheduler.playingTrack == null) {
+                            bot = (MusicBot) i;
+                            commandState = 1;
+                            break;
+                        }
                     }
-                }
 //            else {
 //                event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, "已有機器人在此頻道")).queue();
 //                commandState = -1;
@@ -145,46 +150,70 @@ public class MultiMusicBotManager {
 //            }
 
 
-            if (bot == null) {
-                event.getHook().editOriginalEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).queue();
-                commandState = -1;
-                return;
-            }
+                if (bot == null) {
+                    event.getHook().editOriginalEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).queue();
+                    commandState = -1;
+                    return;
+                }
 
-            OptionMapping url;
-            // 開始撥放
-            if ((url = event.getOption(NAME)) == null) {
-                bot.play(event, event.getGuild());
-                event.getHook().editOriginalEmbeds(createEmbed("已開始播放", 0xbde3ae)).queue();
-            } else if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
-                bot.loadAndPlay(event, url.getAsString(), false);
-            } else {
+                // 開始撥放
+                OptionMapping url = event.getOption(NAME);
+                if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
+                    bot.loadAndPlay(event, url.getAsString(), false);
+                } else {
 
-                String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), StandardCharsets.UTF_8);
+                    String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
 
-                SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
+                    SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
 
-                JSONObject result = new JSONObject(
-                        getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" +
-                                keyWord + "&key=" + apiKEY + "&type=video"));
+                    JSONObject result = new JSONObject(
+                            getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +
+                                    keyWord + "&key=" + apiKEY));
 
-                JSONArray videoInfo = result.getJSONArray("items");
+                    JSONArray videoInfo = result.getJSONArray("items");
 
-                for (Object vinfo : videoInfo) {
-                    JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
-                    String title = snippet.getString("title");
-                    if (title.length() > 25)
-                        title = title.substring(0, 24) + "…";
+                    for (Object vinfo : videoInfo) {
+                        JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
+                        String title = toUnicode(snippet.getString("title"));
+                        if (title.length() > 25)
+                            title = title.substring(0, 24) + "…";
+                        try {
+                            builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                     try {
-                        builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
+                        event.getHook().editOriginalComponents().setEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
                     } catch (Exception e) {
+                        event.getHook().editOriginalComponents().setEmbeds(createEmbed("查無結果", 0xa3d7fe)).queue();
                         System.out.println(e.getMessage());
                     }
-                }
-                event.getHook().editOriginalComponents().setEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
 //                event.getTextChannel().sendMessageEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
+                }
+            } else {
+                if (checkVcState(event)) {
+                    if (bot == null)
+                        // 取得機器人
+                        for (Object i : bots.values().toArray()) {
+                            MusicBot thisBot = (MusicBot) i;
+                            GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
+                            if (manager != null && manager.scheduler.playingTrack == null) {
+                                bot = (MusicBot) i;
+                                commandState = 1;
+                                break;
+                            }
+                        }
+                    if (bot == null) {
+                        event.getHook().editOriginalEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).queue();
+                        commandState = -1;
+                        return;
+                    }
+                    bot.play(event, event.getGuild());
+                    event.getHook().editOriginalEmbeds(createEmbed("已開始播放", 0xbde3ae)).queue();
+
+                }
             }
-        }
     }
 
     public void onButton(ButtonClickEvent event, String[] args) {

@@ -61,7 +61,6 @@ public class Room extends ListenerAdapter {
      */
 
     private void newChannel(GenericGuildVoiceUpdateEvent event) {
-        voiceState.put(event.getMember().getId(), null);
         Collection<Permission> allow = new ArrayList<>();
         allow.add(Permission.VIEW_CHANNEL);
         allow.add(Permission.MANAGE_CHANNEL);

@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
@@ -69,6 +71,16 @@ public class SlashCommandManager extends ListenerAdapter {
         botInfo = new BotInfo();
         support = new Support();
         System.out.println(TAG + " Listener loaded!");
+    }
+
+    @Override
+    public void onGuildInviteCreate(@NotNull GuildInviteCreateEvent event) {
+        System.out.println("[" + event.getGuild().getName() + "] "+event.getInvite().getInviter().getAsTag()+" Created InviteCode : " + event.getUrl());
+    }
+
+    @Override
+    public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent event) {
+        System.out.println("[" + event.getGuild().getName() + "] InviteCode Delete: " + event.getUrl());
     }
 
     @Override
@@ -422,6 +434,9 @@ public class SlashCommandManager extends ListenerAdapter {
                 new CommandData("queue", "顯示播放列表")
         );
         command.addCommands(
+                new CommandData("q", "顯示播放列表")
+        );
+        command.addCommands(
                 new CommandData("skip", "切換至下一首")
 //                        .addOptions(new OptionData(INTEGER, COUNT, "跳過至第幾首")
 //                                .setRequired(false)) // 若未填則至下一首
@@ -522,6 +537,9 @@ public class SlashCommandManager extends ListenerAdapter {
         );
         command.addCommands(
                 new CommandData("queue", "顯示播放列表")
+        );
+        command.addCommands(
+                new CommandData("q", "顯示播放列表")
         );
         command.addCommands(
                 new CommandData("skip", "切換至下一首")

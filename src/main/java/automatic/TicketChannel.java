@@ -1,6 +1,7 @@
 package main.java.automatic;
 
 import main.java.event.Log;
+import main.java.util.Funtions;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -16,7 +17,6 @@ import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.event.Join.memberData;
 import static main.java.util.Funtions.createEmbed;
-import static main.java.util.Funtions.tagRole;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.CHINESE_NICK;
 
@@ -43,7 +43,7 @@ public class TicketChannel extends ListenerAdapter {
 
                 m.createPermissionOverride(event.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
 
-                m.sendMessageEmbeds(createEmbed(tagRole(serviceTagRoleID), 0x9740b9)).queue(n ->
+                m.sendMessageEmbeds(createEmbed(Funtions.tagRoles(serviceTagRoleID), 0x9740b9)).queue(n ->
                         Log.deleteNoLog(n, 1)
                 );
 

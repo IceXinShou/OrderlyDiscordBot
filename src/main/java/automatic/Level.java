@@ -15,24 +15,24 @@ public class Level extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        JsonFileManager channelFileManager = clh.getLevelFileManager(event.getGuild().getId(), "message");
-        JSONObject data = channelFileManager.data;
-        Long count = 0L;
-        // 有訊息資料
-        if (data.has(event.getMember().getId())) {
-            // 取得訊息資料
-            JSONObject levelLog = data.getJSONObject(event.getMember().getId());
-            count = levelLog.getLong(COUNT);
-            if (count == null)
-                count = 0L;
+        if (event.getMember() != null) {
+            JsonFileManager channelFileManager = clh.getLevelFileManager(event.getGuild().getId(), "message");
+            JSONObject data = channelFileManager.data;
+            Long count = 0L;
+            // 有訊息資料
+
+            if (data.has(event.getMember().getId())) {
+                // 取得訊息資料
+                JSONObject levelLog = data.getJSONObject(event.getMember().getId());
+                count = levelLog.getLong(COUNT);
+                if (count == null)
+                    count = 0L;
+                else
+                    count++;
+            }
+            data.put(event.getMember().getId(), new JSONObject().put(COUNT, count));
+            channelFileManager.saveFile();
         }
-
-        JSONObject messageContent = new JSONObject()
-                .put(COUNT, count + 1L) // Message
-                ;
-        data.put(event.getMember().getId(), messageContent);
-        channelFileManager.saveFile();
-
     }
 }
 
