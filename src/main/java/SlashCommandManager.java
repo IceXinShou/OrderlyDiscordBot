@@ -693,7 +693,5 @@ public class SlashCommandManager extends ListenerAdapter {
             e.printStackTrace();
         }
 
-        // Message -> MessageReference
-        // NTc2NzQ3NDM1NjUzNTk1MTM2.XNa_6A.KRKoZQKIZvyECamZRnNqVJMoc00
     }
 }
