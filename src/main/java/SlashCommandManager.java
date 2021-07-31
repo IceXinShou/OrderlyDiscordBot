@@ -21,6 +21,9 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -508,7 +511,27 @@ public class SlashCommandManager extends ListenerAdapter {
                                 .setRequired(true)) // 若未填則回覆預設
         );
 
-        command.queue();
+
+
+        String applicationID = guild.getJDA().retrieveApplicationInfo().complete().getId();
+        command.queue(cmds -> {
+            for (Command cmd : cmds) {
+                if (cmd.getName().equals("nick")) {
+                    JSONArray permissions = new JSONArray();
+
+                    JSONObject permission = new JSONObject();
+                    permission.put("id", "860180173268582430");
+                    permission.put("type", 1);
+                    permission.put("permission", true);
+                    permissions.put(permission);
+
+                    sendRequestNoResponse("/applications/" + applicationID + "/guilds/" + guild.getId() + "/commands/" + cmd.getId() + "/permissions",
+                            "PUT",
+                            permission.toString().getBytes(StandardCharsets.UTF_8),
+                            "application/json");
+                }
+            }
+        });
     }
 
     private void addPublicSlashCommand(@NotNull Guild guild) {
@@ -632,8 +655,7 @@ public class SlashCommandManager extends ListenerAdapter {
         command.complete();
     }
 
-    public void addCommandEveryWhere(JDA jda) {
-
+    public void addCommandEveryWhere(@NotNull JDA jda) {
         CommandListUpdateAction command = jda.updateCommands();
         command.addCommands(
                 new CommandData("join", "填寫專屬伺服器加入申請")
@@ -693,5 +715,22 @@ public class SlashCommandManager extends ListenerAdapter {
             e.printStackTrace();
         }
 
+    }
+
+    private @Nullable String readResponse(@NotNull InputStream in) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            byte[] buff = new byte[1024];
+            int length;
+            //when read it end
+            while ((length = in.read(buff)) > 0) {
+                builder.append(new String(buff, 0, length));
+            }
+            in.close();
+            return builder.toString();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
     }
 }
