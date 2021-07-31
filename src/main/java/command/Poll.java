@@ -3,6 +3,7 @@ package main.java.command;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import static main.java.util.Funtions.createEmbed;
 
 public class Poll {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
 
         if (!event.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
             event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(MANAGE_CHANNEL)`", 0xFF0000)).queue();

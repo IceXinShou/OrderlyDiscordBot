@@ -1,6 +1,7 @@
 package main.java;
 
 import main.java.command.*;
+import main.java.event.Join;
 import main.java.util.GuildUtil;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.JDA;
@@ -8,19 +9,25 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
-import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.stage.StageInstanceCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -58,6 +65,8 @@ public class SlashCommandManager extends ListenerAdapter {
     Help helpCommand;
     BotInfo botInfo;
     Support support;
+    Join join;
+    Ping ping;
 
     SlashCommandManager() {
         banCommand = new Ban();
@@ -70,23 +79,19 @@ public class SlashCommandManager extends ListenerAdapter {
         helpCommand = new Help();
         botInfo = new BotInfo();
         support = new Support();
+        join = new Join();
+        ping = new Ping();
         System.out.println(TAG + " Listener loaded!");
     }
 
     @Override
-    public void onGuildInviteCreate(@NotNull GuildInviteCreateEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] " + event.getInvite().getInviter().getAsTag() + " Created InviteCode : " + event.getUrl());
+    public void onStageInstanceCreate(@NotNull StageInstanceCreateEvent event) {
+        System.out.println(event.getInstance().getChannel().getName());
     }
 
     @Override
-    public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] InviteCode Delete: " + event.getUrl());
-    }
-
-    @Override
-    public void onSlashCommand(SlashCommandEvent event) {
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
         event.deferReply(true).queue();
-
 
         // 如果找不到伺服器 ->
 
@@ -104,19 +109,24 @@ public class SlashCommandManager extends ListenerAdapter {
 
             switch (event.getName()) {
                 case "ping" -> {
-                    event.getHook().editOriginalEmbeds(createEmbed("Ping: " + event.getJDA().getGatewayPing(), 0x00FFFF)).queue();
+                    ping.onCommand(event);
                     return;
                 }
                 case "support" -> {
-                    support.onMemberCommand(event);
+                    support.onCommand(event);
                     return;
                 }
                 case "botinfo" -> {
                     botInfo.onCommand(event);
                     return;
                 }
+                case "join" -> {
+                    join.onCommand(event);
+                    return;
+                }
             }
             event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
+            return;
         }
 
         if (debugMode) {
@@ -192,18 +202,7 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
             case "ping" -> {
-                event.getHook().editOriginalEmbeds(createEmbed("Pong!  \uD83C\uDFD3",
-                        "⌛ : xx ms\n\n⏱️ :  ms", "", "", "", OffsetDateTime.now(), 0x00FFFF)).queue(
-                        i -> event.getHook().editOriginalEmbeds(createEmbed("Pong!  \uD83C\uDFD3",
-                                        "⌛ : " + (Integer.parseInt(String.valueOf(i.getTimeCreated().toInstant().toEpochMilli() -
-                                                event.getInteraction().getTimeCreated().toInstant().toEpochMilli() -
-                                                event.getJDA().getGatewayPing())) < 0 ? "1" : Integer.parseInt(String.valueOf(i.getTimeCreated().toInstant().toEpochMilli() -
-                                                event.getInteraction().getTimeCreated().toInstant().toEpochMilli() -
-                                                event.getJDA().getGatewayPing()))) +
-                                                " ms\n\n⏱️ : " +
-                                                event.getJDA().getGatewayPing() + " ms", "", "", "", OffsetDateTime.now(), 0x00FFFF))
-                                .queue()
-                );
+                ping.onCommand(event);
                 return;
             }
             case "botinfo" -> {
@@ -211,11 +210,15 @@ public class SlashCommandManager extends ListenerAdapter {
                 return;
             }
             case "support" -> {
-                support.onMemberCommand(event);
+                support.onCommand(event);
                 return;
             }
             case "announcement" -> {
-                helpCommand.onAnnouncementCommand(event);
+                helpCommand.onCommand(event);
+                return;
+            }
+            case "join" -> {
+                join.onCommand(event);
                 return;
             }
         }
@@ -223,7 +226,7 @@ public class SlashCommandManager extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onButtonClick(@NotNull ButtonClickEvent event) {
         // button的id
         String[] args = event.getComponentId().split(":");
         String authorId = args[0];
@@ -279,20 +282,17 @@ public class SlashCommandManager extends ListenerAdapter {
             addOwnSlashCommand(event.getGuild());
         else
             addPublicSlashCommand(event.getGuild());
-        try {
-            event.getGuild().retrieveOwner().complete().getUser().openPrivateChannel().queue(i ->
-                    i.sendMessageEmbeds(createEmbed("您已邀請 <**" +
-                            event.getGuild().getSelfMember().getUser().getAsTag() +
-                            "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
-                            "You have invited <**" + event.getGuild().getSelfMember().getUser().getAsTag() +
-                            "**> join <**" + event.getGuild().getName() +
-                            "**> Discord Server", "", "", "", "", helpCommand.summonMemberFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        event.getGuild().retrieveOwner().complete().getUser().openPrivateChannel().queue(i ->
+                i.sendMessageEmbeds(createEmbed("您已邀請 <**" +
+                        event.getGuild().getSelfMember().getUser().getAsTag() +
+                        "**> 進入 <**" + event.getGuild().getName() + "**>\n" +
+                        "You have invited <**" + event.getGuild().getSelfMember().getUser().getAsTag() +
+                        "**> join <**" + event.getGuild().getName() +
+                        "**> Discord Server", "", "", "", "", helpCommand.summonMemberFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
+
     }
 
-    public void getGuildVariable(Guild guild) {
+    public void getGuildVariable(@NotNull Guild guild) {
         // 註冊全域指令
         addCommandEveryWhere(guild.getJDA());
 
@@ -345,10 +345,13 @@ public class SlashCommandManager extends ListenerAdapter {
         System.out.println(TAG + " Command Variable loaded");
     }
 
-    private void addOwnSlashCommand(Guild guild) {
+    private void addOwnSlashCommand(@NotNull Guild guild) {
 
         CommandListUpdateAction command = guild.updateCommands();
 
+        command.addCommands(
+                new CommandData("nick", "更改專屬伺服器暱稱").setDefaultEnabled(false)
+        );
 //        command.addCommands(
 //                new CommandData("promote", "提拔成員成為房間管理員")
 //                        .addOptions(new OptionData(USER, USER_TAG, "拉起來吧")
@@ -508,7 +511,7 @@ public class SlashCommandManager extends ListenerAdapter {
         command.queue();
     }
 
-    private void addPublicSlashCommand(Guild guild) {
+    private void addPublicSlashCommand(@NotNull Guild guild) {
 
         CommandListUpdateAction command = guild.updateCommands();
 
@@ -627,17 +630,13 @@ public class SlashCommandManager extends ListenerAdapter {
                                 .setRequired(true)) // 若未填則回覆預設
         );
         command.complete();
-
     }
 
     public void addCommandEveryWhere(JDA jda) {
 
         CommandListUpdateAction command = jda.updateCommands();
         command.addCommands(
-                new CommandData("nick", "更改專屬伺服器暱稱").setDefaultEnabled(false)
-        );
-        command.addCommands(
-                new CommandData("join", "填寫專屬伺服器加入申請").setDefaultEnabled(false)
+                new CommandData("join", "填寫專屬伺服器加入申請")
         );
         command.addCommands(
                 new CommandData("ping", "延遲測試")
@@ -651,5 +650,50 @@ public class SlashCommandManager extends ListenerAdapter {
         );
 
         command.queue();
+    }
+
+    public void sendRequestNoResponse(String endPoint, @NotNull String method, byte[] payload, String contentType) {
+        try {
+            java.net.URL url = new URL("https://discordapp.com/api/v9" + URLEncoder.encode(endPoint, StandardCharsets.UTF_8));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestProperty("Authorization", "Bot " + botToken);
+            if (method.equals("PATCH")) {
+                conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                conn.setRequestMethod("POST");
+            } else
+                conn.setRequestMethod(method);
+            conn.setRequestProperty("Content-Type", contentType);
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)");
+            conn.setUseCaches(false);
+            conn.setDoInput(true);
+
+            //have payload
+            if (payload != null && payload.length > 0) {
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Length", String.valueOf(payload.length));
+                conn.getOutputStream().write(payload);
+            }
+            //get response code
+            if (conn.getResponseCode() > 299) {
+                if (conn.getResponseCode() > 399) {
+                    System.err.println(TAG + "request failed, ResponseCode: " + conn.getResponseCode() + ", URL: " + endPoint);
+                    String errorString = readResponse(conn.getErrorStream());
+                    System.out.println(errorString);
+                    conn.disconnect();
+
+                    return;
+                }
+                System.out.println(TAG + "warn! ResponseCode: " + conn.getResponseCode() + ", URL: " + endPoint);
+                String warnString = readResponse(conn.getInputStream());
+                System.out.println(warnString);
+                conn.disconnect();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Message -> MessageReference
+        // NTc2NzQ3NDM1NjUzNTk1MTM2.XNa_6A.KRKoZQKIZvyECamZRnNqVJMoc00
     }
 }

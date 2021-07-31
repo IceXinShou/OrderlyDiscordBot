@@ -9,6 +9,8 @@ import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -53,7 +55,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.queue = new ArrayList<>();
     }
 
-    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
+    public void addPlayListToQueue(@NotNull AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
@@ -159,7 +161,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     @Override
-    public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+    public void onTrackEnd(AudioPlayer player, AudioTrack track, @NotNull AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
             lastIndex = index;
@@ -170,6 +172,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void stopPlay(SlashCommandEvent event) {
+        percent = 0d;
         queue.clear();
         index = 0;
         playingTrack = null;
@@ -263,7 +266,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     //https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
-    private void calculateNormalized(AudioTrack audioTrack) {
+    private void calculateNormalized(@NotNull AudioTrack audioTrack) {
         String videoID = audioTrack.getInfo().identifier;
 
         // get video info
@@ -284,7 +287,7 @@ public class TrackScheduler extends AudioEventAdapter {
         player.setVolume((int) Math.round(percent * defaultVolume) / range);
     }
 
-    public String getUrl(String input, String payload) {
+    public String getUrl(String input, @NotNull String payload) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(input).openConnection();
             connection.setRequestMethod("POST");
@@ -314,7 +317,7 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
-    public static String getUrlData(String urlStr) {
+    public static @Nullable String getUrlData(String urlStr) {
         URL url;
         try {
             url = new URL(urlStr);

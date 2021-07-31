@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.jetbrains.annotations.NotNull;
 
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.SlashCommandOption.DAYS;
@@ -13,7 +14,7 @@ import static main.java.util.Funtions.createEmbed;
 import static main.java.util.Funtions.isBotOwner;
 
 public class Ban {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         User user = event.getOption(USER_TAG).getAsUser();
         Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
 

@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class VoiceChannel {
 
     private int commandState;
 
-    public int onVoiceChannelCommand(SlashCommandEvent event) {
+    public int onVoiceChannelCommand(@NotNull SlashCommandEvent event) {
         commandState = 1;
         switch (event.getName()) {
             // Voice Channel
@@ -93,7 +94,7 @@ public class VoiceChannel {
         return commandState;
     }
 
-    public void unpromote(SlashCommandEvent event) {
+    public void unpromote(@NotNull SlashCommandEvent event) {
 
         Member targetMember = event.getOption(USER_TAG).getAsMember();
 
@@ -134,7 +135,7 @@ public class VoiceChannel {
         }
     }
 
-    public void promote(SlashCommandEvent event) {
+    public void promote(@NotNull SlashCommandEvent event) {
 
         Member targetMember = event.getOption(USER_TAG).getAsMember();
 
@@ -154,7 +155,7 @@ public class VoiceChannel {
 
     }
 
-    public void makeChannelPrivate(SlashCommandEvent event) {
+    public void makeChannelPrivate(@NotNull SlashCommandEvent event) {
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
 
@@ -173,7 +174,7 @@ public class VoiceChannel {
         event.getHook().editOriginalEmbeds(createEmbed("頻道已設置為不公開", 0xb8d8be)).queue();
     }
 
-    public void makeChannelPublic(SlashCommandEvent event) {
+    public void makeChannelPublic(@NotNull SlashCommandEvent event) {
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
         String voiceChannelID = channelData.getString(VOICE_CHANNEL_ID);
@@ -193,7 +194,7 @@ public class VoiceChannel {
         event.getHook().editOriginalEmbeds(createEmbed("頻道已設置為公開", 0x7fc89a)).queue();
     }
 
-    public void black(SlashCommandEvent event) {
+    public void black(@NotNull SlashCommandEvent event) {
 
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
@@ -233,7 +234,7 @@ public class VoiceChannel {
         }
     }
 
-    public void remove(SlashCommandEvent event) {
+    public void remove(@NotNull SlashCommandEvent event) {
 
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
@@ -273,7 +274,7 @@ public class VoiceChannel {
         }
     }
 
-    public void invite(SlashCommandEvent event) {
+    public void invite(@NotNull SlashCommandEvent event) {
         String senderID = event.getUser().getId();
         JSONObject channelData = voiceChannelData.getJSONObject(senderID);
         String textChannelID = channelData.getString(TEXT_CHANNEL_ID);
@@ -298,7 +299,7 @@ public class VoiceChannel {
 
     }
 
-    public void info(SlashCommandEvent event) {
+    public void info(@NotNull SlashCommandEvent event) {
         String vcOwnerID;
         String vcName;
         if (event.getOption(CHANNEL_TAG) != null) {
@@ -339,7 +340,7 @@ public class VoiceChannel {
         )).queue();
     }
 
-    private boolean inVC(SlashCommandEvent event) {
+    private boolean inVC(@NotNull SlashCommandEvent event) {
         // 不在語音頻道內或指令頻道
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.getHook().editOriginalEmbeds(createEmbed("你並沒有處於任何語音頻道", 0xFF0000)).queue();
@@ -368,7 +369,7 @@ public class VoiceChannel {
         return true;
     }
 
-    public void onButton(ButtonClickEvent event, String[] args) {
+    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
         if (args[1].equals("vc_giveAdmin")) {
             event.deferEdit().setEmbeds(createEmbed("添加成功", 0x9740b9)).setActionRows().queue();
             JSONObject ownerInfo = voiceChannelData.getJSONObject(args[0]);

@@ -8,6 +8,7 @@ import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Holder for both the player and a track scheduler for one guild.
@@ -29,7 +30,7 @@ public class GuildMusicManager {
      *
      * @param manager Audio player manager to use for creating the player.
      */
-    public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
+    public GuildMusicManager(@NotNull AudioPlayerManager manager, Guild guild) {
         player = manager.createPlayer();
         scheduler = new TrackScheduler(player, guild);
         this.guild = guild;
@@ -51,6 +52,8 @@ public class GuildMusicManager {
         void remove(AudioTrack removedTrack, SlashCommandEvent event);
 
         void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event);
+
+        void loop(int loopState, SlashCommandEvent event);
 
         void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild);
 

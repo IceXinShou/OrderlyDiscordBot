@@ -56,7 +56,7 @@ public class InformationReaction extends ListenerAdapter {
                         emoji.borderLeft.getAsMention() + " 　　`/kick <@user>`\t| 移除成員權限\n" +
                         emoji.borderLeft.getAsMention() + " 　　`/public`\t| 將您房間改為公開\n" +
                         emoji.borderLeft.getAsMention() + " 　　`/private`\t| 將您房間改為私人\n" +
-                        emoji.borderLeft.getAsMention() + " 　　`/info (#channel)`\t| 列出房間數據\n" +
+                        emoji.borderLeft.getAsMention() + " 　　`/info [#channel]`\t| 列出房間數據\n" +
                         emoji.borderLeft.getAsMention() + " 　　`/promote <@user>`\t| 設定管理員\n" +
                         emoji.borderLeft.getAsMention() + " 　　`/unpromote <@user>`\t| 移除管理員\n" +
                         emoji.borderLeftBottom.getAsMention() + emoji.borderBottom.getAsMention().repeat(7)
@@ -66,8 +66,8 @@ public class InformationReaction extends ListenerAdapter {
                         "\n" +
                         " 　　**關於音樂 | About Music**\n" +
                         "\n" +
-                        " 　　`/play (url/name)`\t| 播放音樂\n" +
-                        " 　　`/volume (num)`\t| 更改音量大小\n" +
+                        " 　　`/play {url/name}`\t| 播放音樂\n" +
+                        " 　　`/volume [num]`\t| 更改音量大小\n" +
                         " 　　`/skip`\t| 切換至下一首\n" +
                         " 　　`/repeat`\t| 切換單曲循環\n" +
                         " 　　`/loop`\t| 切換循環模式\n" +
@@ -87,7 +87,7 @@ public class InformationReaction extends ListenerAdapter {
                         emoji.borderLeftBottom.getAsMention() + emoji.borderBottom.getAsMention().repeat(7)
                         , false));
 
-                guild.getTextChannelById("858672865444626439").editMessageById("864033587446415410", createEmbed(
+                guild.getTextChannelById("858672865444626439").editMessageEmbedsById("864033587446415410", createEmbed(
                         "原之序 | ORDERLY SERVER", null,
                         "",
                         "", "",

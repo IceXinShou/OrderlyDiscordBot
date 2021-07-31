@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.Button;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
@@ -31,7 +32,7 @@ public class Clear {
      * clear 指令
      */
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE) && !botOwnerID.contains(event.getMember().getId())) {
             event.getHook().editOriginalEmbeds(createEmbed(noPermissionERROR + "`(MESSAGE_MANAGE)`", 0xFF0000)).queue();
             return;
@@ -48,7 +49,7 @@ public class Clear {
     }
 
 
-    public void onButton(ButtonClickEvent event, String[] args) {
+    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
         if (args[1].equals("delete")) {
             event.deferEdit().setEmbeds(createEmbed("已刪除", 0x9740b9)).setActionRows().queue();
             int amount = Integer.parseInt(args[2]);

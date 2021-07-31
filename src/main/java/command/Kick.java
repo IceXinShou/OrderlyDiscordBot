@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+import org.jetbrains.annotations.NotNull;
 
 import static main.java.BotSetting.noPermissionERROR;
 import static main.java.SlashCommandOption.USER_TAG;
@@ -12,7 +13,7 @@ import static main.java.util.Funtions.isBotOwner;
 
 public class Kick {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         Member selfMember = event.getGuild().getSelfMember();
 
         if (!selfMember.hasPermission(Permission.KICK_MEMBERS)) {

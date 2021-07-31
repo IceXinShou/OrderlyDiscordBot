@@ -1,6 +1,7 @@
 package main.java.command;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 
@@ -9,12 +10,14 @@ import static main.java.util.Funtions.createEmbed;
 import static main.java.util.GuildUtil.guild;
 
 public class Support {
-    public void onMemberCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         event.getHook().editOriginalEmbeds(createEmbed("傳送中...", 0x00FFFF)).queue();
         try {
             guild.getTextChannelById("858672866283356217").sendMessageEmbeds(
-                    createEmbed(event.getMember().getUser().getAsTag(),
-                            event.getOption(MESSAGE).getAsString(), event.getGuild() == null ? "[Private]" : event.getGuild().getName(), OffsetDateTime.now(), 0x00FFFF)).queue();
+                    createEmbed(event.getUser().getAsTag(),
+                            event.getOption(MESSAGE).getAsString(),
+                            event.getGuild() == null ? "[Private]" : event.getGuild().getName(), OffsetDateTime.now(), 0x00FFFF))
+                    .queue();
             event.getHook().editOriginalEmbeds(createEmbed("傳送成功", 0x50ff70)).queue();
         } catch (Exception e) {
             System.out.println(e.getMessage());

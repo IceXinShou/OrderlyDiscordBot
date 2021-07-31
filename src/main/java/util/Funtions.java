@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -17,11 +19,11 @@ public class Funtions {
      * boolean
      */
 
-    public static boolean isBotOwner(GenericInteractionCreateEvent event) {
+    public static boolean isBotOwner(@NotNull GenericInteractionCreateEvent event) {
         return (botOwnerID.contains(event.getUser().getId()));
     }
 
-    public static boolean isBotOwner(GuildMessageReceivedEvent event) {
+    public static boolean isBotOwner(@NotNull GuildMessageReceivedEvent event) {
         return (event.getMember() != null && botOwnerID.contains(event.getMember().getId()));
     }
 
@@ -29,7 +31,8 @@ public class Funtions {
      * Embed
      */
 
-    public static MessageEmbed createEmbed(String title, String description, String footer, String nickname, String avatarUrl, OffsetDateTime timeStamp, int color) {
+    @Contract("_, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String description, String footer, String nickname, String avatarUrl, OffsetDateTime timeStamp, int color) {
         return new MessageEmbed(null,
                 title,
                 description,
@@ -44,7 +47,8 @@ public class Funtions {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(String title, String description, String nickname, List<MessageEmbed.Field> fields, String avatarUrl, int color) {
+    @Contract("_, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String description, String nickname, List<MessageEmbed.Field> fields, String avatarUrl, int color) {
         return new MessageEmbed(null,
                 title,
                 description,
@@ -59,7 +63,8 @@ public class Funtions {
                 null, fields);
     }
 
-    public static MessageEmbed createEmbed(String title, MessageEmbed.Field field, String footer, String nickname, String avatarUrl, int color) {
+    @Contract("_, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, MessageEmbed.Field field, String footer, String nickname, String avatarUrl, int color) {
         return new MessageEmbed(null,
                 title,
                 null,
@@ -74,7 +79,8 @@ public class Funtions {
                 null, Collections.singletonList(field));
     }
 
-    public static MessageEmbed createEmbed(String title, String description, String footer, String nickname, String avatarUrl, List<MessageEmbed.Field> fields, OffsetDateTime timeStamp, int color) {
+    @Contract("_, _, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String description, String footer, String nickname, String avatarUrl, List<MessageEmbed.Field> fields, OffsetDateTime timeStamp, int color) {
         return new MessageEmbed(null,
                 title,
                 description,
@@ -89,7 +95,8 @@ public class Funtions {
                 null, fields);
     }
 
-    public static MessageEmbed createEmbed(String title, String description, String footer, OffsetDateTime timeStamp, int color) {
+    @Contract("_, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String description, String footer, OffsetDateTime timeStamp, int color) {
         return new MessageEmbed(null,
                 title,
                 description,
@@ -104,7 +111,8 @@ public class Funtions {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color) {
+    @Contract("_, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color) {
         return new MessageEmbed(url,
                 title,
                 description,
@@ -119,7 +127,8 @@ public class Funtions {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(String description, int color) {
+    @Contract("_, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String description, int color) {
         return new MessageEmbed(null,
                 "",
                 description,
@@ -134,7 +143,8 @@ public class Funtions {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(int color, String title) {
+    @Contract("_, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(int color, String title) {
         return new MessageEmbed(null,
                 title,
                 "",
@@ -149,7 +159,8 @@ public class Funtions {
                 null, null);
     }
 
-    public static MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, String image, int color) {
+    @Contract("_, _, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, String image, int color) {
         return new MessageEmbed(url,
                 title,
                 description,
@@ -168,19 +179,22 @@ public class Funtions {
      * Tag
      */
 
-    public static String tagUser(String ID) {
+    @Contract(pure = true)
+    public static @NotNull String tagUser(String ID) {
         return "<@!" + ID + '>';
     }
 
-    public static String tagChannel(String ID) {
+    @Contract(pure = true)
+    public static @NotNull String tagChannel(String ID) {
         return "<#" + ID + '>';
     }
 
-    public static String tagRole(String ID) {
+    @Contract(pure = true)
+    public static @NotNull String tagRole(String ID) {
         return "<@&" + ID + '>';
     }
 
-    public static String tagUsers(List<String> ID) {
+    public static @NotNull String tagUsers(@NotNull List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -188,7 +202,7 @@ public class Funtions {
         return n.toString();
     }
 
-    public static String tagChannels(List<String> ID) {
+    public static @NotNull String tagChannels(@NotNull List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -196,7 +210,7 @@ public class Funtions {
         return n.toString();
     }
 
-    public static String tagRoles(List<String> ID) {
+    public static @NotNull String tagRoles(@NotNull List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -204,7 +218,7 @@ public class Funtions {
         return n.toString();
     }
 
-    public static String toUnicode(String input) {
+    public static @NotNull String toUnicode(@NotNull String input) {
         StringBuilder b = new StringBuilder();
         for (char c : input.toCharArray()) {
             if (c >= 128)

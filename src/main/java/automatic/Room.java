@@ -60,7 +60,7 @@ public class Room extends ListenerAdapter {
      * Funtion
      */
 
-    private void newChannel(GenericGuildVoiceUpdateEvent event) {
+    private void newChannel(@NotNull GenericGuildVoiceUpdateEvent event) {
         Collection<Permission> allow = new ArrayList<>();
         allow.add(Permission.VIEW_CHANNEL);
         allow.add(Permission.MANAGE_CHANNEL);

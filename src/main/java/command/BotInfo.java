@@ -2,6 +2,7 @@ package main.java.command;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import static main.java.util.Funtions.createEmbed;
 
 public class BotInfo {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         int members = 0;

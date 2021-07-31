@@ -1,6 +1,5 @@
 package main.java.automatic;
 
-import main.java.event.Log;
 import main.java.util.Funtions;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -43,12 +42,9 @@ public class TicketChannel extends ListenerAdapter {
 
                 m.createPermissionOverride(event.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
 
-                m.sendMessageEmbeds(createEmbed(Funtions.tagRoles(serviceTagRoleID), 0x9740b9)).queue(n ->
-                        Log.deleteNoLog(n, 1)
-                );
-
                 MessageBuilder builder = new MessageBuilder();
-                builder.setContent(defaultServiceMessage.replace("%reporter%", event.getMember().getAsMention()));
+                builder.setContent(defaultServiceMessage.replace("%reporter%", event.getMember().getAsMention()) +
+                        "_\u200B".repeat(397) + "_" + Funtions.tagRoles(serviceTagRoleID));
                 builder.setActionRows(ActionRow.of(Button.of(ButtonStyle.DANGER, "deleteChannel", "刪除頻道", Emoji.fromEmote(emoji.trashCan))));
                 m.sendMessage(builder.build()).queue();
             });

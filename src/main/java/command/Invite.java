@@ -7,13 +7,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
 
-import static main.java.BotSetting.configFolder;
-import static main.java.BotSetting.confirmRoleID;
+import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.USER_TAG;
 import static main.java.command.VoiceChannel.voiceChannelData;
@@ -39,7 +39,7 @@ public class Invite {
     }
 
     // 加入族譜
-    private void addMemberToGenealogy(Member inviter, String invitedUserID) {
+    private void addMemberToGenealogy(@NotNull Member inviter, String invitedUserID) {
         JSONArray invited;
         if (genealogyData.has(inviter.getId()))
             invited = genealogyData.getJSONArray(inviter.getId());
@@ -50,7 +50,7 @@ public class Invite {
         genealogyFile.saveFile();
     }
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(@NotNull SlashCommandEvent event) {
         Member member = event.getOption(USER_TAG).getAsMember();
         String userId = event.getUser().getId();
         // 還沒完成使用者設定
@@ -64,10 +64,10 @@ public class Invite {
                 .queue();
     }
 
-    public void onButton(ButtonClickEvent event, String[] args) {
+    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
         if (args[1].equals("invite")) {
             // 這個user已經設定好伺服器暱稱
-            if (memberData.has(args[2]) && !voiceChannelData.has(args[2])) {
+            if (memberData.has(args[2]) && !guild.retrieveMemberById(args[2]).complete().getRoles().contains(memberRole)) {
                 // 加role
                 for (Role role : confirmRoleID) {
                     guild.addRoleToMember(args[2], role).queue();

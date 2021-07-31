@@ -229,29 +229,29 @@ public class Log extends ListenerAdapter {
             ).queue();
     }
 
-    public static void deleteNoLog(ReplyAction action, long delaySec) {
+    public static void deleteNoLog(@NotNull ReplyAction action, long delaySec) {
         action.queue(act -> {
             ignoreMessageID.add(act.getInteraction().getId());
             act.deleteOriginal().queueAfter(delaySec, TimeUnit.SECONDS);
         });
     }
 
-    public static void deleteNoLog(InteractionHook message, long delaySec) {
+    public static void deleteNoLog(@NotNull InteractionHook message, long delaySec) {
         ignoreMessageID.add(message.getInteraction().getId());
         message.deleteOriginal().queueAfter(delaySec, TimeUnit.SECONDS);
     }
 
-    public static void deleteNoLog(Message message, long delaySec) {
+    public static void deleteNoLog(@NotNull Message message, long delaySec) {
         ignoreMessageID.add(message.getId());
         message.delete().queueAfter(delaySec, TimeUnit.SECONDS);
     }
 
-    public static void deleteNoLog(Message message) {
+    public static void deleteNoLog(@NotNull Message message) {
         ignoreMessageID.add(message.getId());
         message.delete().queue();
     }
 
-    public static void deleteNoLog(ButtonClickEvent event) {
+    public static void deleteNoLog(@NotNull ButtonClickEvent event) {
         ignoreMessageID.add(event.getMessageId());
         event.getHook().deleteOriginal().queue();
     }

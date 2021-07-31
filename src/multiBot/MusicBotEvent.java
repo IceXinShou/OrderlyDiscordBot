@@ -6,6 +6,7 @@ import multiBot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import static main.java.event.Log.logChannel;
 import static main.java.util.Funtions.createEmbed;
@@ -40,7 +41,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void addPlayerListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event) {
+    public void addPlayerListToQueue(AudioPlaylist playlist, @NotNull GenericInteractionCreateEvent event) {
 //        event.getHook().editOriginalEmbeds(createEmbed("加入 `" + playlist.getName() + "` ", 0xBCE9B6)).setEphemeral(true).queue();
         if (!event.getGuild().getId().equals(guildID))
             logChannel.sendMessage("加入 `" + playlist.getName() + "` ").queue();
@@ -66,7 +67,19 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild) {
+    public void loop(int loopState, SlashCommandEvent event){
+        switch (loopState){
+            case 0:
+                event.getHook().editOriginalEmbeds(createEmbed("正常播放", 0xADACCC)).queue();
+            case 1:
+                event.getHook().editOriginalEmbeds(createEmbed("循環播放", 0xADACCC)).queue();
+            case 2:
+                event.getHook().editOriginalEmbeds(createEmbed("單曲循環", 0x7d95b9)).queue();
+        }
+    }
+
+    @Override
+    public void noMoreTrack(GenericInteractionCreateEvent event, @NotNull Guild guild) {
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
             musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);

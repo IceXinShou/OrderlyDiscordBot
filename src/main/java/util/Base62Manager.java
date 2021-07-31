@@ -1,9 +1,11 @@
 package main.java.util;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Base62Manager {
     private static final String characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public static String encode(long seq) {
+    public static @NotNull String encode(long seq) {
         if (seq < 0) throw new IllegalArgumentException("b10 must be nonnegative");
         StringBuilder sBuilder = new StringBuilder();
         while (seq > 0) {
@@ -13,7 +15,7 @@ public class Base62Manager {
         return sBuilder.toString();
     }
 
-    public static long base62decode(String b62) {
+    public static long base62decode(@NotNull String b62) {
         long[] ret = new long[]{0, 1};
         b62.chars().forEach(character -> {
             if (characters.indexOf(character) == -1) { // 不合理的字

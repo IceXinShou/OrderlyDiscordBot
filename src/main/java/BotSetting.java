@@ -4,6 +4,7 @@ import main.java.command.Invite;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Role;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -297,7 +298,7 @@ public class BotSetting {
         System.out.println(TAG + " Setting file loaded");
     }
 
-    private File exportResource(String resourceName) {
+    private @Nullable File exportResource(String resourceName) {
         InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(resourceName);
 
         try {

@@ -2,6 +2,8 @@ package main.java.util;
 
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -80,7 +82,7 @@ public class EmojiUtil {
      * 取得表情驗證
      */
 
-    private Emote getEmoji(String name, Guild guild) {
+    private @Nullable Emote getEmoji(String name, @NotNull Guild guild) {
         List<Emote> emote = guild.getEmotesByName(name, false);
         if (emote.size() == 0) {
             System.err.println(TAG + " cant get emoji: " + name);
