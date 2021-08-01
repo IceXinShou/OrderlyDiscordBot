@@ -26,8 +26,6 @@ public class MusicBotEvent implements GuildMusicManager.Event {
             musicBot.updateVideoInfo(guild);
             musicBot.displayQueue(event, searchAble);
         }
-        if (guild.getId().equals(guildID))
-            logChannel.sendMessage("開始播放 `" + track.getInfo().title + "`").queue();
     }
 
     @Override
@@ -51,8 +49,6 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     public void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild) {
         if (event != null) {
             event.getHook().editOriginalEmbeds(createEmbed("已跳過", 0xD3DAFF)).queue();
-            if (guild.getId().equals(guildID))
-                logChannel.sendMessage("跳過 `" + lastTrack.getInfo().title + "`").queue();
         }
 
     }
@@ -67,14 +63,11 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void loop(int loopState, SlashCommandEvent event){
-        switch (loopState){
-            case 0:
-                event.getHook().editOriginalEmbeds(createEmbed("正常播放", 0xADACCC)).queue();
-            case 1:
-                event.getHook().editOriginalEmbeds(createEmbed("循環播放", 0xADACCC)).queue();
-            case 2:
-                event.getHook().editOriginalEmbeds(createEmbed("單曲循環", 0x7d95b9)).queue();
+    public void loop(boolean loopState, SlashCommandEvent event) {
+        if (loopState) {
+            event.getHook().editOriginalEmbeds(createEmbed("循環播放", 0xf89f65)).queue();
+        } else {
+            event.getHook().editOriginalEmbeds(createEmbed("正常播放", 0xADACCC)).queue();
         }
     }
 
@@ -88,8 +81,6 @@ public class MusicBotEvent implements GuildMusicManager.Event {
 
         if (event instanceof SlashCommandEvent)
             event.getHook().editOriginalEmbeds(createEmbed("已停止播放", 0xFF3B7D)).queue();
-        if (guild.getId().equals(guildID))
-            logChannel.sendMessage("停止播放").queue();
     }
 
     @Override
@@ -106,14 +97,17 @@ public class MusicBotEvent implements GuildMusicManager.Event {
         if (event != null) {
             event.getHook().editOriginalEmbeds(pause ? createEmbed("已暫停播放", 0xFF3B7D) : createEmbed("已開始播放", 0x75C44C)).queue();
         }
-        if (guild.getId().equals(guildID))
-            logChannel.sendMessage(pause ? "暫停音樂播放" : "繼續音樂播放").queue();
     }
 
     @Override
     public void volumeChange(int volume, SlashCommandEvent event) {
         if (event != null)
             event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
+    }
+
+    @Override
+    public void updateVideoInfo(SlashCommandEvent event){
+
     }
 
 }

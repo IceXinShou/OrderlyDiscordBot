@@ -16,6 +16,7 @@ import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.event.Join.memberData;
 import static main.java.util.Funtions.createEmbed;
+import static main.java.util.Funtions.tagUser;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.CHINESE_NICK;
 
@@ -43,8 +44,7 @@ public class TicketChannel extends ListenerAdapter {
                 m.createPermissionOverride(event.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
 
                 MessageBuilder builder = new MessageBuilder();
-                builder.setContent(defaultServiceMessage.replace("%reporter%", event.getMember().getAsMention()) +
-                        "_\u200B".repeat(397) + "_" + Funtions.tagRoles(serviceTagRoleID));
+                builder.setContent(defaultServiceMessage + "_\u200B".repeat(397) + "_" + Funtions.tagRoles(serviceTagRoleID) + event.getMember().getAsMention());
                 builder.setActionRows(ActionRow.of(Button.of(ButtonStyle.DANGER, "deleteChannel", "刪除頻道", Emoji.fromEmote(emoji.trashCan))));
                 m.sendMessage(builder.build()).queue();
             });

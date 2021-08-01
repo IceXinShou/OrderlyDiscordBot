@@ -48,7 +48,6 @@ public class Clear {
                 .queue();
     }
 
-
     public void onButton(ButtonClickEvent event, String @NotNull [] args) {
         if (args[1].equals("delete")) {
             event.deferEdit().setEmbeds(createEmbed("已刪除", 0x9740b9)).setActionRows().queue();

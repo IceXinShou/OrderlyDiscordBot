@@ -53,11 +53,13 @@ public class GuildMusicManager {
 
         void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event);
 
-        void loop(int loopState, SlashCommandEvent event);
+        void loop(boolean loopState, SlashCommandEvent event);
 
         void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild);
 
         void volumeChange(int volume, SlashCommandEvent event);
+
+        void updateVideoInfo(SlashCommandEvent event);
 
     }
 }

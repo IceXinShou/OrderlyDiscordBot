@@ -318,7 +318,7 @@ public class Join extends ListenerAdapter {
             QuestionStep progress = new QuestionStep(0, null);
             JSONObject userData = memberData.getJSONObject(userID);
             // 有玩minecraft
-            if (progress.playMinecraft == userData.getBoolean(PLAY_MINECRAFT))
+            if (progress.playMinecraft = userData.getBoolean(PLAY_MINECRAFT))
                 progress.minecraftID = userData.getString(MINECRAFT_ID);
             else
                 progress.englishNick = userData.getString(ENGLISH_NICK);

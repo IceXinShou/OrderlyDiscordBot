@@ -220,10 +220,10 @@ public class SlashCommandManager extends ListenerAdapter {
                 helpCommand.onCommand(event);
                 return;
             }
-            case "join" -> {
-                join.onCommand(event);
-                return;
-            }
+//            case "join" -> {
+//                join.onCommand(event);
+//                return;
+//            }
         }
         event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
     }
@@ -512,7 +512,6 @@ public class SlashCommandManager extends ListenerAdapter {
         );
 
 
-
         String applicationID = guild.getJDA().retrieveApplicationInfo().complete().getId();
         command.queue(cmds -> {
             for (Command cmd : cmds) {
@@ -525,7 +524,7 @@ public class SlashCommandManager extends ListenerAdapter {
                     permission.put("permission", true);
                     permissions.put(permission);
 
-                    sendRequestNoResponse("/applications/" + applicationID + "/guilds/" + guild.getId() + "/commands/" + cmd.getId() + "/permissions",
+                    sendRequestNoResponse("/applications/" + applicationID + "/guilds/" + guildID + "/commands/" + cmd.getId() + "/permissions",
                             "PUT",
                             permission.toString().getBytes(StandardCharsets.UTF_8),
                             "application/json");
@@ -657,9 +656,9 @@ public class SlashCommandManager extends ListenerAdapter {
 
     public void addCommandEveryWhere(@NotNull JDA jda) {
         CommandListUpdateAction command = jda.updateCommands();
-        command.addCommands(
-                new CommandData("join", "填寫專屬伺服器加入申請")
-        );
+//        command.addCommands(
+//                new CommandData("join", "填寫專屬伺服器加入申請")
+//        );
         command.addCommands(
                 new CommandData("ping", "延遲測試")
         );

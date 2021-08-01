@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.SlashCommandOption.USER_TAG;
-import static main.java.command.VoiceChannel.voiceChannelData;
 import static main.java.event.Join.memberData;
 import static main.java.event.Log.logChannel;
 import static main.java.util.Funtions.createEmbed;

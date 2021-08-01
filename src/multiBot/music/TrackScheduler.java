@@ -40,8 +40,8 @@ public class TrackScheduler extends AudioEventAdapter {
     public long startPlayTime;
 
     // setting
-    public boolean repeat;
-    public boolean loop;
+    public boolean repeat = false;
+    public boolean loop = false;
     private final int defaultVolume = 40;
 
     public int loopStatus = 0;
@@ -87,6 +87,7 @@ public class TrackScheduler extends AudioEventAdapter {
             // 開始撥放
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
+            musicBot.updateVideoInfo(guild);
             calculateNormalized(track);
             this.event.trackStart(track, event, guild, musicBot, searchAble);
         } else {
@@ -115,11 +116,10 @@ public class TrackScheduler extends AudioEventAdapter {
                 index = lastIndex;
                 return false;
             }
-
             if (index >= queue.size()) {
-                if (loop)
+                if (loop) {
                     index = 0;
-                else
+                } else
                     return false;
             }
 
@@ -127,38 +127,40 @@ public class TrackScheduler extends AudioEventAdapter {
             track = queue.get(index);
             if (index < lastIndex)
                 track = track.makeClone();
+            if (queue.size() == 1 && loop)
+                track = track.makeClone();
         }
-
         if (player.startTrack(track, false)) {
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
             calculateNormalized(track);
+
             return true;
         }
 
         return false;
     }
 
-    public void nextTrack(SlashCommandEvent event) {
+    public void nextTrack(SlashCommandEvent event, MusicBot musicBot) {
         lastIndex = index;
         index++;
         if (playTrack()) {
             this.event.skip(playingTrack, event, guild);
-            this.event.trackStart(playingTrack, event, guild, null, false);
+            this.event.trackStart(playingTrack, event, guild, musicBot, false);
         } else {
             stopPlay(event);
         }
 //        nextTrack(true, event);
     }
-
-    public void previousTrack(SlashCommandEvent event) {
-        lastIndex = index;
-        index--;
-        if (playTrack())
-            this.event.trackStart(playingTrack, event, guild, null, false);
-        else
-            stopPlay(event);
-    }
+//
+//    public void previousTrack(SlashCommandEvent event) {
+//        lastIndex = index;
+//        index--;
+//        if (playTrack())
+//            this.event.trackStart(playingTrack, event, guild, null, false);
+//        else
+//            stopPlay(event);
+//    }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, @NotNull AudioTrackEndReason endReason) {
@@ -166,6 +168,7 @@ public class TrackScheduler extends AudioEventAdapter {
         if (endReason.mayStartNext) {
             lastIndex = index;
             index++;
+
             if (!playTrack())
                 stopPlay(null);
         }
@@ -194,8 +197,15 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
+        loop = false;
         repeat = !repeat;
         event.repeat(playingTrack, repeat, slashCommandEvent);
+    }
+
+    public void toggleLoop(SlashCommandEvent slashCommandEvent) {
+        repeat = false;
+        loop = !loop;
+        event.loop(loop, slashCommandEvent);
     }
 
     /**
@@ -209,8 +219,12 @@ public class TrackScheduler extends AudioEventAdapter {
             pauseStart = System.currentTimeMillis();
             player.setPaused(true);
             musicPause = true;
+        } else {
+            calculatePauseTime();
+            player.setPaused(false);
+            musicPause = false;
         }
-        this.event.pauseStateChange(true, event, guild);
+        this.event.pauseStateChange(musicPause, event, guild);
     }
 
     public void play(SlashCommandEvent event) {
@@ -265,7 +279,7 @@ public class TrackScheduler extends AudioEventAdapter {
         return volume;
     }
 
-    //https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
+    // https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
     private void calculateNormalized(@NotNull AudioTrack audioTrack) {
         String videoID = audioTrack.getInfo().identifier;
 

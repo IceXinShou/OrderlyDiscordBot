@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -79,17 +78,22 @@ public class MusicBot {
     }
 
     public void nextTrack(@NotNull SlashCommandEvent event) {
-        getMusicManager(event.getGuild()).scheduler.nextTrack(event);
+        getMusicManager(event.getGuild()).scheduler.nextTrack(event, this);
+
     }
 
-    public void playPrevious(@NotNull SlashCommandEvent event) {
-        Guild guild = jda.getGuildById(event.getGuild().getId());
-        connectVC(guild, event.getMember().getVoiceState().getChannel());
-        getMusicManager(event.getGuild()).scheduler.previousTrack(event);
-    }
+//    public void playPrevious(@NotNull SlashCommandEvent event) {
+//        Guild guild = jda.getGuildById(event.getGuild().getId());
+//        connectVC(guild, event.getMember().getVoiceState().getChannel());
+//        getMusicManager(event.getGuild()).scheduler.previousTrack(event);
+//    }
 
     public void toggleRepeat(@NotNull SlashCommandEvent event) {
         getMusicManager(event.getGuild()).scheduler.toggleRepeat(event);
+    }
+
+    public void toggleLoop(@NotNull SlashCommandEvent event) {
+        getMusicManager(event.getGuild()).scheduler.toggleLoop(event);
     }
 
     public void pause(SlashCommandEvent event, Guild guild) {
@@ -142,8 +146,8 @@ public class MusicBot {
             return;
         }
 
-        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
-
+        scheduler.calculatePauseTime();
+        MessageEmbed[] embed = playStatus(event.getMember(), scheduler, false);
         String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (searchAble) {
             event.replyEmbeds(embed[0], embed[1])
@@ -165,19 +169,22 @@ public class MusicBot {
      */
     private JSONObject videoInfo;
 
+
     public void updateVideoInfo(Guild guild) {
-        GuildMusicManager musicManager = getMusicManager(guild);
-        AudioTrackInfo trackInfo = musicManager.scheduler.playingTrack.getInfo();
         videoInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
-                trackInfo.identifier + "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
+                getMusicManager(guild).scheduler.playingTrack.getInfo().identifier +
+                "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
     }
 
-    public MessageEmbed[] playStatus(Member member, @NotNull TrackScheduler scheduler) {
-        // 憲政播放資料
+    public MessageEmbed[] playStatus(Member member, @NotNull TrackScheduler scheduler, boolean update) {
+        // 現在播放資料
         StringBuilder progress = new StringBuilder();
         MessageEmbed nowPlaying;
         // 有歌曲正在播放
         if (scheduler.playingTrack != null) {
+//            if (update) {
+                updateVideoInfo(member.getGuild());
+//            }
             // 進度顯示
             AudioTrackInfo trackInfo = scheduler.playingTrack.getInfo();
             int nowPlayingTime = (int) ((System.currentTimeMillis() - scheduler.startPlayTime) / 1000);

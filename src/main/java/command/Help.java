@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.internal.requests.restaction.WebhookMessageUpdateActionImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -113,8 +112,7 @@ public class Help {
         if (event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
             event.getChannel().sendMessageEmbeds(createEmbed("使用說明：", "", "", "", "", summonAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
             event.getHook().editOriginalEmbeds(createEmbed("已傳送", 0x00FFFF)).queue();
-        }
-        else
+        } else
             event.getHook().editOriginalEmbeds(createEmbed("你沒有權限 `(ADMINISTRATOR)`", 0xFF0000)).queue();
     }
 }
