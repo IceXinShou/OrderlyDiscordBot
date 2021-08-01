@@ -106,7 +106,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void updateVideoInfo(SlashCommandEvent event){
+    public void updateVideoInfo(SlashCommandEvent event) {
 
     }
 

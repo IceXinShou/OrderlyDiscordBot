@@ -16,7 +16,6 @@ import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
 import static main.java.event.Join.memberData;
 import static main.java.util.Funtions.createEmbed;
-import static main.java.util.Funtions.tagUser;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.JsonKeys.CHINESE_NICK;
 

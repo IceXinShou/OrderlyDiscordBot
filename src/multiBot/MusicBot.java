@@ -183,7 +183,7 @@ public class MusicBot {
         // 有歌曲正在播放
         if (scheduler.playingTrack != null) {
 //            if (update) {
-                updateVideoInfo(member.getGuild());
+            updateVideoInfo(member.getGuild());
 //            }
             // 進度顯示
             AudioTrackInfo trackInfo = scheduler.playingTrack.getInfo();
