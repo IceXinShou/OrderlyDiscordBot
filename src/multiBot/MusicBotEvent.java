@@ -3,6 +3,7 @@ package multiBot;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import multiBot.music.GuildMusicManager;
+import multiBot.music.MusicInfoData;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -22,8 +23,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search) {
         if (musicBot != null) {
-            musicBot.updateVideoInfo(guild);
-            musicBot.displayQueue(event, searchAble);
+            musicBot.displayQueue(event, search);
         }
     }
 

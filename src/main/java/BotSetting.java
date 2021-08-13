@@ -29,7 +29,7 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionStringERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, newServiceName, boostedRoleID, apiKEY;
+            defaultServiceMessage, defaultTicketChannelName, newServiceName, boostedRoleID, apiKEY;
     public static boolean debugMode;
     public static Role boostedRole;
 
@@ -37,9 +37,6 @@ public class BotSetting {
 
     public static List<Role> joinRoleID = new ArrayList<>();
     public static List<Role> confirmRoleID = new ArrayList<>();
-    public static List<String> serviceTagRoleID = new ArrayList<>();
-    public static List<String> serviceCategoryID = new ArrayList<>();
-    public static List<String> roomCategoryID = new ArrayList<>();
     public static List<String> botOwnerID = new ArrayList<>();
     public static List<String> multiMusicBotTokens = new ArrayList<>();
     public static Role memberRole;
@@ -48,6 +45,7 @@ public class BotSetting {
     public static File channelLogFolder;
     public static File levelFolder;
     public static File configFolder;
+    public static File guildSettingFolder;
     public static Map<String, Object> settings;
     public static Map<String, Object> IDSettings;
     public static Map<String, Object> ServiceSettings;
@@ -67,7 +65,7 @@ public class BotSetting {
     private void loadVariable() {
         Map<String, Object> GeneralSettings = (Map<String, Object>) settings.get("GeneralSettings");
         Map<String, Object> RoomSettings = (Map<String, Object>) settings.get("RoomSettings");
-        Map<String, Object> ServiceSettings = (Map<String, Object>) settings.get("ServiceSettings");
+        Map<String, Object> TicketSettings = (Map<String, Object>) settings.get("TicketSettings");
 
         /**
          * Bol
@@ -96,12 +94,6 @@ public class BotSetting {
         logRoleID = (String) IDSettings.get("logRoleID");
         boostedRoleID = (String) IDSettings.get("boostedRoleID");
 
-        if (serviceTagRoleID.size() > 0) serviceTagRoleID.clear();
-        serviceTagRoleID.addAll((List<String>) ServiceSettings.get("serviceTagRoleID"));
-        if (serviceCategoryID.size() > 0) serviceCategoryID.clear();
-        serviceCategoryID.addAll((List<String>) ServiceSettings.get("serviceCategoryID"));
-        if (roomCategoryID.size() > 0) roomCategoryID.clear();
-        roomCategoryID.addAll((List<String>) RoomSettings.get("roomCategoryID"));
         if (botOwnerID.size() > 0) botOwnerID.clear();
         botOwnerID.addAll((List<String>) GeneralSettings.get("botOwnerID"));
 
@@ -142,8 +134,9 @@ public class BotSetting {
         /**
          * Services
          */
-        defaultServiceMessage = (String) ServiceSettings.get("defaultServiceMessage");
-        newServiceName = (String) ServiceSettings.get("newServiceName");
+        defaultServiceMessage = (String) TicketSettings.get("defaultTicketMessage");
+        defaultTicketChannelName = (String) TicketSettings.get("defaultTicketMessage");
+        newServiceName = (String) TicketSettings.get("newTicketName");
 
         /**
          * File
@@ -153,6 +146,7 @@ public class BotSetting {
         channelLogFolder = new File((String) folder.get("channelLogFolder"));
         levelFolder = new File((String) folder.get("levelFolder"));
         configFolder = new File((String) folder.get("configFolder"));
+        guildSettingFolder = new File((String) folder.get("guildSettingFolder"));
 
         // create folder
         if (!channelLogFolder.exists())

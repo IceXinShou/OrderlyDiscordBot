@@ -17,7 +17,41 @@ public class JsonKeys {
     public final static String EDIT_TIMES = "E";
 
     // for voice channel
-    public final static String VOICE_CHANNEL_ID = "VC";
-    public final static String TEXT_CHANNEL_ID = "TC";
-    public final static String CHANNEL_ADMINS = "A";
+    public final static String VC_VOICE_CHANNEL_ID = "VC";
+    public final static String VC_TEXT_CHANNEL_ID = "TC";
+    public final static String VC_CHANNEL_ADMINS = "A";
+
+    // for Room
+    public final static String ROOM_SETTING = "room";
+    public final static String ROOM_VOICE_CATEGORY_ID = "VC";
+    public final static String ROOM_TEXT_CATEGORY_ID = "TC";
+    public final static String ROOM_VOICE_NAME = "VN";
+    public final static String ROOM_TEXT_NAME = "TN";
+    public final static String ROOM_VOICE_MEMBER_LIMIT = "ML";
+    public final static String ROOM_VOICE_BITRATE = "BR";
+
+    // for AutoVC
+    public final static String AUTO_VC_SETTING = "autoVC";
+    public final static String AUTO_VC_NAME = "N";
+
+    // for Ticket
+    public final static String TICKET_SETTING = "ticket";
+    public final static String TICKET_TEXT_NAME = "TN";
+    public final static String TICKET_TEXT_CATEGORY_ID = "TC";
+    public final static String TICKET_VOICE_NAME = "VN";
+    public final static String TICKET_VOICE_CATEGORY_ID = "VC";
+    public final static String TICKET_ALLOW_ROLE_ID = "R";
+    public final static String TICKET_ALLOW_TAG = "TA";
+    public final static String TICKET_BUTTON_NAME = "BN";
+    public final static String TICKET_BUTTON_TYPE = "BT";
+    public final static String TICKET_BUTTON_EMOJI_NAME = "EN";
+    public final static String TICKET_ENTERED_MESSAGE = "EM";
+
+    // for ChannelStatus
+    public final static String CS_SETTING = "cs";
+
+    // for GuildJoinLeave
+    public final static String JL_SETTING = "jl";
+    public final static String JL_JOIN_MESSAGE = "JM";
+    public final static String JL_LEAVE_MESSAGE = "LM";
 }

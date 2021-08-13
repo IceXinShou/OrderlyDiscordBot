@@ -84,18 +84,10 @@ RoomSettings:
 ############## Services Settings #################
 ##################################################
 
-ServiceSettings:
-  newServiceName: "《❗》%name% Service"
-  defaultServiceMessage: "Hello %reporter%! Please Type You Problems, Admin Will Solve In A Few Minute."
-
-  serviceCategoryID:
-    - "000000000000000000"
-    - "000000000000000000"
-
-  serviceTagRoleID:
-    - "000000000000000000"
-    - "000000000000000000"
-    - "000000000000000000"
+TicketSettings:
+  newTicketName: "《❗》%name% Service"
+  defaultTicketMessage: "Hello %reporter%! Please Type You Problems, Admin Will Solve In A Few Minute."
+  defaultTicketChannelName: "Ticket %num%"
 
 
 ##################################################

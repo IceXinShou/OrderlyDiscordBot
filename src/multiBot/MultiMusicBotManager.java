@@ -5,7 +5,10 @@ import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
@@ -45,16 +48,16 @@ public class MultiMusicBotManager {
     private int currentIndex = 0;
     private final MusicBotEvent musicEvent = new MusicBotEvent(this);
 
-    //          GuildID ChannelID   MusicBot
+    //                GuildID ChannelID   MusicBot
     private final Map<String, Map<String, MusicBot>> channelBot = new HashMap<>();
 
     //                botID, MusicBot
     private final Map<String, MusicBot> bots = new LinkedHashMap<>();
 
-    public MultiMusicBotManager() {
+    public void setupAllBot() {
         for (String token : multiMusicBotTokens)
             newBot(token);
-        startChangeActivity();
+//        startChangeActivity();
         System.out.println(TAG + " MultiMusicBot loaded!");
     }
 
@@ -151,11 +154,10 @@ public class MultiMusicBotManager {
             if (checkVcState(event)) {
                 if (bot == null)
                     // 取得機器人
-                    for (Object i : bots.values().toArray()) {
-                        MusicBot thisBot = (MusicBot) i;
+                    for (MusicBot thisBot : bots.values()) {
                         GuildMusicManager manager = thisBot.getMusicManager(event.getGuild().getId());
-                        if (manager != null && manager.scheduler.playingTrack == null) {
-                            bot = (MusicBot) i;
+                        if (manager != null && manager.scheduler.musicInfo == null) {
+                            bot = thisBot;
                             commandState = 1;
                             break;
                         }
@@ -171,16 +173,14 @@ public class MultiMusicBotManager {
                 if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                     bot.loadAndPlay(event, url.getAsString(), false, playNow);
                 } else {
-
                     String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
+                    SelectionMenu.Builder builder = SelectionMenu.create("MultiMusicBotManager:searchResult:" + event.getUser().getId() + ':' + bot.getID() + ':' + playNow);
 
-                    SelectionMenu.Builder builder = SelectionMenu.create(event.getUser().getId() + ":searchResult:" + bot.getID());
-
-                    JSONObject result = new JSONObject(
-                            getUrlData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +
-                                    keyWord + "&key=" + apiKEY));
-
-                    JSONArray videoInfo = result.getJSONArray("items");
+                    String result = getUrlData(
+                            "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +
+                                    keyWord + "&key=" + apiKEY);
+                    if (result == null) return;
+                    JSONArray videoInfo = new JSONObject(result).getJSONArray("items");
 
                     for (Object vinfo : videoInfo) {
                         JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
@@ -334,7 +334,7 @@ public class MultiMusicBotManager {
     }
 
     private void newBot(String botToken) {
-        JDABuilder builder = JDABuilder.createDefault(botToken)
+        JDABuilder builder = JDABuilder.createLight(botToken)
                 .disableCache(
                         CacheFlag.ACTIVITY,
                         CacheFlag.EMOTE,

@@ -10,17 +10,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +26,8 @@ public class TrackScheduler extends AudioEventAdapter {
 
     private GuildMusicManager.Event event;
     // now playing
-    public AudioTrack playingTrack;
+    private AudioTrack playingTrack;
+    public MusicInfoData musicInfo;
     public long startPlayTime;
 
     // setting
@@ -64,7 +55,7 @@ public class TrackScheduler extends AudioEventAdapter {
             queue.add(trackList.get(i));
         }
         // 嘗試播放
-        queue(trackList.get(0), event, musicBot, 0, false);
+        queue(trackList.get(0), event, musicBot, 0, false, false);
 
         this.event.addPlayerListToQueue(playlist, event);
     }
@@ -80,15 +71,23 @@ public class TrackScheduler extends AudioEventAdapter {
         // track goes to the queue instead.
         if (position != -1)
             queue.add(position, track);
-        else
+        else if (playNow && queue.size() > 0) {
+            queue.add(index + 1, track);
+            if (repeat) {
+                index++;
+                playingTrack = track;
+            }
+            nextTrack(event, musicBot, search);
+            return;
+        } else
             queue.add(track);
         if (player.startTrack(track, true)) {
             // 開始撥放
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
-            musicBot.updateVideoInfo(guild);
-            calculateNormalized(track);
-            this.event.trackStart(track, event, guild, musicBot, searchAble);
+            musicInfo = new MusicInfoData(track);
+            calculateNormalized(musicInfo.getLoudness());
+            this.event.trackStart(track, event, guild, musicBot, search);
         } else {
             // 加入序列
             this.event.addToQueue(track, event, search, playNow);
@@ -96,6 +95,8 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void remove(int index, SlashCommandEvent event) {
+        if (index > 0x7FFFFFFE)
+            index = 0x7FFFFFFE;
         if (index < 1 || this.index + index + 1 > queue.size()) {
             this.event.remove(null, event);
             return;
@@ -109,12 +110,8 @@ public class TrackScheduler extends AudioEventAdapter {
             index = lastIndex;
             track = playingTrack.makeClone();
         } else {
-            if (queue.size() == 0)
-                return false;
-            if (index < 0) {
+            if (index < 0)
                 index = lastIndex;
-                return false;
-            }
             if (index >= queue.size()) {
                 if (loop) {
                     index = 0;
@@ -126,13 +123,14 @@ public class TrackScheduler extends AudioEventAdapter {
             track = queue.get(index);
             if (index < lastIndex)
                 track = track.makeClone();
-            if (queue.size() == 1 && loop)
+            if (loop)
                 track = track.makeClone();
         }
         if (player.startTrack(track, false)) {
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
-            calculateNormalized(track);
+            musicInfo = new MusicInfoData(track);
+            calculateNormalized(musicInfo.getLoudness());
 
             return true;
         }
@@ -140,18 +138,17 @@ public class TrackScheduler extends AudioEventAdapter {
         return false;
     }
 
-    public void nextTrack(SlashCommandEvent event, MusicBot musicBot) {
+    public void nextTrack(GenericInteractionCreateEvent event, MusicBot musicBot, boolean search) {
         lastIndex = index;
         index++;
         if (playTrack()) {
-            this.event.skip(playingTrack, event, guild);
-            this.event.trackStart(playingTrack, event, guild, musicBot, false);
+//            this.event.skip(playingTrack, event, guild);
+            this.event.trackStart(playingTrack, event, guild, musicBot, search);
         } else {
             stopPlay(event);
         }
-//        nextTrack(true, event);
     }
-//
+
 //    public void previousTrack(SlashCommandEvent event) {
 //        lastIndex = index;
 //        index--;
@@ -173,11 +170,12 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
-    public void stopPlay(SlashCommandEvent event) {
+    public void stopPlay(GenericInteractionCreateEvent event) {
         percent = 0d;
         queue.clear();
         index = 0;
         playingTrack = null;
+        musicInfo = null;
         musicPause = false;
         player.setPaused(false);
         player.stopTrack();
@@ -188,9 +186,8 @@ public class TrackScheduler extends AudioEventAdapter {
         if (index + 1 >= queue.size())
             return new ArrayList<>();
         List<AudioTrack> out = new ArrayList<>();
-        List<AudioTrack> sub = queue.subList(index + 1, queue.size());
-        for (int i = sub.size() - 1; i > -1; i--) {
-            out.add(sub.get(i));
+        for (int i = queue.size() - 1; i > (loop ? -1 : index); i--) {
+            out.add(queue.get(i));
         }
         return out;
     }
@@ -248,7 +245,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void calculatePauseTime() {
-        if (musicPause) {
+        if (playingTrack != null && musicPause) {
             startPlayTime += System.currentTimeMillis() - pauseStart;
             pauseStart = System.currentTimeMillis();
         }
@@ -259,7 +256,6 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     private final int range = 2;
     private double percent = -1;
-    public float loudness = 0;
     private int volume;
 
     public void setVolume(Integer targetVolume, SlashCommandEvent event) {
@@ -269,11 +265,11 @@ public class TrackScheduler extends AudioEventAdapter {
         volume = targetVolume;
 
         if (percent > -1)
-            player.setVolume((int) (Math.round(percent * targetVolume) / range));
+            player.setVolume((int) (Math.round(percent * volume) / range));
         else
-            player.setVolume(targetVolume / range);
+            player.setVolume(volume / range);
 
-        this.event.volumeChange(targetVolume, event);
+        this.event.volumeChange(volume, event);
     }
 
     public int getVolume() {
@@ -291,19 +287,7 @@ public class TrackScheduler extends AudioEventAdapter {
             percent = ((95 + -7.22 * loudness) / 100);
             normalizedVolume = (int) Math.round(percent * volume) / range;
         }
-        //get result
-        try {
-            InputStream in = url.openStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buff = new byte[1024];
-            int length;
-            while ((length = in.read(buff)) > 0) {
-                out.write(buff, 0, length);
-            }
-            return out.toString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            return null;
-        }
+        player.setVolume(normalizedVolume);
     }
 
     public void setManagerEvent(GuildMusicManager.Event event) {

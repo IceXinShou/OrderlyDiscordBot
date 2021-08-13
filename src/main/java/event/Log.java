@@ -80,7 +80,7 @@ public class Log {
 
         if (channelID.equals(consoleChannelID) || channelID.equals(logChannelID) || event.getMessage().getContentRaw().length() == 0)
             return;
-        JsonFileManager channelFileManager = clh.getChannelFileManager(channelID);
+        JsonFileManager channelFileManager = clh.getChannelFileManager(event.getGuild().getId(), channelID);
         JSONObject data = channelFileManager.data;
         JSONObject messageContent = new JSONObject()
                 .put(MESSAGE, event.getMessage().getContentRaw()) // Message
@@ -94,7 +94,7 @@ public class Log {
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
 
-        JsonFileManager channelFileManager = clh.getChannelFileManager(event.getChannel().getId());
+        JsonFileManager channelFileManager = clh.getChannelFileManager(event.getGuild().getId(), event.getChannel().getId());
         JSONObject data = channelFileManager.data;
         JSONObject messageContent = new JSONObject()
                 .put(MESSAGE, event.getMessage().getContentRaw()) // Message
@@ -119,7 +119,7 @@ public class Log {
         if (ignoreMessageID.contains(event.getMessageId())) return;
 
         // get message
-        JSONObject channelLog = clh.getChannelFileManager(event.getChannel().getId()).data;
+        JSONObject channelLog = clh.getChannelFileManager(event.getGuild().getId(), event.getChannel().getId()).data;
         String nickname, avatarUrl, message, dateString;
         // 有訊息資料
         if (channelLog.has(event.getMessageId())) {

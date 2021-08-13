@@ -7,8 +7,8 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import multiBot.music.GuildMusicManager;
+import multiBot.music.MusicInfoData;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
@@ -20,20 +20,14 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static main.java.BotSetting.apiKEY;
-import static main.java.util.Funtions.createEmbed;
-import static multiBot.music.TrackScheduler.getUrlData;
+import static main.java.util.EmbedCreator.createEmbed;
 
 public class MusicBot {
     private final String TAG;
@@ -147,16 +141,23 @@ public class MusicBot {
 
     }
 
-    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean searchAble) {
+    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean search) {
         GuildMusicManager musicManager = getMusicManager(event.getGuild());
         TrackScheduler scheduler = musicManager.scheduler;
-        if (scheduler.playingTrack == null) {
+        if (scheduler.musicInfo == null) {
             event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
             return;
         }
 
         scheduler.calculatePauseTime();
-        MessageEmbed[] embed = playStatus(event.getMember(), scheduler, false);
+        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
+        if (musicManager.guild.getSelfMember().getVoiceState().getChannel() == null) {
+            if (search)
+                event.replyEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).setEphemeral(true).queue();
+            else
+                event.getHook().editOriginalEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).queue();
+            return;
+        }
         String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (search) {
             try {
@@ -177,43 +178,32 @@ public class MusicBot {
         getMusicManager(event.getGuild()).scheduler.stopPlay(event);
     }
 
+    public void stopPlay(Guild guild) {
+        getMusicManager(guild).scheduler.stopPlay(null);
+    }
+
     /**
      * display
      */
-    private JSONObject videoInfo;
-
-
-    public void updateVideoInfo(Guild guild) {
-        videoInfo = new JSONObject(getUrlData("https://www.googleapis.com/youtube/v3/videos?id=" +
-                getMusicManager(guild).scheduler.playingTrack.getInfo().identifier +
-                "&key=" + apiKEY + "&part=statistics,snippet")).getJSONArray("items").getJSONObject(0);
-    }
-
-    public MessageEmbed[] playStatus(Member member, @NotNull TrackScheduler scheduler, boolean update) {
+    public MessageEmbed[] playStatus(Member member, @NotNull TrackScheduler scheduler) {
         // 現在播放資料
         StringBuilder progress = new StringBuilder();
         MessageEmbed nowPlaying;
         // 有歌曲正在播放
-        if (scheduler.playingTrack != null) {
-//            if (update) {
-            updateVideoInfo(member.getGuild());
-//            }
+        if (scheduler.musicInfo != null) {
             // 進度顯示
-            AudioTrackInfo trackInfo = scheduler.playingTrack.getInfo();
+            MusicInfoData musicInfo = scheduler.musicInfo;
             int nowPlayingTime = (int) ((System.currentTimeMillis() - scheduler.startPlayTime) / 1000);
-            int playPercent = (int) ((nowPlayingTime / (float) (trackInfo.length / 1000)) * 20);
-
-            JSONObject statistics = videoInfo.getJSONObject("statistics");
-            JSONObject snippet = videoInfo.getJSONObject("snippet");
-            JSONObject thumbnails = snippet.getJSONObject("thumbnails");
-
+            int playPercent = (int) ((nowPlayingTime / (float) (musicInfo.getLength() / 1000)) * 20);
+            if (playPercent < 0)
+                playPercent = 0;
             progress.append("\n\n**[")
                     .append(timeCalculator(nowPlayingTime))
                     .append("] **")
                     .append("━".repeat(playPercent))
                     .append("❚")
                     .append("─".repeat(20 - playPercent))
-                    .append("** [").append(trackInfo.isStream ? "LIVE" : (timeCalculator((int) (trackInfo.length / 1000))))
+                    .append("** [").append(musicInfo.isStream() ? "LIVE" : (timeCalculator((int) (musicInfo.getLength() / 1000))))
                     .append("]**\n");
 
             // 音量顯示
@@ -225,37 +215,52 @@ public class MusicBot {
                     .append(scheduler.loopStatus == 0 ? " <順序播放>\n" : (scheduler.loopStatus == 1 ? " <循環播放>\n" : " <單曲循環>\n"));
 
             // 組裝
-            nowPlaying = createEmbed("**" + trackInfo.title + "**", trackInfo.uri,
+            nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(),
                     progress.toString(),
                     new StringBuilder()
-                            .append(" \uD83D\uDC40 ").append(String.format("%,d", Long.parseLong(statistics.getString("viewCount"))))
-                            .append(" | \uD83D\uDC4D ").append(String.format("%,d", Long.parseLong(statistics.getString("likeCount"))))
-                            .append(" | \uD83D\uDC4E ").append(String.format("%,d", Long.parseLong(statistics.getString("dislikeCount"))))
-                            .append(" | \uD83D\uDCAC ").append(String.format("%,d", Long.parseLong(statistics.getString("commentCount"))))
-                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", scheduler.loudness))
-                            .append(" | \uD83D\uDCC5 ").append(OffsetDateTime.parse(snippet.getString("publishedAt")).format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                            .append(" \uD83D\uDC40 ").append(String.format("%,d", musicInfo.getViewCount()))
+                            .append(" | \uD83D\uDC4D ").append(String.format("%,d", musicInfo.getLikeCount()))
+                            .append(" | \uD83D\uDC4E ").append(String.format("%,d", musicInfo.getDislikeCount()))
+                            .append(" | \uD83D\uDCAC ").append(String.format("%,d", musicInfo.getCommentCount()))
+//                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", musicInfo.getLoudness()))
+                            .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
 
                             .toString()
-                    , trackInfo.author, channelImageUrl, thumbnails.getJSONObject(quality).getString("url"),
+                    , musicInfo.getChannelName(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
         } else {
             nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
         }
         // 歌曲列表
-        List<MessageEmbed.Field> fields = new ArrayList<>();
+//        List<MessageEmbed.Field> fields = new ArrayList<>();
+//        if (scheduler.getQueue().size() == 0)
+//            fields.add(new MessageEmbed.Field("無", "", false));
+//        else {
+//            List<AudioTrack> inQueue = scheduler.getQueue();
+//            int index = inQueue.size();
+//            for (AudioTrack track : inQueue) {
+//                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : ""/*"**[" + (timeCalculator(songLength)) + "]**"*/, false));
+//            }
+//        }
+
+        StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue().size() == 0)
-            fields.add(new MessageEmbed.Field("無", "", false));
+            stringBuilder.append("無");
         else {
             List<AudioTrack> inQueue = scheduler.getQueue();
             int index = inQueue.size();
             for (AudioTrack track : inQueue) {
-                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : ""/*"**[" + (timeCalculator(songLength)) + "]**"*/, false));
+                stringBuilder.append("[").append(index--).append("] ")
+                        .append(track.getInfo().title);
+                if (track.getInfo().isStream)
+                    stringBuilder.append("**[LIVE]**");
+                stringBuilder.append("\n");
             }
         }
 
-        return new MessageEmbed[]{createEmbed("歌曲列表", "",
+        return new MessageEmbed[]{createEmbed("待播清單", stringBuilder.toString(),
                 "",
-                fields,
+                null,
                 null,
                 0x7fc89a),
                 nowPlaying};
