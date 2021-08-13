@@ -4,13 +4,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import multiBot.music.GuildMusicManager;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static main.java.event.Log.logChannel;
-import static main.java.util.Funtions.createEmbed;
-import static main.java.util.GuildUtil.guildID;
+import static main.java.util.EmbedCreator.createEmbed;
 
 public class MusicBotEvent implements GuildMusicManager.Event {
     private final MultiMusicBotManager musicBotManager;
@@ -21,7 +20,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble) {
+    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search) {
         if (musicBot != null) {
             musicBot.updateVideoInfo(guild);
             musicBot.displayQueue(event, searchAble);
@@ -29,20 +28,28 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     }
 
     @Override
-    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean searchAble) {
-        if (searchAble)
-            event.replyEmbeds(createEmbed("加入播放清單: `" + track.getInfo().title + "`", 0xBCE9B6)).setEphemeral(true).queue();
-        else
-            event.getHook().editOriginalEmbeds(createEmbed("加入播放清單: `" + track.getInfo().title + "`", 0xBCE9B6)).queue();
-        if (!event.getGuild().getId().equals(guildID))
-            logChannel.sendMessage("加入播放清單: `" + track.getInfo().title + "` ").queue();
+    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
+        MusicInfoData musicInfo = new MusicInfoData(track);
+        // 組裝
+        MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? "已插播" : "已添加至播放清單",
+                new StringBuilder()
+                        .append(" \uD83D\uDC40 ").append(String.format("%,d", musicInfo.getViewCount()))
+                        .append(" | \uD83D\uDC4D ").append(String.format("%,d", musicInfo.getLikeCount()))
+                        .append(" | \uD83D\uDC4E ").append(String.format("%,d", musicInfo.getDislikeCount()))
+                        .append(" | \uD83D\uDCAC ").append(String.format("%,d", musicInfo.getCommentCount()))
+                        .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
+                        .toString()
+                , musicInfo.getChannelName(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
+                0xe5b849);
+        if (search) {
+            event.replyEmbeds(nowPlaying).setEphemeral(true).queue();
+        } else
+            event.getHook().editOriginalEmbeds(nowPlaying).queue();
     }
 
     @Override
     public void addPlayerListToQueue(AudioPlaylist playlist, @NotNull GenericInteractionCreateEvent event) {
 //        event.getHook().editOriginalEmbeds(createEmbed("加入 `" + playlist.getName() + "` ", 0xBCE9B6)).setEphemeral(true).queue();
-        if (!event.getGuild().getId().equals(guildID))
-            logChannel.sendMessage("加入 `" + playlist.getName() + "` ").queue();
     }
 
     @Override
@@ -103,11 +110,6 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     public void volumeChange(int volume, SlashCommandEvent event) {
         if (event != null)
             event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
-    }
-
-    @Override
-    public void updateVideoInfo(SlashCommandEvent event) {
-
     }
 
 }

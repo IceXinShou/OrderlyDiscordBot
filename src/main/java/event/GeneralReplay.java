@@ -3,21 +3,19 @@ package main.java.event;
 import main.java.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import static main.java.util.Funtions.createEmbed;
+import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 
 
-public class GeneralReplay extends ListenerAdapter {
+public class GeneralReplay {
 
 
     /**
      * 訊息接收事件反饋
      */
 
-    @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (event.getAuthor().getId().equals(Main.botID)) return;
         if (!event.getGuild().getId().equals(guildID)) return;

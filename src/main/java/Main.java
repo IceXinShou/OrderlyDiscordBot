@@ -1,22 +1,12 @@
 package main.java;
 
-import main.java.automatic.InformationReaction;
-import main.java.automatic.Level;
-import main.java.automatic.Room;
-import main.java.automatic.TicketChannel;
-import main.java.command.QuickUse;
-import main.java.event.GeneralReplay;
-import main.java.event.Join;
-import main.java.event.Log;
 import main.java.util.EmojiUtil;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
@@ -27,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import static main.java.BotSetting.activityMessages;
 import static main.java.BotSetting.botToken;
+import static main.java.util.GuildUtil.guild;
 
 public class Main {
     public static String botID;
@@ -35,6 +26,7 @@ public class Main {
     public static SelfUser self;
     public static EmojiUtil emoji = new EmojiUtil();
     private final String TAG = "[Main]";
+
 
     // interval
     private ScheduledExecutorService threadPool;
@@ -47,26 +39,18 @@ public class Main {
          * init bot
          */
         JDABuilder builder = JDABuilder.createDefault(botToken)
-                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
+//                .disableCache(CacheFlag.MEMBER_OVERRIDES) // Disable parts of the cache
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
-                .setCompression(Compression.ZLIB) // Disable compression (not recommended)
+//                .setCompression(Compression.ZLIB) // Disable compression (not recommended)
                 .setLargeThreshold(250)
-                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES);
+                .enableCache(CacheFlag.ONLINE_STATUS, CacheFlag.ACTIVITY)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_PRESENCES);
 
         JDA jda = builder.build();
 
         // 註冊event
-        jda.addEventListener(new Log());
-        jda.addEventListener(new Join());
-        jda.addEventListener(new GeneralReplay());
-        jda.addEventListener(new TicketChannel());
-        jda.addEventListener(new InformationReaction());
-        jda.addEventListener(new QuickUse());
-        jda.addEventListener(new Level());
-        jda.addEventListener(new Room());
-        SlashCommandManager commandManager = new SlashCommandManager();
-        jda.addEventListener(commandManager);
-
+        ListenerManager listener = new ListenerManager();
+        jda.addEventListener(listener);
 
         // bot自己的資料
         botID = jda.getSelfUser().getId();
@@ -89,15 +73,15 @@ public class Main {
                         System.out.println(TAG + " 已停止");
                         return;
                     case "reload":
+                        System.out.println(TAG + " 重新載入中...");
                         // load new setting
                         setting.reloadConfig();
-                        Guild guild = jda.getGuildById(GuildUtil.guildID);
                         if (guild == null) {
                             System.err.println(TAG + " 無法找到公會: " + GuildUtil.guildID);
                             break;
                         }
                         // get guild variable from setting
-                        commandManager.getGuildVariable(guild);
+                        listener.reload(guild);
                         // 開始自動切換
                         startChangeActivity(jda);
                         System.out.println(TAG + " 重新載入完成");

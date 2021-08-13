@@ -1,8 +1,8 @@
 package main.java.event;
 
 import main.java.Main;
-import main.java.funtion.ChannelLogHelper;
-import main.java.funtion.JsonFileManager;
+import main.java.util.file.ChannelLogHelper;
+import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEmoteEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static main.java.Main.emoji;
-import static main.java.util.Funtions.createEmbed;
+import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
 
-public class Log extends ListenerAdapter {
+public class Log {
     public static TextChannel logChannel;
     public static String logChannelID;
     public static TextChannel consoleChannel;
@@ -48,29 +46,25 @@ public class Log extends ListenerAdapter {
      * 語音事件
      */
 
-    @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
                 createEmbed(
-                        (emoji.rightArrow.getAsMention() + " 進入 " +
+                        (" 進入 " +
                                 event.getChannelJoined().getName()), null,
-                        "進入房間",
+                        "進入語音",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x34E718
                 )
         ).queue();
     }
 
-    @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
-                createEmbed(
-                        emoji.leftArrow.getAsMention() +
-                                " 退出 " + event.getChannelLeft().getName()
+                createEmbed(" 退出 " + event.getChannelLeft().getName()
                         , null,
-                        "退出房間",
+                        "退出語音",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0xFF5151
                 )
@@ -81,7 +75,6 @@ public class Log extends ListenerAdapter {
      * 訊息事件
      */
 
-    @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         String channelID = event.getMessage().getChannel().getId();
 
@@ -98,7 +91,6 @@ public class Log extends ListenerAdapter {
         channelFileManager.saveFile();
     }
 
-    @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
 
@@ -122,7 +114,6 @@ public class Log extends ListenerAdapter {
         ).queue();
     }
 
-    @Override
     public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         if (ignoreMessageID.contains(event.getMessageId())) return;
@@ -176,7 +167,6 @@ public class Log extends ListenerAdapter {
      * 身分組事件
      */
 
-    @Override
     public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
@@ -188,26 +178,23 @@ public class Log extends ListenerAdapter {
         ).queue();
     }
 
-    @Override
     public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
-    @Override
-    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-        if (!event.getGuild().getId().equals(guildID)) return;
-    }
 
     /**
      * 反應事件
      */
+    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+        if (!event.getGuild().getId().equals(guildID)) return;
+    }
 
-    @Override
+
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
-    @Override
     public void onGuildMessageReactionRemoveEmote(@NotNull GuildMessageReactionRemoveEmoteEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }

@@ -1,6 +1,6 @@
 package main.java;
 
-import main.java.command.Invite;
+import main.java.command.list.Invite;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Role;
@@ -27,7 +27,7 @@ public class BotSetting {
             adminPermissionID, botRoleID,
             defaultRoomName, defaultRoomChatName,
             informationChannelID,
-            memberRoleID, noPermissionERROR,
+            memberRoleID, noPermissionStringERROR,
             logRoleID, internalRoleID,
             defaultServiceMessage, newServiceName, boostedRoleID, apiKEY;
     public static boolean debugMode;
@@ -111,7 +111,7 @@ public class BotSetting {
          */
         apiKEY = (String) GeneralSettings.get("apiKey");
         helpBlockFooter = (String) GeneralSettings.get("helpBlockFooter");
-        noPermissionERROR = (String) GeneralSettings.get("noPermissionERROR");
+        noPermissionStringERROR = (String) GeneralSettings.get("noPermissionERROR");
         if (activityMessages.size() > 0) activityMessages.clear();
         for (String message : (List<String>) GeneralSettings.get("activityMessage")) {
             String[] args = message.split(";");
@@ -240,7 +240,7 @@ public class BotSetting {
                 }
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -248,21 +248,43 @@ public class BotSetting {
         }).start();
     }
 
-    private StringBuilder consoleBuff, errBuff;
+    private StringBuilder consoleBuff;
+    private StringBuilder errBuff;
 
     private void printConsole(String log) {
         consoleBuff.append(log);
         if (consoleChannel == null)
             return;
-        consoleChannel.sendMessage(consoleBuff + System.lineSeparator()).queue();
+        List<String> messageSplit = new ArrayList<>();
+        String message;
+        while ((message = consoleBuff + System.lineSeparator()).length() > 2000)
+            for (int i = 0; i < (message.length() / 2000) - 1; i++) {
+                int locate = message.indexOf('\n');
+                messageSplit.add(message.substring(0, locate));
+                message = message.substring(locate);
+            }
+        for (String msg : messageSplit) {
+            consoleChannel.sendMessage(msg).queue();
+        }
+        consoleChannel.sendMessage(message).queue();
         consoleBuff.setLength(0);
     }
 
     private void printError(String log) {
-        errBuff.append(log);
         if (consoleChannel == null)
             return;
-        consoleChannel.sendMessage(errBuff).queue();
+        List<String> messageSplit = new ArrayList<>();
+        String message;
+        while ((message = errBuff.append(log).toString()).length() > 2000)
+            for (int i = 0; i < (message.length() / 2000) - 1; i++) {
+                int locate = message.indexOf('\n');
+                messageSplit.add(message.substring(0, locate));
+                message = message.substring(locate);
+            }
+        for (String msg : messageSplit) {
+            consoleChannel.sendMessage(msg).queue();
+        }
+        consoleChannel.sendMessage(message).queue();
         errBuff.setLength(0);
     }
 

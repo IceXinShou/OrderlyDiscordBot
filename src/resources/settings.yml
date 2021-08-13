@@ -20,11 +20,12 @@ GeneralSettings:
   activityMessage:
     - "watching;Server Name"
     - "playing;Cat❤Dog"
-    - "playing;Mama❤XinShou"
+    - "competing;Mama❤XinShou"
   folder:
     channelLogFolder: "channelLog"
     configFolder: "configFolder"
     levelFolder: "levelFolder"
+    guildSettingFolder: "guildFolder"
 
   # Youtube API KEY (https:// console.cloud.google.com/apis/)
   apiKey: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"

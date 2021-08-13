@@ -1,16 +1,15 @@
 package main.java.event;
 
 import main.java.Main;
-import main.java.funtion.JsonFileManager;
 import main.java.util.EmojiUtil;
 import main.java.util.GuildUtil;
 import main.java.util.QuestionStep;
+import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -24,12 +23,13 @@ import java.util.regex.Pattern;
 import static main.java.BotSetting.configFolder;
 import static main.java.BotSetting.joinRoleID;
 import static main.java.Main.emoji;
-import static main.java.util.Funtions.createEmbed;
+import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
+import static main.java.util.UrlDataGetter.getUrlData;
 
-public class Join extends ListenerAdapter {
+public class Join {
     public static JSONObject memberData;
     private final JsonFileManager memberFile;
     Map<String, QuestionStep> userProgress = new HashMap<>();
@@ -43,7 +43,7 @@ public class Join extends ListenerAdapter {
      * 加入事件
      */
 
-    @Override
+
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         String userID = event.getUser().getId();
@@ -69,66 +69,6 @@ public class Join extends ListenerAdapter {
 
     }
 
-    /**
-     * 回覆導向 (反應)
-     */
-    @Override
-    public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
-        String userID = event.getUserId();
-        if (userID.equals(Main.botID)) return;
-
-        QuestionStep progress = userProgress.getOrDefault(userID, new QuestionStep(0, null));
-        String messageID = event.getMessageId();
-        String reaction = event.getReactionEmote().getEmote().getAsMention();
-
-        if (messageID.equals(progress.getMessageID())) {
-            switch (progress.getStep()) {
-                case 0:
-                    event.getChannel().sendMessageEmbeds(createEmbed("您發現了錯誤, 請回報給工作人員\n" +
-                            "You found a bug, please report to developers", 0xFF0000)).queue();
-                    break;
-                case 2:
-                    // yes
-                    if (reaction.equals(emoji.yesEmoji.getAsMention())) {
-                        progress.playMinecraft = true;
-                        showUserInfo(event.getChannel(), event.getUser(), progress);
-                        getMinecraftID(userID, event.getChannel());
-                        break;
-                    }
-                    // no
-                    else if (reaction.equals(emoji.noEmoji.getAsMention())) {
-                        progress.playMinecraft = false;
-                        showUserInfo(event.getChannel(), event.getUser(), progress);
-                        getEnglishNickName(userID, event.getChannel());
-                        break;
-                    }
-                    break;
-                case 7:
-                    // yes
-                    if (reaction.equals(emoji.yesEmoji.getAsMention())) {
-                        // 更改nickname和處存資料到檔案
-                        Member member = GuildUtil.guild.retrieveMemberById(userID).complete();
-                        if (progress.playMinecraft)
-                            changeNickName(member, progress.chineseNick, progress.minecraftID);
-                        else
-                            changeNickName(member, progress.chineseNick, progress.englishNick);
-                        // 儲存user至檔案
-                        saveMember(member);
-                        userProgress.remove(userID);
-                        event.getChannel().sendMessageEmbeds(createEmbed("歡迎加入我們~~\n" +
-                                "Welcome to join us!", 0x9740b9)).queue();
-                        break;
-                    }
-                    // no
-                    else if (reaction.equals(emoji.noEmoji.getAsMention())) {
-                        event.getChannel().sendMessageEmbeds(createEmbed("由於您的抉擇，我們無法讓您加入伺服器\n" +
-                                "Because of your choice, we can not let you join!", 0xFF0000)).queue();
-                        userProgress.remove(userID);
-                        break;
-                    }
-            }
-        }
-    }
 
     private void changeNickName(@NotNull Member member, String chinese, String english) {
 //        String nameSpace = "%name% - %MinecraftID%";
@@ -238,29 +178,90 @@ public class Join extends ListenerAdapter {
 
     }
 
+
+    /**
+     * 回覆導向 (反應)
+     */
+    public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
+        String userID = event.getUserId();
+        if (userID.equals(Main.botID)) return;
+
+        QuestionStep progress = userProgress.getOrDefault(userID, new QuestionStep(0, null));
+        String messageID = event.getMessageId();
+        String reaction = event.getReactionEmote().getEmote().getAsMention();
+
+        if (messageID.equals(progress.getMessageID())) {
+            switch (progress.getStep()) {
+                case 0:
+                    event.getChannel().sendMessageEmbeds(createEmbed("您發現了錯誤, 請回報給工作人員\n" +
+                            "You found a bug, please report to developers", 0xFF0000)).queue();
+                    break;
+                case 2:
+                    // yes
+                    if (reaction.equals(emoji.yesEmoji.getAsMention())) {
+                        progress.playMinecraft = true;
+                        showUserInfo(event.getChannel(), event.getUser(), progress);
+                        getMinecraftID(userID, event.getChannel());
+                        break;
+                    }
+                    // no
+                    else if (reaction.equals(emoji.noEmoji.getAsMention())) {
+                        progress.playMinecraft = false;
+                        showUserInfo(event.getChannel(), event.getUser(), progress);
+                        getEnglishNickName(userID, event.getChannel());
+                        break;
+                    }
+                    break;
+                case 7:
+                    // yes
+                    if (reaction.equals(emoji.yesEmoji.getAsMention())) {
+                        // 更改nickname和處存資料到檔案
+                        Member member = GuildUtil.guild.retrieveMemberById(userID).complete();
+                        if (progress.playMinecraft)
+                            changeNickName(member, progress.chineseNick, progress.minecraftID);
+                        else
+                            changeNickName(member, progress.chineseNick, progress.englishNick);
+                        // 儲存user至檔案
+                        saveMember(member);
+                        userProgress.remove(userID);
+                        event.getChannel().sendMessageEmbeds(createEmbed("歡迎加入我們~~\n" +
+                                "Welcome to join us!", 0x9740b9)).queue();
+                        break;
+                    }
+                    // no
+                    else if (reaction.equals(emoji.noEmoji.getAsMention())) {
+                        event.getChannel().sendMessageEmbeds(createEmbed("由於您的抉擇，我們無法讓您加入伺服器\n" +
+                                "Because of your choice, we can not let you join!", 0xFF0000)).queue();
+                        userProgress.remove(userID);
+                        break;
+                    }
+            }
+        }
+    }
+
+
     /**
      * 回覆導向 (對話)
      */
-    @Override
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         String userID = event.getAuthor().getId();
         if (userID.equals(Main.botID)) return;
         String message = event.getMessage().getContentRaw();
         PrivateChannel channel = event.getChannel();
 
-//        // 手動設定
-//        if (message.equalsIgnoreCase("j")) {
-//            if (memberData.has(userID)) {
-//                channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定,開始重新設定\n" +
-//                        "you had set nickname before, let's reset!", 0xe5b849)).complete();
-//                initMemberOnJoin(userID, channel);
-//                // 傳送設定檔
-//                askForMinecraftID(userID, channel, false);
-//            } else {
-//                initMemberOnJoin(userID, channel);
-//            }
-//            return;
-//        }
+        // 手動設定
+        if (message.equalsIgnoreCase("j")) {
+            if (memberData.has(userID)) {
+                channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定,開始重新設定\n" +
+                        "you had set nickname before, let's reset!", 0xe5b849)).complete();
+                initMemberOnJoin(userID, channel, true);
+                // 傳送設定檔
+                askForMinecraftID(userID, channel, false);
+            } else {
+                initMemberOnJoin(userID, channel, false);
+            }
+            return;
+        }
 
         // 問題回答
         QuestionStep progress = userProgress.getOrDefault(userID, new QuestionStep(0, ""));
@@ -276,14 +277,20 @@ public class Join extends ListenerAdapter {
                 case 1:
                     askForMinecraftID(userID, channel, true);
                     break;
-                case 3:
-                    getEnglishNickName(userID, channel);
-                    break;
                 case 4:
-                    progress.englishNick = null;
-                    progress.minecraftID = message;
-                    showUserInfo(channel, event.getAuthor(), progress);
-                    getChineseNickName(userID, channel);
+                    String result = getUrlData("https://api.mojang.com/users/profiles/minecraft/" + message);
+                    if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
+                        channel.sendMessageEmbeds(createEmbed("查無此玩家！\n" +
+                                "Can not find player!", 0xFF0000)).queue();
+                        progress.minecraftID = null;
+                        getMinecraftID(userID, channel);
+
+                    } else {
+                        progress.englishNick = null;
+                        progress.minecraftID = message;
+                        showUserInfo(channel, event.getAuthor(), progress);
+                        getChineseNickName(userID, channel);
+                    }
                     break;
                 case 5:
                     progress.englishNick = message;
@@ -306,6 +313,7 @@ public class Join extends ListenerAdapter {
             }
         }
     }
+
 
     /**
      * 問題列表

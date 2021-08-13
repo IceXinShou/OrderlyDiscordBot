@@ -41,7 +41,7 @@ public class GuildMusicManager {
     public interface Event {
         void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean searchAble);
 
-        void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean searchAble);
+        void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow);
 
         void addPlayerListToQueue(AudioPlaylist track, GenericInteractionCreateEvent event);
 
@@ -58,8 +58,6 @@ public class GuildMusicManager {
         void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild);
 
         void volumeChange(int volume, SlashCommandEvent event);
-
-        void updateVideoInfo(SlashCommandEvent event);
 
     }
 }

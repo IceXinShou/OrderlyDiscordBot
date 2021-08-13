@@ -59,7 +59,6 @@ public class TrackScheduler extends AudioEventAdapter {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
-
         // 加入序列
         for (int i = 1; i < trackList.size(); i++) {
             queue.add(trackList.get(i));
@@ -75,7 +74,7 @@ public class TrackScheduler extends AudioEventAdapter {
      *
      * @param track The track to play or add to queue.
      */
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean searchAble) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean search, boolean playNow) {
         // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
@@ -92,7 +91,7 @@ public class TrackScheduler extends AudioEventAdapter {
             this.event.trackStart(track, event, guild, musicBot, searchAble);
         } else {
             // 加入序列
-            this.event.addToQueue(track, event, searchAble);
+            this.event.addToQueue(track, event, search, playNow);
         }
     }
 
@@ -199,12 +198,14 @@ public class TrackScheduler extends AudioEventAdapter {
     public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
         loop = false;
         repeat = !repeat;
+        loopStatus = repeat ? 2 : 0;
         event.repeat(playingTrack, repeat, slashCommandEvent);
     }
 
     public void toggleLoop(SlashCommandEvent slashCommandEvent) {
         repeat = false;
         loop = !loop;
+        loopStatus = loop ? 1 : 0;
         event.loop(loop, slashCommandEvent);
     }
 
@@ -280,63 +281,15 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     // https://gitlab.tu-clausthal.de/sfri16/discordmusicbotnetwork/-/blob/020d0e13068c9e1740c7692c9c3fb7f6aed78dfd/src/main/java/music/NormalizedAudioTrack.java
-    private void calculateNormalized(@NotNull AudioTrack audioTrack) {
-        String videoID = audioTrack.getInfo().identifier;
-
-        // get video info
-        String url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-        String payload = "{\"videoId\":\"" + videoID + "\",\"context\":{\"client\":{\"hl\":\"zh\",\"gl\":\"TW\",\"clientName\":\"ANDROID\",\"clientVersion\":\"16.02\"}}}";
-        String result = getUrl(url, payload);
-
-        if (result == null) {
-            player.setVolume(defaultVolume / range);
-            return;
-        }
-
-        JSONObject playerResponse = new JSONObject(result).getJSONObject("playerConfig").getJSONObject("audioConfig");
-        if (playerResponse.has("loudnessDb"))
-            loudness = playerResponse.getFloat("loudnessDb");
-        percent = ((95 + -7.22 * loudness) / 100);
+    private void calculateNormalized(Float loudness) {
+        int normalizedVolume;
         volume = defaultVolume;
-        player.setVolume((int) Math.round(percent * defaultVolume) / range);
-    }
-
-    public String getUrl(String input, @NotNull String payload) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(input).openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            //post
-            OutputStream payloadOut = connection.getOutputStream();
-            payloadOut.write(payload.getBytes(StandardCharsets.UTF_8));
-            payloadOut.flush();
-            //get
-            InputStream in;
-            if (connection.getResponseCode() > 200)
-                in = connection.getErrorStream();
-            else
-                in = connection.getInputStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buff = new byte[1024];
-            int length;
-            while ((length = in.read(buff)) > 0) {
-                out.write(buff, 0, length);
-            }
-            return out.toString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
-    }
-
-    public static @Nullable String getUrlData(String urlStr) {
-        URL url;
-        try {
-            url = new URL(urlStr);
-        } catch (MalformedURLException e) {
-            return null;
+        if (loudness == null) {
+            normalizedVolume = volume;
+            percent = -1;
+        } else {
+            percent = ((95 + -7.22 * loudness) / 100);
+            normalizedVolume = (int) Math.round(percent * volume) / range;
         }
         //get result
         try {

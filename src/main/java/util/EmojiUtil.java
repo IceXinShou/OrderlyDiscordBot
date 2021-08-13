@@ -20,11 +20,12 @@ public class EmojiUtil {
             rule, setting, ping, bell, lock, minecraftGrassBlock, nitro1, boost, discord, no1, partner,
             trashCan, leftArrow, rightArrow, join, leave, cute,
             borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
-            report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad;
+            report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad, youtubeIcon;
 
     public static Emote[] dotEmojis = new Emote[10];
 
     public void loadEmoji(Guild guild) {
+        youtubeIcon = getEmoji("YoutubeIcon", guild);
         leaveEmoji = getEmoji("LeaveBlue", guild);
         joinEmoji = getEmoji("JoinBlue", guild);
         yesEmoji = getEmoji("Yes_Tick", guild);

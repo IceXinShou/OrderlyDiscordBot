@@ -31,12 +31,12 @@ import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static main.java.BotSetting.*;
-import static main.java.SlashCommandOption.COUNT;
-import static main.java.SlashCommandOption.NAME;
-import static main.java.command.Invite.authChannelID;
-import static main.java.util.Funtions.createEmbed;
-import static main.java.util.Funtions.toUnicode;
-import static multiBot.music.TrackScheduler.getUrlData;
+import static main.java.Main.emoji;
+import static main.java.command.list.Invite.authChannelID;
+import static main.java.util.EmbedCreator.createEmbed;
+import static main.java.util.SlashCommandOption.COUNT;
+import static main.java.util.SlashCommandOption.NAME;
+import static main.java.util.UrlDataGetter.getUrlData;
 
 
 public class MultiMusicBotManager {
@@ -80,15 +80,19 @@ public class MultiMusicBotManager {
             case "play":
                 if (event.getOptions().size() == 0) {
                     if (checkVcState(event, bot)) {
-                        play(event, bot);
+                        play(event, bot, false);
                     }
                 } else
-                    play(event, bot);
+                    play(event, bot, false);
+                break;
+            case "pn":
+            case "playnow":
+                play(event, bot, true);
                 break;
             case "s":
             case "skip":
                 if (checkVcState(event, bot))
-                    bot.nextTrack(event);
+                    bot.nextTrack(event, false);
                 break;
             case "remove":
                 if (checkVcState(event, bot))
@@ -142,7 +146,7 @@ public class MultiMusicBotManager {
         return commandState;
     }
 
-    private void play(@NotNull SlashCommandEvent event, MusicBot bot) {
+    private void play(@NotNull SlashCommandEvent event, MusicBot bot, boolean playNow) {
         if (event.getOptions().size() > 0) {
             if (checkVcState(event)) {
                 if (bot == null)
@@ -156,7 +160,6 @@ public class MultiMusicBotManager {
                             break;
                         }
                     }
-
                 if (bot == null) {
                     event.getHook().editOriginalEmbeds(createEmbed("目前所有機器人都已被占用", 0xFF0000)).queue();
                     commandState = -1;
@@ -166,7 +169,7 @@ public class MultiMusicBotManager {
                 // 開始撥放
                 OptionMapping url = event.getOption(NAME);
                 if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
-                    bot.loadAndPlay(event, url.getAsString(), false);
+                    bot.loadAndPlay(event, url.getAsString(), false, playNow);
                 } else {
 
                     String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
@@ -181,14 +184,21 @@ public class MultiMusicBotManager {
 
                     for (Object vinfo : videoInfo) {
                         JSONObject snippet = ((JSONObject) vinfo).getJSONObject("snippet");
-                        String title = toUnicode(snippet.getString("title"));
-                        if (title.length() > 25)
-                            title = title.substring(0, 24) + "…";
-                        builder.addOption(title, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"));
-                    }
-                    event.getHook().editOriginalComponents().setEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
+                        String title;
+                        String channelOwner;
+                        if ((channelOwner = snippet.getString("channelTitle")).length() > 25)
+                            channelOwner = channelOwner.substring(0, 24) + "…";
 
-//                event.getTextChannel().sendMessageEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
+                        if ((title = snippet.getString("title")).length() > 50)
+                            title = title.substring(0, 49) + "…";
+
+                        builder.addOption(channelOwner, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"), title, Emoji.fromEmote(emoji.youtubeIcon));
+                    }
+                    if (builder.getOptions().size() == 0) {
+                        event.getHook().editOriginalEmbeds(createEmbed("查無搜尋結果!", 0xFF0000)).queue();
+                    } else
+                        event.getHook().editOriginalComponents().setEmbeds(createEmbed("搜尋結果", 0xa3d7fe)).setActionRow(builder.build()).queue();
+
                 }
             }
         } else {
@@ -201,84 +211,84 @@ public class MultiMusicBotManager {
     }
 
     public void onButton(ButtonClickEvent event, String @NotNull [] args) {
-        if (args[1].startsWith("music")) {
-            if (!checkVcState(event))
-                return;
-            if (!event.getMember().getVoiceState().getChannel().getId().equals(args[3])) {
-                event.deferEdit().setEmbeds(createEmbed("未知的頻道按鈕", 0xFF0000)).setActionRows().queue();
-                return;
-            }
-
-
-            MusicBot bot = bots.get(args[2]);
-            GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
-            TrackScheduler scheduler = manager.scheduler;
-            int volume;
-            MessageEmbed[] embed = null;
-            switch (args[1]) {
-                case "musicLoopChange": {
-                    switch (scheduler.loopStatus = (scheduler.loopStatus + 1) % 3) {
-                        case 0:
-                            scheduler.repeat = false;
-                            scheduler.loop = false;
-                            break;
-                        case 1:
-                            scheduler.repeat = false;
-                            scheduler.loop = true;
-                            break;
-                        case 2:
-                            scheduler.repeat = true;
-                            scheduler.loop = false;
-                            break;
-                        default:
-                            return;
-                    }
-                    break;
-                }
-                case "musicPause":
-                    scheduler.switchPause();
-                    break;
-                case "musicNext":
-                    scheduler.nextTrack(null, null);
-                    embed = bot.playStatus(event.getMember(), scheduler, true);
-                    break;
-                case "musicVolumeUp":
-                    volume = scheduler.getVolume() + 5;
-                    scheduler.setVolume(Math.min(volume, 100), null);
-                    break;
-                case "musicVolumeDown":
-                    volume = scheduler.getVolume() - 5;
-                    scheduler.setVolume(Math.max(volume, 0), null);
-                    break;
-                default:
-            }
-
-            // 如果是等待的話要加時間
-            scheduler.calculatePauseTime();
-            if (bot.getMusicManager(event.getGuild().getId()).guild.getSelfMember().getVoiceState().getChannel() == null) {
-                event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).queue();
-                commandState = -1;
-            } else {
-                if (embed == null)
-                    embed = bot.playStatus(event.getMember(), scheduler, false);
-                try {
-                    event.deferEdit().setEmbeds(embed[0], embed[1]).setActionRows(bot.controlButtons(args[0], scheduler.musicPause, scheduler.loopStatus,
-                            bot.getMusicManager(event.getGuild().getId()).guild.getSelfMember().getVoiceState().getChannel().getId())).queue();
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
+        if (!args[0].equals("MusicBot"))
+            return;
+        if (!checkVcState(event))
+            return;
+        if (!event.getMember().getVoiceState().getChannel().getId().equals(args[4])) {
+            event.deferEdit().setEmbeds(createEmbed("未知的頻道按鈕", 0xFF0000)).setActionRows().queue();
+            return;
         }
+
+
+        MusicBot bot = bots.get(args[3]);
+        GuildMusicManager manager = bot.getMusicManager(event.getGuild().getId());
+        TrackScheduler scheduler = manager.scheduler;
+        int volume;
+        switch (args[1]) {
+            case "loopChange": {
+                switch (scheduler.loopStatus = (scheduler.loopStatus + 1) % 3) {
+                    case 0:
+                        scheduler.repeat = false;
+                        scheduler.loop = false;
+                        break;
+                    case 1:
+                        scheduler.repeat = false;
+                        scheduler.loop = true;
+                        break;
+                    case 2:
+                        scheduler.repeat = true;
+                        scheduler.loop = false;
+                        break;
+                    default:
+                        return;
+                }
+                break;
+            }
+            case "pauseToggle":
+                scheduler.switchPause();
+                break;
+            case "next":
+                scheduler.nextTrack(null, null, false);
+                break;
+            case "volumeUp":
+                volume = scheduler.getVolume() + 5;
+                scheduler.setVolume(Math.min(volume, 100), null);
+                break;
+            case "volumeDown":
+                volume = scheduler.getVolume() - 5;
+                scheduler.setVolume(Math.max(volume, 0), null);
+                break;
+            default:
+        }
+
+
+        // 如果是等待的話要加時間
+        scheduler.calculatePauseTime();
+        GuildMusicManager musicManager = bot.getMusicManager(event.getGuild().getId());
+        VoiceChannel vc = musicManager.guild.getSelfMember().getVoiceState().getChannel();
+        if (vc == null) {
+            event.editMessageEmbeds(createEmbed(0xFF0000, "沒有機器人在語音頻道餒...")).setActionRows().queue();
+            commandState = -1;
+        } else {
+            MessageEmbed[] embed = bot.playStatus(event.getMember(), scheduler);
+            event.editMessageEmbeds(embed[0], embed[1])
+                    .setActionRows(bot.controlButtons(args[2], scheduler.musicPause, scheduler.loopStatus, vc.getId())
+                    ).queue();
+        }
+
     }
 
     public void onSelectMenu(@NotNull SelectionMenuEvent event, String @NotNull [] args) {
-        MusicBot bot = bots.get(args[2]);
-        if (event.getMember().getVoiceState().inVoiceChannel() && !event.getMember().getVoiceState().getChannel().getType().equals(ChannelType.VOICE))
-            event.replyEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000)).setEphemeral(true).queue();
-        else if (!args[0].equals(event.getUser().getId()))
-            event.replyEmbeds(createEmbed("此為其他成員的觸發項目", 0xFF0000)).setEphemeral(true).queue();
-        else {
-            bot.loadAndPlay(event, "https://youtu.be/" + event.getValues().get(0), true);
+        if (!args[0].equals("MultiMusicBotManager"))
+            return;
+        if (args[1].equals("searchResult")) {
+            MusicBot bot = bots.get(args[3]);
+            if (event.getMember().getVoiceState().inVoiceChannel() && !event.getMember().getVoiceState().getChannel().getType().equals(ChannelType.VOICE))
+                event.replyEmbeds(createEmbed("請在語音頻道使用此指令", 0xFF0000)).setEphemeral(true).queue();
+            else {
+                bot.loadAndPlay(event, "https://youtu.be/" + event.getValues().get(0), true, Boolean.parseBoolean(args[4]));
+            }
         }
     }
 
@@ -348,11 +358,9 @@ public class MultiMusicBotManager {
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES)
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
                 .setCompression(Compression.ZLIB); // Disable compression (not recommended)
-
         try {
             JDA jda = builder.build();
             bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, musicEvent));
-
             System.out.println(TAG + " " + jda.getSelfUser().getAsTag() + " Enabled");
         } catch (LoginException e) {
             System.err.println(e.getMessage());
@@ -383,5 +391,16 @@ public class MultiMusicBotManager {
             if (currentIndex < 0)
                 currentIndex += activityMessages.size();
         }, 0, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    public void onVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+        if (event.getMember().getUser().isBot() && bots.containsKey(event.getMember().getId())) {
+            try {
+                MusicBot bot = channelBot.get(event.getGuild().getId()).put(event.getChannelLeft().getId(), null);
+                if (bot == null) return;
+                bot.stopPlay(event.getGuild());
+            } catch (Exception ignored) {
+            }
+        }
     }
 }
