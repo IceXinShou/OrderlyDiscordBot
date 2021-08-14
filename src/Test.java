@@ -2,15 +2,34 @@ import org.jetbrains.annotations.NotNull;
 
 public class Test {
     Test() {
+        /*
         String input = "人數: ${2*((1+2}";
         int startIndex = input.indexOf("${");
 
         System.out.println(calculate(input, startIndex + 2));
         System.out.println(error == null ? "" : error);
+        */
+
+        String input = "人數: ${2 * (1+1 / 2}${2+2}";
+        int startIndex;
+        while ((startIndex = input.indexOf("${", newPos)) != -1) {
+            System.out.println(calculate(input, startIndex + 2));
+            System.out.println(error == null ? "" : error);
+        }
     }
 
-    String error = null;
-    int newPos = 0;
+    String error;
+    int newPos;
+
+    public String calculate(String input, String format) {
+        error = null;
+        newPos = 0;
+        try {
+            return String.format(format, calculate(input, input.lastIndexOf("${") + 2));
+        } catch (Exception e) {
+            return input;
+        }
+    }
 
     private float calculate(@NotNull String input, int startIndex) {
         float sum = 0;

@@ -1,5 +1,6 @@
 package main.java.event;
 
+import main.java.util.StringCalculate;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static main.java.util.JsonKeys.CS_NAME;
 import static main.java.util.JsonKeys.CS_SETTING;
 
 public class StatusListener {
@@ -158,7 +160,7 @@ public class StatusListener {
             if (guild.getGuildChannelById(channelID) == null) {
                 data.remove(channelID);
             } else {
-                String channelName = data.getString(channelID);
+                String channelName = data.getJSONObject(channelID).getString(CS_NAME);
                 boolean nameChange = false;
 
                 if (data.getString(channelID).contains("%member%") && (change & 1) > 0) {
@@ -230,6 +232,12 @@ public class StatusListener {
                     nameChange = true;
                 }
 
+                if (channelName.lastIndexOf("${") != -1) {
+                    if ((channelName = new StringCalculate().calculate(channelName, "1f")).contains("${")) {
+                        channelName = "格式錯誤";
+                        nameChange = true;
+                    }
+                }
 
                 if (nameChange)
                     guild.getGuildChannelById(channelID).getManager().setName(channelName).queue();

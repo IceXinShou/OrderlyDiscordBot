@@ -38,10 +38,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
 import static main.java.BotSetting.debugMode;
@@ -285,13 +282,7 @@ public class ListenerManager extends ListenerAdapter {
 
         if (event.getGuild() == null) {
             if (debugMode) {
-                List<OptionMapping> options = event.getOptions();
-                StringBuilder builder = new StringBuilder();
-                for (OptionMapping option : options) {
-                    builder.append(" ").append(option.getAsString());
-                }
-
-                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: /" + event.getName() + (event.getSubcommandName() == null ? "" : " " + event.getSubcommandName()) + builder);
+                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
             }
 
             switch (event.getName()) {
@@ -317,13 +308,7 @@ public class ListenerManager extends ListenerAdapter {
         }
 
         if (debugMode) {
-            List<OptionMapping> options = event.getOptions();
-            StringBuilder builder = new StringBuilder();
-            for (OptionMapping option : options) {
-                builder.append(" ").append(option.getName()).append(": ").append(option.getAsString());
-            }
-
-            System.out.println("[" + event.getGuild().getName() + "] " + event.getUser().getAsTag() + " issued command: /" + event.getName() + (event.getSubcommandName() == null ? "" : " " + event.getSubcommandName()) + builder);
+            System.out.println("[" + event.getGuild().getName() + "] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
         }
 
         // 取得輸入指令的頻道
@@ -343,9 +328,7 @@ public class ListenerManager extends ListenerAdapter {
             if (channelID.equals(authChannelID))
                 createInviteCommand.onCommand(event);
             else {
-                event.getHook().editOriginalEmbeds(createEmbed("請到指定位置使用此指令 (" +
-                                tagChannelID(authChannelID) + ")", 0xFF0000))
-                        .queue();
+                event.getHook().editOriginalEmbeds(createEmbed("請到指定位置使用此指令 (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
             }
             return;
         }

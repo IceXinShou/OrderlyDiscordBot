@@ -49,9 +49,12 @@ public class JsonKeys {
 
     // for ChannelStatus
     public final static String CS_SETTING = "cs";
+    public final static String CS_NAME = "N";
+    public final static String CS_FORMAT = "F";
 
     // for GuildJoinLeave
     public final static String JL_SETTING = "jl";
     public final static String JL_JOIN_MESSAGE = "JM";
     public final static String JL_LEAVE_MESSAGE = "LM";
+
 }

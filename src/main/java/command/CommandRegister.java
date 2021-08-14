@@ -39,10 +39,9 @@ public class CommandRegister {
         if (event.getGuild().getId().equals(GuildUtil.guildID))
             getMainGuildVariable(event.getGuild());
         else {
-            System.out.println("[" + event.getGuild().getName() + "] Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + " Loading...");
             try {
                 addPublicSlashCommand(event.getGuild());
-                System.out.println("[" + event.getGuild().getName() + "] Command Updated!");
+                System.out.println("[" + event.getGuild().getName() + "] Command Updated! (Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + ")");
             } catch (Exception e) {
                 System.err.println("[" + event.getGuild().getName() + "] Command Update Failed!");
                 System.err.println(e.getMessage());
@@ -77,6 +76,7 @@ public class CommandRegister {
         logChannel = guild.getTextChannelById(logChannelID);
         if (logChannel == null)
             System.err.println("無法取得記錄頻道 ID: " + logChannelID);
+
         // get ConsoleChannel
         consoleChannel = guild.getTextChannelById(consoleChannelID);
         if (consoleChannel == null)
@@ -226,7 +226,8 @@ public class CommandRegister {
                         // -------------------
                         new SubcommandData("newchannelstatus", "新增頻道顯示數據").addOptions(
                                 new OptionData(CHANNEL, "channel", "顯示資訊頻道", true),
-                                new OptionData(STRING, "channelname", "頻道名稱 (請使用 /setting help 查看所有佔位符 (17))", true)
+                                new OptionData(STRING, "channelname", "頻道名稱 (請使用 /setting help 查看所有佔位符 (17))", true),
+                                new OptionData(INTEGER, "format", "格式化設定, 最終結果將保留幾位小數點 (0~10)", true)
                         ),
                         new SubcommandData("removechannelstatus", "移除頻道顯示數據").addOption(CHANNEL, "channel", "顯示資訊的頻道", true),
 
@@ -245,7 +246,7 @@ public class CommandRegister {
                         new SubcommandData("removeleave", "移除退出訊息").addOption(CHANNEL, "channel", "顯示訊息頻道", true)
 
                         // -------------------
-                )
+                ),
         };
     }
 
@@ -261,6 +262,7 @@ public class CommandRegister {
         return new CommandData[]{
                 new CommandData("ping", "延遲測試"),
                 new CommandData("support", "傳送問題回報").addOption(STRING, MESSAGE, "訊息內容", true),
-                new CommandData("botinfo", "顯示機器人訊息")};
+                new CommandData("botinfo", "顯示機器人訊息"),
+        };
     }
 }

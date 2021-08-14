@@ -10,15 +10,23 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import static main.java.util.EmbedCreator.createEmbed;
-import static main.java.util.JsonKeys.CS_SETTING;
+import static main.java.util.JsonKeys.*;
 
 public class SettingChannelStatus {
 
     public void newCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, @NotNull StatusListener listener) {
-        getSettingData(event.getGuild(), settingHelper).put(event.getOption("channel").getAsGuildChannel().getId(), event.getOption("channelname").getAsString());
-        settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        listener.updateGuild(event.getGuild());
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
+        String name = event.getOption("channelname").getAsString();
+        int format = (int) event.getOption("channelname").getAsLong();
+        if (name.lastIndexOf("${") != -1 && name.indexOf("${") == name.lastIndexOf("${")) {
+            event.getHook().editOriginalEmbeds(createEmbed("只能設定一個 `${`", 0xFF0000)).queue();
+        } else if (format < 0 || format > 10) {
+            event.getHook().editOriginalEmbeds(createEmbed("格式化位數錯誤", 0xFF0000)).queue();
+        } else {
+            getSettingData(event.getGuild(), settingHelper).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, "%." + format + "f"));
+            settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
+            listener.updateGuild(event.getGuild());
+            event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
+        }
     }
 
     public void removeCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
