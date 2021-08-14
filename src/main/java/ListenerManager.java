@@ -262,7 +262,7 @@ public class ListenerManager extends ListenerAdapter {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals("everyone")) {
-            event.deferReply(true).addEmbeds(createEmbed("此為他人的按鈕", 0xFF0000)).queue();
+            event.getInteraction().deferReply(true).addEmbeds(createEmbed("此為他人的按鈕", 0xFF0000)).queue();
             return;
         }
         createInviteCommand.onButton(event, args);
@@ -276,7 +276,7 @@ public class ListenerManager extends ListenerAdapter {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
-        event.deferReply(true).queue();
+        event.getInteraction().deferReply(true).queue();
 
         // 如果找不到伺服器 ->
 

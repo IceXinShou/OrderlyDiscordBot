@@ -50,9 +50,7 @@ public class Log {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
                 createEmbed(
-                        (" 進入 " +
-                                event.getChannelJoined().getName()), null,
-                        "進入語音",
+                        (" 進入 " + event.getChannelJoined().getName()), null, "進入語音",
                         event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x34E718
                 )
@@ -99,8 +97,7 @@ public class Log {
         JSONObject messageContent = new JSONObject()
                 .put(MESSAGE, event.getMessage().getContentRaw()) // Message
                 .put(SENDER, event.getAuthor().getId()) // Sender
-                .put(TIME, event.getMessage().getTimeCreated()) // Time
-                ;
+                .put(TIME, event.getMessage().getTimeCreated()); // Time
         data.put(event.getMessage().getId(), messageContent);
         channelFileManager.saveFile();
 
@@ -117,6 +114,7 @@ public class Log {
     public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         if (ignoreMessageID.contains(event.getMessageId())) return;
+        if (event.getChannel().getId().equals(logChannelID)) return;
 
         // get message
         JSONObject channelLog = clh.getChannelFileManager(event.getGuild().getId(), event.getChannel().getId()).data;

@@ -39,7 +39,7 @@ import static main.java.command.list.Invite.authChannelID;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.SlashCommandOption.COUNT;
 import static main.java.util.SlashCommandOption.NAME;
-import static main.java.util.UrlDataGetter.getUrlData;
+import static main.java.util.UrlDataGetter.getData;
 
 
 public class MultiMusicBotManager {
@@ -176,7 +176,7 @@ public class MultiMusicBotManager {
                     String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
                     SelectionMenu.Builder builder = SelectionMenu.create("MultiMusicBotManager:searchResult:" + event.getUser().getId() + ':' + bot.getID() + ':' + playNow);
 
-                    String result = getUrlData(
+                    String result = getData(
                             "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +
                                     keyWord + "&key=" + apiKEY);
                     if (result == null) return;

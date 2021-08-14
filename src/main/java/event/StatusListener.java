@@ -5,25 +5,28 @@ import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static main.java.util.JsonKeys.CS_NAME;
-import static main.java.util.JsonKeys.CS_SETTING;
+import static main.java.util.JsonKeys.*;
 
 public class StatusListener {
     private ScheduledExecutorService threadPool;
 
-    // guildID       name    count
-    private final Map<String, Map<String, Integer>> guildsMemberStatus = new ConcurrentHashMap<>();
+    //                guildID    typeName  value
+    private final Map<String, Map<String, Integer>> guildsMemberStatus = new HashMap<>();
+
+    //                guildID   channelID timeLeft
+    private final Map<String, Map<String, Long>> guildsChannelTimer = new HashMap<>();
+
     private GuildSettingHelper settingHelper;
 
     public void startListen(JDA jda, GuildSettingHelper settingHelper) {
@@ -35,7 +38,7 @@ public class StatusListener {
         // run thread
         threadPool.scheduleWithFixedDelay(() ->
                         jda.getGuilds().forEach(this::updateGuild)
-                , 0, 5, TimeUnit.MINUTES);
+                , 0, 6, TimeUnit.MINUTES);
     }
 
 
@@ -152,95 +155,80 @@ public class StatusListener {
 
     private void updateChannelStatus(Guild guild, int change, Map<String, Integer> memberStatus) {
         JSONObject data;
-        if ((data = getSettingData(guild, settingHelper)) == null) {
+        if ((data = getSettingData(guild, settingHelper)) == null)
             return;
-        }
+
 
         data.keySet().forEach(channelID -> {
-            if (guild.getGuildChannelById(channelID) == null) {
+            if (guild.getGuildChannelById(channelID) == null)
                 data.remove(channelID);
-            } else {
-                String channelName = data.getJSONObject(channelID).getString(CS_NAME);
-                boolean nameChange = false;
+            else {
+                String originalName = data.getJSONObject(channelID).getString(CS_NAME);
+                String newName = data.getJSONObject(channelID).getString(CS_NAME);
 
-                if (data.getString(channelID).contains("%member%") && (change & 1) > 0) {
-                    channelName = channelName.replace("%member%", memberStatus.get("member").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%member_bot%") && (change & (1 << 1)) > 0) {
-                    channelName = channelName.replace("%member_bot%", memberStatus.get("member_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%online_member%") && (change & (1 << 2)) > 0) {
-                    channelName = channelName.replace("%online_member%", memberStatus.get("online").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%online_member_bot%") && (change & (1 << 3)) > 0) {
-                    channelName = channelName.replace("%online_member_bot%", memberStatus.get("online_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%offline_member%") && (change & (1 << 4)) > 0) {
-                    channelName = channelName.replace("%offline_member%", memberStatus.get("offline").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%offline_member_bot%") && (change & (1 << 5)) > 0) {
-                    channelName = channelName.replace("%offline_member_bot%", memberStatus.get("offline_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%afk_member%") && (change & (1 << 6)) > 0) {
-                    channelName = channelName.replace("%afk_member%", memberStatus.get("idle").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%afk_member_bot%") && (change & (1 << 7)) > 0) {
-                    channelName = channelName.replace("%afk_member_bot%", memberStatus.get("idle_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%working_member%") && (change & (1 << 8)) > 0) {
-                    channelName = channelName.replace("%dnd_member%", memberStatus.get("dnd").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%working_member_bot%") && (change & (1 << 9)) > 0) {
-                    channelName = channelName.replace("%dnd_member_bot%", memberStatus.get("dnd_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%in_voicechannel%") && (change & (1 << 10)) > 0) {
-                    channelName = channelName.replace("%in_voicechannel%", memberStatus.get("inVoiceChannel").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%in_voicechannel_bot%") && (change & (1 << 11)) > 0) {
-                    channelName = channelName.replace("%in_voicechannel_bot%", memberStatus.get("inVoiceChannel_bot").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%not_voicechannel%") && (change & (1 << 12)) > 0) {
-                    channelName = channelName.replace("%not_voicechannel%", String.valueOf(memberStatus.get("member") - memberStatus.get("inVoiceChannel")));
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%not_voicechannel_bot%") && (change & (1 << 13)) > 0) {
-                    channelName = channelName.replace("%not_voicechannel_bot%", String.valueOf(memberStatus.get("member_bot") - memberStatus.get("inVoiceChannel_bot")));
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%stream%") && (change & (1 << 14)) > 0) {
-                    channelName = channelName.replace("%stream%", memberStatus.get("stream").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%camera%") && (change & (1 << 15)) > 0) {
-                    channelName = channelName.replace("%camera%", memberStatus.get("camera").toString());
-                    nameChange = true;
-                }
-                if (data.getString(channelID).contains("%play_minecraft%") && (change & (1 << 16)) > 0) {
-                    channelName = channelName.replace("%play_minecraft%", memberStatus.get("play_minecraft").toString());
-                    nameChange = true;
+                if (originalName.contains("%member%") && (change & 1) > 0)
+                    newName = newName.replace("%member%", memberStatus.get("member").toString());
+
+                if (originalName.contains("%member_bot%") && (change & (1 << 1)) > 0)
+                    newName = newName.replace("%member_bot%", memberStatus.get("member_bot").toString());
+
+                if (originalName.contains("%online_member%") && (change & (1 << 2)) > 0)
+                    newName = newName.replace("%online_member%", memberStatus.get("online").toString());
+
+                if (originalName.contains("%online_member_bot%") && (change & (1 << 3)) > 0)
+                    newName = newName.replace("%online_member_bot%", memberStatus.get("online_bot").toString());
+
+                if (originalName.contains("%offline_member%") && (change & (1 << 4)) > 0)
+                    newName = newName.replace("%offline_member%", memberStatus.get("offline").toString());
+
+                if (originalName.contains("%offline_member_bot%") && (change & (1 << 5)) > 0)
+                    newName = newName.replace("%offline_member_bot%", memberStatus.get("offline_bot").toString());
+
+                if (originalName.contains("%afk_member%") && (change & (1 << 6)) > 0)
+                    newName = newName.replace("%afk_member%", memberStatus.get("idle").toString());
+
+                if (originalName.contains("%afk_member_bot%") && (change & (1 << 7)) > 0)
+                    newName = newName.replace("%afk_member_bot%", memberStatus.get("idle_bot").toString());
+
+                if (originalName.contains("%working_member%") && (change & (1 << 8)) > 0)
+                    newName = newName.replace("%dnd_member%", memberStatus.get("dnd").toString());
+
+                if (originalName.contains("%working_member_bot%") && (change & (1 << 9)) > 0)
+                    newName = newName.replace("%dnd_member_bot%", memberStatus.get("dnd_bot").toString());
+
+                if (originalName.contains("%in_voicechannel%") && (change & (1 << 10)) > 0)
+                    newName = newName.replace("%in_voicechannel%", memberStatus.get("inVoiceChannel").toString());
+
+                if (originalName.contains("%in_voicechannel_bot%") && (change & (1 << 11)) > 0)
+                    newName = newName.replace("%in_voicechannel_bot%", memberStatus.get("inVoiceChannel_bot").toString());
+
+                if (originalName.contains("%not_voicechannel%") && (change & (1 << 12)) > 0)
+                    newName = newName.replace("%not_voicechannel%", String.valueOf(memberStatus.get("member") - memberStatus.get("inVoiceChannel")));
+
+                if (originalName.contains("%not_voicechannel_bot%") && (change & (1 << 13)) > 0)
+                    newName = newName.replace("%not_voicechannel_bot%", String.valueOf(memberStatus.get("member_bot") - memberStatus.get("inVoiceChannel_bot")));
+
+                if (originalName.contains("%stream%") && (change & (1 << 14)) > 0)
+                    newName = newName.replace("%stream%", memberStatus.get("stream").toString());
+
+                if (originalName.contains("%camera%") && (change & (1 << 15)) > 0)
+                    newName = newName.replace("%camera%", memberStatus.get("camera").toString());
+
+                if (originalName.contains("%play_minecraft%") && (change & (1 << 16)) > 0)
+                    newName = newName.replace("%play_minecraft%", memberStatus.get("play_minecraft").toString());
+
+
+                if (originalName.contains("${")) {
+                    StringCalculate calculate = new StringCalculate();
+                    newName = calculate.processes(newName, data.getJSONObject(channelID).getString(CS_FORMAT));
+                    if (calculate.haveError())
+                        return;
                 }
 
-                if (channelName.lastIndexOf("${") != -1) {
-                    if ((channelName = new StringCalculate().calculate(channelName, "1f")).contains("${")) {
-                        channelName = "格式錯誤";
-                        nameChange = true;
-                    }
-                }
-
-                if (nameChange)
-                    guild.getGuildChannelById(channelID).getManager().setName(channelName).queue();
+                guildsChannelTimer.get(guild.getId()).get(channelID);
+                GuildChannel channel = guild.getGuildChannelById(channelID);
+                if (!channel.getName().equals(newName))
+                    channel.getManager().setName(newName).queue();
             }
         });
     }

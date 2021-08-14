@@ -1,6 +1,7 @@
 package main.java.command.list.Setting;
 
 import main.java.event.StatusListener;
+import main.java.util.StringCalculate;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,16 +17,21 @@ public class SettingChannelStatus {
 
     public void newCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, @NotNull StatusListener listener) {
         String name = event.getOption("channelname").getAsString();
-        int format = (int) event.getOption("channelname").getAsLong();
-        if (name.lastIndexOf("${") != -1 && name.indexOf("${") == name.lastIndexOf("${")) {
-            event.getHook().editOriginalEmbeds(createEmbed("只能設定一個 `${`", 0xFF0000)).queue();
-        } else if (format < 0 || format > 10) {
+        String format = String.valueOf(event.getOption("format").getAsLong());
+        if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10) {
             event.getHook().editOriginalEmbeds(createEmbed("格式化位數錯誤", 0xFF0000)).queue();
         } else {
-            getSettingData(event.getGuild(), settingHelper).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, "%." + format + "f"));
-            settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-            listener.updateGuild(event.getGuild());
-            event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
+            format = "%." + format + "f";
+            StringCalculate check = new StringCalculate();
+            check.processes(name, format);
+            if (check.haveError())
+                event.getHook().editOriginalEmbeds(createEmbed(check.getError(), 0xFF0000)).queue();
+            else {
+                getSettingData(event.getGuild(), settingHelper).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
+                settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
+                listener.updateGuild(event.getGuild());
+                event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
+            }
         }
     }
 

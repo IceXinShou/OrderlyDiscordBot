@@ -27,7 +27,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
-import static main.java.util.UrlDataGetter.getUrlData;
+import static main.java.util.UrlDataGetter.getData;
 
 public class Join {
     public static JSONObject memberData;
@@ -278,7 +278,7 @@ public class Join {
                     askForMinecraftID(userID, channel, true);
                     break;
                 case 4:
-                    String result = getUrlData("https://api.mojang.com/users/profiles/minecraft/" + message);
+                    String result = getData("https://api.mojang.com/users/profiles/minecraft/" + message);
                     if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
                         channel.sendMessageEmbeds(createEmbed("查無此玩家！\n" +
                                 "Can not find player!", 0xFF0000)).queue();

@@ -32,7 +32,7 @@ public class URLShort {
     }
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        String result = UrlDataGetter.postData("https://reurl.cc/webapi/shorten/v2",
+        String result = UrlDataGetter.postCookie("https://reurl.cc/webapi/shorten/v2",
                 "{\"url\" : \"" + event.getOption("url").getAsString() + "\"}", v2Cookie);
         if (result != null) {
             JSONObject data = new JSONObject(result);

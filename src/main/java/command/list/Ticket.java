@@ -49,7 +49,7 @@ public class Ticket {
             Role allowRole = guild.getRoleById(data.getString(TICKET_ALLOW_ROLE_ID));
 
             if (guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID)).getChannels().size() == 50) {
-                event.deferReply(true).addEmbeds(createEmbed("沒有足夠的空間 (類別中頻道數量達到最大值)", 0xFF0000)).queue();
+                event.getInteraction().deferReply(true).addEmbeds(createEmbed("沒有足夠的空間 (類別中頻道數量達到最大值)", 0xFF0000)).queue();
                 return;
             }
             // {ticket:{channelID:{messageID:[{textCategory:"12345",allowRoleID:"12345",buttonName:"12345",emojiID:"8787",emojiName:"thinking",shouldTag:"true",enteredMessage:"",buttonColor:"RED"}]}}
@@ -103,7 +103,7 @@ public class Ticket {
             if (member.hasPermission(Permission.MANAGE_CHANNEL))
                 event.getTextChannel().delete().queue();
             else
-                event.deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
         } else if (args[1].equals("lock")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                 event.getHook().editOriginalEmbeds().setActionRows(
@@ -115,7 +115,7 @@ public class Ticket {
                 event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setDeny(Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
                 event.deferEdit().queue();
             } else {
-                event.deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
             }
         } else if (args[1].equals("unlock")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
@@ -128,7 +128,7 @@ public class Ticket {
                 event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
                 event.deferEdit().queue();
             } else {
-                event.deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
             }
         }
     }

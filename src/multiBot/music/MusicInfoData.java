@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static main.java.BotSetting.apiKEY;
-import static main.java.util.UrlDataGetter.getUrlData;
+import static main.java.util.UrlDataGetter.getData;
 import static main.java.util.UrlDataGetter.postData;
 
 public class MusicInfoData {
@@ -60,14 +60,14 @@ public class MusicInfoData {
 
         // 頻道
         channelID = videoDetails.getString("channelId");
-        result = getUrlData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + apiKEY);
+        result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + apiKEY);
         if (result == null) return;
         JSONObject channelInfo = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("snippet");
         channelThumbnailUrl = channelInfo.getJSONObject("thumbnails").getJSONObject("default").getString("url");
         channelName = channelInfo.getString("title");
 
         // 影片統計
-        result = getUrlData("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + videoID + "&key=" + apiKEY);
+        result = getData("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + videoID + "&key=" + apiKEY);
         if (result == null) return;
         JSONObject statistics = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("statistics");
         viewCount = Long.parseLong(statistics.getString("viewCount"));
