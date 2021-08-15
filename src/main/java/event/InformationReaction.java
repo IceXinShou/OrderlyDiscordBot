@@ -85,8 +85,8 @@ public class InformationReaction {
                     "", "",
                     fields,
                     null, 0xFFD1DC
-            )).setActionRows(ActionRow.of(Button.primary("InformationReaction:botActionRole:everyone", Emoji.fromEmote(emoji.bot)),
-                    Button.success("InformationReaction:minecraftRole:everyone", Emoji.fromEmote(emoji.minecraftGrassBlock)))).queue();
+            )).setActionRows(ActionRow.of(Button.primary("InformationReaction:botActionRole:", Emoji.fromEmote(emoji.bot)),
+                    Button.success("InformationReaction:minecraftRole:", Emoji.fromEmote(emoji.minecraftGrassBlock)))).queue();
         }
     }
 

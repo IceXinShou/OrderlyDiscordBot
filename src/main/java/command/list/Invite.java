@@ -57,10 +57,10 @@ public class Invite {
             event.getHook().editOriginalEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).queue();
             return;
         } else if (guild.retrieveMemberById(member.getId()).complete().getRoles().contains(memberRole)) {
-            event.getHook().editOriginalEmbeds(createEmbed("此成員已被邀請過!", 0xFF0000)).setActionRows().queue();
+            event.getHook().editOriginalEmbeds(createEmbed("此成員已被邀請過！", 0xFF0000)).setActionRows().queue();
             return;
         } else if (member.getUser().isBot()) {
-            event.getHook().editOriginalEmbeds(createEmbed("無法邀請機器人!", 0xFF0000)).setActionRows().queue();
+            event.getHook().editOriginalEmbeds(createEmbed("無法邀請機器人！", 0xFF0000)).setActionRows().queue();
             return;
         }
 

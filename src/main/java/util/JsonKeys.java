@@ -46,6 +46,7 @@ public class JsonKeys {
     public final static String TICKET_BUTTON_TYPE = "BT";
     public final static String TICKET_BUTTON_EMOJI_NAME = "EN";
     public final static String TICKET_ENTERED_MESSAGE = "EM";
+    public final static String TICKET_ONLY_ONE = "OO";
 
     // for ChannelStatus
     public final static String CS_SETTING = "cs";

@@ -82,6 +82,8 @@ public class SettingTicket {
         Role allowRole = event.getOption("allowrole") == null ? null : event.getOption("allowrole").getAsRole();
         // tag 權限組 (預設true)
         boolean tagRole = event.getOption("allowtagrole") == null || event.getOption("allowtagrole").getAsBoolean();
+        // 觸發權限
+        boolean onlyone = event.getOption("onlyone") == null || event.getOption("onlyone").getAsBoolean();
         /*
           文字頻道
          */
@@ -184,9 +186,9 @@ public class SettingTicket {
         // 設定按鈕
         Button button;
         if (buttonEmoji != null)
-            button = Button.of(buttonStyle, "Ticket:newTicket:everyone:" + buttonLength, buttonName, buttonEmoji);
+            button = Button.of(buttonStyle, "Ticket:newTicket::" + buttonLength, buttonName, buttonEmoji);
         else
-            button = Button.of(buttonStyle, "Ticket:newTicket:everyone:" + buttonLength, buttonName);
+            button = Button.of(buttonStyle, "Ticket:newTicket::" + buttonLength, buttonName);
 
         if (errorField.size() > 0) {
             event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", errorField, 0xFF0000)).queue();
@@ -225,6 +227,7 @@ public class SettingTicket {
             buttonSetting.put(TICKET_VOICE_NAME, voiceName);
         }
         buttonSetting.put(TICKET_ENTERED_MESSAGE, enteredMessage);
+        buttonSetting.put(TICKET_ONLY_ONE, onlyone);
         buttonSettings.put(buttonSetting);
         channelKey.put(messageID, buttonSettings);
 
@@ -267,13 +270,13 @@ public class SettingTicket {
                             if (buttonObject.has(TICKET_BUTTON_EMOJI_NAME))
                                 button = Button.of(
                                         ButtonStyle.fromKey(buttonObject.getInt(TICKET_BUTTON_TYPE)),
-                                        "Ticket:newTicket:everyone:" + i,
+                                        "Ticket:newTicket::" + i,
                                         buttonName,
                                         toEmoji(buttonObject.getString(TICKET_BUTTON_EMOJI_NAME), event.getGuild()));
                             else
                                 button = Button.of(
                                         ButtonStyle.fromKey(buttonObject.getInt(TICKET_BUTTON_TYPE)),
-                                        "Ticket:newTicket:everyone:" + i,
+                                        "Ticket:newTicket::" + i,
                                         buttonName);
                             buttons.add(button);
                         }

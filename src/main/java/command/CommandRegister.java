@@ -203,7 +203,8 @@ public class CommandRegister {
                                 new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
                                 new OptionData(STRING, "buttonemoji", "按鈕圖示"),
                                 new OptionData(ROLE, "allowrole", "除了觸發者以外, 允許檢視此頻道的身分組"),
-                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組")
+                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組"),
+                                new OptionData(BOOLEAN, "onlyone", "同一人按鈕是否只能同時觸發一次")
                         ),
 
                         new SubcommandData("addticket", "添加客服按鈕").addOptions(
@@ -219,7 +220,8 @@ public class CommandRegister {
                                 new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
                                 new OptionData(STRING, "buttonemoji", "按鈕圖示"),
                                 new OptionData(ROLE, "allowrole", "除了觸發者以外, 允許檢視此頻道的身分組"),
-                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組")
+                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組"),
+                                new OptionData(BOOLEAN, "onlyone", "同一人按鈕是否只能同時觸發一次")
                         ),
 
                         new SubcommandData("removeticket", "移除客服按鈕").addOptions(

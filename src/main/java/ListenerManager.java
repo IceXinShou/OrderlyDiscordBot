@@ -262,7 +262,7 @@ public class ListenerManager extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent event) {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
-        if (!args[2].equals(event.getUser().getId()) && !args[2].equals("everyone")) {
+        if (!args[2].equals(event.getUser().getId()) && !args[2].equals("")) {
             event.getInteraction().deferReply(true).addEmbeds(createEmbed("此為他人的按鈕", 0xFF0000)).queue();
             return;
         }
@@ -460,7 +460,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
         String[] args = event.getComponentId().split(":");
-        if (!args[2].equals(event.getUser().getId()) && !args[2].equals("everyone"))
+        if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
             return;
         musicManager.onSelectMenu(event, args);
     }

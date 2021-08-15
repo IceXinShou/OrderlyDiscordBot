@@ -79,7 +79,7 @@ public class QuickUse {
 //            event.getChannel().sendMessageEmbeds(createEmbed("如果有任何問題或是投訴可點擊下方按鈕, 請勿隨意點擊\n" +
 //                            "If you have any problems, press the button then we will help you, please do not press it without any reason.", 0x00FFFF))
 //
-//                    .setActionRows(ActionRow.of(Button.of(ButtonStyle.DANGER, "TicketChannel:newTicket:everyone", "發出請求",
+//                    .setActionRows(ActionRow.of(Button.of(ButtonStyle.DANGER, "TicketChannel:newTicket:", "發出請求",
 //                            Emoji.fromEmote(emoji.report)))).queue();
 
 /*

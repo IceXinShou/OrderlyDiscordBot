@@ -15,7 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static main.java.Main.emoji;
@@ -28,7 +30,10 @@ import static main.java.util.Tag.tagRoleID;
 public class Ticket {
 
     //               ChannelID MessageID ButtonPosition Count
-    public static Map<String, Map<String, Map<Byte, Integer>>> ticketCount = new HashMap<>(); // %num%
+    private final Map<String, Map<String, Map<Byte, Integer>>> ticketCount = new HashMap<>(); // %num%
+
+    //                 UserID    ChannelID+MessageID ButtonPosition
+    private final Map<String, Map<String, List<Byte>>> userCount = new HashMap<>();
 
     public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args, GuildSettingHelper settingHelper) {
         if (!args[0].equals("Ticket"))
@@ -36,29 +41,31 @@ public class Ticket {
         Guild guild = event.getGuild();
         Member member = event.getMember();
         if (args[1].equals("newTicket")) {
-            byte buttonPos = Byte.parseByte(args[3]);
             JSONObject datas;
-            if ((datas = getSettingData(guild, settingHelper)) == null) {
+            if ((datas = getSettingData(guild, settingHelper)) == null || !datas.has(event.getChannel().getId()))
+                return;
+            JSONObject data = datas.getJSONObject(channelID).getJSONArray(messageID).getJSONObject(buttonPos);
+
+            String messageKey = channelID + messageID;
+            boolean buttonPressed = addButtonPress(messageKey, member.getId(), buttonPos);
+
+            if (data.getBoolean(TICKET_ONLY_ONE) && buttonPressed) {
+                event.getInteraction().deferReply(true).addEmbeds(createEmbed("您已經使用過此按扭了", 0xFF0000)).queue();
                 return;
             }
-            if (!datas.has(event.getChannel().getId())) {
-                return;
-            }
-            String messageChannelID = event.getChannel().getId();
-            JSONObject data = datas.getJSONObject(messageChannelID).getJSONArray(event.getMessageId()).getJSONObject(buttonPos);
+
             Role allowRole = guild.getRoleById(data.getString(TICKET_ALLOW_ROLE_ID));
 
             if (guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID)).getChannels().size() == 50) {
                 event.getInteraction().deferReply(true).addEmbeds(createEmbed("沒有足夠的空間 (類別中頻道數量達到最大值)", 0xFF0000)).queue();
                 return;
             }
-            // {ticket:{channelID:{messageID:[{textCategory:"12345",allowRoleID:"12345",buttonName:"12345",emojiID:"8787",emojiName:"thinking",shouldTag:"true",enteredMessage:"",buttonColor:"RED"}]}}
-            // public static Map<String, Map<String, Map<Byte, Integer>>> ticketCount = new HashMap<>(); // %num%
+
             Map<String, Map<Byte, Integer>> messageIDMap;
             Map<Byte, Integer> positionMap;
-            if ((messageIDMap = ticketCount.get(messageChannelID)) == null) {
+            if ((messageIDMap = ticketCount.get(channelID)) == null) {
                 messageIDMap = new HashMap<>();
-                ticketCount.put(messageChannelID, messageIDMap);
+                ticketCount.put(channelID, messageIDMap);
             }
             if ((positionMap = messageIDMap.get(event.getMessageId())) == null) {
                 positionMap = new HashMap<>();
@@ -92,26 +99,25 @@ public class Ticket {
                         .replace("%num%", countStr)
                         + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
                 builder.setActionRows(ActionRow.of(
-                        Button.of(ButtonStyle.PRIMARY, "Ticket:lock:everyone:" + buttonPos + ':' + member.getId() + ':' + allowRole.getId(), "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                        Button.of(ButtonStyle.DANGER, "Ticket:deleteChannel:everyone:" + buttonPos, "刪除", Emoji.fromEmote(emoji.trashCan))
+                        Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                        Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, "刪除", Emoji.fromEmote(emoji.trashCan))
                 ));
                 tc.sendMessage(builder.build()).queue();
-
                 event.deferEdit().queue();
             });
-        } else if (args[1].equals("deleteChannel")) {
-            if (member.hasPermission(Permission.MANAGE_CHANNEL))
+        } else if (args[1].equals("delC")) {
+            if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
                 event.getTextChannel().delete().queue();
-            else
+                removeButtonPress(args, buttonPos);
+            } else
                 event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
         } else if (args[1].equals("lock")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                 event.getHook().editOriginalEmbeds().setActionRows(
                         ActionRow.of(
-                                Button.of(ButtonStyle.SUCCESS, "Ticket:unlock:everyone:" + args[3] + ':' + member.getId() + ':' + args[5], "解除封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                                Button.of(ButtonStyle.DANGER, "Ticket:deleteChannel:everyone:" + args[3], "刪除", Emoji.fromEmote(emoji.trashCan))
+                                Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "解除封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
-                event.getTextChannel().putPermissionOverride(guild.retrieveMemberById(args[4]).complete()).setDeny(Permission.VIEW_CHANNEL).queue();
                 event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setDeny(Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
                 event.deferEdit().queue();
             } else {
@@ -121,10 +127,9 @@ public class Ticket {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                 event.getHook().editOriginalEmbeds().setActionRows(
                         ActionRow.of(
-                                Button.of(ButtonStyle.PRIMARY, "Ticket:lock:everyone:" + args[3] + ':' + member.getId() + ':' + args[5], "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                                Button.of(ButtonStyle.DANGER, "Ticket:deleteChannel:everyone:" + args[3], "刪除", Emoji.fromEmote(emoji.trashCan))
+                                Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
-                event.getTextChannel().putPermissionOverride(guild.retrieveMemberById(args[4]).complete()).setAllow(Permission.VIEW_CHANNEL).queue();
                 event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
                 event.deferEdit().queue();
             } else {
