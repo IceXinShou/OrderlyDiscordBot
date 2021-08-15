@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.Collections;
@@ -39,7 +38,11 @@ public class Ticket {
         if (!args[0].equals("Ticket"))
             return;
         Guild guild = event.getGuild();
+        String channelID = event.getChannel().getId();
+        String messageID = event.getMessageId();
         Member member = event.getMember();
+        Byte buttonPos = Byte.parseByte(args[3]);
+
         if (args[1].equals("newTicket")) {
             JSONObject datas;
             if ((datas = getSettingData(guild, settingHelper)) == null || !datas.has(event.getChannel().getId()))
@@ -123,7 +126,7 @@ public class Ticket {
             } else {
                 event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
             }
-        } else if (args[1].equals("unlock")) {
+        } else if (args[1].equals("uLock")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                 event.getHook().editOriginalEmbeds().setActionRows(
                         ActionRow.of(
@@ -138,7 +141,51 @@ public class Ticket {
         }
     }
 
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
+    public boolean isButtonUsed(String channelID, String messageID, Byte buttonPos) {
+        String messageKey = channelID + messageID;
+        for (Map<String, List<Byte>> userData : userCount.values()) {
+            List<Byte> usedButton;
+            if ((usedButton = userData.get(messageKey)) != null) {
+                if(usedButton.contains(buttonPos))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean addButtonPress(String messageKey, String memberID, Byte buttonPos) {
+        Map<String, List<Byte>> userPressedMessage;
+        List<Byte> buttonPressed;
+        if ((userPressedMessage = userCount.get(memberID)) == null) {
+            userPressedMessage = new HashMap<>();
+            buttonPressed = Collections.singletonList(buttonPos);
+            userPressedMessage.put(messageKey, buttonPressed);
+            userCount.put(memberID, userPressedMessage);
+            return false;
+        } else if ((buttonPressed = userPressedMessage.get(messageKey)) == null) {
+            buttonPressed = Collections.singletonList(buttonPos);
+            userPressedMessage.put(messageKey, buttonPressed);
+            return false;
+        } else if (!buttonPressed.contains(buttonPos)) {
+            buttonPressed.add(buttonPos);
+            return false;
+        }
+        return true;
+    }
+
+    private void removeButtonPress(String @NotNull [] args, byte buttonPos) {
+        Map<String, List<Byte>> userPressedMessage = userCount.get(args[4]);
+        List<Byte> data = userPressedMessage.get(args[5]);
+        if (data.size() == 1)
+            userPressedMessage.remove(args[5]);
+        else
+            data.remove((Byte) buttonPos);
+        if (userPressedMessage.size() == 0)
+            userCount.remove(args[4]);
+    }
+
+    private JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
         if (settingHelper.getGuildSettingManager(guild.getId()).data.has(TICKET_SETTING))
             return settingHelper.getGuildSettingManager(guild.getId()).data.getJSONObject(TICKET_SETTING);
         else {

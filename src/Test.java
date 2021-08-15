@@ -1,5 +1,7 @@
-import main.java.util.StringCalculate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
     Test() {
@@ -11,10 +13,20 @@ public class Test {
         System.out.println(error == null ? "" : error);
         */
 
-        String input = "人數: ${100 - 1}_${7/10*100}";
-        StringCalculate calculate = new StringCalculate();
-        System.out.println(calculate.processes(input,"%.2f"));
-        System.out.println(calculate.getError());
+
+        List<Byte> test = new ArrayList<>();
+        test.add((byte) 4);
+        test.add((byte) 3);
+        test.add((byte) 2);
+        test.add((byte) 1);
+        test.add((byte) 0);
+        System.out.println(test.contains((byte) 4));
+        System.out.println(test);
+
+//        String input = "人數: ${100 - 1}_${7/10*100}";
+//        StringCalculate calculate = new StringCalculate();
+//        System.out.println(calculate.processes(input,"%.2f"));
+//        System.out.println(calculate.getError());
     }
 
     String error;
@@ -63,7 +75,6 @@ public class Test {
                 valueStart = 0;
                 hasCache = true;
                 i = newPos;
-                continue;
             }
             if (isSymbol(thisChar) || thisChar == ')' || thisChar == '}') {
                 if (valueStart != -1) {
@@ -94,12 +105,14 @@ public class Test {
                     thisChar = input.charAt(i);
                 }
                 symbol = thisChar;
-                if (thisChar == ')' || thisChar == '}') {
-                    newPos = i;
-                    return sum;
-                }
             }
-
+            if (thisChar == ')' || thisChar == '}') {
+                if (thisChar == '}' && isBrackets && error == null)
+                    error = "`(` should end with `)`";
+                newPos = i;
+                return sum;
+            }
+            // 數字開頭
             if (valueStart == -1 && isDigit(thisChar)) {
                 valueStart = i;
                 valueEnd = i;
@@ -133,7 +146,6 @@ public class Test {
                 valueStart = 0;
                 hasCache = true;
                 i = newPos;
-                continue;
             }
 
             if (isSymbol(thisChar) || thisChar == ')' || thisChar == '}') {
@@ -182,6 +194,8 @@ public class Test {
             else
                 inValue = false;
         }
+        if (error == null)
+            error = "calculation should end with `}`";
         return outputValue;
     }
 

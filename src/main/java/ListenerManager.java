@@ -420,7 +420,7 @@ public class ListenerManager extends ListenerAdapter {
                         return;
                     }
                     case "removeticket" -> {
-                        settingTicket.removeTicket(event, guildSettingHelper);
+                        settingTicket.removeTicket(event, guildSettingHelper, ticketChannel);
                         return;
                     }
                     case "newchannelstatus" -> {

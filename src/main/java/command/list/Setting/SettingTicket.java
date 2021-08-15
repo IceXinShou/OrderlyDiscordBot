@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.command.list.Ticket;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -235,7 +236,7 @@ public class SettingTicket {
         event.getHook().editOriginalEmbeds(createEmbed("設定成功", errorField, 0x11FF99)).queue();
     }
 
-    public void removeTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
+    public void removeTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, Ticket ticket) {
         JSONObject data = getSettingData(event.getGuild(), settingHelper);
         String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();
         if (data.has(channelID)) {
@@ -258,7 +259,12 @@ public class SettingTicket {
                 }
                 JSONArray messageButtons = messageChannel.getJSONArray(messageID);
                 // {messageChannel:{messageID:[{},{},{},{},{}]}}
-                int removePos = (int) event.getOption("position").getAsLong() - 1;
+                Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (event.getOption("position").getAsLong() - 1)));
+                if (ticket.isButtonUsed(channelID, messageID, removePos)) {
+                    event.getHook().editOriginalEmbeds(createEmbed("此按鈕目前正在被使用，請先關閉所有關於此按鈕的客服再執行此指令", 0xFF0000)).queue();
+                    return;
+                }
+
                 if (messageButtons.length() > removePos) {
                     messageButtons.remove(removePos);
                     List<Button> buttons = new ArrayList<>();
