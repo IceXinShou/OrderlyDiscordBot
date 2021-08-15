@@ -158,6 +158,11 @@ public class CommandRegister {
                 // Tool
 
                 new CommandData("surl", "創建短網址").addOption(STRING, URL, "網址", true), // 若未填則回覆預設
+                new CommandData("mp4togif", "轉換 mp4 至 gif ").addOptions(
+                        new OptionData(STRING, URL, "需要轉檔案的網址", true),
+                        new OptionData(STRING, "outputname", "輸出結果名稱"),
+                        new OptionData(STRING, "fps", "輸出幀數 (預設30)")
+                ), // 若未填則回覆預設
 
                 // Advance
                 new CommandData("setting", "設定").addSubcommands(

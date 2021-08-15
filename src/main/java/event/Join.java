@@ -134,7 +134,7 @@ public class Join {
         memberInfo.put(CHINESE_NICK, progress.chineseNick);
 
 
-        System.out.println(memberInfo);
+        System.out.println("[Join] " + member.getUser().getAsTag() + "(" + member.getId() + ") : " + memberInfo);
         memberData.put(member.getId(), memberInfo);
         memberFile.saveFile();
     }

@@ -18,9 +18,9 @@ public class SettingChannelStatus {
     public void newCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, @NotNull StatusListener listener) {
         String name = event.getOption("channelname").getAsString();
         String format = String.valueOf(event.getOption("format").getAsLong());
-        if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10) {
+        if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10)
             event.getHook().editOriginalEmbeds(createEmbed("格式化位數錯誤", 0xFF0000)).queue();
-        } else {
+        else {
             format = "%." + format + "f";
             StringCalculate check = new StringCalculate();
             check.processes(name, format);

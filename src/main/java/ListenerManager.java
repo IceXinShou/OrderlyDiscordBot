@@ -78,6 +78,7 @@ public class ListenerManager extends ListenerAdapter {
     Reload reload = new Reload();
     Invite createInviteCommand = new Invite();
     URLShort sortURL = new URLShort();
+    FileConvert fileConvert = new FileConvert();
 
     //setting
     GuildSettingHelper guildSettingHelper = new GuildSettingHelper();
@@ -378,7 +379,11 @@ public class ListenerManager extends ListenerAdapter {
                 return;
             }
             case "surl" -> {
-                sortURL.onCommand(event);
+                sortURL.onCommand(event, false, null);
+                return;
+            }
+            case "mp4togif" -> {
+                fileConvert.onCommand(event, sortURL);
                 return;
             }
             case "reload" -> {

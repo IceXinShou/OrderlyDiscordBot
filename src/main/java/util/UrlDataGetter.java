@@ -2,6 +2,7 @@ package main.java.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,9 +40,7 @@ public class UrlDataGetter {
                 conn.setRequestProperty("Authorization", authorization);
             conn.setRequestMethod("GET");
             conn.setUseCaches(false);
-            conn.setDoInput(true);
 
-            //get response code
             String result;
             if (conn.getResponseCode() > 399) {
                 result = readResponse(conn.getErrorStream());
@@ -69,13 +68,14 @@ public class UrlDataGetter {
             OutputStream payloadOut = conn.getOutputStream();
             payloadOut.write(payload.getBytes(StandardCharsets.UTF_8));
             payloadOut.flush();
-            //get
-            InputStream in;
-            if (conn.getResponseCode() > 399)
-                in = conn.getErrorStream();
-            else
-                in = conn.getInputStream();
-            return readResponse(in);
+
+            String result;
+            if (conn.getResponseCode() > 399) {
+                result = readResponse(conn.getErrorStream());
+            } else
+                result = readResponse(conn.getInputStream());
+            conn.disconnect();
+            return result;
         } catch (IOException e) {
             return null;
         }
@@ -83,15 +83,15 @@ public class UrlDataGetter {
 
     private static String readResponse(@NotNull InputStream in) {
         try {
-            StringBuilder builder = new StringBuilder();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];
             int length;
             //when readed it end
             while ((length = in.read(buff)) > 0) {
-                builder.append(new String(buff, 0, length));
+                out.write(buff, 0, length);
             }
             in.close();
-            return builder.toString();
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             System.err.println(e.fillInStackTrace().getMessage());
             return "";

@@ -31,9 +31,14 @@ public class URLShort {
         }
     }
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
-        String result = UrlDataGetter.postCookie("https://reurl.cc/webapi/shorten/v2",
-                "{\"url\" : \"" + event.getOption("url").getAsString() + "\"}", v2Cookie);
+    public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url) {
+        String result;
+        if (!convert)
+            url = event.getOption("url").getAsString();
+
+        result = UrlDataGetter.postCookie("https://reurl.cc/webapi/shorten/v2",
+                "{\"url\" : \"" + url + "\"}", v2Cookie);
+
         if (result != null) {
             JSONObject data = new JSONObject(result);
             if (data.has("url") && !(data.has("status") && data.getInt("status") > 399)) {
@@ -41,12 +46,21 @@ public class URLShort {
                         "創建成功",
                         "https://reurl.cc/" + data.getString("url"),
                         data.getString("title"),
-                        "https://api.qrserver.com/v1/create-qr-code/?data=" + event.getOption("url").getAsString() + "&size=128x128",
+                        "https://api.qrserver.com/v1/create-qr-code/?data=https://reurl.cc/" + data.getString("url") + "&size=128x128",
                         0x00FFFF)
                 ).queue();
                 return;
-            } else if (data.has("msg")) {
+            } else if (data.has("msg") && !convert) {
                 event.getHook().editOriginalEmbeds(createEmbed(0xFF0000, data.getString("msg"))).queue();
+                return;
+            } else if (convert) {
+                event.getHook().editOriginalEmbeds(createEmbed(
+                        "創建成功",
+                        url,
+                        data.getString("title"),
+                        "https://api.qrserver.com/v1/create-qr-code/?data=" + url + "&size=128x128",
+                        0x00FFFF)
+                ).queue();
                 return;
             }
         }

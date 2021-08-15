@@ -248,7 +248,12 @@ public class SettingHelp {
                         ┃　　`%play_minecraft%` 正在遊玩 minecraft 人數
                         ┃　　(支援: Vanilla, Badlion Client, Lunar Client, LabyMod, Impact, Aristois)
                         ┃　　(若有未支援到的請使用: `/support` 提供建議)
-                        ┃　　
+                        """
+                , false));
+
+        helpFields.add(new MessageEmbed.Field("",
+
+                """
                         ┃　　**運算規則 | Math**
                         ┃　　
                         ┃　　範例
@@ -264,15 +269,6 @@ public class SettingHelp {
                         ┃　　　　直播除以視訊的餘數: `${%stream%%%camera%}`
                         ┃　　
                         ┃　　
-                        ┃　　
-                        """
-                , false));
-
-        // ┃　　`%invisible_member%` 隱形成員人數
-
-        helpFields.add(new MessageEmbed.Field("",
-
-                """
                         ┃　**移除頻道顯示數據**　
                         ┃　　
                         ┃　　**方法 1.**
