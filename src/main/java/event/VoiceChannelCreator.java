@@ -14,7 +14,13 @@ import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 
 public class VoiceChannelCreator {
 
-    public void onGuildReady(@NotNull GuildReadyEvent event, GuildSettingHelper settingHelper) {
+    private final GuildSettingHelper settingHelper;
+
+    public VoiceChannelCreator(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
+    public void onGuildReady(@NotNull GuildReadyEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;

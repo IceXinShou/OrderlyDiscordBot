@@ -17,6 +17,12 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
 public class SettingJoinLeave {
+    private final GuildSettingHelper settingHelper;
+
+    public SettingJoinLeave(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
 
     public void newJoin(@NotNull SlashCommandEvent event) {
         List<MessageEmbed.Field> fields = new ArrayList<>();

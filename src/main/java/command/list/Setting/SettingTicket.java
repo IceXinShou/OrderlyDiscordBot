@@ -24,8 +24,14 @@ import static main.java.Main.botID;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.Tag.tagChannel;
+import static main.java.util.Tag.tagChannelID;
 
 public class SettingTicket {
+    private final GuildSettingHelper settingHelper;
+
+    public SettingTicket(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
 
     @SuppressWarnings("ConstantConditions")
     public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {

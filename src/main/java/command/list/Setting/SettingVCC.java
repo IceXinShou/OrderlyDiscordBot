@@ -17,7 +17,13 @@ import static main.java.util.JsonKeys.AUTO_VC_NAME;
 import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 
 public class SettingVCC {
-    public void newVCC(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
+    private final GuildSettingHelper settingHelper;
+
+    public SettingVCC(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
+    public void newVCC(@NotNull SlashCommandEvent event) {
         String detectCategoryID = event.getOption("detectcategory").getAsString();
         String voiceName = event.getOption("voicename").getAsString();
 
@@ -43,7 +49,7 @@ public class SettingVCC {
         event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
     }
 
-    public void removeVCC(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
+    public void removeVCC(@NotNull SlashCommandEvent event) {
         String detectID = event.getOption("detectcategory").getAsString();
         Guild guild = event.getGuild();
 

@@ -25,11 +25,54 @@ public class StatusListener {
     private final GuildSettingHelper settingHelper;
     //                guildID    typeName  value
     private final Map<String, Map<String, Integer>> guildsMemberStatus = new HashMap<>();
+    //              channelID lastTime
+    private final Map<String, Long> guildChannelTimer = new HashMap<>();
+    private final Map<String, Integer> guildChannelChange = new HashMap<>();
 
     public StatusListener(GuildSettingHelper settingHelper) {
         this.settingHelper = settingHelper;
     }
 
+    private int minChangeDelay = (int) (5.5f * 60 * 1000);
+    private ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+
+    public void startListen(JDA jda) {
+        if (threadPool != null && !threadPool.isShutdown())
+            threadPool.shutdown();
+        threadPool = Executors.newScheduledThreadPool(1);
+
+        // run thread
+        threadPool.scheduleWithFixedDelay(() -> {
+            try {
+                for (Guild guild : jda.getGuilds()) {
+                    updateGuild(guild);
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+            }
+        }, 0, 30, TimeUnit.MINUTES);
+    }
+
+    private final String[] keys = new String[]{
+            "member_noBot",
+            "member",
+            "online_noBot",
+            "online",
+            "offline_noBot",
+            "offline",
+            "idle_noBot",
+            "idle",
+            "dnd_noBot",
+            "dnd",
+            "inVoiceChannel_noBot",
+            "inVoiceChannel",
+            "notInVoiceChannel_noBot",
+            "notInVoiceChannel",
+            "stream",
+            "camera",
+            "playMinecraft",
+    };
 
     public void updateGuild(@NotNull Guild guild) {
         if (settingHelper.getSettingData(guild, CS_SETTING) == null)
@@ -37,109 +80,171 @@ public class StatusListener {
         guild.loadMembers()
                 .onError(error -> System.err.println(error.getMessage()))
                 .onSuccess(members -> {
-                    Map<String, Integer> memberStatus = new HashMap<>();
-                    memberStatus.put("member", 0);
-                    memberStatus.put("member_bot", members.size());
-                    memberStatus.put("online", 0);
-                    memberStatus.put("online_bot", 0);
-                    memberStatus.put("offline", 0);
-                    memberStatus.put("offline_bot", 0);
-                    memberStatus.put("idle", 0);
-                    memberStatus.put("idle_bot", 0);
-                    memberStatus.put("dnd", 0);
-                    memberStatus.put("dnd_bot", 0);
-                    memberStatus.put("inVoiceChannel", 0);
-                    memberStatus.put("inVoiceChannel_bot", 0);
-                    memberStatus.put("stream", 0);
-                    memberStatus.put("camera", 0);
-                    memberStatus.put("play_minecraft", 0);
-                    members.forEach(member -> {
-                        if (member.getUser().isBot()) { // 包含機器人
-                            // 線上狀態
-                            memberStatus.put(member.getOnlineStatus().getKey() + "_bot", memberStatus.get(member.getOnlineStatus().getKey() + "_bot") + 1);
+                    int member_noBot = 0;
+                    int member = members.size();
+                    int online_noBot = 0;
+                    int online = 0;
+                    int offline_noBot = 0;
+                    int offline = 0;
+                    int idle_noBot = 0;
+                    int idle = 0;
+                    int dnd_noBot = 0;
+                    int dnd = 0;
+                    int inVoiceChannel_noBot = 0;
+                    int inVoiceChannel = 0;
+                    int notInVoiceChannel_noBot = 0;
+                    int notInVoiceChannel = 0;
+                    int stream = 0;
+                    int camera = 0;
+                    int playMinecraft = 0;
 
-                            // 通話狀態
-                            if (member.getVoiceState().inVoiceChannel())
-                                memberStatus.put("inVoiceChannel_bot", memberStatus.get("inVoiceChannel_bot") + 1);
-
-                        } else { // 不包含機器人
-                            memberStatus.put("member", memberStatus.get("member") + 1);
+                    for (Member gMember : members) {
+                        if (!gMember.getUser().isBot()) { // 不包含機器人
+                            member_noBot++;
 
                             // 線上狀態
-                            memberStatus.put(member.getOnlineStatus().getKey(), memberStatus.get(member.getOnlineStatus().getKey()) + 1);
-                            memberStatus.put(member.getOnlineStatus().getKey() + "_bot", memberStatus.get(member.getOnlineStatus().getKey() + "_bot") + 1);
+                            switch (gMember.getOnlineStatus()) {
+                                case ONLINE -> online_noBot++;
+                                case IDLE -> idle_noBot++;
+                                case OFFLINE -> offline_noBot++;
+                                case DO_NOT_DISTURB -> dnd_noBot++;
+                            }
 
                             // 通話狀態
-                            if (member.getVoiceState().inVoiceChannel()) {
-                                memberStatus.put("inVoiceChannel", memberStatus.get("inVoiceChannel") + 1);
-                            }
-
-                            if (member.getVoiceState().isStream())
-                                memberStatus.put("stream", memberStatus.get("stream") + 1);
-
-                            if (member.getVoiceState().isSendingVideo())
-                                memberStatus.put("camera", memberStatus.get("camera") + 1);
-
-                            // Play Minecraft
-                            for (Activity activity : member.getActivities()) {
-                                if (activity.getName().equals("Minecraft"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("LabyMod"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("Lunar Client"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("Badlion Client"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("Impact"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("Aristois"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                                else if (activity.getName().equals("Skyblock"))
-                                    memberStatus.put("play_minecraft", memberStatus.get("play_minecraft") + 1);
-                            }
+                            if (gMember.getVoiceState().inVoiceChannel())
+                                inVoiceChannel_noBot++;
                         }
-                    });
-                    Map<String, Integer> lastMemberStatus;
+
+                        if (gMember.getVoiceState().isStream())
+                            stream++;
+
+                        if (gMember.getVoiceState().isSendingVideo())
+                            camera++;
+
+                        // Play Minecraft
+                        for (Activity activity : gMember.getActivities()) {
+                            String activityName = activity.getName();
+                            if (activityName.equals("Minecraft") ||
+                                    activityName.equals("LabyMod") ||
+                                    activityName.equals("Lunar Client") ||
+                                    activityName.equals("Badlion Client") ||
+                                    activityName.equals("Impact") ||
+                                    activityName.equals("Aristois") ||
+                                    activityName.equals("Skyblock")
+                            )
+                                playMinecraft++;
+                        }
+
+                        // 包含機器人
+                        // 線上狀態
+                        switch (gMember.getOnlineStatus()) {
+                            case ONLINE -> online++;
+                            case IDLE -> idle++;
+                            case OFFLINE -> offline++;
+                            case DO_NOT_DISTURB -> dnd++;
+                        }
+                        // 通話狀態
+                        if (gMember.getVoiceState().inVoiceChannel())
+                            inVoiceChannel++;
+                    }
+                    Map<String, Integer> memberStatus;
                     int change = 0;
-                    if ((lastMemberStatus = guildsMemberStatus.get(guild.getId())) != null) {
-                        if ((int) lastMemberStatus.get("member") != memberStatus.get("member"))
+                    if ((memberStatus = guildsMemberStatus.get(guild.getId())) != null) {
+                        // User Status
+                        if (memberStatus.get("member_noBot") != member_noBot) {
                             change += 1;
-                        if ((int) lastMemberStatus.get("member_bot") != memberStatus.get("member_bot"))
+                            memberStatus.put("member_noBots", member_noBot);
+                        }
+                        if (memberStatus.get("member") != member) {
                             change += 1 << 1;
-                        if ((int) lastMemberStatus.get("online") != memberStatus.get("online"))
+                            memberStatus.put("member", member);
+                        }
+                        if (memberStatus.get("online_noBot") != online_noBot) {
                             change += 1 << 2;
-                        if ((int) lastMemberStatus.get("online_bot") != memberStatus.get("online_bot"))
+                            memberStatus.put("online_noBot", online_noBot);
+                        }
+                        if (memberStatus.get("online") != online) {
                             change += 1 << 3;
-                        if ((int) lastMemberStatus.get("offline") != memberStatus.get("offline"))
+                            memberStatus.put("online", online);
+                        }
+                        if (memberStatus.get("offline_noBot") != offline_noBot) {
                             change += 1 << 4;
-                        if ((int) lastMemberStatus.get("offline_bot") != memberStatus.get("offline_bot"))
+                            memberStatus.put("offline_noBot", offline_noBot);
+                        }
+                        if (memberStatus.get("offline") != offline) {
                             change += 1 << 5;
-                        if ((int) lastMemberStatus.get("idle") != memberStatus.get("idle"))
+                            memberStatus.put("offline", offline);
+                        }
+                        if (memberStatus.get("idle_noBot") != idle_noBot) {
                             change += 1 << 6;
-                        if ((int) lastMemberStatus.get("idle_bot") != memberStatus.get("idle_bot"))
+                            memberStatus.put("idle_noBot", idle_noBot);
+                        }
+                        if (memberStatus.get("idle") != idle) {
                             change += 1 << 7;
-                        if ((int) lastMemberStatus.get("dnd") != memberStatus.get("dnd"))
+                            memberStatus.put("idle", idle);
+                        }
+                        if (memberStatus.get("dnd_noBot") != dnd_noBot) {
                             change += 1 << 8;
-                        if ((int) lastMemberStatus.get("dnd_bot") != memberStatus.get("dnd_bot"))
+                            memberStatus.put("dnd_noBot", dnd_noBot);
+                        }
+                        if (memberStatus.get("dnd") != dnd) {
                             change += 1 << 9;
-                        if ((int) lastMemberStatus.get("inVoiceChannel") != memberStatus.get("inVoiceChannel"))
+                            memberStatus.put("dnd", dnd);
+                        }
+
+                        // Voice Status
+                        if (memberStatus.get("inVoiceChannel_noBot") != inVoiceChannel_noBot) {
                             change += 1 << 10;
-                        if ((int) lastMemberStatus.get("inVoiceChannel_bot") != memberStatus.get("inVoiceChannel_bot"))
+                            memberStatus.put("inVoiceChannel_noBot", inVoiceChannel_noBot);
+                        }
+                        if (memberStatus.get("inVoiceChannel") != inVoiceChannel) {
                             change += 1 << 11;
-                        if ((int) lastMemberStatus.get("member") - lastMemberStatus.get("inVoiceChannel") != memberStatus.get("member") - memberStatus.get("inVoiceChannel"))
+                            memberStatus.put("inVoiceChannel", inVoiceChannel);
+                        }
+                        if (memberStatus.get("notInVoiceChannel_noBot") != member_noBot - inVoiceChannel_noBot) {
                             change += 1 << 12;
-                        if ((int) lastMemberStatus.get("member_bot") - lastMemberStatus.get("inVoiceChannel_bot") != memberStatus.get("member_bot") - memberStatus.get("inVoiceChannel_bot"))
+                            memberStatus.put("notInVoiceChannel_noBot", notInVoiceChannel_noBot);
+                        }
+                        if (memberStatus.get("notInVoiceChannel") != member - inVoiceChannel) {
                             change += 1 << 13;
-                        if ((int) lastMemberStatus.get("stream") != memberStatus.get("stream"))
+                            memberStatus.put("notInVoiceChannel", notInVoiceChannel);
+                        }
+                        if (memberStatus.get("stream") != stream) {
                             change += 1 << 14;
-                        if ((int) lastMemberStatus.get("camera") != memberStatus.get("camera"))
+                            memberStatus.put("stream", stream);
+                        }
+                        if (memberStatus.get("camera") != camera) {
                             change += 1 << 15;
-                        if ((int) lastMemberStatus.get("play_minecraft") != memberStatus.get("play_minecraft"))
+                            memberStatus.put("camera", camera);
+                        }
+
+                        // Playing Status
+                        if (memberStatus.get("playMinecraft") != playMinecraft) {
                             change += 1 << 16;
+                            memberStatus.put("playMinecraft", playMinecraft);
+                        }
                     } else {
                         change = 65535;
+                        memberStatus = new HashMap<>();
+                        memberStatus.put("member_noBot", member_noBot);
+                        memberStatus.put("member", member);
+                        memberStatus.put("online_noBot", online_noBot);
+                        memberStatus.put("online", online);
+                        memberStatus.put("offline_noBot", offline_noBot);
+                        memberStatus.put("offline", offline);
+                        memberStatus.put("idle_noBot", idle_noBot);
+                        memberStatus.put("idle", idle);
+                        memberStatus.put("dnd_noBot", dnd_noBot);
+                        memberStatus.put("dnd", dnd);
+                        memberStatus.put("inVoiceChannel_noBot", inVoiceChannel_noBot);
+                        memberStatus.put("inVoiceChannel", inVoiceChannel);
+                        memberStatus.put("notInVoiceChannel_noBot", notInVoiceChannel_noBot);
+                        memberStatus.put("notInVoiceChannel", notInVoiceChannel);
+                        memberStatus.put("stream", stream);
+                        memberStatus.put("camera", camera);
+                        memberStatus.put("playMinecraft", playMinecraft);
+                        guildsMemberStatus.put(guild.getId(), memberStatus);
                     }
-                    guildsMemberStatus.put(guild.getId(), memberStatus);
                     updateChannelStatus(guild, change, memberStatus);
                 });
     }
@@ -168,6 +273,25 @@ public class StatusListener {
             } else
                 guildChannelChange.merge(channelID, change, (n1, n2) -> n1 | n2);
         }
+    }
+
+    public String guildStatusReplace(String input, String format, Guild guild) {
+        return guildStatusReplace(input, format, 65535, guildsMemberStatus.get(guild.getId()));
+    }
+
+    private String guildStatusReplace(String input, String format, int change, Map<String, Integer> memberStatus) {
+        for (int i = 0; i < keys.length; i++) {
+            if ((change & 1 << i) > 0 && input.contains('%' + keys[i] + '%'))
+                input = input.replace('%' + keys[i] + '%', memberStatus.get(keys[i]).toString());
+        }
+
+        if (input.contains("${")) {
+            StringCalculate calculate = new StringCalculate();
+            input = calculate.processes(input, format);
+            if (calculate.haveError())
+                return null;
+        }
+        return input;
     }
 
     public void memberVoiceLeave(@NotNull Member member) {

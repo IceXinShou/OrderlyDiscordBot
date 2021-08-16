@@ -16,6 +16,12 @@ import static main.java.util.JsonKeys.*;
 import static main.java.util.PlaceholderReplacer.placeholderReplacer;
 
 public class Room {
+    private final GuildSettingHelper settingHelper;
+
+    public Room(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
     //             GuildID     MemberID   ChannelIDs(Voice, Text)
     public static Map<String, Map<String, List<String>>> voiceState = new HashMap<>();
 

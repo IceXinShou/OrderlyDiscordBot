@@ -17,7 +17,13 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
 public class SettingRoom {
-    public void newRoom(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
+    private final GuildSettingHelper settingHelper;
+
+    public SettingRoom(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
+    public void newRoom(@NotNull SlashCommandEvent event) {
         GuildChannel detectChannel = event.getOption("detectchannel").getAsGuildChannel();
         String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
         String voiceName = event.getOption("voicename").getAsString();

@@ -106,19 +106,19 @@ public class Ticket {
                         removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
                         addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
 
-                MessageBuilder builder = new MessageBuilder();
-                builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
-                        .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
-                        .replace("%role_name%", allowRole.getName())
-                        .replace("%num%", countStr)
-                        + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
-                builder.setActionRows(ActionRow.of(
-                        Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                        Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, "刪除", Emoji.fromEmote(emoji.trashCan))
-                ));
-                tc.sendMessage(builder.build()).queue();
-                event.deferEdit().queue();
-            });
+                        MessageBuilder builder = new MessageBuilder();
+                        builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
+                                .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
+                                .replace("%role_name%", allowRole.getName())
+                                .replace("%num%", countStr)
+                                + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
+                        builder.setActionRows(ActionRow.of(
+                                Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, "刪除", Emoji.fromEmote(emoji.trashCan))
+                        ));
+                        tc.sendMessage(builder.build()).queue();
+                        event.deferEdit().queue();
+                    });
         } else if (args[1].equals("delC")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
                 String voiceChannelID;

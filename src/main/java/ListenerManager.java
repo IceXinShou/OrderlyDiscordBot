@@ -50,12 +50,20 @@ import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.Tag.tagChannelID;
 
 public class ListenerManager extends ListenerAdapter {
+    //setting
+    GuildSettingHelper guildSettingHelper = new GuildSettingHelper();
+    SettingHelp settingHelp = new SettingHelp();
+    SettingRoom settingRoom = new SettingRoom(guildSettingHelper);
+    SettingVCC settingVCC = new SettingVCC(guildSettingHelper);
+    SettingTicket settingTicket = new SettingTicket(guildSettingHelper);
+    SettingChannelStatus settingChannelStatus = new SettingChannelStatus(guildSettingHelper);
+    SettingJoinLeave settingJoinLeave = new SettingJoinLeave(guildSettingHelper);
 
     //listener
     CommandRegister commandRegister = new CommandRegister();
     Log log = new Log();
     Join join = new Join();
-    Room room = new Room();
+    Room room = new Room(guildSettingHelper);
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
     QuickUse quickUse = new QuickUse();
@@ -81,16 +89,7 @@ public class ListenerManager extends ListenerAdapter {
     Invite createInviteCommand = new Invite();
     URLShort sortURL = new URLShort();
     FileConvert fileConvert = new FileConvert();
-
-    //setting
-    GuildSettingHelper guildSettingHelper = new GuildSettingHelper();
-    SettingRoom settingRoom = new SettingRoom();
-    SettingHelp settingHelp = new SettingHelp();
-    SettingVCC settingVCC = new SettingVCC();
-    SettingTicket settingTicket = new SettingTicket();
-    SettingChannelStatus settingChannelStatus = new SettingChannelStatus();
-    StatusListener statusListener = new StatusListener();
-    SettingJoinLeave settingJoinLeave = new SettingJoinLeave();
+    PopCat popCat = new PopCat();
 
     /**
      * Guild Message
@@ -154,6 +153,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
         newGuild.onCommand(event, commandRegister); // always
+        statusListener.updateGuild(event.getGuild());
     }
 
     @Override
@@ -166,7 +166,8 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         commandRegister.onGuildReady(event); // register commands
-        voiceChannelCreator.onGuildReady(event, guildSettingHelper);
+        voiceChannelCreator.onGuildReady(event);
+        statusListener.updateGuild(event.getGuild());
     }
 
     @Override
@@ -244,7 +245,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
-        room.onGuildVoiceJoin(event, guildSettingHelper); // guild(own)
+        room.onGuildVoiceJoin(event); // guild(own)
         log.onGuildVoiceJoin(event); // guild(own)
         voiceChannelCreator.onGuildVoiceJoin(event);
         statusListener.memberVoiceJoin(event.getMember());
@@ -261,8 +262,8 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
-        room.onGuildVoiceMove(event, guildSettingHelper); // guild(own)
-        voiceChannelCreator.onGuildVoiceMove(event, guildSettingHelper);
+        room.onGuildVoiceMove(event); // guild(own)
+        voiceChannelCreator.onGuildVoiceMove(event);
     }
 
     @Override
@@ -291,7 +292,7 @@ public class ListenerManager extends ListenerAdapter {
         createInviteCommand.onButton(event, args);
         quickUse.onButtonClick(event, args);
         informationReaction.onButtonClick(event, args);
-        ticketChannel.onButtonClick(event, args, guildSettingHelper);
+        ticketChannel.onButtonClick(event, args);
         clearCommand.onButton(event, args);
         musicManager.onButton(event, args);
     }
@@ -466,15 +467,15 @@ public class ListenerManager extends ListenerAdapter {
                         return;
                     }
                     case "removejoin" -> {
-                        settingJoinLeave.removeJoin(event, guildSettingHelper);
+                        settingJoinLeave.removeJoin(event);
                         return;
                     }
                     case "newleave" -> {
-                        settingJoinLeave.newLeave(event, guildSettingHelper);
+                        settingJoinLeave.newLeave(event);
                         return;
                     }
                     case "removeleave" -> {
-                        settingJoinLeave.removeLeave(event, guildSettingHelper);
+                        settingJoinLeave.removeLeave(event);
                         return;
                     }
                     case "help" -> {
