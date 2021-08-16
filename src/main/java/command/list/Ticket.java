@@ -24,6 +24,11 @@ import static main.java.util.Tag.tagRoleID;
 import static net.dv8tion.jda.api.Permission.*;
 
 public class Ticket {
+    GuildSettingHelper settingHelper;
+
+    public Ticket(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
 
     //               ChannelID MessageID ButtonPosition Count
     private final Map<String, Map<String, Map<Byte, Integer>>> ticketCount = new HashMap<>(); // %num%
@@ -33,7 +38,7 @@ public class Ticket {
     //                 TextID  VoiceID
     private final Map<String, String> linkedVoiceChannel = new HashMap<>();
 
-    public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args, GuildSettingHelper settingHelper) {
+    public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args) {
         if (!args[0].equals("Ticket"))
             return;
         Guild guild = event.getGuild();
@@ -44,7 +49,7 @@ public class Ticket {
 
         if (args[1].equals("newTicket")) {
             JSONObject datas;
-            if ((datas = getSettingData(guild, settingHelper)) == null || !datas.has(event.getChannel().getId()))
+            if ((datas = settingHelper.getSettingData(guild, TICKET_SETTING)) == null || !datas.has(event.getChannel().getId()))
                 return;
             JSONObject data = datas.getJSONObject(channelID).getJSONArray(messageID).getJSONObject(buttonPos);
 
@@ -80,21 +85,26 @@ public class Ticket {
 
             positionMap.put(Byte.valueOf(args[3]), count);
             guild.createTextChannel(
-                    placeholderReplacer(data.getString(TICKET_TEXT_NAME), member).replace("%num%", countStr),
-                    guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))).clearPermissionOverrides().queue(tc -> {
-                if (data.has(VC_VOICE_CHANNEL_ID)) {
-                    guild.createVoiceChannel(
-                            placeholderReplacer(data.getString(TICKET_VOICE_NAME), member).replace("%num%", countStr),
-                            guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID))).clearPermissionOverrides().queue(vc -> {
-                        linkedVoiceChannel.put(tc.getId(), vc.getId());
-                        removePermission(guild.getPublicRole(), vc, Collections.singletonList(VIEW_CHANNEL));
-                        addPermission(allowRole, vc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, VOICE_CONNECT));
-                        addPermission(member, vc, Arrays.asList(VIEW_CHANNEL, VOICE_CONNECT));
-                    });
-                }
-                removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
-                addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
-                addPermission(member, tc, Arrays.asList(VIEW_CHANNEL, MESSAGE_WRITE));
+                            placeholderReplacer(data.getString(TICKET_TEXT_NAME), member).replace("%num%", countStr),
+                            guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))
+                    )
+                    .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, MESSAGE_WRITE), Collections.emptyList())
+                    .queue(tc -> {
+                        if (data.has(VC_VOICE_CHANNEL_ID)) {
+                            guild.createVoiceChannel(
+                                            placeholderReplacer(data.getString(TICKET_VOICE_NAME), member).replace("%num%", countStr),
+                                            guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID)))
+                                    .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, VOICE_CONNECT), Collections.emptyList())
+                                    .queue(vc -> {
+                                        vc.getManager().clearOverridesAdded().queue();
+                                        vc.getManager().clearOverridesRemoved().queue();
+                                        linkedVoiceChannel.put(tc.getId(), vc.getId());
+                                        removePermission(guild.getPublicRole(), vc, Collections.singletonList(VIEW_CHANNEL));
+                                        addPermission(allowRole, vc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, VOICE_CONNECT));
+                                    });
+                        }
+                        removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
+                        addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
 
                 MessageBuilder builder = new MessageBuilder();
                 builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
@@ -128,12 +138,12 @@ public class Ticket {
                                 Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
                 removePermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
-                removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Collections.singletonList(MESSAGE_WRITE));
+                removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE));
                 String voiceChannelID;
                 VoiceChannel voiceChannel;
                 if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
                     removePermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
-                    removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Collections.singletonList(VOICE_CONNECT));
+                    removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Arrays.asList(VOICE_CONNECT));
                 }
                 event.deferEdit().queue();
             } else {
@@ -147,12 +157,12 @@ public class Ticket {
                                 Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
                 addPermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
-                addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Collections.singletonList(MESSAGE_WRITE));
+                addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE));
                 String voiceChannelID;
                 VoiceChannel voiceChannel;
                 if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
                     addPermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
-                    addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Collections.singletonList(VOICE_CONNECT));
+                    addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Arrays.asList(VOICE_CONNECT));
                 }
                 event.deferEdit().queue();
             } else {
@@ -195,7 +205,9 @@ public class Ticket {
     }
 
     private void removeButtonPress(String @NotNull [] args, byte buttonPos) {
-        Map<String, List<Byte>> userPressedMessage = userCount.get(args[4]);
+        Map<String, List<Byte>> userPressedMessage;
+        if ((userPressedMessage = userCount.get(args[4])) == null)
+            return;
         List<Byte> data = userPressedMessage.get(args[5]);
         if (data.size() == 1)
             userPressedMessage.remove(args[5]);
@@ -203,13 +215,5 @@ public class Ticket {
             data.remove((Byte) buttonPos);
         if (userPressedMessage.size() == 0)
             userCount.remove(args[4]);
-    }
-
-    private JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
-        if (settingHelper.getGuildSettingManager(guild.getId()).data.has(TICKET_SETTING))
-            return settingHelper.getGuildSettingManager(guild.getId()).data.getJSONObject(TICKET_SETTING);
-        else {
-            return null;
-        }
     }
 }

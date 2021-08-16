@@ -1,13 +1,11 @@
 package main.java.command.list.Setting;
 
 import main.java.util.file.GuildSettingHelper;
-import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -98,18 +96,18 @@ public class SettingRoom {
         if (memberLimit != null) {
             channelData.put(ROOM_VOICE_MEMBER_LIMIT, memberLimit);
         }
-        JSONObject roomSetting = getSettingData(guild, settingHelper);
+        JSONObject roomSetting = settingHelper.getSettingData(guild, ROOM_SETTING);
         roomSetting.put(detectID, channelData);
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
 
         event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
     }
 
-    public void removeRoom(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
+    public void removeRoom(@NotNull SlashCommandEvent event) {
         Guild guild = event.getGuild();
         String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
 
-        JSONObject data = getSettingData(guild, settingHelper);
+        JSONObject data = settingHelper.getSettingData(guild, ROOM_SETTING);
         if (voiceState.get(guild.getId()).size() > 0) {
             Map<String, List<String>> memberData = voiceState.get(guild.getId());
             for (String key : memberData.keySet()) {
@@ -128,18 +126,6 @@ public class SettingRoom {
 
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
     }
-
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
-        JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
-        if (fileManager.data.has(ROOM_SETTING))
-            return fileManager.data.getJSONObject(ROOM_SETTING);
-        else {
-            JSONObject data = new JSONObject();
-            settingHelper.getGuildSettingManager(guild.getId()).data.put(ROOM_SETTING, data);
-            return data;
-        }
-    }
-
 }
 
 // detectID

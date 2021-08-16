@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.exceptions.ContextException;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
@@ -161,9 +160,9 @@ public class MusicBot {
         }
         String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (search) {
-                event.getInteraction().deferReply(true).addEmbeds(embed[0], embed[1])
-                        .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
-                        .queue();
+            event.getInteraction().deferReply(true).addEmbeds(embed[0], embed[1])
+                    .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                    .queue();
         } else
             event.getHook().editOriginalComponents()
                     .setEmbeds(embed[0], embed[1])

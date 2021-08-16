@@ -30,11 +30,11 @@ public class StringCalculate {
         return result.toString();
     }
 
-    public boolean haveError(){
+    public boolean haveError() {
         return error != null;
     }
 
-    public String getError(){
+    public String getError() {
         return error;
     }
 

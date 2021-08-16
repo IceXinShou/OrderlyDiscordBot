@@ -158,6 +158,8 @@ public class CommandRegister {
                 // Tool
 
                 new CommandData("surl", "創建短網址").addOption(STRING, URL, "網址", true), // 若未填則回覆預設
+                new CommandData("popspeed", "查看 PopCat 速率排行榜"),
+                new CommandData("poptop", "查看 PopCat 次數排行榜"),
                 new CommandData("mp4togif", "轉換 mp4 至 gif ").addOptions(
                         new OptionData(STRING, URL, "需要轉檔案的網址", true),
                         new OptionData(STRING, "outputname", "輸出結果名稱"),
@@ -217,8 +219,8 @@ public class CommandRegister {
                                 new OptionData(STRING, "voicename", "新語音頻道名稱 (%num%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
                                 new OptionData(CHANNEL, "voicecategory", "新語音頻道目錄"),
                                 new OptionData(STRING, "buttonname", "按鈕名稱"),
-                                new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
                                 new OptionData(STRING, "buttonemoji", "按鈕圖示"),
+                                new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
                                 new OptionData(ROLE, "allowrole", "除了觸發者以外, 允許檢視此頻道的身分組"),
                                 new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組"),
                                 new OptionData(BOOLEAN, "onlyone", "同一人按鈕是否只能同時觸發一次")
@@ -241,7 +243,18 @@ public class CommandRegister {
                         // -------------------
                         new SubcommandData("newjoin", "新增加入訊息").addOptions(
                                 new OptionData(CHANNEL, "channel", "顯示訊息頻道", true),
-                                new OptionData(STRING, "message", "訊息內容 ()", true)
+                                new OptionData(STRING, "message", "訊息內容 ()", true),
+                                new OptionData(STRING, "dm", "傳送私人訊息 (對方需允許私人訊息)"),
+                                new OptionData(ROLE, "role1", "加入身分組"),
+                                new OptionData(ROLE, "role2", "加入身分組"),
+                                new OptionData(ROLE, "role3", "加入身分組"),
+                                new OptionData(ROLE, "role4", "加入身分組"),
+                                new OptionData(ROLE, "role5", "加入身分組"),
+                                new OptionData(ROLE, "role6", "加入身分組"),
+                                new OptionData(ROLE, "role7", "加入身分組"),
+                                new OptionData(ROLE, "role8", "加入身分組"),
+                                new OptionData(ROLE, "role9", "加入身分組"),
+                                new OptionData(ROLE, "role10", "加入身分組")
                         ),
                         new SubcommandData("removejoin", "移除加入訊息").addOption(CHANNEL, "channel", "顯示訊息頻道", true),
 

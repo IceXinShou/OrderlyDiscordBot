@@ -1,5 +1,9 @@
 package main.java.util.file;
 
+import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,5 +25,16 @@ public class GuildSettingHelper {
         JsonFileManager levelFileManager = new JsonFileManager(filepath.getPath() + "/guildSetting.json");
         levelFolders.put(guildID, levelFileManager);
         return levelFileManager;
+    }
+
+    public JSONObject getSettingData(@NotNull Guild guild, String key) {
+        JsonFileManager fileManager = getGuildSettingManager(guild.getId());
+        if (fileManager.data.has(key))
+            return fileManager.data.getJSONObject(key);
+        else {
+            JSONObject data = new JSONObject();
+            getGuildSettingManager(guild.getId()).data.put(key, data);
+            return data;
+        }
     }
 }

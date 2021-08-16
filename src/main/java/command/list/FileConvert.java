@@ -14,7 +14,7 @@ import static main.java.util.UrlDataGetter.getDataAuthorization;
 import static main.java.util.UrlDataGetter.postDataAuthorization;
 
 public class FileConvert {
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
     public void onCommand(@NotNull SlashCommandEvent event, URLShort urlShort) {
         // run thread

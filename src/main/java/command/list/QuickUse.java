@@ -28,6 +28,7 @@ public class QuickUse {
 
         if (message.getContentRaw().startsWith("testCommand") && (isBotOwner(event) /*|| event.getMember().getId().equals(event.getGuild().retrieveOwner().complete().getId())*/)) {
 
+            event.getChannel().sendMessage(":flag_tw:").queue();
 
             /**
              * Chinese
@@ -254,7 +255,7 @@ public class QuickUse {
 //            }
 
 
-            event.getMessage().reply(event.getGuild().retrieveMemberById(event.getMessage().getContentRaw().split(" ")[1]).complete().getActivities().get(0).getName()).queue();
+//            event.getMessage().reply(event.getGuild().retrieveMemberById(event.getMessage().getContentRaw().split(" ")[1]).complete().getActivities().get(0).getName()).queue();
         }
     }
 

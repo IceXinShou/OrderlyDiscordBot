@@ -206,6 +206,21 @@ public class EmbedCreator {
     }
 
     @Contract("_, _, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String nickname, String avatarUrl, String image, int color) {
+        return new MessageEmbed(null,
+                "",
+                "",
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                null,
+                null,
+                new MessageEmbed.ImageInfo(image, null, 0, 0), null);
+    }
+
     public static @NotNull MessageEmbed createEmbed(String title, String description, String footer, String image, int color) {
         return new MessageEmbed(null,
                 title,

@@ -5,10 +5,12 @@ import main.java.command.list.*;
 import main.java.command.list.Setting.*;
 import main.java.event.*;
 import main.java.util.file.GuildSettingHelper;
+import main.java.util.file.PopCatHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.StatusChangeEvent;
 import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
@@ -17,9 +19,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,11 +59,12 @@ public class ListenerManager extends ListenerAdapter {
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
     QuickUse quickUse = new QuickUse();
-    Ticket ticketChannel = new Ticket();
+    Ticket ticketChannel = new Ticket(guildSettingHelper);
     GeneralReplay generalReplay = new GeneralReplay();
     JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage();
     MultiMusicBotManager musicManager = new MultiMusicBotManager();
-    VoiceChannelCreator voiceChannelCreator = new VoiceChannelCreator();
+    StatusListener statusListener = new StatusListener(guildSettingHelper);
+    VoiceChannelCreator voiceChannelCreator = new VoiceChannelCreator(guildSettingHelper);
     InformationReaction informationReaction = new InformationReaction();
 
     //command
@@ -170,7 +172,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         musicManager.setupAllBot();
-        statusListener.startListen(event.getJDA(), guildSettingHelper);
+        statusListener.startListen(event.getJDA());
     }
 
     /**
@@ -204,12 +206,14 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
         joinLeaveMessage.onLeave(event);
+        statusListener.memberLeave(event);
     }
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         join.onGuildMemberJoin(event); // guild(own)
         joinLeaveMessage.onJoin(event);
+        statusListener.memberJoin(event.getMember());
     }
 
     @Override
@@ -229,6 +233,11 @@ public class ListenerManager extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onUserUpdateOnlineStatus(@NotNull UserUpdateOnlineStatusEvent event) {
+        statusListener.statusChange(event);
+    }
+
     /**
      * Guild Voice
      */
@@ -237,7 +246,8 @@ public class ListenerManager extends ListenerAdapter {
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         room.onGuildVoiceJoin(event, guildSettingHelper); // guild(own)
         log.onGuildVoiceJoin(event); // guild(own)
-        voiceChannelCreator.onGuildVoiceJoin(event, guildSettingHelper);
+        voiceChannelCreator.onGuildVoiceJoin(event);
+        statusListener.memberVoiceJoin(event.getMember());
     }
 
     @Override
@@ -245,7 +255,8 @@ public class ListenerManager extends ListenerAdapter {
         room.onGuildVoiceLeave(event); // guild(own)
         log.onGuildVoiceLeave(event); // guild(own)
         musicManager.onVoiceLeave(event);
-        voiceChannelCreator.onGuildVoiceLeave(event, guildSettingHelper);
+        voiceChannelCreator.onGuildVoiceLeave(event);
+        statusListener.memberVoiceLeave(event.getMember());
     }
 
     @Override
@@ -253,6 +264,17 @@ public class ListenerManager extends ListenerAdapter {
         room.onGuildVoiceMove(event, guildSettingHelper); // guild(own)
         voiceChannelCreator.onGuildVoiceMove(event, guildSettingHelper);
     }
+
+    @Override
+    public void onGuildVoiceStream(@NotNull GuildVoiceStreamEvent event) {
+        statusListener.memberVoiceStream(event.getMember());
+    }
+
+    @Override
+    public void onGuildVoiceVideo(@NotNull GuildVoiceVideoEvent event) {
+        statusListener.memberVoiceVideo(event.getMember());
+    }
+
 
     /**
      * Guild Command
@@ -386,6 +408,14 @@ public class ListenerManager extends ListenerAdapter {
                 fileConvert.onCommand(event, sortURL);
                 return;
             }
+//            case "poptop" -> {
+//                popCat.onCommandTop(event);
+//                return;
+//            }
+//            case "popspeed" -> {
+//                popCat.onCommandSpeed(event);
+//                return;
+//            }
             case "reload" -> {
                 if (reload.onCommand(event))
                     reload(event.getGuild());
@@ -396,43 +426,43 @@ public class ListenerManager extends ListenerAdapter {
                     return;
                 switch (event.getSubcommandName()) {
                     case "newroom" -> {
-                        settingRoom.newRoom(event, guildSettingHelper);
+                        settingRoom.newRoom(event);
                         return;
                     }
                     case "newautovc" -> {
-                        settingVCC.newVCC(event, guildSettingHelper);
+                        settingVCC.newVCC(event);
                         return;
                     }
                     case "removeroom" -> {
-                        settingRoom.removeRoom(event, guildSettingHelper);
+                        settingRoom.removeRoom(event);
                         return;
                     }
                     case "removeautovc" -> {
-                        settingVCC.removeVCC(event, guildSettingHelper);
+                        settingVCC.removeVCC(event);
                         return;
                     }
                     case "newticket" -> {
-                        settingTicket.newTicket(event, guildSettingHelper, true);
+                        settingTicket.newTicket(event, true);
                         return;
                     }
                     case "addticket" -> {
-                        settingTicket.newTicket(event, guildSettingHelper, false);
+                        settingTicket.newTicket(event, false);
                         return;
                     }
                     case "removeticket" -> {
-                        settingTicket.removeTicket(event, guildSettingHelper, ticketChannel);
+                        settingTicket.removeTicket(event, ticketChannel);
                         return;
                     }
                     case "newchannelstatus" -> {
-                        settingChannelStatus.newCS(event, guildSettingHelper, statusListener);
+                        settingChannelStatus.newCS(event, statusListener);
                         return;
                     }
                     case "removechannelstatus" -> {
-                        settingChannelStatus.removeCS(event, guildSettingHelper);
+                        settingChannelStatus.removeCS(event);
                         return;
                     }
                     case "newjoin" -> {
-                        settingJoinLeave.newJoin(event, guildSettingHelper);
+                        settingJoinLeave.newJoin(event);
                         return;
                     }
                     case "removejoin" -> {
@@ -463,6 +493,8 @@ public class ListenerManager extends ListenerAdapter {
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
             return;
         musicManager.onSelectMenu(event, args);
+        popCat.onSelectTop(event, args);
+        popCat.onSelectSpeed(event, args);
     }
 
     /**

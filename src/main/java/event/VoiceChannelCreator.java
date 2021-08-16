@@ -1,14 +1,12 @@
 package main.java.event;
 
 import main.java.util.file.GuildSettingHelper;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import static main.java.util.JsonKeys.AUTO_VC_NAME;
@@ -18,7 +16,7 @@ public class VoiceChannelCreator {
 
     public void onGuildReady(@NotNull GuildReadyEvent event, GuildSettingHelper settingHelper) {
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
         boolean has = false;
         for (String key : data.keySet()) {
@@ -37,11 +35,11 @@ public class VoiceChannelCreator {
         }
     }
 
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event, @NotNull GuildSettingHelper settingHelper) {
+    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         if (event.getChannelJoined() == null || event.getChannelJoined().getParent() == null)
             return;
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
         JSONObject categoryInfo;
         VoiceChannel channelJoined = event.getChannelJoined();
@@ -53,11 +51,11 @@ public class VoiceChannelCreator {
         }
     }
 
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event, GuildSettingHelper settingHelper) {
+    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (event.getChannelLeft() == null || event.getChannelLeft().getParent() == null)
             return;
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
         VoiceChannel channelLeft = event.getChannelLeft();
         JSONObject categoryInfo;
@@ -72,12 +70,12 @@ public class VoiceChannelCreator {
         }
     }
 
-    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event, GuildSettingHelper settingHelper) {
+    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         if (event.getChannelLeft() == null || event.getChannelLeft().getParent() == null)
             return;
 
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
         VoiceChannel channelLeft = event.getChannelLeft();
         VoiceChannel channelJoined = event.getChannelJoined();
@@ -101,11 +99,4 @@ public class VoiceChannelCreator {
         }
     }
 
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
-        if (settingHelper.getGuildSettingManager(guild.getId()).data.has(AUTO_VC_SETTING))
-            return settingHelper.getGuildSettingManager(guild.getId()).data.getJSONObject(AUTO_VC_SETTING);
-        else {
-            return null;
-        }
-    }
 }

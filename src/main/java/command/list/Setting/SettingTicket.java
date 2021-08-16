@@ -28,7 +28,7 @@ import static main.java.util.Tag.tagChannel;
 public class SettingTicket {
 
     @SuppressWarnings("ConstantConditions")
-    public void newTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, boolean newTicket) {
+    public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {
         Guild guild = event.getGuild();
         List<MessageEmbed.Field> fields = new ArrayList<>();
         TextChannel eventTextChannel = event.getTextChannel();
@@ -47,10 +47,11 @@ public class SettingTicket {
         // 顏色
         ButtonStyle buttonStyle = null;
         int buttonColorInt = 0x4F545C;
+        String buttonColor = null;
         if (event.getOption("buttoncolor") == null)
             buttonStyle = ButtonStyle.PRIMARY;
         else
-            switch (event.getOption("buttoncolor").getAsString().toUpperCase()) {
+            switch (buttonColor = event.getOption("buttoncolor").getAsString().toUpperCase()) {
                 case "RED" -> {
                     buttonStyle = ButtonStyle.DANGER;
                     buttonColorInt = 0xF04747;
@@ -233,17 +234,30 @@ public class SettingTicket {
         channelKey.put(messageID, buttonSettings);
 
         fields.add(new MessageEmbed.Field("新增按鈕的訊息 ID", messageID, false));
-        fields.add(new MessageEmbed.Field("此訊息的頻道", guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field("文字頻道目錄", guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道名稱", "`" + voiceName + "`", false));
-        fields.add(new MessageEmbed.Field("文字頻道名稱", "`" + textName + "`", false));
+        fields.add(new MessageEmbed.Field("此訊息的頻道", tagChannel(sendTicketMessageChannel) + "\n`(" + sendTicketMessageChannel.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field("預設輸入訊息", "\n`(" + message.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field("客服文字頻道名稱", textName, false));
+        fields.add(new MessageEmbed.Field("客服文字頻道目錄", tagChannelID(textCategoryID) + "\n`(" + textCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field("語音頻道", hasVoiceChannel ? "有" : "無", false));
+        if (hasVoiceChannel) {
+            fields.add(new MessageEmbed.Field("客服語音頻道名稱", voiceName, false));
+            fields.add(new MessageEmbed.Field("客服語音頻道目錄", tagChannelID(voiceCategoryID) + "\n`(" + voiceCategoryID + ")`", false));
+        }
+        if (buttonName != null)
+            fields.add(new MessageEmbed.Field("按鈕名稱", buttonName, false));
+        if (buttonEmoji != null)
+            fields.add(new MessageEmbed.Field("按鈕表情符號", buttonEmoji.getAsMention(), false));
+        fields.add(new MessageEmbed.Field("按鈕顏色", buttonColor + "\n`(0x" + Integer.toHexString(buttonColorInt) + ")`", false));
+        fields.add(new MessageEmbed.Field("允許身分組", allowRole.getAsMention() + "\n`(" + allowRole.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field("是否 Tag 允許身分組", "`" + (tagRole ? "是" : "否") + "`", false));
+        fields.add(new MessageEmbed.Field("同一人一次只能使用一次", "`" + (onlyone ? "是" : "否") + "`", false));
 
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
     }
 
-    public void removeTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, Ticket ticket) {
+    public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
         JSONObject data = getSettingData(event.getGuild(), settingHelper);
         String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();
         if (data.has(channelID)) {

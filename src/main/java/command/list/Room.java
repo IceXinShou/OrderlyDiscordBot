@@ -3,13 +3,11 @@ package main.java.command.list;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -21,9 +19,10 @@ public class Room {
     //             GuildID     MemberID   ChannelIDs(Voice, Text)
     public static Map<String, Map<String, List<String>>> voiceState = new HashMap<>();
 
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event, @NotNull GuildSettingHelper settingHelper) {
+
+    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), ROOM_SETTING)) == null)
             return;
         if (data.has(event.getChannelJoined().getId()))
             newChannel(event, data);
@@ -44,9 +43,9 @@ public class Room {
             }
     }
 
-    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event, @NotNull GuildSettingHelper settingHelper) {
+    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         JSONObject data;
-        if ((data = getSettingData(event.getGuild(), settingHelper)) == null)
+        if ((data = settingHelper.getSettingData(event.getGuild(), ROOM_SETTING)) == null)
             return;
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
         if (membersID != null)
@@ -119,13 +118,5 @@ public class Room {
                     channels.add(ntc.getId());
                 });
         });
-    }
-
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
-        if (settingHelper.getGuildSettingManager(guild.getId()).data.has(ROOM_SETTING))
-            return settingHelper.getGuildSettingManager(guild.getId()).data.getJSONObject(ROOM_SETTING);
-        else {
-            return null;
-        }
     }
 }

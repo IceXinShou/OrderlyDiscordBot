@@ -3,19 +3,21 @@ package main.java.command.list.Setting;
 import main.java.event.StatusListener;
 import main.java.util.StringCalculate;
 import main.java.util.file.GuildSettingHelper;
-import main.java.util.file.JsonFileManager;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
 public class SettingChannelStatus {
+    private final GuildSettingHelper settingHelper;
 
-    public void newCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, @NotNull StatusListener listener) {
+    public SettingChannelStatus(GuildSettingHelper settingHelper) {
+        this.settingHelper = settingHelper;
+    }
+
+    public void newCS(@NotNull SlashCommandEvent event, @NotNull StatusListener listener) {
         String name = event.getOption("channelname").getAsString();
         String format = String.valueOf(event.getOption("format").getAsLong());
         if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10)
@@ -27,7 +29,7 @@ public class SettingChannelStatus {
             if (check.haveError())
                 event.getHook().editOriginalEmbeds(createEmbed(check.getError(), 0xFF0000)).queue();
             else {
-                getSettingData(event.getGuild(), settingHelper).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
+                settingHelper.getSettingData(event.getGuild(), CS_SETTING).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
                 settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
                 listener.updateGuild(event.getGuild());
                 event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
@@ -35,8 +37,8 @@ public class SettingChannelStatus {
         }
     }
 
-    public void removeCS(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper) {
-        JSONObject data = getSettingData(event.getGuild(), settingHelper);
+    public void removeCS(@NotNull SlashCommandEvent event) {
+        JSONObject data = settingHelper.getSettingData(event.getGuild(), CS_SETTING);
         String channelID = event.getOption("channel").getAsGuildChannel().getId();
 
         data.remove(channelID);
@@ -46,14 +48,4 @@ public class SettingChannelStatus {
 
     }
 
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
-        JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
-        if (fileManager.data.has(CS_SETTING))
-            return fileManager.data.getJSONObject(CS_SETTING);
-        else {
-            JSONObject data = new JSONObject();
-            settingHelper.getGuildSettingManager(guild.getId()).data.put(CS_SETTING, data);
-            return data;
-        }
-    }
 }

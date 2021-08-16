@@ -60,6 +60,7 @@ public class Help {
                 "┃　 ** 通用 | General **\n" +
                 "┃\n" +
                 "┃　　`/help` | 顯示通用幫助列表\n" +
+                "┃　　`/info` | 顯示伺服器資訊\n" +
                 (showALL || (member.hasPermission(Permission.KICK_MEMBERS)) ? "┃　　`/helpannouncement` | 將幫助列表以公告呈現\n" : "") +
                 (showALL || (member.hasPermission(Permission.KICK_MEMBERS)) ? "┃　　`/ban <@>` | 封鎖成員\n┃　　`/unban <ID>` | 解除封鎖成員\n" : "") +
                 (showALL || (member.hasPermission(Permission.BAN_MEMBERS)) ? "┃　　`/kick <@>` | 踢出成員\n" : "") +
@@ -68,6 +69,8 @@ public class Help {
                 "┃　　`/botinfo` | 顯示機器人訊息\n" +
                 "┃　　`/ping` | 延遲測試\n" +
                 "┃　　`/surl` | 縮短網址\n" +
+                "┃　　`/popcat` | 查看 PopCat 排行榜\n" +
+                "┃　　`/mp4togif` | 將影片連結轉換為 Gif\n" +
                 "┗"
                 , false));
 
