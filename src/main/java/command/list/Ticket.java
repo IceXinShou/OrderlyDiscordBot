@@ -3,10 +3,7 @@ package main.java.command.list;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -14,10 +11,7 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static main.java.Main.emoji;
 import static main.java.util.EmbedCreator.createEmbed;
@@ -36,6 +30,8 @@ public class Ticket {
 
     //                 UserID    ChannelID+MessageID ButtonPosition
     private final Map<String, Map<String, List<Byte>>> userCount = new HashMap<>();
+    //                 TextID  VoiceID
+    private final Map<String, String> linkedVoiceChannel = new HashMap<>();
 
     public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args, GuildSettingHelper settingHelper) {
         if (!args[0].equals("Ticket"))
@@ -115,6 +111,11 @@ public class Ticket {
             });
         } else if (args[1].equals("delC")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
+                String voiceChannelID;
+                VoiceChannel voiceChannel;
+                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                    voiceChannel.delete().queue();
+                }
                 event.getTextChannel().delete().queue();
                 removeButtonPress(args, buttonPos);
             } else
