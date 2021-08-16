@@ -22,9 +22,12 @@ import java.util.Map;
 import static main.java.Main.emoji;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
+import static main.java.util.PermissionController.addPermission;
+import static main.java.util.PermissionController.removePermission;
 import static main.java.util.PermissionERROR.noPermissionERROREmbed;
 import static main.java.util.PlaceholderReplacer.placeholderReplacer;
 import static main.java.util.Tag.tagRoleID;
+import static net.dv8tion.jda.api.Permission.*;
 
 public class Ticket {
 
@@ -78,22 +81,24 @@ public class Ticket {
             // add
             final int count = positionMap.getOrDefault(Byte.valueOf(args[3]), 0) + 1;
             String countStr = String.valueOf(count);
+
             positionMap.put(Byte.valueOf(args[3]), count);
             guild.createTextChannel(
                     placeholderReplacer(data.getString(TICKET_TEXT_NAME), member).replace("%num%", countStr),
-                    guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))).queue(tc -> {
+                    guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))).clearPermissionOverrides().queue(tc -> {
                 if (data.has(VC_VOICE_CHANNEL_ID)) {
                     guild.createVoiceChannel(
                             placeholderReplacer(data.getString(TICKET_VOICE_NAME), member).replace("%num%", countStr),
-                            guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID))).queue(vc -> {
-                        vc.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-                        vc.createPermissionOverride(allowRole).setAllow(Permission.VIEW_CHANNEL, Permission.MANAGE_CHANNEL).queue();
-                        vc.createPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
+                            guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID))).clearPermissionOverrides().queue(vc -> {
+                        linkedVoiceChannel.put(tc.getId(), vc.getId());
+                        removePermission(guild.getPublicRole(), vc, Collections.singletonList(VIEW_CHANNEL));
+                        addPermission(allowRole, vc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, VOICE_CONNECT));
+                        addPermission(member, vc, Arrays.asList(VIEW_CHANNEL, VOICE_CONNECT));
                     });
                 }
-                tc.putPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-                tc.createPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
-                tc.createPermissionOverride(allowRole).setAllow(Permission.VIEW_CHANNEL, Permission.MANAGE_CHANNEL, Permission.MESSAGE_WRITE).queue();
+                removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
+                addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
+                addPermission(member, tc, Arrays.asList(VIEW_CHANNEL, MESSAGE_WRITE));
 
                 MessageBuilder builder = new MessageBuilder();
                 builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
@@ -113,7 +118,7 @@ public class Ticket {
                 event.getTextChannel().delete().queue();
                 removeButtonPress(args, buttonPos);
             } else
-                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(MANAGE_CHANNEL)).queue();
         } else if (args[1].equals("lock")) {
             if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                 event.getHook().editOriginalEmbeds().setActionRows(
@@ -121,7 +126,14 @@ public class Ticket {
                                 Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "解除封存", Emoji.fromUnicode("\uD83D\uDCC1")),
                                 Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
-                event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setDeny(Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
+                removePermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
+                removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Collections.singletonList(MESSAGE_WRITE));
+                String voiceChannelID;
+                VoiceChannel voiceChannel;
+                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                    removePermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
+                    removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Collections.singletonList(VOICE_CONNECT));
+                }
                 event.deferEdit().queue();
             } else {
                 event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
@@ -133,7 +145,14 @@ public class Ticket {
                                 Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
                                 Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
                         )).queue();
-                event.getTextChannel().putPermissionOverride(guild.getRoleById(args[5])).setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE, Permission.MANAGE_CHANNEL).queue();
+                addPermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
+                addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Collections.singletonList(MESSAGE_WRITE));
+                String voiceChannelID;
+                VoiceChannel voiceChannel;
+                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                    addPermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
+                    addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Collections.singletonList(VOICE_CONNECT));
+                }
                 event.deferEdit().queue();
             } else {
                 event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
@@ -146,7 +165,7 @@ public class Ticket {
         for (Map<String, List<Byte>> userData : userCount.values()) {
             List<Byte> usedButton;
             if ((usedButton = userData.get(messageKey)) != null) {
-                if(usedButton.contains(buttonPos))
+                if (usedButton.contains(buttonPos))
                     return true;
             }
         }

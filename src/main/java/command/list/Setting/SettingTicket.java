@@ -30,7 +30,7 @@ public class SettingTicket {
     @SuppressWarnings("ConstantConditions")
     public void newTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, boolean newTicket) {
         Guild guild = event.getGuild();
-        List<MessageEmbed.Field> errorField = new ArrayList<>();
+        List<MessageEmbed.Field> fields = new ArrayList<>();
         TextChannel eventTextChannel = event.getTextChannel();
 
         // 新增按鈕要輸入Ticket訊息，新增訊息要輸入要傳送的訊息 (必填)
@@ -38,7 +38,7 @@ public class SettingTicket {
         // 新增按鈕要輸入Ticket訊息頻道，新增訊息要輸入要傳送的訊息的頻道 (必填)
         TextChannel sendTicketMessageChannel = null;
         if (event.getOption("messagechannel").getAsGuildChannel().getType() != ChannelType.TEXT) {
-            errorField.add(new MessageEmbed.Field("訊息頻道錯誤", "", false));
+            fields.add(new MessageEmbed.Field("訊息頻道錯誤", "", false));
         } else
             sendTicketMessageChannel = (TextChannel) event.getOption("messagechannel").getAsGuildChannel();
         /*
@@ -67,7 +67,7 @@ public class SettingTicket {
                     buttonStyle = ButtonStyle.SECONDARY;
                     buttonColorInt = 0x4F545C;
                 }
-                default -> errorField.add(new MessageEmbed.Field("按鈕顏色錯誤", "", false));
+                default -> fields.add(new MessageEmbed.Field("按鈕顏色錯誤", "", false));
             }
         // 表情符號
         String buttonEmojiName = event.getOption("buttonemoji") == null ? null : event.getOption("buttonemoji").getAsString();
@@ -107,11 +107,11 @@ public class SettingTicket {
 
         // 判斷error
         if (buttonEmojiName == null && buttonName == null)
-            errorField.add(new MessageEmbed.Field("按鈕名稱與表情符號請至少輸入一項", "", false));
+            fields.add(new MessageEmbed.Field("按鈕名稱與表情符號請至少輸入一項", "", false));
         if (buttonEmojiName != null && buttonEmoji == null)
-            errorField.add(new MessageEmbed.Field("找不到此表情符號", "", false));
+            fields.add(new MessageEmbed.Field("找不到此表情符號", "", false));
         if (allowRole == null)
-            errorField.add(new MessageEmbed.Field("需輸入處理客服的身分組", "", false));
+            fields.add(new MessageEmbed.Field("需輸入處理客服的身分組", "", false));
 
         // 取得要傳送的訊息，或是要修改的訊息
         Message message = null;
@@ -119,7 +119,7 @@ public class SettingTicket {
             try {
                 message = sendTicketMessageChannel.retrieveMessageById(messageID).complete();
             } catch (Exception e) {
-                errorField.add(new MessageEmbed.Field("在 " + tagChannel(sendTicketMessageChannel) + "找不到此 ID 的訊息 (`" + messageID + "`)", "", false));
+                fields.add(new MessageEmbed.Field("在 " + tagChannel(sendTicketMessageChannel) + "找不到此 ID 的訊息 (`" + messageID + "`)", "", false));
             }
         }
 
@@ -179,9 +179,9 @@ public class SettingTicket {
                     !ticketSetting.getJSONObject(sendTicketMessageChannel.getId()).has(messageID) ||
                     message.getActionRows().size() == 0 ||
                     buttonLength == 0)
-                errorField.add(new MessageEmbed.Field("此訊息尚未註冊, 請使用 `/newticket` 新增客服按鈕", "", false));
+                fields.add(new MessageEmbed.Field("此訊息尚未註冊, 請使用 `/newticket` 新增客服按鈕", "", false));
             if (buttonLength == 5)
-                errorField.add(new MessageEmbed.Field("此訊息的按鈕量過多", "", false));
+                fields.add(new MessageEmbed.Field("此訊息的按鈕量過多", "", false));
         }
 
         // 設定按鈕
@@ -191,8 +191,8 @@ public class SettingTicket {
         else
             button = Button.of(buttonStyle, "Ticket:newTicket::" + buttonLength, buttonName);
 
-        if (errorField.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", errorField, 0xFF0000)).queue();
+        if (fields.size() > 0) {
+            event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", fields, 0xFF0000)).queue();
             return;
         }
 
@@ -232,8 +232,15 @@ public class SettingTicket {
         buttonSettings.put(buttonSetting);
         channelKey.put(messageID, buttonSettings);
 
+        fields.add(new MessageEmbed.Field("新增按鈕的訊息 ID", messageID, false));
+        fields.add(new MessageEmbed.Field("此訊息的頻道", guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field("文字頻道目錄", guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field("語音頻道名稱", "`" + voiceName + "`", false));
+        fields.add(new MessageEmbed.Field("文字頻道名稱", "`" + textName + "`", false));
+
+
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", errorField, 0x11FF99)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
     }
 
     public void removeTicket(@NotNull SlashCommandEvent event, GuildSettingHelper settingHelper, Ticket ticket) {
