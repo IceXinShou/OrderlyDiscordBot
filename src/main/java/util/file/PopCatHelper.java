@@ -25,8 +25,6 @@ import static main.java.util.SortByValue.sortByValue;
 import static main.java.util.UrlDataGetter.getData;
 
 public class PopCatHelper {
-    List<Long> timeList = new ArrayList<>();
-    List<Double> valueList = new ArrayList<>();
     public Map<String, String> countryCode = new HashMap<>();
     public Map<String, String> countryName = new HashMap<>();
 
@@ -143,6 +141,8 @@ public class PopCatHelper {
                 (pop ? "max(popcat)" : "sum(rate(popcat%5B5m%5D))") +
                 "%20by%20(region)&start=" + startTime + "&end=" + endTime + "&step=" + step;
 
+        List<Long> timeList = new ArrayList<>();
+        List<Double> valueList = new ArrayList<>();
         JSONObject resultJson = new JSONObject(getData(popUrl));
         JSONArray allRegion = resultJson.getJSONObject("data").getJSONArray("result");
         for (Object i : allRegion) {

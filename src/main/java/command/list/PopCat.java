@@ -42,7 +42,7 @@ public class PopCat {
     }
 
     public void onSelectTop(@NotNull SelectionMenuEvent event, String @NotNull [] args) {
-        if (!args[0].equals("PopCat") && args[1].equals("top"))
+        if (!args[0].equals("PopCat") || !args[1].equals("top"))
             return;
         if (event.getValues().get(0).startsWith("page")) {
             String[] data = event.getValues().get(0).split(":");

@@ -10,7 +10,7 @@ public class SortByValue {
         Collections.sort(list, new Comparator<Object>() {
             @SuppressWarnings("unchecked")
             public int compare(Object o1, Object o2) {
-                return ((Comparable<V>) ((Map.Entry<K, V>) (o1)).getValue()).compareTo(((Map.Entry<K, V>) (o2)).getValue());
+                return ((Comparable<V>) ((Map.Entry<K, V>) (o2)).getValue()).compareTo(((Map.Entry<K, V>) (o1)).getValue());
             }
         });
 
