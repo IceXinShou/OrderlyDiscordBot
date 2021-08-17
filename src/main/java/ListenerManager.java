@@ -409,14 +409,14 @@ public class ListenerManager extends ListenerAdapter {
                 fileConvert.onCommand(event, sortURL);
                 return;
             }
-//            case "poptop" -> {
-//                popCat.onCommandTop(event);
-//                return;
-//            }
-//            case "popspeed" -> {
-//                popCat.onCommandSpeed(event);
-//                return;
-//            }
+            case "poptop" -> {
+                popCat.onCommandTop(event);
+                return;
+            }
+            case "popspeed" -> {
+                popCat.onCommandSpeed(event);
+                return;
+            }
             case "reload" -> {
                 if (reload.onCommand(event))
                     reload(event.getGuild());

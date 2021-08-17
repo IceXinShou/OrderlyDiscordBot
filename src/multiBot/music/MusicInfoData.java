@@ -19,6 +19,7 @@ public class MusicInfoData {
     // 頻道
     private String channelName;
     private String channelID;
+    private String channelURL;
     private String channelThumbnailUrl;
     // 統計
     private long viewCount;
@@ -61,6 +62,7 @@ public class MusicInfoData {
         // 頻道
         channelID = videoDetails.getString("channelId");
         result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + apiKEY);
+        channelURL = ("https://www.youtube.com/channel/" + channelID);
         if (result == null) return;
         JSONObject channelInfo = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("snippet");
         channelThumbnailUrl = channelInfo.getJSONObject("thumbnails").getJSONObject("default").getString("url");
@@ -114,6 +116,10 @@ public class MusicInfoData {
 
     public String getChannelID() {
         return channelID;
+    }
+
+    public String getChannelURL() {
+        return channelURL;
     }
 
     public String getChannelThumbnailUrl() {

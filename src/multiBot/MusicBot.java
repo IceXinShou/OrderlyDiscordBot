@@ -222,7 +222,7 @@ public class MusicBot {
                             .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
 
                             .toString()
-                    , musicInfo.getChannelName(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
+                    , musicInfo.getChannelName(),musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
         } else {
             nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
@@ -249,7 +249,7 @@ public class MusicBot {
                 stringBuilder.append("[").append(index--).append("] ")
                         .append(track.getInfo().title);
                 if (track.getInfo().isStream)
-                    stringBuilder.append("**[LIVE]**");
+                    stringBuilder.append(" **[LIVE]**");
                 stringBuilder.append("\n");
             }
         }

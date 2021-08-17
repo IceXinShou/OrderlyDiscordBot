@@ -39,7 +39,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
                         .append(" | \uD83D\uDCAC ").append(String.format("%,d", musicInfo.getCommentCount()))
                         .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
                         .toString()
-                , musicInfo.getChannelName(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
+                , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                 0xe5b849);
         if (search) {
             event.replyEmbeds(nowPlaying).setEphemeral(true).queue();

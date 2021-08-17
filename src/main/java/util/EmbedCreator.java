@@ -190,7 +190,7 @@ public class EmbedCreator {
     }
 
     @Contract("_, _, _, _, _, _, _, _ -> new")
-    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, String image, int color) {
+    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname,String channelURL, String avatarUrl, String image, int color) {
         return new MessageEmbed(url,
                 title,
                 description,
@@ -199,7 +199,7 @@ public class EmbedCreator {
                 color,
                 null,
                 null,
-                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                new MessageEmbed.AuthorInfo(nickname, channelURL, avatarUrl, null),
                 null,
                 new MessageEmbed.Footer(footer, null, null),
                 new MessageEmbed.ImageInfo(image, null, 0, 0), null);

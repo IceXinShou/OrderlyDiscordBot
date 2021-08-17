@@ -61,11 +61,11 @@ public class ImageGraphMaker {
         polygonX[i] = 0;
         polygonY[i] = imageHeight - 1;
         //圖標
-        int fontSize = 16;
+        int fontSize = 28;
         int minValueInt = (int) valueMap.getInputMin();
         double eachAdd = 0.1f;
         while (valueMap.mapValue(minValueInt + eachAdd) - valueMap.mapValue(minValueInt) < fontSize * 3f) {
-            double value = cut(eachAdd + 0.1f);
+            double value = cut(eachAdd + 0.2f);
 //            System.out.println(value);
             if (value > 100000)
                 eachAdd += 100000;
@@ -124,7 +124,7 @@ public class ImageGraphMaker {
                 polygonX.length);
 
         canvas.setColor(Color.decode("#FFDD00"));
-        canvas.setFont(new Font("JetBrains Mono Medium", Font.PLAIN, fontSize));
+        canvas.setFont(new Font("微軟正黑體", Font.PLAIN, fontSize));
         for (i = 0; i < lineCount; i++) {
             Double value = cut(startValue + i * eachAdd);
             int y = imageHeight - (int) valueMap.mapValue(value) - 1;

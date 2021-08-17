@@ -24,8 +24,6 @@ public class Test {
             String countryCode = ((JSONObject) i).getJSONObject("metric").getString("region").toLowerCase();
             long value = Long.parseLong(((JSONObject) i).getJSONArray("values").getJSONArray(0).getString(1));
             countryInfo.put(countryCode, value);
-            System.out.println(countryCode);
-            System.out.println(value);
         }
         countryInfo = sortByValue(countryInfo);
         for (Map.Entry<String, Long> country : countryInfo.entrySet()) {
