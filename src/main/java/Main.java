@@ -35,7 +35,7 @@ public class Main {
     Main() throws LoginException {
         setting = new BotSetting(); // 讀取設定
 
-        /**
+        /*
          * init bot
          */
         JDABuilder builder = JDABuilder.createDefault(botToken)

@@ -12,11 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 import static main.java.BotSetting.*;
 import static main.java.Main.emoji;
-import static main.java.event.Join.memberData;
 import static main.java.event.Log.logChannel;
+import static main.java.event.OwnJoin.memberData;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.SlashCommandOption.USER_TAG;
@@ -50,10 +51,10 @@ public class Invite {
     }
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        Member member = event.getOption(USER_TAG).getAsMember();
+        Member member = Objects.requireNonNull(event.getOption(USER_TAG)).getAsMember();
         String userId = event.getUser().getId();
         // 還沒完成使用者設定
-        if (!memberData.has(member.getId())) {
+        if (!memberData.has(Objects.requireNonNull(member).getId())) {
             event.getHook().editOriginalEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).queue();
             return;
         } else if (guild.retrieveMemberById(member.getId()).complete().getRoles().contains(memberRole)) {
@@ -80,7 +81,7 @@ public class Invite {
             for (Role role : confirmRoleID) {
                 guild.addRoleToMember(targetMember, role).queue();
             }
-            addMemberToGenealogy(event.getMember(), args[3]);
+            addMemberToGenealogy(Objects.requireNonNull(event.getMember()), args[3]);
 
             logChannel.sendMessageEmbeds(
                     createEmbed(

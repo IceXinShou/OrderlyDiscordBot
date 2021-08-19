@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static main.java.util.EmbedCreator.createEmbed;
 
@@ -34,7 +35,7 @@ public class URLShort {
     public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url) {
         String result;
         if (!convert)
-            url = event.getOption("url").getAsString();
+            url = Objects.requireNonNull(event.getOption("url")).getAsString();
 
         result = UrlDataGetter.postCookie("https://reurl.cc/webapi/shorten/v2",
                 "{\"url\" : \"" + url + "\"}", v2Cookie);

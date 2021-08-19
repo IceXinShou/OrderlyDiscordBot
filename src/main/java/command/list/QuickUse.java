@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static main.java.util.EmbedCreator.isBotOwner;
 
+@SuppressWarnings("ALL")
 public class QuickUse {
     Map<String, List<ActionRow>> games = new HashMap<>();
     Map<String, String[]> Ids = new HashMap<>();
@@ -27,8 +28,6 @@ public class QuickUse {
         Message message = event.getMessage();
 
         if (message.getContentRaw().startsWith("testCommand") && (isBotOwner(event) /*|| event.getMember().getId().equals(event.getGuild().retrieveOwner().complete().getId())*/)) {
-
-            event.getChannel().sendMessage(":flag_tw:").queue();
 
             /**
              * Chinese

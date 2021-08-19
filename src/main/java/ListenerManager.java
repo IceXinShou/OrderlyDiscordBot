@@ -5,12 +5,10 @@ import main.java.command.list.*;
 import main.java.command.list.Setting.*;
 import main.java.event.*;
 import main.java.util.file.GuildSettingHelper;
-import main.java.util.file.PopCatHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.StatusChangeEvent;
 import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
@@ -62,14 +60,14 @@ public class ListenerManager extends ListenerAdapter {
     //listener
     CommandRegister commandRegister = new CommandRegister();
     Log log = new Log();
-    Join join = new Join();
+    OwnJoin join = new OwnJoin();
     Room room = new Room(guildSettingHelper);
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
     QuickUse quickUse = new QuickUse();
     Ticket ticketChannel = new Ticket(guildSettingHelper);
     GeneralReplay generalReplay = new GeneralReplay();
-    JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage();
+    JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage(guildSettingHelper);
     MultiMusicBotManager musicManager = new MultiMusicBotManager();
     StatusListener statusListener = new StatusListener(guildSettingHelper);
     VoiceChannelCreator voiceChannelCreator = new VoiceChannelCreator(guildSettingHelper);
@@ -206,14 +204,14 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
-        joinLeaveMessage.onLeave(event);
+        joinLeaveMessage.onGuildMemberRemove(event);
         statusListener.memberLeave(event);
     }
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         join.onGuildMemberJoin(event); // guild(own)
-        joinLeaveMessage.onJoin(event);
+        joinLeaveMessage.onGuildMemberJoin(event);
         statusListener.memberJoin(event.getMember());
     }
 

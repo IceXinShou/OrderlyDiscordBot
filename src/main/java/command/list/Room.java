@@ -3,6 +3,7 @@ package main.java.command.list;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -15,12 +16,7 @@ import java.util.*;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.PlaceholderReplacer.placeholderReplacer;
 
-public class Room {
-    private final GuildSettingHelper settingHelper;
-
-    public Room(GuildSettingHelper settingHelper) {
-        this.settingHelper = settingHelper;
-    }
+public record Room(GuildSettingHelper settingHelper) {
 
     //             GuildID     MemberID   ChannelIDs(Voice, Text)
     public static Map<String, Map<String, List<String>>> voiceState = new HashMap<>();
@@ -36,17 +32,20 @@ public class Room {
 
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
-        if (membersID != null)
-            if (membersID.containsKey(event.getMember().getId()) && event.getChannelLeft() != null) {
-                if (membersID.get(event.getMember().getId()).get(0).equals(event.getChannelLeft().getId())) {
-                    if (event.getChannelLeft() != null)
-                        event.getChannelLeft().delete().queue();
-                    if (membersID.get(event.getMember().getId()).size() > 1)
-                        if (event.getGuild().getTextChannelById(membersID.get(event.getMember().getId()).get(1)) != null)
-                            event.getGuild().getTextChannelById(membersID.get(event.getMember().getId()).get(1)).delete().queue();
-                    membersID.remove(event.getMember().getId());
+        if (membersID != null) {
+            String memberID = event.getMember().getId();
+            if (membersID.containsKey(memberID)) {
+                if (membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
+                    event.getChannelLeft().delete().queue();
+                    if (membersID.get(memberID).size() > 1) {
+                        GuildChannel removedChannel;
+                        if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
+                            removedChannel.delete().queue();
+                    }
+                    membersID.remove(memberID);
                 }
             }
+        }
     }
 
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
@@ -54,17 +53,19 @@ public class Room {
         if ((data = settingHelper.getSettingData(event.getGuild(), ROOM_SETTING)) == null)
             return;
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
-        if (membersID != null)
-            if (membersID.containsKey(event.getMember().getId()) && event.getChannelLeft() != null)
-                if (membersID.get(event.getMember().getId()).get(0).equals(event.getChannelLeft().getId())) {
-                    if (event.getChannelLeft() != null)
-                        event.getChannelLeft().delete().queue();
-                    if (membersID.get(event.getMember().getId()).size() > 1)
-                        if (event.getGuild().getTextChannelById(membersID.get(event.getMember().getId()).get(1)) != null)
-                            event.getGuild().getTextChannelById(membersID.get(event.getMember().getId()).get(1)).delete().queue();
-                    membersID.remove(event.getMember().getId());
+        if (membersID != null) {
+            String memberID = event.getMember().getId();
+            if (membersID.containsKey(memberID))
+                if (membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
+                    event.getChannelLeft().delete().queue();
+                    if (membersID.get(memberID).size() > 1) {
+                        GuildChannel removedChannel;
+                        if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
+                            removedChannel.delete().queue();
+                    }
+                    membersID.remove(memberID);
                 }
-
+        }
         if (data.has(event.getChannelJoined().getId()))
             newChannel(event, data);
     }
@@ -78,7 +79,7 @@ public class Room {
         allow.add(Permission.VIEW_CHANNEL);
         allow.add(Permission.MANAGE_CHANNEL);
 
-        JSONObject data = inputData.getJSONObject(event.getChannelJoined().getId());
+        JSONObject data = inputData.getJSONObject(Objects.requireNonNull(event.getChannelJoined()).getId());
         final Category textCategory;
         Category voiceCategory = event.getGuild().getCategoryById(data.getString(ROOM_VOICE_CATEGORY_ID));
         boolean hasTextChannel;
@@ -106,7 +107,7 @@ public class Room {
             nvc.createPermissionOverride(event.getMember()).setAllow(allow).queue();
             event.getGuild().moveVoiceMember(event.getMember(), nvc).queue();
             Map<String, List<String>> map = voiceState.get(event.getGuild().getId());
-            List<String> channels = List.of(nvc.getId());
+            List<String> channels = new ArrayList<>(List.of(nvc.getId()));
             if (map == null)
                 voiceState.put(event.getGuild().getId(), new HashMap<>() {{
                     put(event.getMember().getId(), channels);

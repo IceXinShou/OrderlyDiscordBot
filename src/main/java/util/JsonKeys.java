@@ -56,6 +56,7 @@ public class JsonKeys {
     // for GuildJoinLeave
     public final static String JL_SETTING = "jl";
     public final static String JL_JOIN_MESSAGE = "JM";
+    public final static String JL_JOIN_ROLE = "JL";
     public final static String JL_JOIN_DM = "DM";
     public final static String JL_LEAVE_MESSAGE = "LM";
 

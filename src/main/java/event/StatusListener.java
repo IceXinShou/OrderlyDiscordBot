@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +34,6 @@ public class StatusListener {
         this.settingHelper = settingHelper;
     }
 
-    private int minChangeDelay = (int) (5.5f * 60 * 1000);
     private ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
 
     public void startListen(JDA jda) {
@@ -111,11 +111,11 @@ public class StatusListener {
                             }
 
                             // 通話狀態
-                            if (gMember.getVoiceState().inVoiceChannel())
+                            if (Objects.requireNonNull(gMember.getVoiceState()).inVoiceChannel())
                                 inVoiceChannel_noBot++;
                         }
 
-                        if (gMember.getVoiceState().isStream())
+                        if (Objects.requireNonNull(gMember.getVoiceState()).isStream())
                             stream++;
 
                         if (gMember.getVoiceState().isSendingVideo())
@@ -253,6 +253,7 @@ public class StatusListener {
         JSONObject data = settingHelper.getSettingData(guild, CS_SETTING);
         for (String channelID : data.keySet()) {
             Long lastTime;
+            int minChangeDelay = (int) (5.5f * 60 * 1000);
             if ((lastTime = guildChannelTimer.get(channelID)) == null || System.currentTimeMillis() - lastTime > minChangeDelay) {
                 if (guildChannelChange.containsKey(channelID)) {
                     change = guildChannelChange.get(channelID);
@@ -267,16 +268,12 @@ public class StatusListener {
                             data.getJSONObject(channelID).getString(CS_FORMAT),
                             change, memberStatus);
                     GuildChannel channel = guild.getGuildChannelById(channelID);
-                    if (!channel.getName().equals(newName))
-                        channel.getManager().setName(newName).queue();
+                    if (!Objects.requireNonNull(channel).getName().equals(newName))
+                        channel.getManager().setName(Objects.requireNonNull(newName)).queue();
                 }
             } else
                 guildChannelChange.merge(channelID, change, (n1, n2) -> n1 | n2);
         }
-    }
-
-    public String guildStatusReplace(String input, String format, Guild guild) {
-        return guildStatusReplace(input, format, 65535, guildsMemberStatus.get(guild.getId()));
     }
 
     private String guildStatusReplace(String input, String format, int change, Map<String, Integer> memberStatus) {
@@ -333,10 +330,10 @@ public class StatusListener {
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
         byte n = 1;
-        if (!member.getVoiceState().isStream())
+        if (!Objects.requireNonNull(member.getVoiceState()).isStream())
             n = -1;
 
-        memberStatus.merge("stream", 1 * n, Integer::sum); // 14
+        memberStatus.merge("stream", (int) n, Integer::sum); // 14
 
         updateChannelStatus(member.getGuild(), 16384, memberStatus);
     }
@@ -346,10 +343,10 @@ public class StatusListener {
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
         byte n = 1;
-        if (!member.getVoiceState().isSendingVideo())
+        if (!Objects.requireNonNull(member.getVoiceState()).isSendingVideo())
             n = -1;
 
-        memberStatus.merge("camera", 1 * n, Integer::sum); // 11
+        memberStatus.merge("camera", (int) n, Integer::sum); // 11
 
         updateChannelStatus(member.getGuild(), 32768, memberStatus);
     }
@@ -436,12 +433,12 @@ public class StatusListener {
         updateChannelStatus(evnet.getGuild(), change, memberStatus);
     }
 
-    /**
-     * ONLINE("online"),
-     * IDLE("idle"),
-     * DO_NOT_DISTURB("dnd"),
-     * INVISIBLE("invisible"),
-     * OFFLINE("offline"),
-     * UNKNOWN("");
+    /*
+      ONLINE("online"),
+      IDLE("idle"),
+      DO_NOT_DISTURB("dnd"),
+      INVISIBLE("invisible"),
+      OFFLINE("offline"),
+      UNKNOWN("");
      */
 }

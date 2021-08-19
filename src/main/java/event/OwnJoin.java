@@ -29,12 +29,12 @@ import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.UrlDataGetter.getData;
 
-public class Join {
+public class OwnJoin {
     public static JSONObject memberData;
     private final JsonFileManager memberFile;
     Map<String, QuestionStep> userProgress = new HashMap<>();
 
-    public Join() {
+    public OwnJoin() {
         memberFile = new JsonFileManager(configFolder + "/allMember.json");
         memberData = memberFile.data;
     }
@@ -42,8 +42,6 @@ public class Join {
     /**
      * 加入事件
      */
-
-
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         String userID = event.getUser().getId();
@@ -114,9 +112,7 @@ public class Join {
                 "原序之徒 | ORDERLY DISCIPLE",
                 nickname, user.getAvatarUrl(),
                 fields, OffsetDateTime.now(), 0xCFD3FF
-        )).queue(msg -> {
-            progress.setInfoMessageID(msg.getId());
-        });
+        )).queue(msg -> progress.setInfoMessageID(msg.getId()));
 
     }
 
@@ -224,7 +220,7 @@ public class Join {
                         // 儲存user至檔案
                         saveMember(member);
                         userProgress.remove(userID);
-                        event.getChannel().sendMessageEmbeds(createEmbed("歡迎加入我們~~\n" +
+                        event.getChannel().sendMessageEmbeds(createEmbed("請邀請者在認證頻道把你拉進來喔~\n" +
                                 "Welcome to join us!", 0x9740b9)).queue();
                         break;
                     }
@@ -326,7 +322,7 @@ public class Join {
             QuestionStep progress = new QuestionStep(0, null);
             JSONObject userData = memberData.getJSONObject(userID);
             // 有玩minecraft
-            if (progress.playMinecraft = userData.getBoolean(PLAY_MINECRAFT))
+            if (progress.playMinecraft == userData.getBoolean(PLAY_MINECRAFT))
                 progress.minecraftID = userData.getString(MINECRAFT_ID);
             else
                 progress.englishNick = userData.getString(ENGLISH_NICK);

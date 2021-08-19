@@ -189,8 +189,7 @@ public class EmbedCreator {
                 null, null);
     }
 
-    @Contract("_, _, _, _, _, _, _, _ -> new")
-    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname,String channelURL, String avatarUrl, String image, int color) {
+    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String channelURL, String avatarUrl, String image, int color) {
         return new MessageEmbed(url,
                 title,
                 description,

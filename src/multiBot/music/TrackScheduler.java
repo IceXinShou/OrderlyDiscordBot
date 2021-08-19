@@ -149,15 +149,6 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
-//    public void previousTrack(SlashCommandEvent event) {
-//        lastIndex = index;
-//        index--;
-//        if (playTrack())
-//            this.event.trackStart(playingTrack, event, guild, null, false);
-//        else
-//            stopPlay(event);
-//    }
-
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, @NotNull AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)

@@ -11,22 +11,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static main.java.command.list.Room.voiceState;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
-public class SettingRoom {
-    private final GuildSettingHelper settingHelper;
-
-    public SettingRoom(GuildSettingHelper settingHelper) {
-        this.settingHelper = settingHelper;
-    }
+public record SettingRoom(GuildSettingHelper settingHelper) {
 
     public void newRoom(@NotNull SlashCommandEvent event) {
-        GuildChannel detectChannel = event.getOption("detectchannel").getAsGuildChannel();
-        String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
-        String voiceName = event.getOption("voicename").getAsString();
+        GuildChannel detectChannel = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel();
+        String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
+        String voiceName = Objects.requireNonNull(event.getOption("voicename")).getAsString();
         String textName = null;
         Short voiceBitrate;
         String voiceCategoryID;
@@ -36,26 +32,26 @@ public class SettingRoom {
         Guild guild = event.getGuild();
 
         if (event.getOption("textname") != null) {
-            textName = event.getOption("textname").getAsString();
+            textName = Objects.requireNonNull(event.getOption("textname")).getAsString();
             hasTextChannel = true;
             if (event.getOption("textcategory") != null)
-                textCategoryID = event.getOption("textcategory").getAsString();
+                textCategoryID = Objects.requireNonNull(event.getOption("textcategory")).getAsString();
             else
-                textCategoryID = detectChannel.getParent().getId();
+                textCategoryID = Objects.requireNonNull(detectChannel.getParent()).getId();
 
         }
         if (event.getOption("voicebitrate") != null)
-            voiceBitrate = Short.parseShort(event.getOption("voicebitrate").getAsString()); // 8~384
+            voiceBitrate = Short.parseShort(Objects.requireNonNull(event.getOption("voicebitrate")).getAsString()); // 8~384
         else
             voiceBitrate = 64;
         if (event.getOption("voicecategory") != null)
-            voiceCategoryID = event.getOption("voicecategory").getAsString();
+            voiceCategoryID = Objects.requireNonNull(event.getOption("voicecategory")).getAsString();
         else
-            voiceCategoryID = detectChannel.getParent().getId();
+            voiceCategoryID = Objects.requireNonNull(detectChannel.getParent()).getId();
 
         if (event.getOption("memberlimit") != null)
-            if (event.getOption("memberlimit").getAsLong() > 0)
-                memberLimit = Byte.parseByte(event.getOption("memberlimit").getAsString());
+            if (Objects.requireNonNull(event.getOption("memberlimit")).getAsLong() > 0)
+                memberLimit = Byte.parseByte(Objects.requireNonNull(event.getOption("memberlimit")).getAsString());
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
@@ -68,9 +64,8 @@ public class SettingRoom {
         if (hasTextChannel && textName.length() > 100)
             fields.add(new MessageEmbed.Field("文字頻道名稱長度不能大於 100", "", false));
 
-        if (voiceBitrate != null)
-            if (voiceBitrate * 1000 > guild.getBoostTier().getMaxBitrate())
-                fields.add(new MessageEmbed.Field("您的伺服器目前無法達到如此高的音訊位元率", "", false));
+        if (voiceBitrate * 1000 > Objects.requireNonNull(guild).getBoostTier().getMaxBitrate())
+            fields.add(new MessageEmbed.Field("您的伺服器目前無法達到如此高的音訊位元率", "", false));
 
         if (memberLimit != null && memberLimit > 99) {
             fields.add(new MessageEmbed.Field("人數限制最大只能達到 99 人", "", false));
@@ -82,9 +77,9 @@ public class SettingRoom {
         }
 
         fields.add(new MessageEmbed.Field("偵測語音頻道", detectChannel.getName() + "\n`(" + detectID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道目錄", guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field("語音頻道目錄", Objects.requireNonNull(guild.getCategoryById(voiceCategoryID)).getName() + "\n`(" + voiceCategoryID + ")`", false));
         if (hasTextChannel)
-            fields.add(new MessageEmbed.Field("文字頻道目錄", guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
+            fields.add(new MessageEmbed.Field("文字頻道目錄", Objects.requireNonNull(guild.getCategoryById(textCategoryID)).getName() + "\n`(" + textCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field("語音頻道名稱", "`" + voiceName + "`", false));
         if (hasTextChannel)
             fields.add(new MessageEmbed.Field("文字頻道名稱", "`" + textName + "`", false));
@@ -111,15 +106,15 @@ public class SettingRoom {
 
     public void removeRoom(@NotNull SlashCommandEvent event) {
         Guild guild = event.getGuild();
-        String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
+        String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
 
-        JSONObject data = settingHelper.getSettingData(guild, ROOM_SETTING);
+        JSONObject data = settingHelper.getSettingData(Objects.requireNonNull(guild), ROOM_SETTING);
         if (voiceState.get(guild.getId()).size() > 0) {
             Map<String, List<String>> memberData = voiceState.get(guild.getId());
             for (String key : memberData.keySet()) {
                 for (String channelID : memberData.get(key)) {
                     try {
-                        guild.getVoiceChannelById(channelID).delete().queue();
+                        Objects.requireNonNull(guild.getVoiceChannelById(channelID)).delete().queue();
                     } catch (Exception ignored) {
                     }
                 }
@@ -133,29 +128,3 @@ public class SettingRoom {
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
     }
 }
-
-// detectID
-
-/**
- * {"autoVC":{"858672865816346637":{"N":"《🔊》語音頻道"}},"room":{},"ticket":{messageID:[{...},{...}]}}
- * {d:{vc:"12345",tc:"12345",vn:"Hello %Name%", tn:"i da %NameTag%", ml:"50", br:"128"},
- * d:{vc:"12345",tc:"12345",vn:"Hello %Name%", tn:"i da %NameTag%", br:"128"}}
- * <p>
- * detectID (d)
- * voiceCategory (vc)
- * textCategory (tc)
- * voiceName (vn)
- * textName (tn)
- * memberLimit (ml) 可選
- * bitrate (br)
- * <p>
- * /setting newroom
- * 偵測頻道 ID
- * 新語音頻道目錄 ID
- * 新文字頻道目錄 ID (-1則無)
- * 新語音名稱(可填空白鍵, %guild_name%, %user%, %user_name%, %user_tag%, or %nickname%)
- * 新文字名稱(不可填空白鍵, %guild_name%, %user%, %user_name%, %user_tag%, or %nickname%)
- * 語音人數限制 (1~99) (0無)
- * 新語音位元率 (kbps)
- */
-

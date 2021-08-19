@@ -5,11 +5,8 @@ public class SlashCommandOption {
     public final static String COUNT = "count";
     public final static String INDEX = "index";
     public final static String USER_TAG = "user";
-    public final static String CHANNEL_TAG = "channel";
-    public final static String BOL = "toggle";
     public final static String REASON = "reason";
     public final static String MESSAGE = "message";
-    public final static String WHICH = "which";
     public final static String URL = "url";
     public final static String NAME = "name";
     public final static String DAYS = "days";

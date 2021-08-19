@@ -9,6 +9,7 @@ import static main.java.BotSetting.apiKEY;
 import static main.java.util.UrlDataGetter.getData;
 import static main.java.util.UrlDataGetter.postData;
 
+@SuppressWarnings("ALL")
 public class MusicInfoData {
     // 影片
     private String title;

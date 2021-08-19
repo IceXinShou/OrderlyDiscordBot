@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import static main.java.BotSetting.botOwnerID;
 import static main.java.BotSetting.noPermissionStringERROR;
 import static main.java.util.EmbedCreator.createEmbed;
@@ -19,7 +21,7 @@ public class PermissionERROR {
         if (ownerSkip)
             if (botOwnerID.contains(event.getUser().getId()))
                 return true;
-        if (event.getMember().hasPermission(permission))
+        if (Objects.requireNonNull(event.getMember()).hasPermission(permission))
             return true;
         else
             event.getHook().editOriginalEmbeds(createEmbed(noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000)).queue();

@@ -41,133 +41,140 @@ public class Ticket {
     public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args) {
         if (!args[0].equals("Ticket"))
             return;
-        Guild guild = event.getGuild();
+        Guild guild;
+        if ((guild = event.getGuild()) == null)
+            return;
         String channelID = event.getChannel().getId();
         String messageID = event.getMessageId();
         Member member = event.getMember();
-        Byte buttonPos = Byte.parseByte(args[3]);
+        byte buttonPos = Byte.parseByte(args[3]);
 
-        if (args[1].equals("newTicket")) {
-            JSONObject datas;
-            if ((datas = settingHelper.getSettingData(guild, TICKET_SETTING)) == null || !datas.has(event.getChannel().getId()))
-                return;
-            JSONObject data = datas.getJSONObject(channelID).getJSONArray(messageID).getJSONObject(buttonPos);
+        switch (args[1]) {
+            case "newTicket":
+                JSONObject nData;
+                if ((nData = settingHelper.getSettingData(guild, TICKET_SETTING)) == null || !nData.has(event.getChannel().getId()))
+                    return;
+                JSONObject data = nData.getJSONObject(channelID).getJSONArray(messageID).getJSONObject(buttonPos);
 
-            String messageKey = channelID + messageID;
-            boolean buttonPressed = addButtonPress(messageKey, member.getId(), buttonPos);
+                String messageKey = channelID + messageID;
+                boolean buttonPressed = addButtonPress(messageKey, Objects.requireNonNull(member).getId(), buttonPos);
 
-            if (data.getBoolean(TICKET_ONLY_ONE) && buttonPressed) {
-                event.getInteraction().deferReply(true).addEmbeds(createEmbed("您已經使用過此按扭了", 0xFF0000)).queue();
-                return;
-            }
-
-            Role allowRole = guild.getRoleById(data.getString(TICKET_ALLOW_ROLE_ID));
-
-            if (guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID)).getChannels().size() == 50) {
-                event.getInteraction().deferReply(true).addEmbeds(createEmbed("沒有足夠的空間 (類別中頻道數量達到最大值)", 0xFF0000)).queue();
-                return;
-            }
-
-            Map<String, Map<Byte, Integer>> messageIDMap;
-            Map<Byte, Integer> positionMap;
-            if ((messageIDMap = ticketCount.get(channelID)) == null) {
-                messageIDMap = new HashMap<>();
-                ticketCount.put(channelID, messageIDMap);
-            }
-            if ((positionMap = messageIDMap.get(event.getMessageId())) == null) {
-                positionMap = new HashMap<>();
-                messageIDMap.put(event.getMessageId(), positionMap);
-            }
-
-            // add
-            final int count = positionMap.getOrDefault(Byte.valueOf(args[3]), 0) + 1;
-            String countStr = String.valueOf(count);
-
-            positionMap.put(Byte.valueOf(args[3]), count);
-            guild.createTextChannel(
-                            placeholderReplacer(data.getString(TICKET_TEXT_NAME), member).replace("%num%", countStr),
-                            guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))
-                    )
-                    .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, MESSAGE_WRITE), Collections.emptyList())
-                    .queue(tc -> {
-                        if (data.has(VC_VOICE_CHANNEL_ID)) {
-                            guild.createVoiceChannel(
-                                            placeholderReplacer(data.getString(TICKET_VOICE_NAME), member).replace("%num%", countStr),
-                                            guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID)))
-                                    .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, VOICE_CONNECT), Collections.emptyList())
-                                    .queue(vc -> {
-                                        vc.getManager().clearOverridesAdded().queue();
-                                        vc.getManager().clearOverridesRemoved().queue();
-                                        linkedVoiceChannel.put(tc.getId(), vc.getId());
-                                        removePermission(guild.getPublicRole(), vc, Collections.singletonList(VIEW_CHANNEL));
-                                        addPermission(allowRole, vc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, VOICE_CONNECT));
-                                    });
-                        }
-                        removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
-                        addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
-
-                        MessageBuilder builder = new MessageBuilder();
-                        builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
-                                .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
-                                .replace("%role_name%", allowRole.getName())
-                                .replace("%num%", countStr)
-                                + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
-                        builder.setActionRows(ActionRow.of(
-                                Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, "刪除", Emoji.fromEmote(emoji.trashCan))
-                        ));
-                        tc.sendMessage(builder.build()).queue();
-                        event.deferEdit().queue();
-                    });
-        } else if (args[1].equals("delC")) {
-            if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
-                String voiceChannelID;
-                VoiceChannel voiceChannel;
-                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
-                    voiceChannel.delete().queue();
+                if (data.getBoolean(TICKET_ONLY_ONE) && buttonPressed) {
+                    event.getInteraction().deferReply(true).addEmbeds(createEmbed("您已經使用過此按扭了", 0xFF0000)).queue();
+                    return;
                 }
-                event.getTextChannel().delete().queue();
-                removeButtonPress(args, buttonPos);
-            } else
-                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(MANAGE_CHANNEL)).queue();
-        } else if (args[1].equals("lock")) {
-            if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
-                event.getHook().editOriginalEmbeds().setActionRows(
-                        ActionRow.of(
-                                Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "解除封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
-                        )).queue();
-                removePermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
-                removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE));
-                String voiceChannelID;
-                VoiceChannel voiceChannel;
-                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
-                    removePermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
-                    removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Arrays.asList(VOICE_CONNECT));
+
+                Role allowRole = guild.getRoleById(data.getString(TICKET_ALLOW_ROLE_ID));
+
+                if (Objects.requireNonNull(guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))).getChannels().size() == 50) {
+                    event.getInteraction().deferReply(true).addEmbeds(createEmbed("沒有足夠的空間 (類別中頻道數量達到最大值)", 0xFF0000)).queue();
+                    return;
                 }
-                event.deferEdit().queue();
-            } else {
-                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
-            }
-        } else if (args[1].equals("uLock")) {
-            if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
-                event.getHook().editOriginalEmbeds().setActionRows(
-                        ActionRow.of(
-                                Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
-                                Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
-                        )).queue();
-                addPermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
-                addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE));
-                String voiceChannelID;
-                VoiceChannel voiceChannel;
-                if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
-                    addPermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
-                    addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, Arrays.asList(VOICE_CONNECT));
+
+                Map<String, Map<Byte, Integer>> messageIDMap;
+                Map<Byte, Integer> positionMap;
+                if ((messageIDMap = ticketCount.get(channelID)) == null) {
+                    messageIDMap = new HashMap<>();
+                    ticketCount.put(channelID, messageIDMap);
                 }
-                event.deferEdit().queue();
-            } else {
-                event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
-            }
+                if ((positionMap = messageIDMap.get(event.getMessageId())) == null) {
+                    positionMap = new HashMap<>();
+                    messageIDMap.put(event.getMessageId(), positionMap);
+                }
+
+                // add
+                final int count = positionMap.getOrDefault(Byte.valueOf(args[3]), 0) + 1;
+                String countStr = String.valueOf(count);
+
+                positionMap.put(Byte.valueOf(args[3]), count);
+                guild.createTextChannel(
+                                placeholderReplacer(data.getString(TICKET_TEXT_NAME), member).replace("%num%", countStr),
+                                guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))
+                        )
+                        .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, MESSAGE_WRITE), Collections.emptyList())
+                        .queue(tc -> {
+                            if (data.has(VC_VOICE_CHANNEL_ID)) {
+                                guild.createVoiceChannel(
+                                                placeholderReplacer(data.getString(TICKET_VOICE_NAME), member).replace("%num%", countStr),
+                                                guild.getCategoryById(data.getString(TICKET_VOICE_CATEGORY_ID)))
+                                        .addMemberPermissionOverride(member.getIdLong(), Arrays.asList(VIEW_CHANNEL, VOICE_CONNECT), Collections.emptyList())
+                                        .queue(vc -> {
+                                            vc.getManager().clearOverridesAdded().queue();
+                                            vc.getManager().clearOverridesRemoved().queue();
+                                            linkedVoiceChannel.put(tc.getId(), vc.getId());
+                                            removePermission(guild.getPublicRole(), vc, Collections.singletonList(VIEW_CHANNEL));
+                                            addPermission(allowRole, vc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, VOICE_CONNECT));
+                                        });
+                            }
+                            removePermission(guild.getPublicRole(), tc, Collections.singletonList(VIEW_CHANNEL));
+                            addPermission(allowRole, tc, Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL, MESSAGE_WRITE));
+
+                            MessageBuilder builder = new MessageBuilder();
+                            builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
+                                    .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
+                                    .replace("%role_name%", Objects.requireNonNull(allowRole).getName())
+                                    .replace("%num%", countStr)
+                                    + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
+                            builder.setActionRows(ActionRow.of(
+                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, "刪除", Emoji.fromEmote(emoji.trashCan))
+                            ));
+                            tc.sendMessage(builder.build()).queue();
+                            event.deferEdit().queue();
+                        });
+                break;
+            case "delC":
+                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL)) {
+                    String voiceChannelID;
+                    VoiceChannel voiceChannel;
+                    if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                        voiceChannel.delete().queue();
+                    }
+                    event.getTextChannel().delete().queue();
+                    removeButtonPress(args, buttonPos);
+                } else
+                    event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(MANAGE_CHANNEL)).queue();
+                break;
+            case "lock":
+                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
+                    event.getHook().editOriginalEmbeds().setActionRows(
+                            ActionRow.of(
+                                    Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "解除封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
+                            )).queue();
+                    removePermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
+                    removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), List.of(MESSAGE_WRITE));
+                    String voiceChannelID;
+                    VoiceChannel voiceChannel;
+                    if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                        removePermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
+                        removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, List.of(VOICE_CONNECT));
+                    }
+                    event.deferEdit().queue();
+                } else {
+                    event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                }
+                break;
+            case "uLock":
+                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
+                    event.getHook().editOriginalEmbeds().setActionRows(
+                            ActionRow.of(
+                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], "封存", Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], "刪除", Emoji.fromEmote(emoji.trashCan))
+                            )).queue();
+                    addPermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
+                    addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), List.of(MESSAGE_WRITE));
+                    String voiceChannelID;
+                    VoiceChannel voiceChannel;
+                    if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                        addPermission(guild.getRoleById(args[5]), voiceChannel, Arrays.asList(VOICE_CONNECT, MANAGE_CHANNEL));
+                        addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, List.of(VOICE_CONNECT));
+                    }
+                    event.deferEdit().queue();
+                } else {
+                    event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
+                }
+                break;
         }
     }
 

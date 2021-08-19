@@ -11,13 +11,15 @@ public class ChannelLogHelper {
     Map<String, JsonFileManager> channelLogs = new HashMap<>();
 
 
+    @SuppressWarnings("ALL")
     public JsonFileManager getChannelFileManager(String guildID, String channelID) {
         if (channelLogs.containsKey(channelID))
             return channelLogs.get(channelID);
 
         File filepath = new File(guildSettingFolder.getPath() + '/' + guildID + '/' + channelLogFolder.getPath());
-        if (!filepath.exists())
+        if (!filepath.exists()) {
             filepath.mkdirs();
+        }
 
         JsonFileManager channelFileManager = new JsonFileManager(filepath.getPath() + '/' + channelID + ".json");
         channelLogs.put(channelID, channelFileManager);

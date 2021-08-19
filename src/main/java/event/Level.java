@@ -23,10 +23,7 @@ public class Level {
                 // 取得訊息資料
                 JSONObject levelLog = data.getJSONObject(event.getMember().getId());
                 count = levelLog.getLong(COUNT);
-                if (count == null)
-                    count = 0L;
-                else
-                    count++;
+                count++;
             }
             data.put(event.getMember().getId(), new JSONObject().put(COUNT, count));
             channelFileManager.saveFile();

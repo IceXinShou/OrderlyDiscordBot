@@ -9,9 +9,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class ImageGraphMaker {
-    private BufferedImage image;
-    private double valueEnd;
-    private double valueStart;
+    private final BufferedImage image;
+    private final double valueEnd;
+    private final double valueStart;
 
     public ImageGraphMaker(int imageWidth, int imageHeight, List<Long> timeList, List<Double> valueList) {
         ValueMapping valueMap = new ValueMapping(20, imageHeight - 30);
@@ -92,21 +92,16 @@ public class ImageGraphMaker {
         }
         double startValue = cut((valueMap.getInputMin() - (valueMap.getInputMin() % eachAdd) + eachAdd));
         int lineCount = (int) ((valueMap.getInputMax() - valueMap.getInputMin()) / eachAdd + 0.5);
-//        System.out.println(startValue);
-//        System.out.println(lineCount);
-//        System.out.println(eachAdd);
-//        System.out.println(minValueInt);
-//        System.out.println(valueMap.getInputMax());
         DecimalFormat formatter = new DecimalFormat("#,###");
 
 
-        /**
-         * 開始畫圖
+        /*
+          開始畫圖
          */
         canvas.setColor(Color.decode("#9EA0AF"));
         canvas.setStroke(new BasicStroke(1));
         for (i = 0; i < lineCount; i++) {
-            Double value = cut(startValue + i * eachAdd);
+            double value = cut(startValue + i * eachAdd);
             int y = imageHeight - (int) valueMap.mapValue(value) - 1;
             canvas.drawLine(0, y, imageWidth - 1, y);
         }
@@ -142,17 +137,17 @@ public class ImageGraphMaker {
     }
 
     public byte[] getImageBytes() {
-        return toByteArray(image, "png");
+        return toByteArray(image);
     }
 
     private double cut(double in) {
         return (long) (in * 10) / 10f;
     }
 
-    private byte[] toByteArray(BufferedImage bi, String format) {
+    private byte[] toByteArray(BufferedImage bi) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            ImageIO.write(bi, format, out);
+            ImageIO.write(bi, "png", out);
         } catch (IOException e) {
             return null;
         }

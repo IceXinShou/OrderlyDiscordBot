@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static main.java.event.Log.consoleChannel;
 
@@ -62,24 +63,25 @@ public class BotSetting {
         loadVariable();
     }
 
+    @SuppressWarnings("ALL")
     private void loadVariable() {
         Map<String, Object> GeneralSettings = (Map<String, Object>) settings.get("GeneralSettings");
         Map<String, Object> RoomSettings = (Map<String, Object>) settings.get("RoomSettings");
         Map<String, Object> TicketSettings = (Map<String, Object>) settings.get("TicketSettings");
 
-        /**
+        /*
          * Bol
          */
         debugMode = (Boolean) GeneralSettings.get("debugMode");
 
-        /**
+        /*
          * Token
          */
         botToken = (String) GeneralSettings.get("botToken");
         if (multiMusicBotTokens.size() > 0) multiMusicBotTokens.clear();
         multiMusicBotTokens.addAll((List<String>) MultiBot.get("tokens"));
 
-        /**
+        /*
          * ID
          */
         GuildUtil.guildID = (String) IDSettings.get("guildID");
@@ -98,7 +100,7 @@ public class BotSetting {
         botOwnerID.addAll((List<String>) GeneralSettings.get("botOwnerID"));
 
 
-        /**
+        /*
          * Text
          */
         apiKEY = (String) GeneralSettings.get("apiKey");
@@ -124,14 +126,14 @@ public class BotSetting {
         }
 
 
-        /**
+        /*
          * Room
          */
         defaultRoomName = (String) RoomSettings.get("defaultRoomName");
         defaultRoomChatName = (String) RoomSettings.get("defaultRoomChatName");
         roomBitrate = (Integer) RoomSettings.get("defaultRoomBitrate");
 
-        /**
+        /*
          * Services
          */
         defaultServiceMessage = (String) TicketSettings.get("defaultTicketMessage");
@@ -175,6 +177,7 @@ public class BotSetting {
         logConsole.reset();
     }
 
+    @SuppressWarnings("ALL")
     private void setLog() {
         // 原本的console
         PrintStream originalErrConsole = System.err;
@@ -286,12 +289,12 @@ public class BotSetting {
         File settingFile = new File(System.getProperty("user.dir") + "/" + settingFileName); // 讀取設定檔
         if (!settingFile.exists()) { // 如果沒有設定檔
             System.err.println(TAG + " setting not found, create default settings");
-            settingFile = exportResource(settingFileName); // 用自帶的default設定檔
+            settingFile = exportResource(); // 用自帶的default設定檔
         }
-        System.out.println(TAG + " load setting from: " + settingFile.getPath());
+        System.out.println(TAG + " load setting from: " + Objects.requireNonNull(settingFile).getPath());
 
 
-        /**
+        /*
          * 讀取設定
          */
 
@@ -314,16 +317,17 @@ public class BotSetting {
         System.out.println(TAG + " Setting file loaded");
     }
 
-    private @Nullable File exportResource(String resourceName) {
-        InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+    private @Nullable File exportResource() {
+        String sfn = BotSetting.settingFileName;
+        InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(sfn);
 
         try {
             if (fileInJar == null) {
-                System.err.println(TAG + " can not find resource: " + resourceName);
+                System.err.println(TAG + " can not find resource: " + sfn);
                 return null;
             }
-            Files.copy(fileInJar, Paths.get(System.getProperty("user.dir") + "/" + resourceName), StandardCopyOption.REPLACE_EXISTING);
-            return new File(System.getProperty("user.dir") + "/" + resourceName);
+            Files.copy(fileInJar, Paths.get(System.getProperty("user.dir") + "/" + sfn), StandardCopyOption.REPLACE_EXISTING);
+            return new File(System.getProperty("user.dir") + "/" + sfn);
         } catch (IOException e) {
             System.err.println(TAG + " read resource failed");
         }

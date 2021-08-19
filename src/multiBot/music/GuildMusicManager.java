@@ -38,6 +38,7 @@ public class GuildMusicManager {
         player.addListener(scheduler);
     }
 
+    @SuppressWarnings("ALL")
     public interface Event {
         void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search);
 

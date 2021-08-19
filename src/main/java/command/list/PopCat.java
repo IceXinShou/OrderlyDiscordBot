@@ -36,7 +36,7 @@ public class PopCat {
         helper.getAllData(builder, event, 1, true, true);
     }
 
-    public void onCommandSpeed(SlashCommandEvent event) {
+    public void onCommandSpeed(@NotNull SlashCommandEvent event) {
         SelectionMenu.Builder builder = SelectionMenu.create("PopCat:speed:" + event.getUser().getId() + ":1"); // page1
         helper.getAllData(builder, event, 1, true, false);
     }

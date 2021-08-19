@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class PopCatHelper {
 
     public PopCatHelper() {
         try {
-            Map<String, Object> data = new JSONObject(new String(Files.readAllBytes(Paths.get("E:\\Plugin\\RunBot\\countryCode.json")), StandardCharsets.UTF_8)).toMap();
+            Map<String, Object> data = new JSONObject(Files.readString(Paths.get("countryCode.json"))).toMap();
             data.forEach((key, value) -> {
                 countryCode.put((String) value, key);
                 countryName.put(key, (String) value);
@@ -95,7 +94,7 @@ public class PopCatHelper {
             speedLeaderboard = new HashMap<>();
             for (Object i : allRegion) {
                 String countryCode = ((JSONObject) i).getJSONObject("metric").getString("region").toLowerCase();
-                long value = Long.parseLong(String.format("%.0f",((JSONObject) i).getJSONArray("values").getJSONArray(0).getDouble(1)));
+                long value = Long.parseLong(String.format("%.0f", ((JSONObject) i).getJSONArray("values").getJSONArray(0).getDouble(1)));
                 speedLeaderboard.put(countryCode, value);
             }
             speedLeaderboard = sortByValue(speedLeaderboard);
@@ -134,7 +133,7 @@ public class PopCatHelper {
 
     public void getOneData(SelectionMenuEvent event, boolean pop) {
         long endTime = System.currentTimeMillis() / 1000;
-        long startTime = endTime - 60 * 60 * 24 * 5;
+        long startTime = endTime - 60 * 60 * 24 * 3;
         int step = (int) ((endTime - startTime) / 50);
 
         String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=" +
@@ -154,6 +153,7 @@ public class PopCatHelper {
                     valueList.add(data.getDouble(1));
                 }
                 break;
+
             }
         }
 

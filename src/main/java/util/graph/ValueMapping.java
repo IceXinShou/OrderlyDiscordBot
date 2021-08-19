@@ -1,8 +1,10 @@
 package main.java.util.graph;
 
 public class ValueMapping {
-    private double inputMin, inputMax,
-            outputMin, outputMax;
+    private double inputMin;
+    private double inputMax;
+    private final double outputMin;
+    private final double outputMax;
 
     public ValueMapping(double outputMin, double outputMax) {
         this.inputMin = -1;

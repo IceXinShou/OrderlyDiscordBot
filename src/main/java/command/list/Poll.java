@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.EmojiUtil.dotEmojis;
@@ -25,9 +26,9 @@ public class Poll {
             fields.add(new MessageEmbed.Field(dotEmojis[i - 1].getAsMention() + event.getOptions().get(i).getAsString(), "", false));
         }
         event.getChannel().sendMessageEmbeds(createEmbed(
-                event.getOption(QUESTION).getAsString(), null,
+                Objects.requireNonNull(event.getOption(QUESTION)).getAsString(), null,
                 "成員投票",
-                event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
+                Objects.requireNonNull(event.getMember()).getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {

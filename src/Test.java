@@ -1,11 +1,8 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
-import static main.java.util.CountryCodeToEmoji.countryCodeToEmoji;
-import static main.java.util.SortByValue.sortByValue;
 import static main.java.util.UrlDataGetter.getData;
 
 public class Test {
@@ -34,6 +31,7 @@ public class Test {
 //
 //    }
 
+    @SuppressWarnings("ALL")
     public static void main(String[] args) {
         new Test();
     }

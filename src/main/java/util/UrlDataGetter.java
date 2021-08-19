@@ -86,7 +86,6 @@ public class UrlDataGetter {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];
             int length;
-            //when readed it end
             while ((length = in.read(buff)) > 0) {
                 out.write(buff, 0, length);
             }

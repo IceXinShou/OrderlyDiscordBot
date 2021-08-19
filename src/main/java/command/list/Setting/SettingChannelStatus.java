@@ -7,19 +7,16 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
-public class SettingChannelStatus {
-    private final GuildSettingHelper settingHelper;
-
-    public SettingChannelStatus(GuildSettingHelper settingHelper) {
-        this.settingHelper = settingHelper;
-    }
+public record SettingChannelStatus(GuildSettingHelper settingHelper) {
 
     public void newCS(@NotNull SlashCommandEvent event, @NotNull StatusListener listener) {
-        String name = event.getOption("channelname").getAsString();
-        String format = String.valueOf(event.getOption("format").getAsLong());
+        String name = Objects.requireNonNull(event.getOption("channelname")).getAsString();
+        String format = String.valueOf(Objects.requireNonNull(event.getOption("format")).getAsLong());
         if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10)
             event.getHook().editOriginalEmbeds(createEmbed("格式化位數錯誤", 0xFF0000)).queue();
         else {
@@ -29,7 +26,7 @@ public class SettingChannelStatus {
             if (check.haveError())
                 event.getHook().editOriginalEmbeds(createEmbed(check.getError(), 0xFF0000)).queue();
             else {
-                settingHelper.getSettingData(event.getGuild(), CS_SETTING).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
+                settingHelper.getSettingData(Objects.requireNonNull(event.getGuild()), CS_SETTING).put(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
                 settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
                 listener.updateGuild(event.getGuild());
                 event.getHook().editOriginalEmbeds(createEmbed("設定成功", 0x00FFFF)).queue();
@@ -38,11 +35,11 @@ public class SettingChannelStatus {
     }
 
     public void removeCS(@NotNull SlashCommandEvent event) {
-        JSONObject data = settingHelper.getSettingData(event.getGuild(), CS_SETTING);
-        String channelID = event.getOption("channel").getAsGuildChannel().getId();
+        JSONObject data = settingHelper.getSettingData(Objects.requireNonNull(event.getGuild()), CS_SETTING);
+        String channelID = Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId();
 
         data.remove(channelID);
-        event.getOption("channel").getAsGuildChannel().delete().queue();
+        Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().delete().queue();
         event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
 

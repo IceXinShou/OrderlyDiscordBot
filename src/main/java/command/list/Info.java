@@ -7,14 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.java.util.EmbedCreator.createEmbed;
-
 public class Info {
 
+    @SuppressWarnings("ALL")
     public void onCommand(@NotNull SlashCommandEvent event) {
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
-        fields.add(new MessageEmbed.Field("**伺服器總數: **", String.valueOf(event.getJDA().getGuilds().stream().count()), false));
+        fields.add(new MessageEmbed.Field("**伺服器總數: **", String.valueOf((long) event.getJDA().getGuilds().size()), false));
 
 //        event.getHook().editOriginalEmbeds(createEmbed());
 

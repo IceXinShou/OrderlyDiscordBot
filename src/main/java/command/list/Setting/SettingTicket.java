@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static main.java.BotSetting.defaultTicketChannelName;
 import static main.java.Main.botID;
@@ -26,12 +27,7 @@ import static main.java.util.JsonKeys.*;
 import static main.java.util.Tag.tagChannel;
 import static main.java.util.Tag.tagChannelID;
 
-public class SettingTicket {
-    private final GuildSettingHelper settingHelper;
-
-    public SettingTicket(GuildSettingHelper settingHelper) {
-        this.settingHelper = settingHelper;
-    }
+public record SettingTicket(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ConstantConditions")
     public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {
@@ -264,9 +260,9 @@ public class SettingTicket {
     }
 
     public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
-        JSONObject data = getSettingData(event.getGuild(), settingHelper);
-        String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();
-        if (data.has(channelID)) {
+        JSONObject data = getSettingData(Objects.requireNonNull(event.getGuild()), settingHelper);
+        String channelID = Objects.requireNonNull(event.getOption("messagechannel")).getAsGuildChannel().getId();
+        if (Objects.requireNonNull(data).has(channelID)) {
             TextChannel channel;
             if ((channel = event.getGuild().getTextChannelById(channelID)) == null) {
                 event.getHook().editOriginalEmbeds(createEmbed("移除失敗 (找不到此頻道)", 0xFF0000)).queue();
@@ -275,7 +271,7 @@ public class SettingTicket {
                 return;
             }
             JSONObject messageChannel = data.getJSONObject(channelID);
-            String messageID = event.getOption("messageid").getAsString();
+            String messageID = Objects.requireNonNull(event.getOption("messageid")).getAsString();
             if (messageChannel.has(messageID)) {
                 Message message;
                 if ((message = channel.retrieveMessageById(messageID).complete()) == null || !message.getAuthor().getId().equals(botID)) {
@@ -286,7 +282,7 @@ public class SettingTicket {
                 }
                 JSONArray messageButtons = messageChannel.getJSONArray(messageID);
                 // {messageChannel:{messageID:[{},{},{},{},{}]}}
-                Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (event.getOption("position").getAsLong() - 1)));
+                Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (Objects.requireNonNull(event.getOption("position")).getAsLong() - 1)));
                 if (ticket.isButtonUsed(channelID, messageID, removePos)) {
                     event.getHook().editOriginalEmbeds(createEmbed("此按鈕目前正在被使用，請先關閉所有關於此按鈕的客服再執行此指令", 0xFF0000)).queue();
                     return;
@@ -330,7 +326,8 @@ public class SettingTicket {
             event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
     }
 
-    private @Nullable JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
+    private @Nullable
+    JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
         JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
         if (fileManager.data.has(TICKET_SETTING))
             return fileManager.data.getJSONObject(TICKET_SETTING);
@@ -341,7 +338,8 @@ public class SettingTicket {
         }
     }
 
-    private @Nullable Emoji toEmoji(@NotNull String emojiName, Guild guild) {
+    private @Nullable
+    Emoji toEmoji(@NotNull String emojiName, Guild guild) {
         int startIndex;
         if ((startIndex = emojiName.indexOf("<")) != -1) {
             int endIndex = emojiName.indexOf(">", startIndex);
@@ -394,7 +392,7 @@ public class SettingTicket {
     }
 }
 
-/**
+/*
  * buttonType:
  * RED, GREEN, BLUE, GRAY
  * <p>

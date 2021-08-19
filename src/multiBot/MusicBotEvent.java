@@ -10,20 +10,16 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import static main.java.util.EmbedCreator.createEmbed;
 
-public class MusicBotEvent implements GuildMusicManager.Event {
-    private final MultiMusicBotManager musicBotManager;
-
-
-    public MusicBotEvent(MultiMusicBotManager musicBotManager) {
-        this.musicBotManager = musicBotManager;
-    }
+public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements GuildMusicManager.Event {
 
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search) {
         if (musicBot != null) {
-            musicBot.displayQueue(event, search);
+            musicBot.displayQueue(event, search, event.getGuild());
         }
     }
 
@@ -32,13 +28,11 @@ public class MusicBotEvent implements GuildMusicManager.Event {
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
         MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? "已插播" : "已添加至播放清單",
-                new StringBuilder()
-                        .append(" \uD83D\uDC40 ").append(String.format("%,d", musicInfo.getViewCount()))
-                        .append(" | \uD83D\uDC4D ").append(String.format("%,d", musicInfo.getLikeCount()))
-                        .append(" | \uD83D\uDC4E ").append(String.format("%,d", musicInfo.getDislikeCount()))
-                        .append(" | \uD83D\uDCAC ").append(String.format("%,d", musicInfo.getCommentCount()))
-                        .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
-                        .toString()
+                " \uD83D\uDC40 " + String.format("%,d", musicInfo.getViewCount()) +
+                        " | \uD83D\uDC4D " + String.format("%,d", musicInfo.getLikeCount()) +
+                        " | \uD83D\uDC4E " + String.format("%,d", musicInfo.getDislikeCount()) +
+                        " | \uD83D\uDCAC " + String.format("%,d", musicInfo.getCommentCount()) +
+                        " | \uD83D\uDCC5 " + musicInfo.getPublishDate().replace(',', '-')
                 , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                 0xe5b849);
         if (search) {
@@ -82,7 +76,7 @@ public class MusicBotEvent implements GuildMusicManager.Event {
     public void noMoreTrack(GenericInteractionCreateEvent event, @NotNull Guild guild) {
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
-            musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
+            musicBotManager.setBotToChannel(guild.getId(), Objects.requireNonNull(guild.getAudioManager().getConnectedChannel()).getId(), null);
             guild.getAudioManager().closeAudioConnection();
         }
 

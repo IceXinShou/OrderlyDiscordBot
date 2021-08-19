@@ -24,13 +24,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static main.java.util.EmbedCreator.createEmbed;
 
 public class MusicBot {
-    private final String TAG;
     private final JDA jda;
     private final String botID;
     private final GuildMusicManager.Event event;
@@ -42,7 +42,6 @@ public class MusicBot {
     public Map<String, GuildMusicManager> musicManagers;
 
     public MusicBot(@NotNull JDA jda, MultiMusicBotManager musicBotManager, GuildMusicManager.Event event) {
-        this.TAG = "[" + jda.getSelfUser().getName() + "]";
         this.jda = jda;
         this.botID = jda.getSelfUser().getId();
         this.event = event;
@@ -76,22 +75,19 @@ public class MusicBot {
     }
 
     public void nextTrack(@NotNull SlashCommandEvent event, boolean search) {
-        getMusicManager(event.getGuild()).scheduler.nextTrack(event, this, search);
+        Guild guild;
+        if ((guild = event.getGuild()) == null)
+            return;
+        getMusicManager(guild).scheduler.nextTrack(event, this, search);
 
     }
 
-//    public void playPrevious(@NotNull SlashCommandEvent event) {
-//        Guild guild = jda.getGuildById(event.getGuild().getId());
-//        connectVC(guild, event.getMember().getVoiceState().getChannel());
-//        getMusicManager(event.getGuild()).scheduler.previousTrack(event);
-//    }
-
-    public void toggleRepeat(@NotNull SlashCommandEvent event) {
-        getMusicManager(event.getGuild()).scheduler.toggleRepeat(event);
+    public void toggleRepeat(@NotNull SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.toggleRepeat(event);
     }
 
-    public void toggleLoop(@NotNull SlashCommandEvent event) {
-        getMusicManager(event.getGuild()).scheduler.toggleLoop(event);
+    public void toggleLoop(@NotNull SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.toggleLoop(event);
     }
 
     public void pause(SlashCommandEvent event, Guild guild) {
@@ -102,14 +98,14 @@ public class MusicBot {
         getMusicManager(guild).scheduler.play(event);
     }
 
-    public void remove(@NotNull SlashCommandEvent event) {
-        int index = (int) event.getOption("index").getAsLong();
-        getMusicManager(event.getGuild().getId()).scheduler.remove(index, event);
+    public void remove(@NotNull SlashCommandEvent event, Guild guild) {
+        int index = (int) Objects.requireNonNull(event.getOption("index")).getAsLong();
+        getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
 
-    public void loadAndPlay(final @NotNull GenericInteractionCreateEvent event, final String trackUrl, boolean search, boolean playNow) {
-        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
-        GuildMusicManager manager = getMusicManager(jda.getGuildById(event.getGuild().getId()));
+    public void loadAndPlay(final @NotNull GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow) {
+        VoiceChannel vc = Objects.requireNonNull(Objects.requireNonNull(event.getMember()).getVoiceState()).getChannel();
+        GuildMusicManager manager = getMusicManager(Objects.requireNonNull(jda.getGuildById(guild.getId())));
         // 取得音樂
         playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
             @Override
@@ -141,8 +137,8 @@ public class MusicBot {
 
     }
 
-    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean search) {
-        GuildMusicManager musicManager = getMusicManager(event.getGuild());
+    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean search, Guild guild) {
+        GuildMusicManager musicManager = getMusicManager(guild);
         TrackScheduler scheduler = musicManager.scheduler;
         if (scheduler.musicInfo == null) {
             event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
@@ -151,27 +147,27 @@ public class MusicBot {
 
         scheduler.calculatePauseTime();
         MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
-        if (musicManager.guild.getSelfMember().getVoiceState().getChannel() == null) {
+        if (Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState()).getChannel() == null) {
             if (search)
                 event.replyEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).setEphemeral(true).queue();
             else
                 event.getHook().editOriginalEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).queue();
             return;
         }
-        String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
+        String vcID = Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState().getChannel()).getId();
         if (search) {
             event.getInteraction().deferReply(true).addEmbeds(embed[0], embed[1])
-                    .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                    .addActionRows(controlButtons(Objects.requireNonNull(event.getMember()).getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
         } else
             event.getHook().editOriginalComponents()
                     .setEmbeds(embed[0], embed[1])
-                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                    .setActionRows(controlButtons(Objects.requireNonNull(event.getMember()).getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
     }
 
-    public void disconnect(@NotNull SlashCommandEvent event) {
-        getMusicManager(event.getGuild()).scheduler.stopPlay(event);
+    public void disconnect(@NotNull SlashCommandEvent event, Guild guild) {
+        getMusicManager(guild).scheduler.stopPlay(event);
     }
 
     public void stopPlay(Guild guild) {
@@ -212,32 +208,32 @@ public class MusicBot {
 
             // 組裝
             nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(),
-                    progress.toString(),
-                    new StringBuilder()
-                            .append(" \uD83D\uDC40 ").append(String.format("%,d", musicInfo.getViewCount()))
-                            .append(" | \uD83D\uDC4D ").append(String.format("%,d", musicInfo.getLikeCount()))
-                            .append(" | \uD83D\uDC4E ").append(String.format("%,d", musicInfo.getDislikeCount()))
-                            .append(" | \uD83D\uDCAC ").append(String.format("%,d", musicInfo.getCommentCount()))
+                    progress.toString(), "" +
+                            " \uD83D\uDC40 " + String.format("%,d", musicInfo.getViewCount()) +
+                            " | \uD83D\uDC4D " + String.format("%,d", musicInfo.getLikeCount()) +
+                            " | \uD83D\uDC4E " + String.format("%,d", musicInfo.getDislikeCount()) +
+                            " | \uD83D\uDCAC " + String.format("%,d", musicInfo.getCommentCount()) +
 //                            .append(" | \uD83D\uDD0A ").append(String.format("%.2f db", musicInfo.getLoudness()))
-                            .append(" | \uD83D\uDCC5 ").append(musicInfo.getPublishDate().replace(',', '-'))
-
-                            .toString()
-                    , musicInfo.getChannelName(),musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
+                            " | \uD83D\uDCC5 " + musicInfo.getPublishDate().replace(',', '-')
+                    , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
         } else {
             nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
         }
-        // 歌曲列表
-//        List<MessageEmbed.Field> fields = new ArrayList<>();
-//        if (scheduler.getQueue().size() == 0)
-//            fields.add(new MessageEmbed.Field("無", "", false));
-//        else {
-//            List<AudioTrack> inQueue = scheduler.getQueue();
-//            int index = inQueue.size();
-//            for (AudioTrack track : inQueue) {
-//                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : ""/*"**[" + (timeCalculator(songLength)) + "]**"*/, false));
-//            }
-//        }
+
+// 歌曲列表
+/*
+        List<MessageEmbed.Field> fields = new ArrayList<>();
+        if (scheduler.getQueue().size() == 0)
+            fields.add(new MessageEmbed.Field("無", "", false));
+        else {
+            List<AudioTrack> inQueue = scheduler.getQueue();
+            int index = inQueue.size();
+            for (AudioTrack track : inQueue) {
+                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : """**[" + (timeCalculator(songLength)) + "]**", false));
+            }
+}
+*/
 
         StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue().size() == 0)
@@ -292,6 +288,7 @@ public class MusicBot {
         return builder.toString();
     }
 
+    @SuppressWarnings("ALL")
     private void connectVC(@NotNull Guild guild, VoiceChannel vc, GenericInteractionCreateEvent event) {
         if (!guild.getAudioManager().isConnected()) {
             try {
