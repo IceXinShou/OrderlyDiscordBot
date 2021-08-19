@@ -283,7 +283,7 @@ public class ListenerManager extends ListenerAdapter {
     public void onButtonClick(@NotNull ButtonClickEvent event) {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
-        if (!args[2].equals(event.getUser().getId()) && !args[2].equals("")) {
+        if (!args[2].equals(event.getUser().getId()) && !args[2].equals("") && !args[2].equals("everyone")) {
             event.getInteraction().deferReply(true).addEmbeds(createEmbed("此為他人的按鈕", 0xFF0000)).queue();
             return;
         }
