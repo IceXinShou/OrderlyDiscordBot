@@ -301,7 +301,6 @@ public class ListenerManager extends ListenerAdapter {
         event.getInteraction().deferReply(true).queue();
 
         // 如果找不到伺服器 ->
-
         if (event.getGuild() == null) {
             if (debugMode) {
                 System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
