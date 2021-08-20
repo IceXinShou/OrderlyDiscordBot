@@ -51,6 +51,12 @@
   > Bot will make you in a channel which is for you
   
  
+### ChannelStatus
+  * Show server status on channel name
+  * All of Placehodlers can use
+  * You can calculate with Placeholders like `${%online_member%-%working_member%}`
+
+
 <br><br><br><br><br>
 
 # Report and Support
@@ -58,5 +64,5 @@
   * Contact Discord: XinShou#0404 
 
 
-#Setup
+# Setup
   > Working...
