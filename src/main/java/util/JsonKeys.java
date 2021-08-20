@@ -53,11 +53,14 @@ public class JsonKeys {
     public final static String CS_NAME = "N";
     public final static String CS_FORMAT = "F";
 
-    // for GuildJoinLeave
-    public final static String JL_SETTING = "jl";
-    public final static String JL_JOIN_MESSAGE = "JM";
-    public final static String JL_JOIN_ROLE = "JL";
-    public final static String JL_JOIN_DM = "DM";
-    public final static String JL_LEAVE_MESSAGE = "LM";
+    // for GuildJoin
+    public final static String J_SETTING = "j";
+    public final static String J_JOIN_MESSAGE = "JM";
+    public final static String J_JOIN_ROLE = "JR";
+    public final static String J_JOIN_DM = "DM";
+
+    // for GuildLeave
+    public final static String L_SETTING = "l";
+    public final static String L_LEAVE_MESSAGE = "LM";
 
 }

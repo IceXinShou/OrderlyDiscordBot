@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
+import static main.java.util.Tag.tagRoleID;
 
 public record SettingJoinLeave(GuildSettingHelper settingHelper) {
 
@@ -28,11 +30,6 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         GuildChannel channel = Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel();
         String message = Objects.requireNonNull(event.getOption("message")).getAsString();
         String dm = event.getOption("dm") == null ? null : Objects.requireNonNull(event.getOption("dm")).getAsString();
-        List<String> roles = new ArrayList<>();
-        for (OptionMapping i : event.getOptions()) {
-            if (i.getName().startsWith("role") && !roles.contains(i.getAsRole().getId()))
-                roles.add(i.getAsRole().getId());
-        }
 
         if (channel.getType() != ChannelType.TEXT)
             fields.add(new MessageEmbed.Field("找不到文字頻道", "", false));
@@ -42,30 +39,31 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
             return;
         }
 
-        JSONObject data = getOrDefault(settingHelper.getSettingData(event.getGuild(), JL_SETTING), channel.getId());
-        data.put(JL_JOIN_MESSAGE, message);
-        data.put(JL_JOIN_DM, dm);
-        data.put(JL_JOIN_ROLE, roles);
 
-        StringBuilder roleData = null;
+        JSONArray roles = new JSONArray();
+        StringBuilder roleData = new StringBuilder();
         int n = 0;
         for (OptionMapping i : event.getOptions())
-            if (i.getName().startsWith("role") && !roles.contains(i.getAsRole().getId())) {
+            if (i.getName().startsWith("role") && !roles.toList().contains(i.getAsRole().getId())) {
                 n++;
-                roleData.append(i.getAsRole().getName()).append("`(").append(i.getAsRole().getId()).append(")`\n");
-                data.put("R" + n, i.getAsRole().getId());
+                roleData.append(tagRoleID(i.getAsRole().getId())).append("`(").append(i.getAsRole().getId()).append(")`\n");
+                roles.put(i.getAsRole().getId());
             }
 
         fields.add(new MessageEmbed.Field("通知頻道", channel.getAsMention() + "\n`(" + channel.getId() + ")`", false));
         fields.add(new MessageEmbed.Field("通知訊息", message, false));
+        JSONObject data = getOrDefault(settingHelper.getSettingData(event.getGuild(), J_SETTING), channel.getId());
+
+        data.put(J_JOIN_MESSAGE, message);
         if (dm != null) {
-            data.put(JL_JOIN_DM, dm);
+            data.put(J_JOIN_DM, dm);
             fields.add(new MessageEmbed.Field("私聊訊息", dm, false));
         }
 
-        if (roleData != null)
+        if (roleData != null) {
             fields.add(new MessageEmbed.Field("新增身分組", roleData.toString(), false));
-
+            data.put(J_JOIN_ROLE, roles);
+        }
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x00FFFF)).queue();
     }
@@ -73,7 +71,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
     public void newLeave(@NotNull SlashCommandEvent event) {
         if (event.getGuild() == null)
             return;
-        JSONObject data = settingHelper.getSettingData(event.getGuild(), JL_SETTING);
+        JSONObject data = settingHelper.getSettingData(event.getGuild(), L_SETTING);
         List<MessageEmbed.Field> fields = new ArrayList<>();
         GuildChannel channel = Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel();
         String message = Objects.requireNonNull(event.getOption("message")).getAsString();
@@ -83,7 +81,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
             event.getHook().editOriginalEmbeds(createEmbed("設定失敗", fields, 0xFF0000)).queue();
             return;
         }
-        getOrDefault(data, channel.getId()).put(JL_LEAVE_MESSAGE, message);
+        getOrDefault(data, channel.getId()).put(L_LEAVE_MESSAGE, message);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         fields.add(new MessageEmbed.Field("通知頻道", channel.getAsMention() + "\n`(" + channel.getId() + ")`", false));
         fields.add(new MessageEmbed.Field("通知訊息", message, false));
@@ -93,17 +91,17 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
     public void removeJoin(@NotNull SlashCommandEvent event) {
         if (event.getGuild() == null)
             return;
-        JSONObject data = settingHelper.getSettingData(event.getGuild(), JL_SETTING);
+        JSONObject data = settingHelper.getSettingData(event.getGuild(), J_SETTING);
 
         if (!data.has(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId())) {
             event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
             return;
         }
-        if (!data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).has(JL_JOIN_MESSAGE)) {
+        if (!data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).has(J_JOIN_MESSAGE)) {
             event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
             return;
         }
-        data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).remove(JL_JOIN_MESSAGE);
+        data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).remove(J_JOIN_MESSAGE);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
     }
@@ -111,18 +109,18 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
     public void removeLeave(@NotNull SlashCommandEvent event) {
         if (event.getGuild() == null)
             return;
-        JSONObject data = settingHelper.getSettingData(event.getGuild(), JL_SETTING);
+        JSONObject data = settingHelper.getSettingData(event.getGuild(), L_SETTING);
         if (!data.has(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId())) {
             event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
             return;
         }
 
-        if (!data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).has(JL_LEAVE_MESSAGE)) {
+        if (!data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).has(L_LEAVE_MESSAGE)) {
             event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
             return;
         }
 
-        data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).remove(JL_LEAVE_MESSAGE);
+        data.getJSONObject(Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId()).remove(L_LEAVE_MESSAGE);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
     }
