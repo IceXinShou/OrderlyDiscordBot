@@ -8,23 +8,29 @@ import static main.java.util.UrlDataGetter.getData;
 public class Test {
     Test() {
         long endTime = System.currentTimeMillis() / 1000;
-        long startTime = endTime;
-        int step = 1;
+        long startTime = endTime - 60 * 60 * 24 * 3;
+        int step = (int) ((endTime - startTime) / 100);
 
-        String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=max(popcat)%20by%20(region)&start=" + startTime + "&end=" + endTime + "&step=" + step;
+        String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=sum(rate(popcat%5B5m%5D))%20by%20(region)&start=" + startTime + "&end=" + endTime + "&step=" + step;
 
         JSONObject resultJson = new JSONObject(getData(popUrl));
         JSONArray allRegion = resultJson.getJSONObject("data").getJSONArray("result");
 
-        Map<String, Long> countryInfo = new HashMap<>();
+        JSONArray val = null;
         for (Object i : allRegion) {
             String countryCode = ((JSONObject) i).getJSONObject("metric").getString("region").toLowerCase();
-            long value = Long.parseLong(((JSONObject) i).getJSONArray("values").getJSONArray(0).getString(1));
-            countryInfo.put(countryCode, value);
+            if (countryCode.equals("tw")) {
+                val = ((JSONObject) i).getJSONArray("values");
+                break;
+            }
         }
-        countryInfo = sortByValue(countryInfo);
-        for (Map.Entry<String, Long> country : countryInfo.entrySet()) {
-            countryCodeToEmoji(country.getKey());
+        for (Object i : Objects.requireNonNull(val)) {
+            JSONArray array = (JSONArray) i;
+            Object data;
+            if ((data = array.get(1)).equals(0)) {
+                break;
+            }
+            System.out.println(data);
         }
     }
 //    private ImageGraphMaker getPopGraph() {
