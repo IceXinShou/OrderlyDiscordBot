@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -23,6 +22,9 @@ import java.util.Objects;
 import static main.java.BotSetting.defaultTicketChannelName;
 import static main.java.Main.botID;
 import static main.java.util.EmbedCreator.createEmbed;
+import static main.java.util.GetEmoji.toEmoji;
+import static main.java.util.JsonGetter.getOrDefault;
+import static main.java.util.JsonGetter.getOrDefaultArray;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.Tag.tagChannel;
 import static main.java.util.Tag.tagChannelID;
@@ -338,58 +340,6 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         }
     }
 
-    private @Nullable
-    Emoji toEmoji(@NotNull String emojiName, Guild guild) {
-        int startIndex;
-        if ((startIndex = emojiName.indexOf("<")) != -1) {
-            int endIndex = emojiName.indexOf(">", startIndex);
-            String[] ids = emojiName.substring(startIndex + 1, endIndex).split(":");
-            Emote emoji;
-            if (ids.length == 3 && (emoji = guild.getJDA().getEmoteById(ids[2])) != null)
-                return Emoji.fromEmote(emoji);
-            if (ids.length == 3)
-                return null;
-        }
-        if ((emojiName.startsWith("U+") || emojiName.startsWith("u+")))
-            return Emoji.fromUnicode(emojiName);
-        Emote emote;
-        if (isDigit(emojiName) && (emote = guild.getJDA().getEmoteById(emojiName)) != null)
-            return Emoji.fromEmote(emote);
-
-        List<Emote> emotes = guild.getEmotesByName(emojiName, false);
-        if (emotes.size() > 0)
-            return Emoji.fromEmote(emotes.get(0));
-        return null;
-    }
-
-    @Contract(pure = true)
-    private boolean isDigit(@NotNull String emojiName) {
-        for (char i : emojiName.toCharArray()) {
-            if (i < '0' || i > '9')
-                return false;
-        }
-        return true;
-    }
-
-    private JSONObject getOrDefault(@NotNull JSONObject input, String key) {
-        if (input.has(key))
-            return input.getJSONObject(key);
-        else {
-            JSONObject data = new JSONObject();
-            input.put(key, data);
-            return data;
-        }
-    }
-
-    private JSONArray getOrDefaultArray(@NotNull JSONObject input, String key) {
-        if (input.has(key))
-            return input.getJSONArray(key);
-        else {
-            JSONArray data = new JSONArray();
-            input.put(key, data);
-            return data;
-        }
-    }
 }
 
 /*

@@ -88,6 +88,7 @@ public class ListenerManager extends ListenerAdapter {
     URLShort sortURL = new URLShort();
     FileConvert fileConvert = new FileConvert();
     PopCat popCat = new PopCat();
+    Giveaway giveaway = new Giveaway(guildSettingHelper);
 
     /**
      * Guild Message
@@ -412,6 +413,10 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "popspeed" -> {
                 popCat.onCommandSpeed(event);
+                return;
+            }
+            case "newgiveaway" -> {
+                giveaway.newGiveaway(event);
                 return;
             }
             case "reload" -> {

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static main.java.util.EmbedCreator.createEmbed;
+import static main.java.util.JsonGetter.getOrDefault;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.Tag.tagRoleID;
 
@@ -125,13 +126,4 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
     }
 
-    private JSONObject getOrDefault(@NotNull JSONObject input, String key) {
-        if (input.has(key))
-            return input.getJSONObject(key);
-        else {
-            JSONObject data = new JSONObject();
-            input.put(key, data);
-            return data;
-        }
-    }
 }

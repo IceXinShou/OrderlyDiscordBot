@@ -63,4 +63,11 @@ public class JsonKeys {
     public final static String L_SETTING = "l";
     public final static String L_LEAVE_MESSAGE = "LM";
 
+    // for Giveaway
+    public final static String GIVEAWAY_SETTING = "giveaway";
+    public final static String GIVEAWAY_NAME = "N";
+    public final static String GIVEAWAY_TIME = "T";
+    public final static String GIVEAWAY_EMOJI = "E";
+    public final static String GIVEAWAY_WINNER_COUNT = "C";
+
 }
