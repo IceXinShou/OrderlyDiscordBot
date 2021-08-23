@@ -54,17 +54,20 @@ public class OwnJoin {
         }
 
         // 打開私聊
-        event.getUser().openPrivateChannel().queue(channel -> {
-            if (memberData.has(userID)) {
-                channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定\n" +
-                        "Your nickname had been set", 0xe5b849)).queue();
-                initMemberOnJoin(userID, channel, true);
-                FollowRoles(userID, channel);
-            } else {
-                initMemberOnJoin(userID, channel, false);
-            }
-        });
-
+        try {
+            event.getUser().openPrivateChannel().queue(channel -> {
+                if (memberData.has(userID)) {
+                    channel.sendMessageEmbeds(createEmbed("您已完成過暱稱設定\n" +
+                            "Your nickname had been set", 0xe5b849)).queue();
+                    initMemberOnJoin(userID, channel, true);
+                    FollowRoles(userID, channel);
+                } else {
+                    initMemberOnJoin(userID, channel, false);
+                }
+            });
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 

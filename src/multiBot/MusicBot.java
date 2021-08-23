@@ -11,6 +11,7 @@ import multiBot.music.GuildMusicManager;
 import multiBot.music.MusicInfoData;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
 import net.dv8tion.jda.api.entities.*;
@@ -324,7 +325,8 @@ public class MusicBot {
             guild.getAudioManager().setConnectionListener(null);
             // 新增bot到頻道
             musicBotManager.setBotToChannel(guild.getId(), vc.getId(), this);
-            guild.getSelfMember().deafen(true).queue();
+            if (guild.getSelfMember().getPermissions().contains(Permission.VOICE_DEAF_OTHERS))
+                guild.getSelfMember().deafen(true).queue();
         }
     }
 
