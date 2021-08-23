@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static main.java.util.JsonKeys.*;
 
 public class StatusListener {
+    private final String TAG = "[StatusListener] ";
     private final GuildSettingHelper settingHelper;
     //                guildID    typeName  value
     private final Map<String, Map<String, Integer>> guildsMemberStatus = new HashMap<>();
@@ -78,7 +79,7 @@ public class StatusListener {
         if (settingHelper.getSettingData(guild, CS_SETTING) == null)
             return;
         guild.loadMembers()
-                .onError(error -> System.err.println(error.getMessage()))
+                .onError(error -> System.err.println(TAG + " " + error.getMessage()))
                 .onSuccess(members -> {
                     int member_noBot = 0;
                     int member = members.size();

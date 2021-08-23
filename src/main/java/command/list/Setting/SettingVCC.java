@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,6 +22,7 @@ import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 public record SettingVCC(GuildSettingHelper settingHelper) {
 
     public void newVCC(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         String detectCategoryID = Objects.requireNonNull(event.getOption("detectcategory")).getAsString();
         String voiceName = Objects.requireNonNull(event.getOption("voicename")).getAsString();
 

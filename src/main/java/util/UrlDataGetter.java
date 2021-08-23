@@ -92,7 +92,7 @@ public class UrlDataGetter {
             in.close();
             return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            System.err.println(e.fillInStackTrace().getMessage());
+            System.err.println("[UrlDataGetter] " + e.fillInStackTrace().getMessage());
             return "";
         }
     }

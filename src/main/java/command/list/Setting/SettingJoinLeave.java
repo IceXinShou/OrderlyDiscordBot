@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -25,6 +26,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ALL")
     public void newJoin(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
 

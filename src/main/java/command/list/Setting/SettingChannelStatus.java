@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.event.StatusListener;
 import main.java.util.StringCalculate;
 import main.java.util.file.GuildSettingHelper;
@@ -38,6 +39,7 @@ public record SettingChannelStatus(GuildSettingHelper settingHelper) {
     }
 
     public void removeCS(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         JSONObject data = settingHelper.getSettingData(Objects.requireNonNull(event.getGuild()), CS_SETTING);
         String channelID = Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId();
 

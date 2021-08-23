@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -21,6 +22,7 @@ import static main.java.util.JsonKeys.*;
 public record SettingRoom(GuildSettingHelper settingHelper) {
 
     public void newRoom(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         GuildChannel detectChannel = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel();
         String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
         String voiceName = Objects.requireNonNull(event.getOption("voicename")).getAsString();
@@ -106,6 +108,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
     }
 
     public void removeRoom(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
 

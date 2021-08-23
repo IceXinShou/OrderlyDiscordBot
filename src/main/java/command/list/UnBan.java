@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -18,7 +19,6 @@ public class UnBan {
     public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         try {
-
             Member selfMember = Objects.requireNonNull(event.getGuild()).getSelfMember();
 
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {

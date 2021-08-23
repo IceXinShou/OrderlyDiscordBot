@@ -1,5 +1,6 @@
 package main.java.util.file;
 
+import main.java.Main;
 import main.java.util.graph.ImageGraphMaker;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -25,6 +26,7 @@ import static main.java.util.SortByValue.sortByValue;
 import static main.java.util.UrlDataGetter.getData;
 
 public class PopCatHelper {
+    private final String TAG = "[POPCat] ";
     public Map<String, String> countryCode = new HashMap<>();
     public Map<String, String> countryName = new HashMap<>();
 
@@ -37,7 +39,7 @@ public class PopCatHelper {
             });
 
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println(TAG + " " + e.getMessage());
         }
     }
 
@@ -117,6 +119,7 @@ public class PopCatHelper {
     }
 
     public void getAllData(SelectionMenu.Builder builder, GenericInteractionCreateEvent event, int page, boolean first, boolean pop) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         if (page > 1) {
             builder.addOption(lang.get(POPCATHELPER_PREVIEWS), "page:up:" + (page - 1), Emoji.fromUnicode("⬅️"));
         }

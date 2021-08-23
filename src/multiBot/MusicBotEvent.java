@@ -2,6 +2,7 @@ package multiBot;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import main.java.Main;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.MusicInfoData;
 import net.dv8tion.jda.api.entities.Guild;
@@ -27,6 +28,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
 
     @Override
     public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
         MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? lang.get(MUSICBOTEVENT_PLAY_NOW) : lang.get(MUSICBOTEVENT_ADDED_QUEUE),
@@ -68,6 +70,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
 
     @Override
     public void loop(boolean loopState, SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         if (loopState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
         } else {

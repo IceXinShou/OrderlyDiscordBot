@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GetEmoji.toEmoji;
-import static main.java.util.JsonGetter.getOrDefault;
+import static main.java.util.JsonGetter.getOrDefaultArray;
 import static main.java.util.JsonKeys.*;
 import static main.java.util.TimeFormatter.millisToOffset;
 import static main.java.util.TimeFormatter.timeFormat;
@@ -29,8 +30,8 @@ import static main.java.util.TimeFormatter.timeFormat;
 public record Giveaway(GuildSettingHelper settingHelper) {
 
 
-    //         GuildID ChannelID+MessageID EndTimeSec
-    static Map<String, Map<String, Long>> giveawayData = new HashMap<>();
+    //         GuildID  EndTimeSec
+    static Map<String, List<Long>> giveawayData = new HashMap<>();
 
     public void newGiveaway(@NotNull SlashCommandEvent event) {
         /**
@@ -165,18 +166,23 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                 queue();
     }
 
+    // giveaway:[{channelID:"channelID",messageID:"messageID",N:"GIVEAWAY_NAME",T:"GIVEAWAY_TIME",E:"GIVEAWAY_EMOJI",C:"GIVEAWAY_WINNER_COUNT"}]
+
 
     private void onReadyGiveaway(Guild guild) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(guild, GIVEAWAY_SETTING)).length() == 0) {
             return;
         }
-        Map<String, Long> j;
+        List<Long> endTime;
         if (giveawayData.containsKey(guild.getId()))
-            j = giveawayData.get(guild.getId());
+            endTime = giveawayData.get(guild.getId());
         else {
-            j = new HashMap<>();
-            giveawayData.put(guild.getId(), j);
+            endTime = new ArrayList<>();
+            giveawayData.put(guild.getId(), endTime);
+        }
+        for (Object i : data.getJSONArray(GIVEAWAY_ARRAY)) {
+            endTime.add(((JSONObject) i).getLong(GIVEAWAY_TIME));
         }
     }
 

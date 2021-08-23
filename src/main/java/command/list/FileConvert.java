@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.apache.http.client.utils.URIBuilder;
 import org.jetbrains.annotations.NotNull;

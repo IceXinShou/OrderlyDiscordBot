@@ -353,7 +353,7 @@ public class MultiMusicBotManager {
             bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, musicEvent));
             System.out.println(TAG + " " + jda.getSelfUser().getAsTag() + " Enabled");
         } catch (LoginException e) {
-            System.err.println(e.getMessage());
+            System.err.println(TAG + " " + e.getMessage());
         }
     }
 

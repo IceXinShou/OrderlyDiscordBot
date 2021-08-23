@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;

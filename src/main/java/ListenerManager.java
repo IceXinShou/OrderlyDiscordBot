@@ -155,6 +155,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
+        lang.loadGuildSetting(guild);
         newGuild.onCommand(event, commandRegister); // always
         statusListener.updateGuild(event.getGuild());
     }
@@ -168,6 +169,7 @@ public class ListenerManager extends ListenerAdapter {
      */
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+        lang.loadGuildSetting(event.getGuild());
         commandRegister.onGuildReady(event); // register commands
         voiceChannelCreator.onGuildReady(event);
         statusListener.updateGuild(event.getGuild());
@@ -412,7 +414,7 @@ public class ListenerManager extends ListenerAdapter {
                 return;
             }
             case "surl" -> {
-                sortURL.onCommand(event, false, null);
+                sortURL.onCommand(event, false, null, Main.lang.getGuildLang(event.getGuild().getId()));
                 return;
             }
             case "mp4togif" -> {

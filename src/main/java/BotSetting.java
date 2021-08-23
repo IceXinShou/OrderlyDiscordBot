@@ -4,7 +4,6 @@ import main.java.command.list.Invite;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
 import net.dv8tion.jda.api.entities.Role;
-import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -17,12 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static main.java.event.Log.consoleChannel;
 
 public class BotSetting {
-    private final static String settingFileName = "settings.yml";
     public static String botToken,
             helpBlockFooter,
             adminPermissionID, botRoleID,
@@ -166,6 +163,7 @@ public class BotSetting {
     public void reloadConfig() {
         loadConfigFile();
         loadVariable();
+        Main.lang.loadLanguage();
         System.out.println(TAG + " Settings reloaded");
     }
 
@@ -286,29 +284,7 @@ public class BotSetting {
     }
 
     private void loadConfigFile() {
-        File settingFile = new File(System.getProperty("user.dir") + "/" + settingFileName); // 讀取設定檔
-        if (!settingFile.exists()) { // 如果沒有設定檔
-            System.err.println(TAG + " setting not found, create default settings");
-            settingFile = exportResource(); // 用自帶的default設定檔
-        }
-        System.out.println(TAG + " load setting from: " + Objects.requireNonNull(settingFile).getPath());
-
-
-        /*
-         * 讀取設定
-         */
-
-        byte[] reader = new byte[0];
-        try {
-            reader = Files.readAllBytes(settingFile.toPath());
-        } catch (IOException e) {
-            System.err.println(TAG + " read setting failed");
-        }
-
-        String settingText = new String(reader, StandardCharsets.UTF_8); // 使用 UTF_8 讀取設定檔裡的所有字
-
-        Yaml yml = new Yaml();
-        settings = yml.load(settingText);
+        settings = readYml("settings.yml");
         IDSettings = (Map<String, Object>) settings.get("IDSettings");
         ServiceSettings = (Map<String, Object>) settings.get("ServiceSettings");
         RoomSettings = (Map<String, Object>) settings.get("RoomSettings");
@@ -317,17 +293,51 @@ public class BotSetting {
         System.out.println(TAG + " Setting file loaded");
     }
 
-    private @Nullable File exportResource() {
-        String sfn = BotSetting.settingFileName;
-        InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(sfn);
+    public Map<String, Object> readYml(String name) {
+        File settingFile = new File(System.getProperty("user.dir") + '/' + name); // 讀取設定檔
+        if (!settingFile.exists()) { // 如果沒有設定檔
+            System.err.println(TAG + name + " not found, create default " + name);
+            settingFile = exportResource(name); // 用自帶的default設定檔
+            if (settingFile == null) {
+                System.err.println(TAG + " read " + name + " failed");
+//                System.exit(1);
+                return null;
+            }
+        }
+        System.out.println(TAG + " load " + settingFile.getPath());
+
+        /*
+         * 讀取設定
+         */
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            FileInputStream in = new FileInputStream(settingFile);
+            int length;
+            byte[] buff = new byte[1024];
+            while ((length = in.read(buff)) > 0) {
+                out.write(buff, 0, length);
+            }
+        } catch (IOException e) {
+            System.err.println(TAG + " read " + name + " failed");
+//            System.exit(1);
+            return null;
+        }
+        String settingText = out.toString(StandardCharsets.UTF_8); // 使用 UTF_8 讀取設定檔裡的所有字
+
+        Yaml yml = new Yaml();
+        return yml.load(settingText);
+    }
+
+    private File exportResource(String name) {
+        InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(name);
 
         try {
             if (fileInJar == null) {
-                System.err.println(TAG + " can not find resource: " + sfn);
+                System.err.println(TAG + " can not find resource: " + name);
                 return null;
             }
-            Files.copy(fileInJar, Paths.get(System.getProperty("user.dir") + "/" + sfn), StandardCopyOption.REPLACE_EXISTING);
-            return new File(System.getProperty("user.dir") + "/" + sfn);
+            Files.copy(fileInJar, Paths.get(System.getProperty("user.dir") + "/" + name), StandardCopyOption.REPLACE_EXISTING);
+            return new File(System.getProperty("user.dir") + "/" + name);
         } catch (IOException e) {
             System.err.println(TAG + " read resource failed");
         }

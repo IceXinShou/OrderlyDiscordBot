@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.command.list.Ticket;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
@@ -34,6 +35,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ConstantConditions")
     public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         List<MessageEmbed.Field> fields = new ArrayList<>();
         TextChannel eventTextChannel = event.getTextChannel();

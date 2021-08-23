@@ -65,6 +65,9 @@ public class JsonKeys {
 
     // for Giveaway
     public final static String GIVEAWAY_SETTING = "giveaway";
+    public final static String GIVEAWAY_ARRAY = "A";
+    public final static String GIVEAWAY_CHANNEL_ID = "C";
+    public final static String GIVEAWAY_MESSAGE_ID = "M";
     public final static String GIVEAWAY_NAME = "N";
     public final static String GIVEAWAY_TIME = "T";
     public final static String GIVEAWAY_EMOJI = "E";

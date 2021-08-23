@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;

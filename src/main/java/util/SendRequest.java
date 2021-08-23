@@ -70,7 +70,7 @@ public class SendRequest {
             in.close();
             return builder.toString();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("[SendRequest] " + e.getMessage());
             return null;
         }
     }
