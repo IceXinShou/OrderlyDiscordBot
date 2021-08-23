@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonGetter.getOrDefault;
 import static main.java.util.JsonKeys.*;
@@ -33,10 +34,10 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         String dm = event.getOption("dm") == null ? null : Objects.requireNonNull(event.getOption("dm")).getAsString();
 
         if (channel.getType() != ChannelType.TEXT)
-            fields.add(new MessageEmbed.Field("找不到文字頻道", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL), "", false));
 
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("設定失敗", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_FAIL), fields, 0xFF0000)).queue();
             return;
         }
 
@@ -51,22 +52,22 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
                 roles.put(i.getAsRole().getId());
             }
 
-        fields.add(new MessageEmbed.Field("通知頻道", channel.getAsMention() + "\n`(" + channel.getId() + ")`", false));
-        fields.add(new MessageEmbed.Field("通知訊息", message, false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGJOINLEAVE_NOTICE_CHANNEL), channel.getAsMention() + "\n`(" + channel.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGJOINLEAVE_NOTICE_MESSAGE), message, false));
         JSONObject data = getOrDefault(settingHelper.getSettingData(event.getGuild(), J_SETTING), channel.getId());
 
         data.put(J_JOIN_MESSAGE, message);
         if (dm != null) {
             data.put(J_JOIN_DM, dm);
-            fields.add(new MessageEmbed.Field("私聊訊息", dm, false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGJOINLEAVE_DM_MESSAGE), dm, false));
         }
 
         if (roleData != null) {
-            fields.add(new MessageEmbed.Field("新增身分組", roleData.toString(), false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGJOINLEAVE_ROLE_ADD), roleData.toString(), false));
             data.put(J_JOIN_ROLE, roles);
         }
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_SUCCESS), fields, 0x00FFFF)).queue();
     }
 
     public void newLeave(@NotNull SlashCommandEvent event) {

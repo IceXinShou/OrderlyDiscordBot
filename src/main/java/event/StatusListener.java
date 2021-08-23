@@ -49,7 +49,7 @@ public class StatusListener {
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
+                System.err.println(TAG + " " + e.getMessage());
             }
         }, 0, 30, TimeUnit.MINUTES);
     }
@@ -351,7 +351,7 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), 32768, memberStatus);
     }
 
-    public void memberJoin(Member member) {
+    public void memberJoin(@NotNull Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());

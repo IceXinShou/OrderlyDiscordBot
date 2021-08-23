@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.AUTO_VC_NAME;
 import static main.java.util.JsonKeys.AUTO_VC_SETTING;
@@ -28,30 +29,31 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         if (voiceName.length() > 100)
-            fields.add(new MessageEmbed.Field("語音頻道名稱長度不能大於 100", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_LONG_OVER_100), "", false));
 
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_ERROR_REPORT), fields, 0xFF0000)).queue();
             return;
         }
 
         assert guild != null;
-        fields.add(new MessageEmbed.Field("偵測頻道目錄", Objects.requireNonNull(guild.getCategoryById(detectCategoryID)).getName() + "\n`(" + detectCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道名稱", voiceName, false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), Objects.requireNonNull(guild.getCategoryById(detectCategoryID)).getName() + "\n`(" + detectCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_NAME), voiceName, false));
 
         JSONObject VCCSetting = getSettingData(guild, settingHelper);
         Objects.requireNonNull(VCCSetting).put(detectCategoryID, new JSONObject().put(AUTO_VC_NAME, voiceName));
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
 
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
     public void removeVCC(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         String detectID = Objects.requireNonNull(event.getOption("detectcategory")).getAsString();
         Guild guild = event.getGuild();
 
         Objects.requireNonNull(getSettingData(Objects.requireNonNull(guild), settingHelper)).remove(detectID);
-        event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_REMOVE_SUCCESS), 0x00FFFF)).queue();
 
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
     }

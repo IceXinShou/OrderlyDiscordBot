@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static main.java.lang.LangKey.URLSHORT_FAIL;
+import static main.java.lang.LangKey.URLSHORT_SUCCESS;
 import static main.java.util.EmbedCreator.createEmbed;
 
 public class URLShort {
@@ -32,7 +34,7 @@ public class URLShort {
         }
     }
 
-    public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url) {
+    public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url, List<String> lang) {
         String result;
         if (!convert)
             url = Objects.requireNonNull(event.getOption("url")).getAsString();
@@ -44,7 +46,7 @@ public class URLShort {
             JSONObject data = new JSONObject(result);
             if (data.has("url") && !(data.has("status") && data.getInt("status") > 399)) {
                 event.getHook().editOriginalEmbeds(createEmbed(
-                        "創建成功",
+                        lang.get(URLSHORT_SUCCESS),
                         "https://reurl.cc/" + data.getString("url"),
                         data.getString("title"),
                         "https://api.qrserver.com/v1/create-qr-code/?data=https://reurl.cc/" + data.getString("url") + "&size=128x128",
@@ -56,7 +58,7 @@ public class URLShort {
                 return;
             } else if (convert) {
                 event.getHook().editOriginalEmbeds(createEmbed(
-                        "創建成功",
+                        lang.get(URLSHORT_SUCCESS),
                         url,
                         data.getString("title"),
                         "https://api.qrserver.com/v1/create-qr-code/?data=" + url + "&size=128x128",
@@ -65,6 +67,6 @@ public class URLShort {
                 return;
             }
         }
-        event.getHook().editOriginalEmbeds(createEmbed("無法縮短此網址或訊息", 0xFF0000)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(URLSHORT_FAIL), 0xFF0000)).queue();
     }
 }

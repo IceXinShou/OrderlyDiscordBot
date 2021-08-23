@@ -18,17 +18,18 @@ import static main.java.command.list.Invite.authChannelID;
 import static main.java.event.InformationReaction.internalRole;
 import static main.java.event.InformationReaction.logRole;
 import static main.java.event.Log.*;
+import static main.java.lang.LangKey.*;
 import static main.java.util.SlashCommandOption.*;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 public class CommandRegister {
 
     public void addOwnSlashCommand(@NotNull Guild guild) {
-        guild.updateCommands().addCommands(publicCommands()).addCommands(ownCommands()).queue();
+        guild.updateCommands().addCommands(publicCommands(guild.getId())).addCommands(ownCommands(guild.getId())).queue();
     }
 
     public void addPublicSlashCommand(@NotNull Guild guild) {
-        guild.updateCommands().addCommands(publicCommands()).queue();
+        guild.updateCommands().addCommands(publicCommands(guild.getId())).queue();
     }
 
     public void addCommandEveryWhere(@NotNull JDA jda) {
@@ -104,185 +105,200 @@ public class CommandRegister {
     }
 
 
-    private CommandData @NotNull [] publicCommands() {
+    private CommandData @NotNull [] publicCommands(String guildID) {
+        List<String> lang = Main.lang.getGuildLang(guildID);
         return new CommandData[]{
 
                 // General
-                new CommandData("warn", "警告成員").addOptions(
-                        new OptionData(USER, USER_TAG, "封禁你所選的成員", true),
-                        new OptionData(STRING, REASON, "原因")
+                new CommandData("warn", lang.get(COMMANDREGISTER_WARN)).addOptions(
+                        new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE), true),
+                        new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_WARN_REASON))
                 ),
-                new CommandData("remove_warn", "撤銷成員警告").addOption(USER, USER_TAG, "封禁你所選的成員", true),
-                new CommandData("kick", "踢出成員").addOption(USER, USER_TAG, "踢出你所選的成員", true),
-                new CommandData("ban", "封鎖成員").addOptions(
-                        new OptionData(USER, USER_TAG, "封禁你所選的成員", true),
-                        new OptionData(INTEGER, DAYS, "時間長度 (天)"),
-                        new OptionData(STRING, REASON, "原因")
+                new CommandData("remove_warn", lang.get(COMMANDREGISTER_REMOVE_WARM)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE), true),
+                new CommandData("kick", lang.get(COMMANDREGISTER_KICK)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_KICK_MEMBER_YOU_CHOOSE), true),
+                new CommandData("ban", lang.get(COMMANDREGISTER_BAN)).addOptions(
+                        new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_BAN_MEMBER_YOU_CHOOSE), true),
+                        new OptionData(INTEGER, DAYS, lang.get(COMMANDREGISTER_BAN_TIME)),
+                        new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_BAN_REASON))
                 ),
-                new CommandData("unban", "解除封鎖成員").addOption(STRING, USER_ID, "解除封鎖你所選的成員", true),
-                new CommandData("clear", "打掃垃圾").addOption(INTEGER, COUNT, "刪除介於 2 ~ 200 的訊息", true),
-                new CommandData("poll", "發起投票").addOptions(
-                        new OptionData(STRING, QUESTION, "票選問題", true),
-                        new OptionData(STRING, CHOICE_A, "選項 A"),
-                        new OptionData(STRING, CHOICE_B, "選項 B"),
-                        new OptionData(STRING, CHOICE_C, "選項 C"),
-                        new OptionData(STRING, CHOICE_D, "選項 D"),
-                        new OptionData(STRING, CHOICE_E, "選項 E"),
-                        new OptionData(STRING, CHOICE_F, "選項 F"),
-                        new OptionData(STRING, CHOICE_G, "選項 G"),
-                        new OptionData(STRING, CHOICE_H, "選項 H"),
-                        new OptionData(STRING, CHOICE_I, "選項 I"),
-                        new OptionData(STRING, CHOICE_J, "選項 J")),
-                new CommandData("help", "顯示幫助列表"),
-                new CommandData("helpannouncement", "將幫助列表以公告呈現"),
+                new CommandData("unban", lang.get(COMMANDREGISTER_UNBAN)).addOption(STRING, USER_ID, lang.get(COMMANDREGISTER_UNBAN_MEMBER_YOU_CHOOSE), true),
+                new CommandData("clear", lang.get(COMMANDREGISTER_CLEAR)).addOption(INTEGER, COUNT, lang.get(COMMANDREGISTER_CLEAR_BETWEEN_2_TO_200), true),
+                new CommandData("poll", lang.get(COMMANDREGISTER_POLL)).addOptions(
+                        new OptionData(STRING, QUESTION, lang.get(COMMANDREGISTER_POLL_QUESTION), true),
+                        new OptionData(STRING, CHOICE_A, lang.get(COMMANDREGISTER_POLL_OPTION_A)),
+                        new OptionData(STRING, CHOICE_B, lang.get(COMMANDREGISTER_POLL_OPTION_B)),
+                        new OptionData(STRING, CHOICE_C, lang.get(COMMANDREGISTER_POLL_OPTION_C)),
+                        new OptionData(STRING, CHOICE_D, lang.get(COMMANDREGISTER_POLL_OPTION_D)),
+                        new OptionData(STRING, CHOICE_E, lang.get(COMMANDREGISTER_POLL_OPTION_E)),
+                        new OptionData(STRING, CHOICE_F, lang.get(COMMANDREGISTER_POLL_OPTION_F)),
+                        new OptionData(STRING, CHOICE_G, lang.get(COMMANDREGISTER_POLL_OPTION_G)),
+                        new OptionData(STRING, CHOICE_H, lang.get(COMMANDREGISTER_POLL_OPTION_H)),
+                        new OptionData(STRING, CHOICE_I, lang.get(COMMANDREGISTER_POLL_OPTION_I)),
+                        new OptionData(STRING, CHOICE_J, lang.get(COMMANDREGISTER_POLL_OPTION_J))),
+                new CommandData("help", lang.get(COMMANDREGISTER_HELP)),
+                new CommandData("helpannouncement", lang.get(COMMANDREGISTER_HELP_ANNOUNCEMENT)),
 
                 // Music
-                new CommandData("play", "加入播放音樂").addOption(STRING, NAME, "播放輸入的網址或歌曲名"), // 若未填則開始播放音樂
-                new CommandData("pn", "強制播放音樂").addOption(STRING, NAME, "強制插入並播放輸入的網址或歌曲名 (歌單無法插播)", true),
-                new CommandData("playnow", "強制播放音樂").addOption(STRING, NAME, "強制插入並播放輸入的網址或歌曲名 (歌單無法插播)", true),
-                new CommandData("p", "加入播放音樂").addOption(STRING, NAME, "播放輸入的網址或歌曲名"), // 若未填則開始播放音樂
-                new CommandData("queue", "顯示播放列表"),
-                new CommandData("q", "顯示播放列表"),
-                new CommandData("playing", "顯示播放列表"),
-                new CommandData("skip", "切換至下一首"),
-                new CommandData("s", "切換至下一首"),
-                new CommandData("remove", "移除指定歌曲").addOption(INTEGER, INDEX, "歌曲編號", true),
-                new CommandData("volume", "切換音量大小").addOption(INTEGER, COUNT, "未填則預設"), // 若未填則回覆預設
-                new CommandData("loop", "循環模式"),
-                new CommandData("repeat", "單曲循環模式"),
-                new CommandData("pause", "暫停播放"),
-                new CommandData("leave", "退出語音頻道"),
-                new CommandData("disconnect", "退出語音頻道"),
-                new CommandData("stop", "退出語音頻道"),
+                new CommandData("play", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL)), // 若未填則開始播放音樂
+                new CommandData("p", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL)), // 若未填則開始播放音樂
+                new CommandData("playnow", lang.get(COMMANDREGISTER_PLAYNOW)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
+                new CommandData("pn", lang.get(COMMANDREGISTER_PLAYNOW)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
+                new CommandData("queue", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandData("q", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandData("playing", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandData("skip", lang.get(COMMANDREGISTER_SKIP)),
+                new CommandData("s", lang.get(COMMANDREGISTER_SKIP)),
+                new CommandData("remove", lang.get(COMMANDREGISTER_REMOVE)).addOption(INTEGER, INDEX, lang.get(COMMANDREGISTER_REMOVE_POS), true),
+                new CommandData("volume", lang.get(COMMANDREGISTER_VOLUME)).addOption(INTEGER, COUNT, lang.get(COMMANDREGISTER_VOLUME_COUNT)), // 若未填則回覆預設
+                new CommandData("loop", lang.get(COMMANDREGISTER_LOOP)),
+                new CommandData("repeat", lang.get(COMMANDREGISTER_REPEAT)),
+                new CommandData("pause", lang.get(COMMANDREGISTER_PAUSE)),
+                new CommandData("leave", lang.get(COMMANDREGISTER_LEAVE)),
+                new CommandData("disconnect", lang.get(COMMANDREGISTER_LEAVE)),
+                new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),
 
                 // Tool
 
-                new CommandData("surl", "創建短網址").addOption(STRING, URL, "網址", true), // 若未填則回覆預設
-                new CommandData("popspeed", "查看 PopCat 速率排行榜"),
-                new CommandData("poptop", "查看 PopCat 次數排行榜"),
-                new CommandData("mp4togif", "轉換 mp4 至 gif ").addOptions(
-                        new OptionData(STRING, URL, "需要轉檔案的網址", true),
-                        new OptionData(STRING, "outputname", "輸出結果名稱"),
-                        new OptionData(STRING, "fps", "輸出幀數 (預設30)")
+                new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true), // 若未填則回覆預設
+                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
+                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
+                new CommandData("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
+                        new OptionData(STRING, "name", lang.get(COMMANDREGISTER_GIVEAWAY_NAME), true),
+                        new OptionData(INTEGER, "winnercount", lang.get(COMMANDREGISTER_GIVEAWAY_WIN_COUNT)),
+                        new OptionData(INTEGER, "emoji", lang.get(COMMANDREGISTER_GIVEAWAY_EMOJI)),
+                        new OptionData(INTEGER, "month", lang.get(COMMANDREGISTER_GIVEAWAY_MONTH)),
+                        new OptionData(INTEGER, "week", lang.get(COMMANDREGISTER_GIVEAWAY_WEEK)),
+                        new OptionData(INTEGER, "day", lang.get(COMMANDREGISTER_GIVEAWAY_DAY)),
+                        new OptionData(INTEGER, "hour", lang.get(COMMANDREGISTER_GIVEAWAY_HOUR)),
+                        new OptionData(INTEGER, "minute", lang.get(COMMANDREGISTER_GIVEAWAY_MINUTE)),
+                        new OptionData(INTEGER, "second", lang.get(COMMANDREGISTER_GIVEAWAY_SECOND)),
+                        new OptionData(STRING, "time", lang.get(COMMANDREGISTER_GIVEAWAY_TIME))
+                ),
+
+                new CommandData("mp4togif", lang.get(COMMANDREGISTER_MP4_TO_GIF)).addOptions(
+                        new OptionData(STRING, URL, lang.get(COMMANDREGISTER_MTG_URL), true),
+                        new OptionData(STRING, "outputname", lang.get(COMMANDREGISTER_MTG_OUT_PUT_NAME)),
+                        new OptionData(STRING, "fps", lang.get(COMMANDREGISTER_MTG_FPS))
                 ), // 若未填則回覆預設
 
                 // Advance
-                new CommandData("setting", "設定").addSubcommands(
-                        new SubcommandData("help", "顯示設定幫助列表"),
+                new CommandData("setting", lang.get(COMMANDREGISTER_SETTING)).addSubcommands(
+                        new SubcommandData("help", lang.get(COMMANDREGISTER_S_HELP)),
 
                         // -------------------
-                        new SubcommandData("newroom", "創建自動化房間").addOptions(
-                                new OptionData(CHANNEL, "detectchannel", "偵測頻道", true),
-                                new OptionData(STRING, "voicename", "語音名稱(可包含空白鍵, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)", true),
-                                new OptionData(STRING, "textname", "文字名稱(不可包含空白鍵, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
-                                new OptionData(CHANNEL, "voicecategory", "語音頻道目錄"),
-                                new OptionData(CHANNEL, "textcategory", "文字頻道目錄"),
-                                new OptionData(INTEGER, "voicebitrate", "語音位元率 (kbps)"),
-                                new OptionData(INTEGER, "memberlimit", "語音人數限制 (1~99)")
+                        new SubcommandData("newroom", lang.get(COMMANDREGISTER_S_NEW_ROOM)).addOptions(
+                                new OptionData(CHANNEL, "detectchannel", lang.get(COMMANDREGISTER_S_NR_DETECT_CHANNEL), true),
+                                new OptionData(STRING, "voicename", lang.get(COMMANDREGISTER_S_NR_VOICE_NAME), true),
+                                new OptionData(STRING, "textname", lang.get(COMMANDREGISTER_S_NR_TEXT_NAME)),
+                                new OptionData(CHANNEL, "voicecategory", lang.get(COMMANDREGISTER_S_NR_VOICE_CATEGORY)),
+                                new OptionData(CHANNEL, "textcategory", lang.get(COMMANDREGISTER_S_NR_TEXT_CATEGORY)),
+                                new OptionData(INTEGER, "voicebitrate", lang.get(COMMANDREGISTER_S_NR_VOICE_BITRATE)),
+                                new OptionData(INTEGER, "memberlimit", lang.get(COMMANDREGISTER_S_NR_MEMBER_LIMIT))
                         ),
 
-                        new SubcommandData("removeroom", "移除自動化房間").addOption(CHANNEL, "detectchannel", "偵測頻道", true),
+                        new SubcommandData("removeroom", lang.get(COMMANDREGISTER_S_REMOVE_ROOM)).addOption(CHANNEL, "detectchannel", lang.get(COMMANDREGISTER_S_RR_DETECT_CHANNEL), true),
 
                         // -------------------
-                        new SubcommandData("newautovc", "創建彈性語音").addOptions(
-                                new OptionData(CHANNEL, "detectcategory", "偵測目錄", true),
-                                new OptionData(STRING, "voicename", "語音名稱", true)
+                        new SubcommandData("newautovc", lang.get(COMMANDREGISTER_S_NEW_AUTO_VC)).addOptions(
+                                new OptionData(CHANNEL, "detectcategory", lang.get(COMMANDREGISTER_S_NAVC_DETECT_CATEGORY), true),
+                                new OptionData(STRING, "voicename", lang.get(COMMANDREGISTER_S_NAVC_VOICE_NAME), true)
                         ),
 
-                        new SubcommandData("removeautovc", "移除彈性語音").addOption(CHANNEL, "detectcategory", "偵測目錄", true),
-
-                        // -------------------
-                        new SubcommandData("newticket", "創建客服按鈕").addOptions(
-                                new OptionData(STRING, "messageid", "主要內容訊息ID", true),
-                                new OptionData(CHANNEL, "messagechannel", "主要內容訊息頻道", true),
-                                new OptionData(STRING, "enteredmessage", "頻道創建時發送的訊息 (%num%, %role%, %role_name%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)", true),
-                                new OptionData(STRING, "textname", "新文字頻道名稱 (%num%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
-                                new OptionData(CHANNEL, "textcategory", "新文字頻道目錄"),
-                                new OptionData(BOOLEAN, "hasvoicechannel", "是否有語音頻道"),
-                                new OptionData(STRING, "voicename", "新語音頻道名稱 (%num%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
-                                new OptionData(CHANNEL, "voicecategory", "新語音頻道目錄"),
-                                new OptionData(STRING, "buttonname", "按鈕名稱"),
-                                new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
-                                new OptionData(STRING, "buttonemoji", "按鈕圖示"),
-                                new OptionData(ROLE, "allowrole", "除了觸發者以外, 允許檢視此頻道的身分組"),
-                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組"),
-                                new OptionData(BOOLEAN, "onlyone", "同一人按鈕是否只能同時觸發一次")
-                        ),
-
-                        new SubcommandData("addticket", "添加客服按鈕").addOptions(
-                                new OptionData(STRING, "messageid", "需添加的訊息ID", true),
-                                new OptionData(CHANNEL, "messagechannel", "需添加的訊息頻道", true),
-                                new OptionData(STRING, "enteredmessage", "頻道創建時發送的訊息 (%num%, %role%, %role_name%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)", true),
-                                new OptionData(STRING, "textname", "新文字頻道名稱 (%num%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
-                                new OptionData(CHANNEL, "textcategory", "新文字頻道目錄"),
-                                new OptionData(BOOLEAN, "hasvoicechannel", "是否有語音頻道"),
-                                new OptionData(STRING, "voicename", "新語音頻道名稱 (%num%, %guild_name%, %user%, %user_name%, %user_tag%, 或 %nickname%)"),
-                                new OptionData(CHANNEL, "voicecategory", "新語音頻道目錄"),
-                                new OptionData(STRING, "buttonname", "按鈕名稱"),
-                                new OptionData(STRING, "buttonemoji", "按鈕圖示"),
-                                new OptionData(STRING, "buttoncolor", "按鈕顏色 (red, orange, blue 或 gray)"),
-                                new OptionData(ROLE, "allowrole", "除了觸發者以外, 允許檢視此頻道的身分組"),
-                                new OptionData(BOOLEAN, "allowtagrole", "觸發時是否 tag 此身分組"),
-                                new OptionData(BOOLEAN, "onlyone", "同一人按鈕是否只能同時觸發一次")
-                        ),
-
-                        new SubcommandData("removeticket", "移除客服按鈕").addOptions(
-                                new OptionData(STRING, "messageid", "主要內容訊息ID", true),
-                                new OptionData(CHANNEL, "messagechannel", "主要內容訊息頻道", true),
-                                new OptionData(STRING, "position", "按鈕位置 (1~5)", true)
-                        ),
+                        new SubcommandData("removeautovc", lang.get(COMMANDREGISTER_S_REMOVE_AUTO_VC)).addOption(CHANNEL, "detectcategory", lang.get(COMMANDREGISTER_S_RAVC_DETECT_CATEGORY), true),
 
                         // -------------------
-                        new SubcommandData("newchannelstatus", "新增頻道顯示數據").addOptions(
-                                new OptionData(CHANNEL, "channel", "顯示資訊頻道", true),
-                                new OptionData(STRING, "channelname", "頻道名稱 (請使用 /setting help 查看所有佔位符 (17))", true),
-                                new OptionData(INTEGER, "format", "格式化設定, 最終結果將保留幾位小數點 (0~10)", true)
+                        new SubcommandData("newticket", lang.get(COMMANDREGISTER_S_NEW_TICKET)).addOptions(
+                                new OptionData(STRING, "messageid", lang.get(COMMANDREGISTER_S_NT_MESSAGE_ID), true),
+                                new OptionData(CHANNEL, "messagechannel", lang.get(COMMANDREGISTER_S_NT_MESSAGE_CHANNEL), true),
+                                new OptionData(STRING, "enteredmessage", lang.get(COMMANDREGISTER_S_NT_ENTERED_MESSAGE), true),
+                                new OptionData(ROLE, "allowrole", lang.get(COMMANDREGISTER_S_NT_ALLOW_ROLE), true),
+                                new OptionData(BOOLEAN, "allowtagrole", lang.get(COMMANDREGISTER_S_NT_ALLOW_TAG_ROLE)),
+                                new OptionData(STRING, "textname", lang.get(COMMANDREGISTER_S_NT_TEXT_NAME)),
+                                new OptionData(CHANNEL, "textcategory", lang.get(COMMANDREGISTER_S_NT_TEXT_CATEGORY)),
+                                new OptionData(BOOLEAN, "hasvoicechannel", lang.get(COMMANDREGISTER_S_NT_HAS_VOICE_CHANNEL)),
+                                new OptionData(STRING, "voicename", lang.get(COMMANDREGISTER_S_NT_VOICE_NAME)),
+                                new OptionData(CHANNEL, "voicecategory", lang.get(COMMANDREGISTER_S_NT_VOICE_CATEGORY)),
+                                new OptionData(STRING, "buttonname", lang.get(COMMANDREGISTER_S_NT_BUTTON_NAME)),
+                                new OptionData(STRING, "buttoncolor", lang.get(COMMANDREGISTER_S_NT_BUTTON_COLOR)),
+                                new OptionData(STRING, "buttonemoji", lang.get(COMMANDREGISTER_S_NT_BUTTON_EMOJI)),
+                                new OptionData(BOOLEAN, "onlyone", lang.get(COMMANDREGISTER_S_NT_ONLY_ONE))
                         ),
-                        new SubcommandData("removechannelstatus", "移除頻道顯示數據").addOption(CHANNEL, "channel", "顯示資訊的頻道", true),
+
+                        new SubcommandData("addticket", lang.get(COMMANDREGISTER_S_ADD_TICKET)).addOptions(
+                                new OptionData(STRING, "messageid", lang.get(COMMANDREGISTER_S_AT_MESSAGE_ID), true),
+                                new OptionData(CHANNEL, "messagechannel", lang.get(COMMANDREGISTER_S_AT_MESSAGE_CHANNEL), true),
+                                new OptionData(STRING, "enteredmessage", lang.get(COMMANDREGISTER_S_AT_ENTERED_MESSAGE), true),
+                                new OptionData(ROLE, "allowrole", lang.get(COMMANDREGISTER_S_AT_ALLOW_ROLE), true),
+                                new OptionData(BOOLEAN, "allowtagrole", lang.get(COMMANDREGISTER_S_AT_ALLOW_TAG_ROLE)),
+                                new OptionData(STRING, "textname", lang.get(COMMANDREGISTER_S_AT_TEXT_NAME)),
+                                new OptionData(CHANNEL, "textcategory", lang.get(COMMANDREGISTER_S_AT_TEXT_CATEGORY)),
+                                new OptionData(BOOLEAN, "hasvoicechannel", lang.get(COMMANDREGISTER_S_AT_HAS_VOICE_CHANNEL)),
+                                new OptionData(STRING, "voicename", lang.get(COMMANDREGISTER_S_AT_VOICE_NAME)),
+                                new OptionData(CHANNEL, "voicecategory", lang.get(COMMANDREGISTER_S_AT_VOICE_CATEGORY)),
+                                new OptionData(STRING, "buttonname", lang.get(COMMANDREGISTER_S_AT_BUTTON_NAME)),
+                                new OptionData(STRING, "buttonemoji", lang.get(COMMANDREGISTER_S_AT_BUTTON_COLOR)),
+                                new OptionData(STRING, "buttoncolor", lang.get(COMMANDREGISTER_S_AT_BUTTON_EMOJI)),
+                                new OptionData(BOOLEAN, "onlyone", lang.get(COMMANDREGISTER_S_AT_ONLY_ONE))
+                        ),
+
+                        new SubcommandData("removeticket", lang.get(COMMANDREGISTER_S_REMOVE_TICKET)).addOptions(
+                                new OptionData(STRING, "messageid", lang.get(COMMANDREGISTER_S_RT_MESSAGE_ID), true),
+                                new OptionData(CHANNEL, "messagechannel", lang.get(COMMANDREGISTER_S_RT_MESSAGE_CHANNEL), true),
+                                new OptionData(STRING, "position", lang.get(COMMANDREGISTER_S_RT_POSITION), true)
+                        ),
 
                         // -------------------
-                        new SubcommandData("newjoin", "新增加入訊息").addOptions(
-                                new OptionData(CHANNEL, "channel", "顯示訊息頻道", true),
-                                new OptionData(STRING, "message", "訊息內容 ()", true),
-                                new OptionData(STRING, "dm", "傳送私人訊息 (對方需允許私人訊息)"),
-                                new OptionData(ROLE, "role1", "加入身分組"),
-                                new OptionData(ROLE, "role2", "加入身分組"),
-                                new OptionData(ROLE, "role3", "加入身分組"),
-                                new OptionData(ROLE, "role4", "加入身分組"),
-                                new OptionData(ROLE, "role5", "加入身分組"),
-                                new OptionData(ROLE, "role6", "加入身分組"),
-                                new OptionData(ROLE, "role7", "加入身分組"),
-                                new OptionData(ROLE, "role8", "加入身分組"),
-                                new OptionData(ROLE, "role9", "加入身分組"),
-                                new OptionData(ROLE, "role10", "加入身分組")
+                        new SubcommandData("newchannelstatus", lang.get(COMMANDREGISTER_S_NEW_CHANNEL_STATUS)).addOptions(
+                                new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_NCS_CHANNEL), true),
+                                new OptionData(STRING, "channelname", lang.get(COMMANDREGISTER_S_NCS_CHANNEL_NAME), true),
+                                new OptionData(INTEGER, "format", lang.get(COMMANDREGISTER_S_NCS_FORMAT), true)
                         ),
-                        new SubcommandData("removejoin", "移除加入訊息").addOption(CHANNEL, "channel", "顯示訊息頻道", true),
+                        new SubcommandData("removechannelstatus", lang.get(COMMANDREGISTER_S_REMOVE_CHANNEL_STATUS)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RSC_CHANNEL), true),
 
                         // -------------------
-                        new SubcommandData("newleave", "新增退出訊息").addOptions(
-                                new OptionData(CHANNEL, "channel", "顯示訊息頻道", true),
-                                new OptionData(STRING, "message", "訊息內容 ()", true)
+                        new SubcommandData("newjoin", lang.get(COMMANDREGISTER_S_NEW_JOIN)).addOptions(
+                                new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_NJ_CHANNEL), true),
+                                new OptionData(STRING, "message", lang.get(COMMANDREGISTER_S_NJ_MESSAGE), true),
+                                new OptionData(STRING, "dm", lang.get(COMMANDREGISTER_S_NJ_DM)),
+                                new OptionData(ROLE, "role1", lang.get(COMMANDREGISTER_S_NJ_ROLE1)),
+                                new OptionData(ROLE, "role2", lang.get(COMMANDREGISTER_S_NJ_ROLE2)),
+                                new OptionData(ROLE, "role3", lang.get(COMMANDREGISTER_S_NJ_ROLE3)),
+                                new OptionData(ROLE, "role4", lang.get(COMMANDREGISTER_S_NJ_ROLE4)),
+                                new OptionData(ROLE, "role5", lang.get(COMMANDREGISTER_S_NJ_ROLE5)),
+                                new OptionData(ROLE, "role6", lang.get(COMMANDREGISTER_S_NJ_ROLE6)),
+                                new OptionData(ROLE, "role7", lang.get(COMMANDREGISTER_S_NJ_ROLE7)),
+                                new OptionData(ROLE, "role8", lang.get(COMMANDREGISTER_S_NJ_ROLE8)),
+                                new OptionData(ROLE, "role9", lang.get(COMMANDREGISTER_S_NJ_ROLE9)),
+                                new OptionData(ROLE, "role10", lang.get(COMMANDREGISTER_S_NJ_ROLE10))
                         ),
-                        new SubcommandData("removeleave", "移除退出訊息").addOption(CHANNEL, "channel", "顯示訊息頻道", true)
+                        new SubcommandData("removejoin", lang.get(COMMANDREGISTER_S_REMOVE_JOIN)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RJ_CHANNEL), true),
+
+                        // -------------------
+                        new SubcommandData("newleave", lang.get(COMMANDREGISTER_S_NEW_LEAVE)).addOptions(
+                                new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_NL_CHANNEL), true),
+                                new OptionData(STRING, "message", lang.get(COMMANDREGISTER_S_NL_MESSAGE), true)
+                        ),
+                        new SubcommandData("removeleave", lang.get(COMMANDREGISTER_S_REMOVE_LEAVE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RL_CHANNEL), true)
 
                         // -------------------
                 ),
         };
     }
 
-    private CommandData @NotNull [] ownCommands() {
+    private CommandData @NotNull [] ownCommands(String guildID) {
+        List<String> lang = Main.lang.getGuildLang(guildID);
         return new CommandData[]{
-                new CommandData("reload", "重新載入機器人"),
-                new CommandData("nick", "更改專屬伺服器暱稱"),
-                new CommandData("invite", "邀請成員").addOption(USER, USER_TAG, "將你選的成員塞進伺服器或頻道", true),
+                new CommandData("reload", lang.get(COMMANDREGISTER_RELOAD)),
+                new CommandData("nick", lang.get(COMMANDREGISTER_NICK)),
+                new CommandData("invite", lang.get(COMMANDREGISTER_INVITE)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_INVITE_MEMBER_YOU_CHOOSE), true),
         };
     }
 
     private CommandData @NotNull [] everywhereCommands() {
         return new CommandData[]{
-                new CommandData("ping", "延遲測試"),
-                new CommandData("support", "傳送問題回報").addOption(STRING, MESSAGE, "訊息內容", true),
-                new CommandData("botinfo", "顯示機器人訊息"),
+                new CommandData("ping", "Ping Test (延遲測試)"),
+                new CommandData("support", "Report ERROR or Support us (傳送問題回報)").addOption(STRING, MESSAGE, "Message (訊息內容)", true),
+                new CommandData("botinfo", "Show about Bot (顯示機器人訊息)"),
         };
     }
 }

@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 
 public class BotInfo {
@@ -21,9 +22,9 @@ public class BotInfo {
             members = members + event.getJDA().getGuilds().get(i).getMemberCount();
         }
 
-        fields.add(new MessageEmbed.Field("**伺服器總數: **", String.valueOf(event.getJDA().getGuilds().stream().count()), false));
-        fields.add(new MessageEmbed.Field("**成員總數: **", String.valueOf(members), false));
-        event.getHook().editOriginalEmbeds(createEmbed("機器人資訊", "", "", "", "", fields, OffsetDateTime.now(), 0x00FFFF)).queue();
+        fields.add(new MessageEmbed.Field(lang.get(BOTINFO_GUILD_TOTAL_COUNT), String.valueOf(event.getJDA().getGuilds().stream().count()), false));
+        fields.add(new MessageEmbed.Field(lang.get(BOTINFO_MEMBER_TOTAL_COUNT), String.valueOf(members), false));
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(BOTINFO_INFORMATION), "", "", "", "", fields, OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import static main.java.BotSetting.defaultTicketChannelName;
 import static main.java.Main.botID;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GetEmoji.toEmoji;
 import static main.java.util.JsonGetter.getOrDefault;
@@ -42,7 +43,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         // 新增按鈕要輸入Ticket訊息頻道，新增訊息要輸入要傳送的訊息的頻道 (必填)
         TextChannel sendTicketMessageChannel = null;
         if (event.getOption("messagechannel").getAsGuildChannel().getType() != ChannelType.TEXT) {
-            fields.add(new MessageEmbed.Field("訊息頻道錯誤", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_CATEGORY_ERROR), "", false));
         } else
             sendTicketMessageChannel = (TextChannel) event.getOption("messagechannel").getAsGuildChannel();
         /*
@@ -72,7 +73,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                     buttonStyle = ButtonStyle.SECONDARY;
                     buttonColorInt = 0x4F545C;
                 }
-                default -> fields.add(new MessageEmbed.Field("按鈕顏色錯誤", "", false));
+                default -> fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_BUTTON_COLOR_ERROR), "", false));
             }
         // 表情符號
         String buttonEmojiName = event.getOption("buttonemoji") == null ? null : event.getOption("buttonemoji").getAsString();
@@ -85,7 +86,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         // 預設輸入訊息
         String enteredMessage = event.getOption("enteredmessage") == null ? null : event.getOption("enteredmessage").getAsString();
         // 允許檢視頻道的權限組
-        Role allowRole = event.getOption("allowrole") == null ? null : event.getOption("allowrole").getAsRole();
+        Role allowRole = event.getOption("allowrole").getAsRole();
         // tag 權限組 (預設true)
         boolean tagRole = event.getOption("allowtagrole") == null || event.getOption("allowtagrole").getAsBoolean();
         // 觸發權限
@@ -112,11 +113,9 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
 
         // 判斷error
         if (buttonEmojiName == null && buttonName == null)
-            fields.add(new MessageEmbed.Field("按鈕名稱與表情符號請至少輸入一項", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_BUTTON_NAME_AND_EMOJI_AT_LEAST_ONCE), "", false));
         if (buttonEmojiName != null && buttonEmoji == null)
-            fields.add(new MessageEmbed.Field("找不到此表情符號", "", false));
-        if (allowRole == null)
-            fields.add(new MessageEmbed.Field("需輸入處理客服的身分組", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_CAN_NOT_GET_EMOJI), "", false));
 
         // 取得要傳送的訊息，或是要修改的訊息
         Message message = null;
@@ -124,7 +123,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             try {
                 message = sendTicketMessageChannel.retrieveMessageById(messageID).complete();
             } catch (Exception e) {
-                fields.add(new MessageEmbed.Field("在 " + tagChannel(sendTicketMessageChannel) + "找不到此 ID 的訊息 (`" + messageID + "`)", "", false));
+                fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_CAN_NOT_FOUND_MESSAGE_BY_ID) + " (" + tagChannel(sendTicketMessageChannel) + ") (`" + messageID + "`)", "", false));
             }
         }
 
@@ -184,9 +183,9 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                     !ticketSetting.getJSONObject(sendTicketMessageChannel.getId()).has(messageID) ||
                     message.getActionRows().size() == 0 ||
                     buttonLength == 0)
-                fields.add(new MessageEmbed.Field("此訊息尚未註冊, 請使用 `/newticket` 新增客服按鈕", "", false));
+                fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_HAS_NOT_NEW_BUTTON), "", false));
             if (buttonLength == 5)
-                fields.add(new MessageEmbed.Field("此訊息的按鈕量過多", "", false));
+                fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_TOO_MANY_BUTTONS), "", false));
         }
 
         // 設定按鈕
@@ -197,7 +196,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             button = Button.of(buttonStyle, "Ticket:newTicket::" + buttonLength, buttonName);
 
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_ERROR_REPORT), fields, 0xFF0000)).queue();
             return;
         }
 
@@ -237,37 +236,38 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         buttonSettings.put(buttonSetting);
         channelKey.put(messageID, buttonSettings);
 
-        fields.add(new MessageEmbed.Field("新增按鈕的訊息 ID", messageID, false));
-        fields.add(new MessageEmbed.Field("此訊息的頻道", tagChannel(sendTicketMessageChannel) + "\n`(" + sendTicketMessageChannel.getId() + ")`", false));
-        fields.add(new MessageEmbed.Field("預設輸入訊息", "\n`(" + message.getId() + ")`", false));
-        fields.add(new MessageEmbed.Field("客服文字頻道名稱", textName, false));
-        fields.add(new MessageEmbed.Field("客服文字頻道目錄", tagChannelID(textCategoryID) + "\n`(" + textCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道", hasVoiceChannel ? "有" : "無", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_ID), messageID, false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_CHANNEL), tagChannel(sendTicketMessageChannel) + "\n`(" + sendTicketMessageChannel.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_ENTERED_MESSAGE), "\n`(" + message.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_TEXT_CHANNEL_NAME), textName, false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_TEXT_CHANNEL_CATEGORY), tagChannelID(textCategoryID) + "\n`(" + textCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_CHANNEL), hasVoiceChannel ? lang.get(SETTINGTICKET_TICKET_VOICE_HAVE) : lang.get(SETTINGTICKET_TICKET_VOICE_NOT_HAVE), false));
         if (hasVoiceChannel) {
-            fields.add(new MessageEmbed.Field("客服語音頻道名稱", voiceName, false));
-            fields.add(new MessageEmbed.Field("客服語音頻道目錄", tagChannelID(voiceCategoryID) + "\n`(" + voiceCategoryID + ")`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_NAME), voiceName, false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_CATEGORY), tagChannelID(voiceCategoryID) + "\n`(" + voiceCategoryID + ")`", false));
         }
         if (buttonName != null)
-            fields.add(new MessageEmbed.Field("按鈕名稱", buttonName, false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_BUTTON_NAME), buttonName, false));
         if (buttonEmoji != null)
-            fields.add(new MessageEmbed.Field("按鈕表情符號", buttonEmoji.getAsMention(), false));
-        fields.add(new MessageEmbed.Field("按鈕顏色", buttonColor + "\n`(0x" + Integer.toHexString(buttonColorInt) + ")`", false));
-        fields.add(new MessageEmbed.Field("允許身分組", allowRole.getAsMention() + "\n`(" + allowRole.getId() + ")`", false));
-        fields.add(new MessageEmbed.Field("是否 Tag 允許身分組", "`" + (tagRole ? "是" : "否") + "`", false));
-        fields.add(new MessageEmbed.Field("同一人一次只能使用一次", "`" + (onlyone ? "是" : "否") + "`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_BUTTON_EMOJI), buttonEmoji.getAsMention(), false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_BUTTON_COLOR), buttonColor + "\n`(0x" + Integer.toHexString(buttonColorInt) + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ALLOW_ROLE), allowRole.getAsMention() + "\n`(" + allowRole.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ALLOW_TAG_ROLE), "`" + (tagRole ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ONLY_ONE), "`" + (onlyone ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
 
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
     public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(Objects.requireNonNull(event.getGuild()), settingHelper);
         String channelID = Objects.requireNonNull(event.getOption("messagechannel")).getAsGuildChannel().getId();
         if (Objects.requireNonNull(data).has(channelID)) {
             TextChannel channel;
             if ((channel = event.getGuild().getTextChannelById(channelID)) == null) {
-                event.getHook().editOriginalEmbeds(createEmbed("移除失敗 (找不到此頻道)", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_FAIL_BY_CHANNEL), 0xFF0000)).queue();
                 data.remove(channelID);
                 settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
                 return;
@@ -277,7 +277,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             if (messageChannel.has(messageID)) {
                 Message message;
                 if ((message = channel.retrieveMessageById(messageID).complete()) == null || !message.getAuthor().getId().equals(botID)) {
-                    event.getHook().editOriginalEmbeds(createEmbed("移除失敗 (找不到此訊息)", 0xFF0000)).queue();
+                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_FAIL_BY_MESSAGE), 0xFF0000)).queue();
                     messageChannel.remove(channelID);
                     settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
                     return;
@@ -286,7 +286,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                 // {messageChannel:{messageID:[{},{},{},{},{}]}}
                 Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (Objects.requireNonNull(event.getOption("position")).getAsLong() - 1)));
                 if (ticket.isButtonUsed(channelID, messageID, removePos)) {
-                    event.getHook().editOriginalEmbeds(createEmbed("此按鈕目前正在被使用，請先關閉所有關於此按鈕的客服再執行此指令", 0xFF0000)).queue();
+                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING), 0xFF0000)).queue();
                     return;
                 }
 
@@ -321,11 +321,11 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                     }
                     settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
                 } else
-                    event.getHook().editOriginalEmbeds(createEmbed("無法刪除指定的按鈕位置", 0xFF0000)).queue();
+                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_POS), 0xFF0000)).queue();
             } else
-                event.getHook().editOriginalEmbeds(createEmbed("此訊息無被設定紀錄", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE), 0xFF0000)).queue();
         } else
-            event.getHook().editOriginalEmbeds(createEmbed("此頻道無被設定紀錄", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL), 0xFF0000)).queue();
     }
 
     private @Nullable

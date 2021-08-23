@@ -7,12 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static main.java.lang.LangKey.SETTINGHELP_ADVANCE_HELP;
 import static main.java.util.EmbedCreator.createEmbed;
 
 public class SettingHelp {
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        event.getHook().editOriginalEmbeds(createEmbed("進階說明", helpEmbed(), 0x00FFFF)).queue();
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGHELP_ADVANCE_HELP), helpEmbed(), 0x00FFFF)).queue();
     }
 
     private @NotNull List<MessageEmbed.Field> helpEmbed() {

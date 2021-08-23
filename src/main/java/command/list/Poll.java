@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static main.java.lang.LangKey.POLL_MEMBER_POLL;
+import static main.java.lang.LangKey.POLL_SUCCESS;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.EmojiUtil.dotEmojis;
 import static main.java.util.PermissionERROR.hasPermission;
@@ -27,7 +29,7 @@ public class Poll {
         }
         event.getChannel().sendMessageEmbeds(createEmbed(
                 Objects.requireNonNull(event.getOption(QUESTION)).getAsString(), null,
-                "成員投票",
+                lang.get(POLL_MEMBER_POLL),
                 Objects.requireNonNull(event.getMember()).getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
@@ -37,6 +39,6 @@ public class Poll {
             }
         });
 
-        event.getHook().editOriginalEmbeds(createEmbed("創建成功", 0x9740b9)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(POLL_SUCCESS), 0x9740b9)).queue();
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static main.java.event.Log.deleteNoLog;
+import static main.java.lang.LangKey.*;
 import static main.java.util.CountryCodeToEmoji.countryCodeToEmoji;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.SortByValue.sortByValue;
@@ -117,17 +118,17 @@ public class PopCatHelper {
 
     public void getAllData(SelectionMenu.Builder builder, GenericInteractionCreateEvent event, int page, boolean first, boolean pop) {
         if (page > 1) {
-            builder.addOption("上一頁", "page:up:" + (page - 1), Emoji.fromUnicode("⬅️"));
+            builder.addOption(lang.get(POPCATHELPER_PREVIEWS), "page:up:" + (page - 1), Emoji.fromUnicode("⬅️"));
         }
         if (pop)
             getPopLeaderboard(page == 1 ? 0 : page * 23 - 22, builder);
         else
             getSpeedLeaderboard(page == 1 ? 0 : page * 23 - 22, builder);
-        builder.addOption("下一頁", "page:down:" + (page + 1), Emoji.fromUnicode("➡️"));
+        builder.addOption(lang.get(POPCATHELPER_NEXT), "page:down:" + (page + 1), Emoji.fromUnicode("➡️"));
         if (first)
-            event.getHook().editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(createEmbed("點擊可查看詳細資訊", 0xa3d7fe)).queue();
+            event.getHook().editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
         else
-            event.deferReply(true).addActionRows(ActionRow.of(builder.build())).addEmbeds(createEmbed("點擊可查看詳細資訊", 0xa3d7fe)).queue();
+            event.deferReply(true).addActionRows(ActionRow.of(builder.build())).addEmbeds(createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
 
     }
 

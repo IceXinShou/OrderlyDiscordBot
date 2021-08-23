@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static main.java.command.list.Room.voiceState;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.*;
 
@@ -56,35 +57,35 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         if (hasTextChannel && textName.contains(" "))
-            fields.add(new MessageEmbed.Field("文字頻道名稱無法包含空格", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR), "", false));
 
         if (voiceName.length() > 100)
-            fields.add(new MessageEmbed.Field("語音頻道名稱長度不能大於 100", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CHANNEL_NAME_ERROR), "", false));
 
         if (hasTextChannel && textName.length() > 100)
-            fields.add(new MessageEmbed.Field("文字頻道名稱長度不能大於 100", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CHANNEL_NAME_ERROR), "", false));
 
         if (voiceBitrate * 1000 > Objects.requireNonNull(guild).getBoostTier().getMaxBitrate())
-            fields.add(new MessageEmbed.Field("您的伺服器目前無法達到如此高的音訊位元率", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_BITRATE_ERROR), "", false));
 
         if (memberLimit != null && memberLimit > 99) {
-            fields.add(new MessageEmbed.Field("人數限制最大只能達到 99 人", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_MEMBER_LIMIT_ERROR), "", false));
         }
 
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤回報", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGROOM_ERROR_REPORT), fields, 0xFF0000)).queue();
             return;
         }
 
-        fields.add(new MessageEmbed.Field("偵測語音頻道", detectChannel.getName() + "\n`(" + detectID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道目錄", Objects.requireNonNull(guild.getCategoryById(voiceCategoryID)).getName() + "\n`(" + voiceCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_DETECT_VOICE_CHANNEL), detectChannel.getName() + "\n`(" + detectID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CATEGORY), Objects.requireNonNull(guild.getCategoryById(voiceCategoryID)).getName() + "\n`(" + voiceCategoryID + ")`", false));
         if (hasTextChannel)
-            fields.add(new MessageEmbed.Field("文字頻道目錄", Objects.requireNonNull(guild.getCategoryById(textCategoryID)).getName() + "\n`(" + textCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field("語音頻道名稱", "`" + voiceName + "`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CATEGORY), Objects.requireNonNull(guild.getCategoryById(textCategoryID)).getName() + "\n`(" + textCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_NAME), "`" + voiceName + "`", false));
         if (hasTextChannel)
-            fields.add(new MessageEmbed.Field("文字頻道名稱", "`" + textName + "`", false));
-        fields.add(new MessageEmbed.Field("語音人數限制", memberLimit == null ? "`無`" : "`" + memberLimit + "`", false));
-        fields.add(new MessageEmbed.Field("語音位元率", "`" + voiceBitrate + " kbps`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_NAME), "`" + textName + "`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_MEMBER_LIMIT), memberLimit == null ? lang.get(SETTINGROOM_NONE) : "`" + memberLimit + "`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_BITRATE), "`" + voiceBitrate + " kbps`", false));
 
         JSONObject channelData = new JSONObject();
         channelData.put(ROOM_VOICE_CATEGORY_ID, voiceCategoryID);
@@ -101,7 +102,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         roomSetting.put(detectID, channelData);
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
 
-        event.getHook().editOriginalEmbeds(createEmbed("設定成功", fields, 0x11FF99)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGROOM_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
     public void removeRoom(@NotNull SlashCommandEvent event) {
@@ -123,7 +124,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         }
 
         data.remove(detectID);
-        event.getHook().editOriginalEmbeds(createEmbed("移除成功", 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGROOM_REMOVE_SUCCESS), 0x00FFFF)).queue();
 
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
     }

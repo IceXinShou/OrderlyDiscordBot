@@ -24,8 +24,4 @@ public class JsonGetter {
             return data;
         }
     }
-
-//    public static (){
-//
-//    }
 }

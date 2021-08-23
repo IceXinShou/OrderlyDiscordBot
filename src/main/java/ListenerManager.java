@@ -4,6 +4,7 @@ import main.java.command.CommandRegister;
 import main.java.command.list.*;
 import main.java.command.list.Setting.*;
 import main.java.event.*;
+import main.java.lang.Lang;
 import main.java.util.file.GuildSettingHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
@@ -39,8 +40,11 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import static main.java.BotSetting.boostedRole;
 import static main.java.BotSetting.debugMode;
+import static main.java.Main.lang;
 import static main.java.command.list.Invite.authChannelID;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
@@ -64,7 +68,7 @@ public class ListenerManager extends ListenerAdapter {
     Room room = new Room(guildSettingHelper);
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
-    QuickUse quickUse = new QuickUse();
+    //    QuickUse quickUse = new QuickUse();
     Ticket ticketChannel = new Ticket(guildSettingHelper);
     GeneralReplay generalReplay = new GeneralReplay();
     JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage(guildSettingHelper);
@@ -105,7 +109,7 @@ public class ListenerManager extends ListenerAdapter {
     // guild | 特定公會
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        quickUse.onGuildMessageReceived(event); // word("testCommand") && owner
+//        quickUse.onGuildMessageReceived(event); // word("testCommand") && owner
         level.onGuildMessageReceived(event); // always
         generalReplay.onGuildMessageReceived(event); // word
         log.onGuildMessageReceived(event); // always
@@ -289,23 +293,31 @@ public class ListenerManager extends ListenerAdapter {
             return;
         }
         createInviteCommand.onButton(event, args);
-        quickUse.onButtonClick(event, args);
+//        quickUse.onButtonClick(event, args);
         informationReaction.onButtonClick(event, args);
         ticketChannel.onButtonClick(event, args);
         clearCommand.onButton(event, args);
         musicManager.onButton(event, args);
     }
 
+    @Override
+    public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
+        String[] args = event.getComponentId().split(":");
+        if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
+            return;
+        musicManager.onSelectMenu(event, args);
+        popCat.onSelectTop(event, args);
+        popCat.onSelectSpeed(event, args);
+    }
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
         event.getInteraction().deferReply(true).queue();
-
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
-            if (debugMode) {
+            if (debugMode)
                 System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
-            }
 
             switch (event.getName()) {
                 case "ping" -> {
@@ -488,16 +500,6 @@ public class ListenerManager extends ListenerAdapter {
             }
         }
         event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
-    }
-
-    @Override
-    public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
-        String[] args = event.getComponentId().split(":");
-        if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
-            return;
-        musicManager.onSelectMenu(event, args);
-        popCat.onSelectTop(event, args);
-        popCat.onSelectSpeed(event, args);
     }
 
     /**

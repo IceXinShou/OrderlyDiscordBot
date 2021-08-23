@@ -10,8 +10,10 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 
 public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements GuildMusicManager.Event {
@@ -27,7 +29,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
-        MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? "已插播" : "已添加至播放清單",
+        MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? lang.get(MUSICBOTEVENT_PLAY_NOW) : lang.get(MUSICBOTEVENT_ADDED_QUEUE),
                 " \uD83D\uDC40 " + String.format("%,d", musicInfo.getViewCount()) +
                         " | \uD83D\uDC4D " + String.format("%,d", musicInfo.getLikeCount()) +
                         " | \uD83D\uDC4E " + String.format("%,d", musicInfo.getDislikeCount()) +
@@ -49,26 +51,27 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild) {
         if (event != null) {
-            event.getHook().editOriginalEmbeds(createEmbed("已跳過", 0xD3DAFF)).queue();
+            List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_SKIED), 0xD3DAFF)).queue();
         }
 
     }
 
     @Override
     public void remove(AudioTrack removedTrack, SlashCommandEvent event) {
-
+        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
         if (removedTrack == null)
-            event.getHook().editOriginalEmbeds(createEmbed("移除失敗", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REMOVED_FAIL), 0xFF0000)).queue();
         else
-            event.getHook().editOriginalEmbeds(createEmbed(removedTrack.getInfo().title + "已移除", 0x00FFFF)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(removedTrack.getInfo().title + lang.get(MUSICBOTEVENT_REMOVED_SUCCESS), 0x00FFFF)).queue();
     }
 
     @Override
     public void loop(boolean loopState, SlashCommandEvent event) {
         if (loopState) {
-            event.getHook().editOriginalEmbeds(createEmbed("循環播放", 0xf89f65)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
         } else {
-            event.getHook().editOriginalEmbeds(createEmbed("正常播放", 0xADACCC)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_NORMAL_PLAY), 0xADACCC)).queue();
         }
     }
 
@@ -81,7 +84,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         }
 
         if (event instanceof SlashCommandEvent)
-            event.getHook().editOriginalEmbeds(createEmbed("已停止播放", 0xFF3B7D)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed("❌", 0xFF3B7D)).queue();
     }
 
     @Override
