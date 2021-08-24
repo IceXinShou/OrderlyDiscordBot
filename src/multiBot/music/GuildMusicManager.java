@@ -10,8 +10,6 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Holder for both the player and a track scheduler for one guild.
  */

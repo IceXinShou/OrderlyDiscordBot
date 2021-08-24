@@ -370,7 +370,7 @@ public class ListenerManager extends ListenerAdapter {
                 createInviteCommand.onCommand(event);
             else {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-                event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_WRONG_CHANNEL)+" (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_WRONG_CHANNEL) + " (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
             }
             return;
         }
