@@ -163,7 +163,7 @@ public class BotSetting {
     public void reloadConfig() {
         loadConfigFile();
         loadVariable();
-        Main.lang.loadLanguage();
+        Main.language.loadLanguage();
         System.out.println(TAG + " Settings reloaded");
     }
 

@@ -26,7 +26,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ALL")
     public void newJoin(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
 

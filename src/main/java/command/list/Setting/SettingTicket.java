@@ -35,7 +35,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ConstantConditions")
     public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         List<MessageEmbed.Field> fields = new ArrayList<>();
         TextChannel eventTextChannel = event.getTextChannel();
@@ -263,7 +263,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
     }
 
     public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(Objects.requireNonNull(event.getGuild()), settingHelper);
         String channelID = Objects.requireNonNull(event.getOption("messagechannel")).getAsGuildChannel().getId();
         if (Objects.requireNonNull(data).has(channelID)) {

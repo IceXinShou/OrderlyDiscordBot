@@ -18,7 +18,7 @@ import static main.java.util.JsonKeys.*;
 public record SettingChannelStatus(GuildSettingHelper settingHelper) {
 
     public void newCS(@NotNull SlashCommandEvent event, @NotNull StatusListener listener) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String name = Objects.requireNonNull(event.getOption("channelname")).getAsString();
         String format = String.valueOf(Objects.requireNonNull(event.getOption("format")).getAsLong());
         if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10)
@@ -39,7 +39,7 @@ public record SettingChannelStatus(GuildSettingHelper settingHelper) {
     }
 
     public void removeCS(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = settingHelper.getSettingData(Objects.requireNonNull(event.getGuild()), CS_SETTING);
         String channelID = Objects.requireNonNull(event.getOption("channel")).getAsGuildChannel().getId();
 

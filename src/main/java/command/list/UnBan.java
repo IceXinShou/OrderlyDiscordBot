@@ -17,7 +17,7 @@ import static main.java.util.SlashCommandOption.USER_ID;
 public class UnBan {
 
     public void onCommand(SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         try {
             Member selfMember = Objects.requireNonNull(event.getGuild()).getSelfMember();
 

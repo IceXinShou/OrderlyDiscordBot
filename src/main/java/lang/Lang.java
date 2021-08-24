@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Lang {
-//    private final Map<String, String> zh_TW = new HashMap<>();
-//    private final Map<String, String> zh_CN = new HashMap<>();
-//    private final Map<String, String> en_US = new HashMap<>();
+import static main.java.lang.LangKey.loadKey;
+import static main.java.util.JsonKeys.GUILD_LANG;
 
+public class Lang {
+    private final String TAG = "[Lang]";
     private final Map<String, List<String>> guildSetting = new HashMap<>();
 
     private final List<String> zh_TW = new ArrayList<>();
@@ -28,12 +28,12 @@ public class Lang {
 
     private List<String> getLang(@NotNull String lang) {
         switch (lang) {
-            case "zh_TW", "zh_HK", "ja_JP" -> {
+            case "zh_TW", "zh_HK", "zh_SG", "zh_MO" -> {
                 return zh_TW;
             }
-//            case "zh_CN" -> {
-//                return zh_CN;
-//            }
+            case "zh_CN" -> {
+                return zh_CN;
+            }
             default -> {
                 return en_US;
             }
@@ -44,7 +44,7 @@ public class Lang {
         guildSetting.put(guild.getId(), getLang(guild.getLocale().toString()));
     }
 
-    private final String[] languagesName = new String[]{"zh_TW", "en_US"};
+    public final String[] languagesName = new String[]{"zh_TW", "zh_CN", "en_US"};
 
     public void loadLanguage() {
         File languageFolder = new File("languages/");
@@ -55,11 +55,13 @@ public class Lang {
             for (Field field : LangKey.class.getFields()) {
                 Object message = language.get(field.getName());
                 List<String> setting = getLang(languageName);
-                if (message == null)
+                if (message == null) {
                     setting.add(null);
-                else
+                    System.err.println(TAG + " missing key: " + field.getName());
+                } else
                     setting.add((String) message);
             }
         }
+        loadKey();
     }
 }

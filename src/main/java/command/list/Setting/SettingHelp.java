@@ -14,7 +14,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 public class SettingHelp {
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGHELP_ADVANCE_HELP), helpEmbed(), 0x00FFFF)).queue();
     }
 

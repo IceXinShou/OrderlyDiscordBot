@@ -15,7 +15,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 public class BotInfo {
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         int members = 0;

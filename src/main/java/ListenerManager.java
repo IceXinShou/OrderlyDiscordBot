@@ -4,7 +4,6 @@ import main.java.command.CommandRegister;
 import main.java.command.list.*;
 import main.java.command.list.Setting.*;
 import main.java.event.*;
-import main.java.lang.Lang;
 import main.java.util.file.GuildSettingHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
@@ -44,8 +43,9 @@ import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
 import static main.java.BotSetting.debugMode;
-import static main.java.Main.lang;
+import static main.java.Main.language;
 import static main.java.command.list.Invite.authChannelID;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.PermissionERROR.hasPermission;
@@ -93,6 +93,7 @@ public class ListenerManager extends ListenerAdapter {
     FileConvert fileConvert = new FileConvert();
     PopCat popCat = new PopCat();
     Giveaway giveaway = new Giveaway(guildSettingHelper);
+    Language langCommand = new Language(guildSettingHelper);
 
     /**
      * Guild Message
@@ -155,7 +156,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
-        lang.loadGuildSetting(guild);
+        language.loadGuildSetting(event.getGuild(), guildSettingHelper);
         newGuild.onCommand(event, commandRegister); // always
         statusListener.updateGuild(event.getGuild());
     }
@@ -169,7 +170,7 @@ public class ListenerManager extends ListenerAdapter {
      */
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        lang.loadGuildSetting(event.getGuild());
+        language.loadGuildSetting(event.getGuild(), guildSettingHelper);
         commandRegister.onGuildReady(event); // register commands
         voiceChannelCreator.onGuildReady(event);
         statusListener.updateGuild(event.getGuild());
@@ -308,6 +309,7 @@ public class ListenerManager extends ListenerAdapter {
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
             return;
         musicManager.onSelectMenu(event, args);
+        langCommand.onSelect(event, args, commandRegister);
         popCat.onSelectTop(event, args);
         popCat.onSelectSpeed(event, args);
     }
@@ -339,7 +341,9 @@ public class ListenerManager extends ListenerAdapter {
                     return;
                 }
             }
-            event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
+
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_CANT_DO_THIS), 0xFF0000)).queue();
             return;
         }
 
@@ -364,7 +368,8 @@ public class ListenerManager extends ListenerAdapter {
             if (channelID.equals(authChannelID))
                 createInviteCommand.onCommand(event);
             else {
-                event.getHook().editOriginalEmbeds(createEmbed("請到指定位置使用此指令 (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
+                List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_WRONG_CHANNEL)+" (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
             }
             return;
         }
@@ -414,7 +419,7 @@ public class ListenerManager extends ListenerAdapter {
                 return;
             }
             case "surl" -> {
-                sortURL.onCommand(event, false, null, Main.lang.getGuildLang(event.getGuild().getId()));
+                sortURL.onCommand(event, false, null, Main.language.getGuildLang(event.getGuild().getId()));
                 return;
             }
             case "mp4togif" -> {
@@ -431,6 +436,10 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "newgiveaway" -> {
                 giveaway.newGiveaway(event);
+                return;
+            }
+            case "lang" -> {
+                langCommand.onCommand(event);
                 return;
             }
             case "reload" -> {

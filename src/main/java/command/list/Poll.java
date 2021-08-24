@@ -21,7 +21,7 @@ import static main.java.util.SlashCommandOption.QUESTION;
 public class Poll {
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.MANAGE_CHANNEL, event, true))
             return;
 

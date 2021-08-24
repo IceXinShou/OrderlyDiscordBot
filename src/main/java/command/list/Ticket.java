@@ -41,7 +41,7 @@ public class Ticket {
     private final Map<String, String> linkedVoiceChannel = new HashMap<>();
 
     public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Ticket"))
             return;
         Guild guild;

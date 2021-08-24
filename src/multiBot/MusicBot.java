@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import main.java.Main;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.MusicInfoData;
 import multiBot.music.TrackScheduler;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 
 public class MusicBot {
@@ -60,7 +62,7 @@ public class MusicBot {
     private void play(AudioPlaylist playlist, VoiceChannel vc, @NotNull GuildMusicManager manager, GenericInteractionCreateEvent event, boolean playNow) {
         connectVC(manager.guild, vc, event);
         if (playNow) {
-            event.replyEmbeds(createEmbed("目前未支援立即播放歌單功能", 0xFF0000)).queue();
+            event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
             return;
         }
         manager.scheduler.addPlayListToQueue(playlist, event, this);
@@ -99,7 +101,7 @@ public class MusicBot {
         getMusicManager(guild).scheduler.play(event);
     }
 
-    public void remove(@NotNull SlashCommandEvent event, Guild guild) {
+    public void remove(@NotNull SlashCommandEvent event, @NotNull Guild guild) {
         int index = (int) Objects.requireNonNull(event.getOption("index")).getAsLong();
         getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
@@ -130,7 +132,7 @@ public class MusicBot {
             @Override
             public void loadFailed(FriendlyException exception) {
                 try {
-                    event.getHook().editOriginalEmbeds(createEmbed("無法播放此網址: " + exception.getMessage(), 0xFF0000)).queue();
+                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_CANT_PLAY_URL) + ": " + exception.getMessage(), 0xFF0000)).queue();
                 } catch (Exception ignored) {
                 }
             }
@@ -147,12 +149,12 @@ public class MusicBot {
         }
 
         scheduler.calculatePauseTime();
-        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
+        MessageEmbed[] embed = playStatus(Objects.requireNonNull(event.getMember()), scheduler);
         if (Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState()).getChannel() == null) {
             if (search)
-                event.replyEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).setEphemeral(true).queue();
+                event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).setEphemeral(true).queue();
             else
-                event.getHook().editOriginalEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
             return;
         }
         String vcID = Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState().getChannel()).getId();
@@ -201,11 +203,12 @@ public class MusicBot {
 
             // 音量顯示
             int volumePercent = (getMusicManager(member.getGuild()).scheduler.getVolume() / 5);
-            progress.append("\n")
-                    .append("**音量: **")
+            progress.append("\n").append("**")
+                    .append(lang.get(MUSICBOT_VOLUME))
+                    .append(": **")
                     .append("◆".repeat(volumePercent))
                     .append("◇".repeat(20 - volumePercent))
-                    .append(scheduler.loopStatus == 0 ? " <順序播放>\n" : (scheduler.loopStatus == 1 ? " <循環播放>\n" : " <單曲循環>\n"));
+                    .append(scheduler.loopStatus == 0 ? " <" + lang.get(MUSICBOT_NORMAL_PLAY) + ">\n" : (scheduler.loopStatus == 1 ? " <" + lang.get(MUSICBOT_LOOP_PLAY) + ">\n" : " <" + lang.get(MUSICBOT_REPEAT_PLAY) + ">\n"));
 
             // 組裝
             nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(),
@@ -219,7 +222,7 @@ public class MusicBot {
                     , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
         } else {
-            nowPlaying = createEmbed(0xFF0000, "**[沒有歌曲正在被播放]**");
+            nowPlaying = createEmbed(0xFF0000, "**[" + lang.get(MUSICBOT_NO_PLAYING) + "]**");
         }
 
 // 歌曲列表
@@ -238,7 +241,7 @@ public class MusicBot {
 
         StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue().size() == 0)
-            stringBuilder.append("無");
+            stringBuilder.append(lang.get(MUSICBOT_NONE));
         else {
             List<AudioTrack> inQueue = scheduler.getQueue();
             int index = inQueue.size();

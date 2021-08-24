@@ -22,7 +22,7 @@ import static main.java.util.JsonKeys.*;
 public record SettingRoom(GuildSettingHelper settingHelper) {
 
     public void newRoom(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         GuildChannel detectChannel = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel();
         String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
         String voiceName = Objects.requireNonNull(event.getOption("voicename")).getAsString();
@@ -108,7 +108,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
     }
 
     public void removeRoom(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         String detectID = Objects.requireNonNull(event.getOption("detectchannel")).getAsGuildChannel().getId();
 

@@ -20,7 +20,7 @@ public class FileConvert {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     public void onCommand(@NotNull SlashCommandEvent event, URLShort urlShort) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         // run thread
         executor.submit(() -> {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(FILECONVERT_CONVERTING), lang.get(FILECONVERT_WAIT_TIME), 0xFFA500)).queue();

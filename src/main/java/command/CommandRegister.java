@@ -106,7 +106,7 @@ public class CommandRegister {
 
 
     private CommandData @NotNull [] publicCommands(String guildID) {
-        List<String> lang = Main.lang.getGuildLang(guildID);
+        List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
 
                 // General
@@ -175,11 +175,12 @@ public class CommandRegister {
                         new OptionData(STRING, "time", lang.get(COMMANDREGISTER_GIVEAWAY_TIME))
                 ),
 
+                new CommandData("lang", lang.get(LANG_CHANGE)),
                 new CommandData("mp4togif", lang.get(COMMANDREGISTER_MP4_TO_GIF)).addOptions(
                         new OptionData(STRING, URL, lang.get(COMMANDREGISTER_MTG_URL), true),
                         new OptionData(STRING, "outputname", lang.get(COMMANDREGISTER_MTG_OUT_PUT_NAME)),
                         new OptionData(STRING, "fps", lang.get(COMMANDREGISTER_MTG_FPS))
-                ), // 若未填則回覆預設
+                ),
 
                 // Advance
                 new CommandData("setting", lang.get(COMMANDREGISTER_SETTING)).addSubcommands(
@@ -286,7 +287,7 @@ public class CommandRegister {
     }
 
     private CommandData @NotNull [] ownCommands(String guildID) {
-        List<String> lang = Main.lang.getGuildLang(guildID);
+        List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
                 new CommandData("reload", lang.get(COMMANDREGISTER_RELOAD)),
                 new CommandData("nick", lang.get(COMMANDREGISTER_NICK)),

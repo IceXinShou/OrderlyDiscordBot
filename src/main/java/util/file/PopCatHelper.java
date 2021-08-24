@@ -110,7 +110,6 @@ public class PopCatHelper {
             if (++count > offset) {
                 try {
                     builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(), String.format("%,d", country.getValue()) + " PPS", Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
-
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -119,7 +118,7 @@ public class PopCatHelper {
     }
 
     public void getAllData(SelectionMenu.Builder builder, GenericInteractionCreateEvent event, int page, boolean first, boolean pop) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (page > 1) {
             builder.addOption(lang.get(POPCATHELPER_PREVIEWS), "page:up:" + (page - 1), Emoji.fromUnicode("⬅️"));
         }

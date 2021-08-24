@@ -16,7 +16,7 @@ import static main.java.util.SlashCommandOption.MESSAGE;
 
 public class Support {
     public void onCommand(@NotNull SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SUPPORT_SENDING), 0x00FFFF)).queue();
         TextChannel channel;
         if ((channel = guild.getTextChannelById("858672866283356217")) == null) {

@@ -24,7 +24,7 @@ public class Main {
     public static String botID;
     public static String botNickname, botAvatarUrl;
     public static BotSetting setting;
-    public static Lang lang;
+    public static Lang language;
     public static SelfUser self;
     public static EmojiUtil emoji = new EmojiUtil();
     private final String TAG = "[Main]";
@@ -35,9 +35,9 @@ public class Main {
     private int currentIndex = 0;
 
     Main() throws LoginException {
-        lang = new Lang();
+        language = new Lang();
         setting = new BotSetting(); // 讀取設定
-        lang.loadLanguage();
+        language.loadLanguage();
 
         /*
          * init bot

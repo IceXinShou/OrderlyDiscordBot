@@ -27,8 +27,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+    public void addToQueue(AudioTrack track, @NotNull GenericInteractionCreateEvent event, boolean search, boolean playNow) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
         MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? lang.get(MUSICBOTEVENT_PLAY_NOW) : lang.get(MUSICBOTEVENT_ADDED_QUEUE),
@@ -53,15 +53,15 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild) {
         if (event != null) {
-            List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_SKIED), 0xD3DAFF)).queue();
         }
 
     }
 
     @Override
-    public void remove(AudioTrack removedTrack, SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+    public void remove(AudioTrack removedTrack, @NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (removedTrack == null)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REMOVED_FAIL), 0xFF0000)).queue();
         else
@@ -69,8 +69,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void loop(boolean loopState, SlashCommandEvent event) {
-        List<String> lang = Main.lang.getGuildLang(event.getGuild().getId());
+    public void loop(boolean loopState, @NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (loopState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
         } else {
@@ -95,7 +95,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         if (repeatState) {
             event.getHook().editOriginalEmbeds(createEmbed("單曲循環", 0x7d95b9)).queue();
         } else {
-            event.getHook().editOriginalEmbeds(createEmbed("正常播放", 0xAFACCC)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_NORMAL_PLAY), 0xAFACCC)).queue();
         }
     }
 
@@ -111,5 +111,4 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         if (event != null)
             event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
     }
-
 }

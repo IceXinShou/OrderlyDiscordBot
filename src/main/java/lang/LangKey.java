@@ -118,220 +118,264 @@ public class LangKey {
     /**
      * {@link main.java.command.list.Setting.SettingRoom}
      */
-    public static final int SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR = 63;
-    public static final int SETTINGROOM_VOICE_CHANNEL_NAME_ERROR = 64;
-    public static final int SETTINGROOM_TEXT_CHANNEL_NAME_ERROR = 65;
-    public static final int SETTINGROOM_BITRATE_ERROR = 66;
-    public static final int SETTINGROOM_MEMBER_LIMIT_ERROR = 67;
-    public static final int SETTINGROOM_ERROR_REPORT = 68;
-    public static final int SETTINGROOM_DETECT_VOICE_CHANNEL = 69;
-    public static final int SETTINGROOM_VOICE_CATEGORY = 70;
-    public static final int SETTINGROOM_TEXT_CATEGORY = 71;
-    public static final int SETTINGROOM_VOICE_NAME = 72;
-    public static final int SETTINGROOM_TEXT_NAME = 73;
-    public static final int SETTINGROOM_MEMBER_LIMIT = 74;
-    public static final int SETTINGROOM_BITRATE = 75;
-    public static final int SETTINGROOM_SETTING_SUCCESS = 76;
-    public static final int SETTINGROOM_REMOVE_SUCCESS = 77;
-    public static final int SETTINGROOM_NONE = 78;
+    public static int SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR;
+    public static int SETTINGROOM_VOICE_CHANNEL_NAME_ERROR;
+    public static int SETTINGROOM_TEXT_CHANNEL_NAME_ERROR;
+    public static int SETTINGROOM_BITRATE_ERROR;
+    public static int SETTINGROOM_MEMBER_LIMIT_ERROR;
+    public static int SETTINGROOM_ERROR_REPORT;
+    public static int SETTINGROOM_DETECT_VOICE_CHANNEL;
+    public static int SETTINGROOM_VOICE_CATEGORY;
+    public static int SETTINGROOM_TEXT_CATEGORY;
+    public static int SETTINGROOM_VOICE_NAME;
+    public static int SETTINGROOM_TEXT_NAME;
+    public static int SETTINGROOM_MEMBER_LIMIT;
+    public static int SETTINGROOM_BITRATE;
+    public static int SETTINGROOM_SETTING_SUCCESS;
+    public static int SETTINGROOM_REMOVE_SUCCESS;
+    public static int SETTINGROOM_NONE;
 
 
     /**
      * {@link main.java.command.list.FileConvert}
      */
-    public static final int FILECONVERT_CONVERTING = 79;
-    public static final int FILECONVERT_WAIT_TIME = 80;
-    public static final int FILECONVERT_FAIL = 81;
+    public static int FILECONVERT_CONVERTING;
+    public static int FILECONVERT_WAIT_TIME;
+    public static int FILECONVERT_FAIL;
 
 
     /**
      * {@link main.java.command.list.Setting.SettingChannelStatus}
      */
-    public static final int SETTINGCHANNELSTATUS_FAIL = 82;
-    public static final int SETTINGCHANNELSTATUS_SETTING_SUCCESS = 83;
-    public static final int SETTINGCHANNELSTATUS_REMOVE_SUCCESS = 84;
+    public static int SETTINGCHANNELSTATUS_FAIL;
+    public static int SETTINGCHANNELSTATUS_SETTING_SUCCESS;
+    public static int SETTINGCHANNELSTATUS_REMOVE_SUCCESS;
 
 
     /**
      * {@link main.java.command.list.Setting.SettingHelp}
      */
-    public static final int SETTINGHELP_ADVANCE_HELP = 85;
+    public static int SETTINGHELP_ADVANCE_HELP;
 
 
     /**
      * {@link main.java.command.list.Setting.SettingJoinLeave}
      */
-    public static final int SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL = 86;
-    public static final int SETTINGJOINLEAVE_SETTING_FAIL = 87;
-    public static final int SETTINGJOINLEAVE_NOTICE_CHANNEL = 88;
-    public static final int SETTINGJOINLEAVE_NOTICE_MESSAGE = 89;
-    public static final int SETTINGJOINLEAVE_DM_MESSAGE = 90;
-    public static final int SETTINGJOINLEAVE_ROLE_ADD = 91;
-    public static final int SETTINGJOINLEAVE_SETTING_SUCCESS = 92;
+    public static int SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL;
+    public static int SETTINGJOINLEAVE_SETTING_FAIL;
+    public static int SETTINGJOINLEAVE_NOTICE_CHANNEL;
+    public static int SETTINGJOINLEAVE_NOTICE_MESSAGE;
+    public static int SETTINGJOINLEAVE_DM_MESSAGE;
+    public static int SETTINGJOINLEAVE_ROLE_ADD;
+    public static int SETTINGJOINLEAVE_SETTING_SUCCESS;
 
 
     /**
      * {@link main.java.command.CommandRegister}
      */
-    public static final int COMMANDREGISTER_WARN = 93;
-    public static final int COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE = 94;
-    public static final int COMMANDREGISTER_WARN_REASON = 95;
-    public static final int COMMANDREGISTER_REMOVE_WARM = 96;
-    public static final int COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE = 97;
-    public static final int COMMANDREGISTER_KICK = 98;
-    public static final int COMMANDREGISTER_KICK_MEMBER_YOU_CHOOSE = 99;
-    public static final int COMMANDREGISTER_BAN = 100;
-    public static final int COMMANDREGISTER_BAN_MEMBER_YOU_CHOOSE = 101;
-    public static final int COMMANDREGISTER_BAN_TIME = 102;
-    public static final int COMMANDREGISTER_BAN_REASON = 103;
-    public static final int COMMANDREGISTER_UNBAN = 104;
-    public static final int COMMANDREGISTER_UNBAN_MEMBER_YOU_CHOOSE = 105;
-    public static final int COMMANDREGISTER_CLEAR = 106;
-    public static final int COMMANDREGISTER_CLEAR_BETWEEN_2_TO_200 = 107;
-    public static final int COMMANDREGISTER_POLL = 108;
-    public static final int COMMANDREGISTER_POLL_QUESTION = 109;
-    public static final int COMMANDREGISTER_POLL_OPTION_A = 110;
-    public static final int COMMANDREGISTER_POLL_OPTION_B = 111;
-    public static final int COMMANDREGISTER_POLL_OPTION_C = 112;
-    public static final int COMMANDREGISTER_POLL_OPTION_D = 113;
-    public static final int COMMANDREGISTER_POLL_OPTION_E = 114;
-    public static final int COMMANDREGISTER_POLL_OPTION_F = 115;
-    public static final int COMMANDREGISTER_POLL_OPTION_G = 116;
-    public static final int COMMANDREGISTER_POLL_OPTION_H = 117;
-    public static final int COMMANDREGISTER_POLL_OPTION_I = 118;
-    public static final int COMMANDREGISTER_POLL_OPTION_J = 119;
-    public static final int COMMANDREGISTER_HELP = 120;
-    public static final int COMMANDREGISTER_HELP_ANNOUNCEMENT = 121;
-    public static final int COMMANDREGISTER_PLAY = 122;
-    public static final int COMMANDREGISTER_PLAY_NAME_OR_URL = 123;
-    public static final int COMMANDREGISTER_PLAYNOW = 124;
-    public static final int COMMANDREGISTER_PN_NAME_OR_URL = 125;
-    public static final int COMMANDREGISTER_QUEUE = 126;
-    public static final int COMMANDREGISTER_SKIP = 127;
-    public static final int COMMANDREGISTER_REMOVE = 128;
-    public static final int COMMANDREGISTER_REMOVE_POS = 129;
-    public static final int COMMANDREGISTER_VOLUME = 130;
-    public static final int COMMANDREGISTER_VOLUME_COUNT = 131;
-    public static final int COMMANDREGISTER_LOOP = 132;
-    public static final int COMMANDREGISTER_REPEAT = 133;
-    public static final int COMMANDREGISTER_PAUSE = 134;
-    public static final int COMMANDREGISTER_LEAVE = 135;
-    public static final int COMMANDREGISTER_SURL = 136;
-    public static final int COMMANDREGISTER_SURL_URL = 137;
-    public static final int COMMANDREGISTER_POP_SPEED = 138;
-    public static final int COMMANDREGISTER_POP_TOP = 139;
-    public static final int COMMANDREGISTER_GIVEAWAY = 140;
-    public static final int COMMANDREGISTER_GIVEAWAY_NAME = 141;
-    public static final int COMMANDREGISTER_GIVEAWAY_WIN_COUNT = 142;
-    public static final int COMMANDREGISTER_GIVEAWAY_EMOJI = 143;
-    public static final int COMMANDREGISTER_GIVEAWAY_MONTH = 144;
-    public static final int COMMANDREGISTER_GIVEAWAY_WEEK = 145;
-    public static final int COMMANDREGISTER_GIVEAWAY_DAY = 146;
-    public static final int COMMANDREGISTER_GIVEAWAY_HOUR = 147;
-    public static final int COMMANDREGISTER_GIVEAWAY_MINUTE = 148;
-    public static final int COMMANDREGISTER_GIVEAWAY_SECOND = 149;
-    public static final int COMMANDREGISTER_GIVEAWAY_TIME = 150;
-    public static final int COMMANDREGISTER_MP4_TO_GIF = 151;
-    public static final int COMMANDREGISTER_MTG_URL = 152;
-    public static final int COMMANDREGISTER_MTG_OUT_PUT_NAME = 153;
-    public static final int COMMANDREGISTER_MTG_FPS = 154;
-    public static final int COMMANDREGISTER_SETTING = 155;
-    public static final int COMMANDREGISTER_S_HELP = 156;
-    public static final int COMMANDREGISTER_S_NEW_ROOM = 157;
-    public static final int COMMANDREGISTER_S_NR_DETECT_CHANNEL = 158;
-    public static final int COMMANDREGISTER_S_NR_VOICE_NAME = 159;
-    public static final int COMMANDREGISTER_S_NR_TEXT_NAME = 160;
-    public static final int COMMANDREGISTER_S_NR_VOICE_CATEGORY = 161;
-    public static final int COMMANDREGISTER_S_NR_TEXT_CATEGORY = 162;
-    public static final int COMMANDREGISTER_S_NR_VOICE_BITRATE = 163;
-    public static final int COMMANDREGISTER_S_NR_MEMBER_LIMIT = 164;
-    public static final int COMMANDREGISTER_S_REMOVE_ROOM = 165;
-    public static final int COMMANDREGISTER_S_RR_DETECT_CHANNEL = 166;
-    public static final int COMMANDREGISTER_S_NEW_AUTO_VC = 167;
-    public static final int COMMANDREGISTER_S_NAVC_DETECT_CATEGORY = 168;
-    public static final int COMMANDREGISTER_S_NAVC_VOICE_NAME = 169;
-    public static final int COMMANDREGISTER_S_REMOVE_AUTO_VC = 170;
-    public static final int COMMANDREGISTER_S_RAVC_DETECT_CATEGORY = 171;
-    public static final int COMMANDREGISTER_S_NEW_TICKET = 172;
-    public static final int COMMANDREGISTER_S_NT_MESSAGE_ID = 173;
-    public static final int COMMANDREGISTER_S_NT_MESSAGE_CHANNEL = 174;
-    public static final int COMMANDREGISTER_S_NT_ALLOW_ROLE = 175;
-    public static final int COMMANDREGISTER_S_NT_ALLOW_TAG_ROLE = 176;
-    public static final int COMMANDREGISTER_S_NT_ENTERED_MESSAGE = 177;
-    public static final int COMMANDREGISTER_S_NT_TEXT_NAME = 178;
-    public static final int COMMANDREGISTER_S_NT_TEXT_CATEGORY = 179;
-    public static final int COMMANDREGISTER_S_NT_HAS_VOICE_CHANNEL = 180;
-    public static final int COMMANDREGISTER_S_NT_VOICE_NAME = 181;
-    public static final int COMMANDREGISTER_S_NT_VOICE_CATEGORY = 182;
-    public static final int COMMANDREGISTER_S_NT_BUTTON_NAME = 183;
-    public static final int COMMANDREGISTER_S_NT_BUTTON_COLOR = 184;
-    public static final int COMMANDREGISTER_S_NT_BUTTON_EMOJI = 185;
-    public static final int COMMANDREGISTER_S_NT_ONLY_ONE = 186;
-    public static final int COMMANDREGISTER_S_ADD_TICKET = 187;
-    public static final int COMMANDREGISTER_S_AT_MESSAGE_ID = 188;
-    public static final int COMMANDREGISTER_S_AT_MESSAGE_CHANNEL = 189;
-    public static final int COMMANDREGISTER_S_AT_ALLOW_ROLE = 190;
-    public static final int COMMANDREGISTER_S_AT_ALLOW_TAG_ROLE = 191;
-    public static final int COMMANDREGISTER_S_AT_ENTERED_MESSAGE = 192;
-    public static final int COMMANDREGISTER_S_AT_TEXT_NAME = 193;
-    public static final int COMMANDREGISTER_S_AT_TEXT_CATEGORY = 194;
-    public static final int COMMANDREGISTER_S_AT_HAS_VOICE_CHANNEL = 195;
-    public static final int COMMANDREGISTER_S_AT_VOICE_NAME = 196;
-    public static final int COMMANDREGISTER_S_AT_VOICE_CATEGORY = 197;
-    public static final int COMMANDREGISTER_S_AT_BUTTON_NAME = 198;
-    public static final int COMMANDREGISTER_S_AT_BUTTON_COLOR = 199;
-    public static final int COMMANDREGISTER_S_AT_BUTTON_EMOJI = 200;
-    public static final int COMMANDREGISTER_S_AT_ONLY_ONE = 201;
-    public static final int COMMANDREGISTER_S_REMOVE_TICKET = 202;
-    public static final int COMMANDREGISTER_S_RT_MESSAGE_ID = 203;
-    public static final int COMMANDREGISTER_S_RT_MESSAGE_CHANNEL = 204;
-    public static final int COMMANDREGISTER_S_RT_POSITION = 205;
-    public static final int COMMANDREGISTER_S_NEW_CHANNEL_STATUS = 206;
-    public static final int COMMANDREGISTER_S_NCS_CHANNEL = 207;
-    public static final int COMMANDREGISTER_S_NCS_CHANNEL_NAME = 208;
-    public static final int COMMANDREGISTER_S_NCS_FORMAT = 209;
-    public static final int COMMANDREGISTER_S_REMOVE_CHANNEL_STATUS = 210;
-    public static final int COMMANDREGISTER_S_RSC_CHANNEL = 211;
-    public static final int COMMANDREGISTER_S_NEW_JOIN = 212;
-    public static final int COMMANDREGISTER_S_NJ_CHANNEL = 213;
-    public static final int COMMANDREGISTER_S_NJ_MESSAGE = 214;
-    public static final int COMMANDREGISTER_S_NJ_DM = 215;
-    public static final int COMMANDREGISTER_S_NJ_ROLE1 = 216;
-    public static final int COMMANDREGISTER_S_NJ_ROLE2 = 217;
-    public static final int COMMANDREGISTER_S_NJ_ROLE3 = 218;
-    public static final int COMMANDREGISTER_S_NJ_ROLE4 = 219;
-    public static final int COMMANDREGISTER_S_NJ_ROLE5 = 220;
-    public static final int COMMANDREGISTER_S_NJ_ROLE6 = 221;
-    public static final int COMMANDREGISTER_S_NJ_ROLE7 = 222;
-    public static final int COMMANDREGISTER_S_NJ_ROLE8 = 223;
-    public static final int COMMANDREGISTER_S_NJ_ROLE9 = 224;
-    public static final int COMMANDREGISTER_S_NJ_ROLE10 = 225;
-    public static final int COMMANDREGISTER_S_REMOVE_JOIN = 226;
-    public static final int COMMANDREGISTER_S_RJ_CHANNEL = 227;
-    public static final int COMMANDREGISTER_S_NEW_LEAVE = 228;
-    public static final int COMMANDREGISTER_S_NL_CHANNEL = 229;
-    public static final int COMMANDREGISTER_S_NL_MESSAGE = 230;
-    public static final int COMMANDREGISTER_S_REMOVE_LEAVE = 231;
-    public static final int COMMANDREGISTER_S_RL_CHANNEL = 232;
-    public static final int COMMANDREGISTER_RELOAD = 233;
-    public static final int COMMANDREGISTER_NICK = 234;
-    public static final int COMMANDREGISTER_INVITE = 235;
-    public static final int COMMANDREGISTER_INVITE_MEMBER_YOU_CHOOSE = 236;
+    public static int COMMANDREGISTER_WARN;
+    public static int COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE;
+    public static int COMMANDREGISTER_WARN_REASON;
+    public static int COMMANDREGISTER_REMOVE_WARM;
+    public static int COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE;
+    public static int COMMANDREGISTER_KICK;
+    public static int COMMANDREGISTER_KICK_MEMBER_YOU_CHOOSE;
+    public static int COMMANDREGISTER_BAN;
+    public static int COMMANDREGISTER_BAN_MEMBER_YOU_CHOOSE;
+    public static int COMMANDREGISTER_BAN_TIME;
+    public static int COMMANDREGISTER_BAN_REASON;
+    public static int COMMANDREGISTER_UNBAN;
+    public static int COMMANDREGISTER_UNBAN_MEMBER_YOU_CHOOSE;
+    public static int COMMANDREGISTER_CLEAR;
+    public static int COMMANDREGISTER_CLEAR_BETWEEN_2_TO_200;
+    public static int COMMANDREGISTER_POLL;
+    public static int COMMANDREGISTER_POLL_QUESTION;
+    public static int COMMANDREGISTER_POLL_OPTION_A;
+    public static int COMMANDREGISTER_POLL_OPTION_B;
+    public static int COMMANDREGISTER_POLL_OPTION_C;
+    public static int COMMANDREGISTER_POLL_OPTION_D;
+    public static int COMMANDREGISTER_POLL_OPTION_E;
+    public static int COMMANDREGISTER_POLL_OPTION_F;
+    public static int COMMANDREGISTER_POLL_OPTION_G;
+    public static int COMMANDREGISTER_POLL_OPTION_H;
+    public static int COMMANDREGISTER_POLL_OPTION_I;
+    public static int COMMANDREGISTER_POLL_OPTION_J;
+    public static int COMMANDREGISTER_HELP;
+    public static int COMMANDREGISTER_HELP_ANNOUNCEMENT;
+    public static int COMMANDREGISTER_PLAY;
+    public static int COMMANDREGISTER_PLAY_NAME_OR_URL;
+    public static int COMMANDREGISTER_PLAYNOW;
+    public static int COMMANDREGISTER_PN_NAME_OR_URL;
+    public static int COMMANDREGISTER_QUEUE;
+    public static int COMMANDREGISTER_SKIP;
+    public static int COMMANDREGISTER_REMOVE;
+    public static int COMMANDREGISTER_REMOVE_POS;
+    public static int COMMANDREGISTER_VOLUME;
+    public static int COMMANDREGISTER_VOLUME_COUNT;
+    public static int COMMANDREGISTER_LOOP;
+    public static int COMMANDREGISTER_REPEAT;
+    public static int COMMANDREGISTER_PAUSE;
+    public static int COMMANDREGISTER_LEAVE;
+    public static int COMMANDREGISTER_SURL;
+    public static int COMMANDREGISTER_SURL_URL;
+    public static int COMMANDREGISTER_POP_SPEED;
+    public static int COMMANDREGISTER_POP_TOP;
+    public static int COMMANDREGISTER_GIVEAWAY;
+    public static int COMMANDREGISTER_GIVEAWAY_NAME;
+    public static int COMMANDREGISTER_GIVEAWAY_WIN_COUNT;
+    public static int COMMANDREGISTER_GIVEAWAY_EMOJI;
+    public static int COMMANDREGISTER_GIVEAWAY_MONTH;
+    public static int COMMANDREGISTER_GIVEAWAY_WEEK;
+    public static int COMMANDREGISTER_GIVEAWAY_DAY;
+    public static int COMMANDREGISTER_GIVEAWAY_HOUR;
+    public static int COMMANDREGISTER_GIVEAWAY_MINUTE;
+    public static int COMMANDREGISTER_GIVEAWAY_SECOND;
+    public static int COMMANDREGISTER_GIVEAWAY_TIME;
+    public static int COMMANDREGISTER_MP4_TO_GIF;
+    public static int COMMANDREGISTER_MTG_URL;
+    public static int COMMANDREGISTER_MTG_OUT_PUT_NAME;
+    public static int COMMANDREGISTER_MTG_FPS;
+    public static int COMMANDREGISTER_SETTING;
+    public static int COMMANDREGISTER_S_HELP;
+    public static int COMMANDREGISTER_S_NEW_ROOM;
+    public static int COMMANDREGISTER_S_NR_DETECT_CHANNEL;
+    public static int COMMANDREGISTER_S_NR_VOICE_NAME;
+    public static int COMMANDREGISTER_S_NR_TEXT_NAME;
+    public static int COMMANDREGISTER_S_NR_VOICE_CATEGORY;
+    public static int COMMANDREGISTER_S_NR_TEXT_CATEGORY;
+    public static int COMMANDREGISTER_S_NR_VOICE_BITRATE;
+    public static int COMMANDREGISTER_S_NR_MEMBER_LIMIT;
+    public static int COMMANDREGISTER_S_REMOVE_ROOM;
+    public static int COMMANDREGISTER_S_RR_DETECT_CHANNEL;
+    public static int COMMANDREGISTER_S_NEW_AUTO_VC;
+    public static int COMMANDREGISTER_S_NAVC_DETECT_CATEGORY;
+    public static int COMMANDREGISTER_S_NAVC_VOICE_NAME;
+    public static int COMMANDREGISTER_S_REMOVE_AUTO_VC;
+    public static int COMMANDREGISTER_S_RAVC_DETECT_CATEGORY;
+    public static int COMMANDREGISTER_S_NEW_TICKET;
+    public static int COMMANDREGISTER_S_NT_MESSAGE_ID;
+    public static int COMMANDREGISTER_S_NT_MESSAGE_CHANNEL;
+    public static int COMMANDREGISTER_S_NT_ALLOW_ROLE;
+    public static int COMMANDREGISTER_S_NT_ALLOW_TAG_ROLE;
+    public static int COMMANDREGISTER_S_NT_ENTERED_MESSAGE;
+    public static int COMMANDREGISTER_S_NT_TEXT_NAME;
+    public static int COMMANDREGISTER_S_NT_TEXT_CATEGORY;
+    public static int COMMANDREGISTER_S_NT_HAS_VOICE_CHANNEL;
+    public static int COMMANDREGISTER_S_NT_VOICE_NAME;
+    public static int COMMANDREGISTER_S_NT_VOICE_CATEGORY;
+    public static int COMMANDREGISTER_S_NT_BUTTON_NAME;
+    public static int COMMANDREGISTER_S_NT_BUTTON_COLOR;
+    public static int COMMANDREGISTER_S_NT_BUTTON_EMOJI;
+    public static int COMMANDREGISTER_S_NT_ONLY_ONE;
+    public static int COMMANDREGISTER_S_ADD_TICKET;
+    public static int COMMANDREGISTER_S_AT_MESSAGE_ID;
+    public static int COMMANDREGISTER_S_AT_MESSAGE_CHANNEL;
+    public static int COMMANDREGISTER_S_AT_ALLOW_ROLE;
+    public static int COMMANDREGISTER_S_AT_ALLOW_TAG_ROLE;
+    public static int COMMANDREGISTER_S_AT_ENTERED_MESSAGE;
+    public static int COMMANDREGISTER_S_AT_TEXT_NAME;
+    public static int COMMANDREGISTER_S_AT_TEXT_CATEGORY;
+    public static int COMMANDREGISTER_S_AT_HAS_VOICE_CHANNEL;
+    public static int COMMANDREGISTER_S_AT_VOICE_NAME;
+    public static int COMMANDREGISTER_S_AT_VOICE_CATEGORY;
+    public static int COMMANDREGISTER_S_AT_BUTTON_NAME;
+    public static int COMMANDREGISTER_S_AT_BUTTON_COLOR;
+    public static int COMMANDREGISTER_S_AT_BUTTON_EMOJI;
+    public static int COMMANDREGISTER_S_AT_ONLY_ONE;
+    public static int COMMANDREGISTER_S_REMOVE_TICKET;
+    public static int COMMANDREGISTER_S_RT_MESSAGE_ID;
+    public static int COMMANDREGISTER_S_RT_MESSAGE_CHANNEL;
+    public static int COMMANDREGISTER_S_RT_POSITION;
+    public static int COMMANDREGISTER_S_NEW_CHANNEL_STATUS;
+    public static int COMMANDREGISTER_S_NCS_CHANNEL;
+    public static int COMMANDREGISTER_S_NCS_CHANNEL_NAME;
+    public static int COMMANDREGISTER_S_NCS_FORMAT;
+    public static int COMMANDREGISTER_S_REMOVE_CHANNEL_STATUS;
+    public static int COMMANDREGISTER_S_RSC_CHANNEL;
+    public static int COMMANDREGISTER_S_NEW_JOIN;
+    public static int COMMANDREGISTER_S_NJ_CHANNEL;
+    public static int COMMANDREGISTER_S_NJ_MESSAGE;
+    public static int COMMANDREGISTER_S_NJ_DM;
+    public static int COMMANDREGISTER_S_NJ_ROLE1;
+    public static int COMMANDREGISTER_S_NJ_ROLE2;
+    public static int COMMANDREGISTER_S_NJ_ROLE3;
+    public static int COMMANDREGISTER_S_NJ_ROLE4;
+    public static int COMMANDREGISTER_S_NJ_ROLE5;
+    public static int COMMANDREGISTER_S_NJ_ROLE6;
+    public static int COMMANDREGISTER_S_NJ_ROLE7;
+    public static int COMMANDREGISTER_S_NJ_ROLE8;
+    public static int COMMANDREGISTER_S_NJ_ROLE9;
+    public static int COMMANDREGISTER_S_NJ_ROLE10;
+    public static int COMMANDREGISTER_S_REMOVE_JOIN;
+    public static int COMMANDREGISTER_S_RJ_CHANNEL;
+    public static int COMMANDREGISTER_S_NEW_LEAVE;
+    public static int COMMANDREGISTER_S_NL_CHANNEL;
+    public static int COMMANDREGISTER_S_NL_MESSAGE;
+    public static int COMMANDREGISTER_S_REMOVE_LEAVE;
+    public static int COMMANDREGISTER_S_RL_CHANNEL;
+    public static int COMMANDREGISTER_RELOAD;
+    public static int COMMANDREGISTER_NICK;
+    public static int COMMANDREGISTER_INVITE;
+    public static int COMMANDREGISTER_INVITE_MEMBER_YOU_CHOOSE;
 
 
     /**
      * {@link multiBot.MusicBotEvent}
      */
-    public static final int MUSICBOTEVENT_PLAY_NOW = 1;
-    public static final int MUSICBOTEVENT_ADDED_QUEUE = 1;
-    public static final int MUSICBOTEVENT_SKIED = 1;
-    public static final int MUSICBOTEVENT_REMOVED_FAIL = 1;
-    public static final int MUSICBOTEVENT_REMOVED_SUCCESS = 1;
-    public static final int MUSICBOTEVENT_LOOP_PLAY = 1;
-    public static final int MUSICBOTEVENT_NORMAL_PLAY = 1;
-    public static final int MUSICBOTEVENT_STOP_PLAY = 244;
-    public static final int MUSICBOTEVENT_REPEAT_PLAY = 245;
-    public static final int MUSICBOTEVENT_PAUSE = 246;
-    public static final int MUSICBOTEVENT_UNPAUSE = 247;
-    public static final int MUSICBOTEVENT_SET_VOLUME = 248;
+    public static int MUSICBOTEVENT_PLAY_NOW;
+    public static int MUSICBOTEVENT_ADDED_QUEUE;
+    public static int MUSICBOTEVENT_SKIED;
+    public static int MUSICBOTEVENT_REMOVED_FAIL;
+    public static int MUSICBOTEVENT_REMOVED_SUCCESS;
+    public static int MUSICBOTEVENT_LOOP_PLAY;
+    public static int MUSICBOTEVENT_NORMAL_PLAY;
+    public static int MUSICBOTEVENT_STOP_PLAY;
+    public static int MUSICBOTEVENT_REPEAT_PLAY;
+    public static int MUSICBOTEVENT_PAUSE;
+    public static int MUSICBOTEVENT_UNPAUSE;
+    public static int MUSICBOTEVENT_SET_VOLUME;
+
+
+    /**
+     * {@link multiBot.MusicBot}
+     */
+    public static int MUSICBOT_NOT_SUPPORT_PLAYLIST;
+    public static int MUSICBOT_URL_NOT_FOUND;
+    public static int MUSICBOT_CANT_PLAY_URL;
+    public static int MUSICBOT_NO_MUSIC;
+    public static int MUSICBOT_NO_CONNECT_PERMISSION;
+    public static int MUSICBOT_VOLUME;
+    public static int MUSICBOT_NORMAL_PLAY;
+    public static int MUSICBOT_LOOP_PLAY;
+    public static int MUSICBOT_REPEAT_PLAY;
+    public static int MUSICBOT_NO_PLAYING;
+    public static int MUSICBOT_NONE;
+    public static int MUSICBOT_WAITING_PLAYLIST;
+
+
+    /**
+     * {@link main.java.ListenerManager}
+     */
+    public static int LISTENERMANAGER_CANT_DO_THIS;
+    public static int LISTENERMANAGER_WRONG_CHANNEL;
+    public static int LISTENERMANAGER_NOT_YOUR_BUTTON;
+
+
+    /**
+     * {@link Language}
+     */
+    public static int LANG_CHANGE;
+    public static int LANG_CHOOSE;
+    public static int LANG_SUCCESS;
+
+
+    public static void loadKey() {
+        int n = 0;
+        for (Field field : LangKey.class.getFields())
+            try {
+                field.set(LangKey.class, n++);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+    }
 }
