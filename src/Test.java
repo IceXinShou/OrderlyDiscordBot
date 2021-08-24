@@ -24,7 +24,7 @@ public class Test {
                 break;
             }
         }
-        for (Object i : val)) {
+        for (Object i : val) {
             JSONArray array = (JSONArray) i;
             Object data;
             if ((data = array.get(1)).equals(0)) {

@@ -264,9 +264,9 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
 
     public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        JSONObject data = getSettingData(event.getGuild()), settingHelper);
-        String channelID = event.getOption("messagechannel")).getAsGuildChannel().getId();
-        if (data).has(channelID)) {
+        JSONObject data = getSettingData(event.getGuild(), settingHelper);
+        String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();
+        if (data.has(channelID)) {
             TextChannel channel;
             if ((channel = event.getGuild().getTextChannelById(channelID)) == null) {
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_FAIL_BY_CHANNEL), 0xFF0000)).queue();
@@ -275,7 +275,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                 return;
             }
             JSONObject messageChannel = data.getJSONObject(channelID);
-            String messageID = event.getOption("messageid")).getAsString();
+            String messageID = event.getOption("messageid").getAsString();
             if (messageChannel.has(messageID)) {
                 Message message;
                 if ((message = channel.retrieveMessageById(messageID).complete()) == null || !message.getAuthor().getId().equals(botID)) {
@@ -286,7 +286,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                 }
                 JSONArray messageButtons = messageChannel.getJSONArray(messageID);
                 // {messageChannel:{messageID:[{},{},{},{},{}]}}
-                Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (event.getOption("position")).getAsLong() - 1)));
+                Byte removePos = (Byte) (byte) Math.max(1, Math.min(5, (event.getOption("position")).getAsLong() - 1));
                 if (ticket.isButtonUsed(channelID, messageID, removePos)) {
                     event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING), 0xFF0000)).queue();
                     return;

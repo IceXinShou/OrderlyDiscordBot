@@ -23,9 +23,9 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
 
     public void newRoom(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        GuildChannel detectChannel = event.getOption("detectchannel")).getAsGuildChannel();
-        String detectID = event.getOption("detectchannel")).getAsGuildChannel().getId();
-        String voiceName = event.getOption("voicename")).getAsString();
+        GuildChannel detectChannel = event.getOption("detectchannel").getAsGuildChannel();
+        String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
+        String voiceName = event.getOption("voicename").getAsString();
         String textName = null;
         Short voiceBitrate;
         String voiceCategoryID;
@@ -35,26 +35,26 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         Guild guild = event.getGuild();
 
         if (event.getOption("textname") != null) {
-            textName = event.getOption("textname")).getAsString();
+            textName = event.getOption("textname").getAsString();
             hasTextChannel = true;
             if (event.getOption("textcategory") != null)
-                textCategoryID = event.getOption("textcategory")).getAsString();
+                textCategoryID = event.getOption("textcategory").getAsString();
             else
-                textCategoryID = detectChannel.getParent()).getId();
+                textCategoryID = detectChannel.getParent().getId();
 
         }
         if (event.getOption("voicebitrate") != null)
-            voiceBitrate = Short.parseShort(event.getOption("voicebitrate")).getAsString()); // 8~384
+            voiceBitrate = Short.parseShort(event.getOption("voicebitrate").getAsString()); // 8~384
         else
             voiceBitrate = 64;
         if (event.getOption("voicecategory") != null)
-            voiceCategoryID = event.getOption("voicecategory")).getAsString();
+            voiceCategoryID = event.getOption("voicecategory").getAsString();
         else
-            voiceCategoryID = detectChannel.getParent()).getId();
+            voiceCategoryID = detectChannel.getParent().getId();
 
         if (event.getOption("memberlimit") != null)
-            if (event.getOption("memberlimit")).getAsLong() > 0)
-                memberLimit = Byte.parseByte(event.getOption("memberlimit")).getAsString());
+            if (event.getOption("memberlimit").getAsLong() > 0)
+                memberLimit = Byte.parseByte(event.getOption("memberlimit").getAsString());
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
@@ -67,7 +67,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         if (hasTextChannel && textName.length() > 100)
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CHANNEL_NAME_ERROR), "", false));
 
-        if (voiceBitrate * 1000 > guild).getBoostTier().getMaxBitrate())
+        if (voiceBitrate * 1000 > guild.getBoostTier().getMaxBitrate())
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_BITRATE_ERROR), "", false));
 
         if (memberLimit != null && memberLimit > 99) {
@@ -80,9 +80,9 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         }
 
         fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_DETECT_VOICE_CHANNEL), detectChannel.getName() + "\n`(" + detectID + ")`", false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CATEGORY), guild.getCategoryById(voiceCategoryID)).getName() + "\n`(" + voiceCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CATEGORY), guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
         if (hasTextChannel)
-            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CATEGORY), guild.getCategoryById(textCategoryID)).getName() + "\n`(" + textCategoryID + ")`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CATEGORY), guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_NAME), "`" + voiceName + "`", false));
         if (hasTextChannel)
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_NAME), "`" + textName + "`", false));
@@ -110,15 +110,15 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
     public void removeRoom(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
-        String detectID = event.getOption("detectchannel")).getAsGuildChannel().getId();
+        String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
 
-        JSONObject data = settingHelper.getSettingData(guild), ROOM_SETTING);
+        JSONObject data = settingHelper.getSettingData(guild, ROOM_SETTING);
         if (voiceState.get(guild.getId()).size() > 0) {
             Map<String, List<String>> memberData = voiceState.get(guild.getId());
             for (String key : memberData.keySet()) {
                 for (String channelID : memberData.get(key)) {
                     try {
-                        guild.getVoiceChannelById(channelID)).delete().queue();
+                        guild.getVoiceChannelById(channelID).delete().queue();
                     } catch (Exception ignored) {
                     }
                 }
