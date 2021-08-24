@@ -80,6 +80,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
 
     @Override
     public void noMoreTrack(GenericInteractionCreateEvent event, @NotNull Guild guild) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
             musicBotManager.setBotToChannel(guild.getId(), Objects.requireNonNull(guild.getAudioManager().getConnectedChannel()).getId(), null);
@@ -87,13 +88,14 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         }
 
         if (event instanceof SlashCommandEvent)
-            event.getHook().editOriginalEmbeds(createEmbed("❌", 0xFF3B7D)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_STOP_PLAY), 0xFF3B7D)).queue();
     }
 
     @Override
-    public void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event) {
+    public void repeat(AudioTrack track, boolean repeatState, @NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (repeatState) {
-            event.getHook().editOriginalEmbeds(createEmbed("單曲循環", 0x7d95b9)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REPEAT_PLAY), 0x7d95b9)).queue();
         } else {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_NORMAL_PLAY), 0xAFACCC)).queue();
         }
@@ -102,13 +104,16 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild) {
         if (event != null) {
-            event.getHook().editOriginalEmbeds(pause ? createEmbed("已暫停播放", 0xFF3B7D) : createEmbed("已開始播放", 0x75C44C)).queue();
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+            event.getHook().editOriginalEmbeds(pause ? createEmbed(lang.get(MUSICBOTEVENT_PAUSE), 0xFF3B7D) : createEmbed(lang.get(MUSICBOTEVENT_UNPAUSE), 0x75C44C)).queue();
         }
     }
 
     @Override
     public void volumeChange(int volume, SlashCommandEvent event) {
-        if (event != null)
-            event.getHook().editOriginalEmbeds(createEmbed("已將音量設定為: " + volume, 0xD9B99B)).queue();
+        if (event != null) {
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_SET_VOLUME) + volume, 0xD9B99B)).queue();
+        }
     }
 }

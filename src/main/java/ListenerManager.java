@@ -292,7 +292,8 @@ public class ListenerManager extends ListenerAdapter {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals("") && !args[2].equals("everyone")) {
-            event.getInteraction().deferReply(true).addEmbeds(createEmbed("此為他人的按鈕", 0xFF0000)).queue();
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+            event.getInteraction().deferReply(true).addEmbeds(createEmbed(lang.get(LISTENERMANAGER_NOT_YOUR_BUTTON), 0xFF0000)).queue();
             return;
         }
         createInviteCommand.onButton(event, args);
@@ -510,7 +511,8 @@ public class ListenerManager extends ListenerAdapter {
                 }
             }
         }
-        event.getHook().editOriginalEmbeds(createEmbed("目前無法處理此命令", 0xFF0000)).queue();
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_CANT_DO_THIS), 0xFF0000)).queue();
     }
 
     /**

@@ -73,4 +73,6 @@ public class JsonKeys {
     public final static String GIVEAWAY_EMOJI = "E";
     public final static String GIVEAWAY_WINNER_COUNT = "C";
 
+    // for Lang
+    public final static String GUILD_LANG = "lang";
 }

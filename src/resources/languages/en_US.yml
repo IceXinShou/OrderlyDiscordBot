@@ -16,6 +16,7 @@ UNBAN_PERMISSION_ERROR: "Permission ERROR"
 UNBAN_UNKNOWN_ERROR: "Unknown ERROR"
 UNBAN_CAN_NOTE_FOUND_MEMBER: "Can not find this member!"
 
+
 # {@link main.java.command.list.Ticket}
 TICKET_ALREADY_CLICKED: "You have clicked this button already!"
 TICKET_SIZE_LIMIT: "This category is not enough to create channel!"
@@ -84,7 +85,7 @@ SETTINGTICKET_TICKET_NO: "No"
 SETTINGTICKET_TICKET_SETTING_SUCCESS: "Setting Successfully"
 SETTINGTICKET_TICKET_REMOVE_FAIL_BY_CHANNEL: "Remove Failed (Can not find channel)"
 SETTINGTICKET_TICKET_REMOVE_FAIL_BY_MESSAGE: "Remove Failed (Can not find message)"
-SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING: "Button had been using, please delete all of ticket from the button."
+SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING: "Button is using, please delete all ticket created from this button."
 SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_POS: "Can not delete this button position"
 SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE: "The message did not be set"
 SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL: "The channel did not be set"
@@ -92,8 +93,8 @@ SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL: "The channel did not be set"
 
 # {@link main.java.command.list.Setting.SettingRoom}
 SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR: "Text channel name can not include \"Space\""
-SETTINGROOM_VOICE_CHANNEL_NAME_ERROR: "Voice channel name length can not greater than 100 words"
-SETTINGROOM_TEXT_CHANNEL_NAME_ERROR: "Text channel name length can not greater than 100 words"
+SETTINGROOM_VOICE_CHANNEL_NAME_ERROR: "Voice channel name can not greater than 100 words"
+SETTINGROOM_TEXT_CHANNEL_NAME_ERROR: "Text channel name can not greater than 100 words"
 SETTINGROOM_BITRATE_ERROR: "Bitrate too high"
 SETTINGROOM_MEMBER_LIMIT_ERROR: "Member limit can not greater than 99"
 SETTINGROOM_ERROR_REPORT: "ERROR Report"

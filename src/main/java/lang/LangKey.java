@@ -1,118 +1,122 @@
 package main.java.lang;
 
+import main.java.command.list.Language;
+
+import java.lang.reflect.Field;
+
 public class LangKey {
 
     /**
      * {@link main.java.command.list.BotInfo}
      */
-    public static final int BOTINFO_GUILD_TOTAL_COUNT = 0;
-    public static final int BOTINFO_MEMBER_TOTAL_COUNT = 1;
-    public static final int BOTINFO_INFORMATION = 2;
+    public static int BOTINFO_GUILD_TOTAL_COUNT;
+    public static int BOTINFO_MEMBER_TOTAL_COUNT;
+    public static int BOTINFO_INFORMATION;
 
 
     /**
      * {@link main.java.command.list.URLShort}
      */
-    public static final int URLSHORT_SUCCESS = 3;
-    public static final int URLSHORT_FAIL = 4;
+    public static int URLSHORT_SUCCESS;
+    public static int URLSHORT_FAIL;
 
 
     /**
      * {@link main.java.command.list.UnBan}
      */
-    public static final int UNBAN_BOT_NO_PERMISSION = 5;
-    public static final int UNBAN_PERMISSION_ERROR = 6;
-    public static final int UNBAN_SUCCESS = 7;
-    public static final int UNBAN_UNKNOWN_ERROR = 8;
-    public static final int UNBAN_CAN_NOTE_FOUND_MEMBER = 9;
+    public static int UNBAN_BOT_NO_PERMISSION;
+    public static int UNBAN_PERMISSION_ERROR;
+    public static int UNBAN_SUCCESS;
+    public static int UNBAN_UNKNOWN_ERROR;
+    public static int UNBAN_CAN_NOTE_FOUND_MEMBER;
 
 
     /**
      * {@link main.java.command.list.Ticket}
      */
-    public static final int TICKET_ALREADY_CLICKED = 10;
-    public static final int TICKET_SIZE_LIMIT = 11;
-    public static final int TICKET_LOCK = 12;
-    public static final int TICKET_DELETE = 13;
-    public static final int TICKET_UNLOCK = 14;
+    public static int TICKET_ALREADY_CLICKED;
+    public static int TICKET_SIZE_LIMIT;
+    public static int TICKET_LOCK;
+    public static int TICKET_DELETE;
+    public static int TICKET_UNLOCK;
 
 
     /**
      * {@link main.java.command.list.Support}
      */
-    public static final int SUPPORT_SENDING = 15;
-    public static final int SUPPORT_FAIL = 16;
-    public static final int SUPPORT_SUCCESS = 17;
+    public static int SUPPORT_SENDING;
+    public static int SUPPORT_FAIL;
+    public static int SUPPORT_SUCCESS;
 
 
     /**
      * {@link main.java.command.list.Reload}
      */
-    public static final int RELOAD_SUCCESS = 18;
+    public static int RELOAD_SUCCESS;
 
 
     /**
      * {@link main.java.command.list.Poll}
      */
-    public static final int POLL_MEMBER_POLL = 19;
-    public static final int POLL_SUCCESS = 20;
+    public static int POLL_MEMBER_POLL;
+    public static int POLL_SUCCESS;
 
 
     /**
      * {@link main.java.util.file.PopCatHelper}
      */
-    public static final int POPCATHELPER_PREVIEWS = 21;
-    public static final int POPCATHELPER_NEXT = 22;
-    public static final int POPCATHELPER_DETAIL_INFORMATION = 23;
+    public static int POPCATHELPER_PREVIEWS;
+    public static int POPCATHELPER_NEXT;
+    public static int POPCATHELPER_DETAIL_INFORMATION;
 
 
     /**
      * {@link main.java.command.list.Setting.SettingVCC}
      */
-    public static final int SETTINGVCC_LONG_OVER_100 = 24;
-    public static final int SETTINGVCC_ERROR_REPORT = 25;
-    public static final int SETTINGVCC_DETECT_CATEGORY = 26;
-    public static final int SETTINGVCC_DETECT_NAME = 27;
-    public static final int SETTINGVCC_SETTING_SUCCESS = 28;
-    public static final int SETTINGVCC_REMOVE_SUCCESS = 29;
+    public static int SETTINGVCC_LONG_OVER_100;
+    public static int SETTINGVCC_ERROR_REPORT;
+    public static int SETTINGVCC_DETECT_CATEGORY;
+    public static int SETTINGVCC_DETECT_NAME;
+    public static int SETTINGVCC_SETTING_SUCCESS;
+    public static int SETTINGVCC_REMOVE_SUCCESS;
 
 
     /**
      * {@link main.java.command.list.Setting.SettingTicket}
      */
-    public static final int SETTINGTICKET_MESSAGE_CATEGORY_ERROR = 30;
-    public static final int SETTINGTICKET_BUTTON_COLOR_ERROR = 31;
-    public static final int SETTINGTICKET_BUTTON_NAME_AND_EMOJI_AT_LEAST_ONCE = 32;
-    public static final int SETTINGTICKET_CAN_NOT_GET_EMOJI = 33;
-    public static final int SETTINGTICKET_CAN_NOT_FOUND_MESSAGE_BY_ID = 34;
-    public static final int SETTINGTICKET_MESSAGE_HAS_NOT_NEW_BUTTON = 35;
-    public static final int SETTINGTICKET_MESSAGE_TOO_MANY_BUTTONS = 36;
-    public static final int SETTINGTICKET_ERROR_REPORT = 37;
-    public static final int SETTINGTICKET_MESSAGE_ID = 38;
-    public static final int SETTINGTICKET_MESSAGE_CHANNEL = 39;
-    public static final int SETTINGTICKET_ENTERED_MESSAGE = 40;
-    public static final int SETTINGTICKET_TICKET_TEXT_CHANNEL_NAME = 41;
-    public static final int SETTINGTICKET_TICKET_TEXT_CHANNEL_CATEGORY = 42;
-    public static final int SETTINGTICKET_TICKET_VOICE_CHANNEL = 43;
-    public static final int SETTINGTICKET_TICKET_VOICE_HAVE = 44;
-    public static final int SETTINGTICKET_TICKET_VOICE_NOT_HAVE = 45;
-    public static final int SETTINGTICKET_TICKET_VOICE_NAME = 46;
-    public static final int SETTINGTICKET_TICKET_VOICE_CATEGORY = 47;
-    public static final int SETTINGTICKET_TICKET_BUTTON_NAME = 48;
-    public static final int SETTINGTICKET_TICKET_BUTTON_EMOJI = 49;
-    public static final int SETTINGTICKET_TICKET_BUTTON_COLOR = 50;
-    public static final int SETTINGTICKET_TICKET_ALLOW_ROLE = 51;
-    public static final int SETTINGTICKET_TICKET_ALLOW_TAG_ROLE = 52;
-    public static final int SETTINGTICKET_TICKET_ONLY_ONE = 53;
-    public static final int SETTINGTICKET_TICKET_YES = 54;
-    public static final int SETTINGTICKET_TICKET_NO = 55;
-    public static final int SETTINGTICKET_TICKET_SETTING_SUCCESS = 56;
-    public static final int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_CHANNEL = 57;
-    public static final int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_MESSAGE = 58;
-    public static final int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING = 59;
-    public static final int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_POS = 60;
-    public static final int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE = 61;
-    public static final int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL = 62;
+    public static int SETTINGTICKET_MESSAGE_CATEGORY_ERROR;
+    public static int SETTINGTICKET_BUTTON_COLOR_ERROR;
+    public static int SETTINGTICKET_BUTTON_NAME_AND_EMOJI_AT_LEAST_ONCE;
+    public static int SETTINGTICKET_CAN_NOT_GET_EMOJI;
+    public static int SETTINGTICKET_CAN_NOT_FOUND_MESSAGE_BY_ID;
+    public static int SETTINGTICKET_MESSAGE_HAS_NOT_NEW_BUTTON;
+    public static int SETTINGTICKET_MESSAGE_TOO_MANY_BUTTONS;
+    public static int SETTINGTICKET_ERROR_REPORT;
+    public static int SETTINGTICKET_MESSAGE_ID;
+    public static int SETTINGTICKET_MESSAGE_CHANNEL;
+    public static int SETTINGTICKET_ENTERED_MESSAGE;
+    public static int SETTINGTICKET_TICKET_TEXT_CHANNEL_NAME;
+    public static int SETTINGTICKET_TICKET_TEXT_CHANNEL_CATEGORY;
+    public static int SETTINGTICKET_TICKET_VOICE_CHANNEL;
+    public static int SETTINGTICKET_TICKET_VOICE_HAVE;
+    public static int SETTINGTICKET_TICKET_VOICE_NOT_HAVE;
+    public static int SETTINGTICKET_TICKET_VOICE_NAME;
+    public static int SETTINGTICKET_TICKET_VOICE_CATEGORY;
+    public static int SETTINGTICKET_TICKET_BUTTON_NAME;
+    public static int SETTINGTICKET_TICKET_BUTTON_EMOJI;
+    public static int SETTINGTICKET_TICKET_BUTTON_COLOR;
+    public static int SETTINGTICKET_TICKET_ALLOW_ROLE;
+    public static int SETTINGTICKET_TICKET_ALLOW_TAG_ROLE;
+    public static int SETTINGTICKET_TICKET_ONLY_ONE;
+    public static int SETTINGTICKET_TICKET_YES;
+    public static int SETTINGTICKET_TICKET_NO;
+    public static int SETTINGTICKET_TICKET_SETTING_SUCCESS;
+    public static int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_CHANNEL;
+    public static int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_MESSAGE;
+    public static int SETTINGTICKET_TICKET_REMOVE_FAIL_BY_USING;
+    public static int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_POS;
+    public static int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE;
+    public static int SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL;
 
 
     /**

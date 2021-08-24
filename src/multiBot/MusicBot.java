@@ -59,7 +59,8 @@ public class MusicBot {
     /**
      * command player control
      */
-    private void play(AudioPlaylist playlist, VoiceChannel vc, @NotNull GuildMusicManager manager, GenericInteractionCreateEvent event, boolean playNow) {
+    private void play(AudioPlaylist playlist, VoiceChannel vc, @NotNull GuildMusicManager manager, @NotNull GenericInteractionCreateEvent event, boolean playNow) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         connectVC(manager.guild, vc, event);
         if (playNow) {
             event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
@@ -106,7 +107,8 @@ public class MusicBot {
         getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
 
-    public void loadAndPlay(final @NotNull GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow) {
+    public void loadAndPlay(final @NotNull GenericInteractionCreateEvent event, @NotNull Guild guild, final String trackUrl, boolean search, boolean playNow) {
+        List<String> lang = Main.language.getGuildLang(guild.getId());
         VoiceChannel vc = Objects.requireNonNull(Objects.requireNonNull(event.getMember()).getVoiceState()).getChannel();
         GuildMusicManager manager = getMusicManager(Objects.requireNonNull(jda.getGuildById(guild.getId())));
         // 取得音樂
@@ -124,7 +126,7 @@ public class MusicBot {
             @Override
             public void noMatches() {
                 try {
-                    event.getHook().editOriginalEmbeds(createEmbed("查無此網址: " + trackUrl, 0xFF0000)).queue();
+                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_URL_NOT_FOUND) + ": " + trackUrl, 0xFF0000)).queue();
                 } catch (Exception ignored) {
                 }
             }
@@ -140,11 +142,12 @@ public class MusicBot {
 
     }
 
-    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean search, Guild guild) {
+    public void displayQueue(@NotNull GenericInteractionCreateEvent event, boolean search, @NotNull Guild guild) {
+        List<String> lang = Main.language.getGuildLang(guild.getId());
         GuildMusicManager musicManager = getMusicManager(guild);
         TrackScheduler scheduler = musicManager.scheduler;
         if (scheduler.musicInfo == null) {
-            event.getHook().editOriginalEmbeds(createEmbed("目前無音樂播放", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_MUSIC), 0xFF0000)).queue();
             return;
         }
 
@@ -180,7 +183,8 @@ public class MusicBot {
     /**
      * display
      */
-    public MessageEmbed[] playStatus(Member member, @NotNull TrackScheduler scheduler) {
+    public MessageEmbed[] playStatus(@NotNull Member member, @NotNull TrackScheduler scheduler) {
+        List<String> lang = Main.language.getGuildLang(member.getGuild().getId());
         // 現在播放資料
         StringBuilder progress = new StringBuilder();
         MessageEmbed nowPlaying;
@@ -225,20 +229,6 @@ public class MusicBot {
             nowPlaying = createEmbed(0xFF0000, "**[" + lang.get(MUSICBOT_NO_PLAYING) + "]**");
         }
 
-// 歌曲列表
-/*
-        List<MessageEmbed.Field> fields = new ArrayList<>();
-        if (scheduler.getQueue().size() == 0)
-            fields.add(new MessageEmbed.Field("無", "", false));
-        else {
-            List<AudioTrack> inQueue = scheduler.getQueue();
-            int index = inQueue.size();
-            for (AudioTrack track : inQueue) {
-                fields.add(new MessageEmbed.Field("[" + index-- + "] " + track.getInfo().title, track.getInfo().isStream ? "**[LIVE]**" : """**[" + (timeCalculator(songLength)) + "]**", false));
-            }
-}
-*/
-
         StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue().size() == 0)
             stringBuilder.append(lang.get(MUSICBOT_NONE));
@@ -254,7 +244,8 @@ public class MusicBot {
             }
         }
 
-        return new MessageEmbed[]{createEmbed("待播清單", stringBuilder.toString(),
+
+        return new MessageEmbed[]{createEmbed(lang.get(MUSICBOT_WAITING_PLAYLIST), stringBuilder.toString(),
                 "",
                 null,
                 null,
@@ -298,7 +289,8 @@ public class MusicBot {
             try {
                 guild.getAudioManager().openAudioConnection(vc);
             } catch (Exception e) {
-                event.getHook().editOriginalEmbeds(createEmbed("未取得連線至該頻道的權限", 0xFF0000)).queue();
+                List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
                 System.out.println(e.getMessage());
                 return;
             }

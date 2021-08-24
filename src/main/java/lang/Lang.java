@@ -1,6 +1,8 @@
 package main.java.lang;
 
 import main.java.Main;
+import main.java.util.file.GuildSettingHelper;
+import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +28,12 @@ public class Lang {
         return guildSetting.get(guildID);
     }
 
+    public List<String> setGuildLang(String guildID, String langStr) {
+        List<String> lang = getLang(langStr);
+        guildSetting.put(guildID, lang);
+        return lang;
+    }
+
     private List<String> getLang(@NotNull String lang) {
         switch (lang) {
             case "zh_TW", "zh_HK", "zh_SG", "zh_MO" -> {
@@ -40,8 +48,17 @@ public class Lang {
         }
     }
 
-    public void loadGuildSetting(@NotNull Guild guild){
-        guildSetting.put(guild.getId(), getLang(guild.getLocale().toString()));
+    public void loadGuildSetting(@NotNull Guild guild, GuildSettingHelper settingHelper) {
+//        guildSetting.put(guild.getId(), getLang(guild.getLocale().toString()));
+        JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
+
+        if (fileManager.data.has(GUILD_LANG))
+            guildSetting.put(guild.getId(), getLang(fileManager.data.getString(GUILD_LANG)));
+        else {
+            guildSetting.put(guild.getId(), getLang("en_US"));
+            fileManager.data.put(GUILD_LANG, "en_US");
+            fileManager.saveFile();
+        }
     }
 
     public final String[] languagesName = new String[]{"zh_TW", "zh_CN", "en_US"};
