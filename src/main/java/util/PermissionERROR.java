@@ -21,7 +21,7 @@ public class PermissionERROR {
         if (ownerSkip)
             if (botOwnerID.contains(event.getUser().getId()))
                 return true;
-        if (Objects.requireNonNull(event.getMember()).hasPermission(permission))
+        if (event.getMember().hasPermission(permission))
             return true;
         else
             event.getHook().editOriginalEmbeds(createEmbed(noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000)).queue();

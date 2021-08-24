@@ -19,14 +19,14 @@ public class UnBan {
     public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         try {
-            Member selfMember = Objects.requireNonNull(event.getGuild()).getSelfMember();
+            Member selfMember = event.getGuild().getSelfMember();
 
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_BOT_NO_PERMISSION), 0xFF0000)).queue();
             } else if (!hasPermission(Permission.BAN_MEMBERS, event, true))
                 return;
             try {
-                event.getGuild().unban(Objects.requireNonNull(event.getOption(USER_ID)).getAsString()).queue();
+                event.getGuild().unban(event.getOption(USER_ID).getAsString()).queue();
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_SUCCESS), 0xc5ffd2)).queue();
             } catch (Exception ex) {
                 if (ex instanceof PermissionException) {

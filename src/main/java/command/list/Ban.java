@@ -1,12 +1,17 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Objects;
+
 import static main.java.BotSetting.botOwnerID;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.DAYS;
@@ -15,6 +20,7 @@ import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
     public void onCommand(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         User user = event.getOption(USER_TAG).getAsUser();
         Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
 
@@ -27,13 +33,13 @@ public class Ban {
             return;
         }
 
-        if (user != null && !selfMember.canInteract(member)) {
-            event.getHook().editOriginalEmbeds(createEmbed("此成員的力量大到讓我無法執行此動作", 0xFF0000)).queue();
+        if (!selfMember.canInteract(member)) {
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_PERMISSION_DENIED), 0xFF0000)).queue();
             return;
         }
 
-        if (user != null && botOwnerID.contains(member.getId())) {
-            event.getHook().editOriginalEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).queue();
+        if (botOwnerID.contains(member.getId())) {
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_DEVELOPER), 0xFF0000)).queue();
             return;
         }
 
@@ -42,7 +48,7 @@ public class Ban {
         if (option != null)
             delDays = (int) Math.max(0, Math.min(7, option.getAsLong()));
         event.getGuild().ban(user, delDays)
-                .flatMap(v -> event.getHook().editOriginalEmbeds(createEmbed("封禁成員 " + user.getAsTag(), 0xffb1b3)))
+                .flatMap(v -> event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_SUCCESS) + ' ' + user.getAsTag(), 0xffb1b3)))
                 .queue();
     }
 }

@@ -60,7 +60,7 @@ public class Ticket {
                 JSONObject data = nData.getJSONObject(channelID).getJSONArray(messageID).getJSONObject(buttonPos);
 
                 String messageKey = channelID + messageID;
-                boolean buttonPressed = addButtonPress(messageKey, Objects.requireNonNull(member).getId(), buttonPos);
+                boolean buttonPressed = addButtonPress(messageKey, member.getId(), buttonPos);
 
                 if (data.getBoolean(TICKET_ONLY_ONE) && buttonPressed) {
                     event.getInteraction().deferReply(true).addEmbeds(createEmbed(lang.get(TICKET_ALREADY_CLICKED), 0xFF0000)).queue();
@@ -69,7 +69,7 @@ public class Ticket {
 
                 Role allowRole = guild.getRoleById(data.getString(TICKET_ALLOW_ROLE_ID));
 
-                if (Objects.requireNonNull(guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID))).getChannels().size() == 50) {
+                if (guild.getCategoryById(data.getString(TICKET_TEXT_CATEGORY_ID)).getChannels().size() == 50) {
                     event.getInteraction().deferReply(true).addEmbeds(createEmbed(lang.get(TICKET_SIZE_LIMIT), 0xFF0000)).queue();
                     return;
                 }
@@ -115,7 +115,7 @@ public class Ticket {
                             MessageBuilder builder = new MessageBuilder();
                             builder.setContent(placeholderReplacer(data.getString(TICKET_ENTERED_MESSAGE), member)
                                     .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
-                                    .replace("%role_name%", Objects.requireNonNull(allowRole).getName())
+                                    .replace("%role_name%", allowRole.getName())
                                     .replace("%num%", countStr)
                                     + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
                             builder.setActionRows(ActionRow.of(
@@ -127,7 +127,7 @@ public class Ticket {
                         });
                 break;
             case "delC":
-                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL)) {
+                if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
                     String voiceChannelID;
                     VoiceChannel voiceChannel;
                     if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
@@ -139,7 +139,7 @@ public class Ticket {
                     event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(MANAGE_CHANNEL)).queue();
                 break;
             case "lock":
-                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
+                if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                     event.getHook().editOriginalEmbeds().setActionRows(
                             ActionRow.of(
                                     Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], lang.get(TICKET_UNLOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
@@ -159,7 +159,7 @@ public class Ticket {
                 }
                 break;
             case "uLock":
-                if (Objects.requireNonNull(member).hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
+                if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                     event.getHook().editOriginalEmbeds().setActionRows(
                             ActionRow.of(
                                     Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], lang.get(TICKET_LOCK), Emoji.fromUnicode("\uD83D\uDCC1")),

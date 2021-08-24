@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GetEmoji.toEmoji;
 import static main.java.util.JsonGetter.getOrDefaultArray;
@@ -51,7 +52,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         // 名稱
-        String giveawayName = Objects.requireNonNull(event.getOption("name")).getAsString();
+        String giveawayName = event.getOption("name").getAsString();
 
         // 名稱
         int winnerCount = event.getOption("winnercount") == null ? 1 : (int) event.getOption("winnercount").getAsLong();
@@ -119,7 +120,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                             getAsLong() <= 625200) time += event.getOption("minute").
 
                             getAsLong() * 60;
-                    else fields.add(new MessageEmbed.Field("分鐘太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MINUTE_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("second") != null)
                     if (event.getOption("month").
@@ -127,7 +128,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                             getAsLong() <= 31536000) time += event.getOption("second").
 
                             getAsLong();
-                    else fields.add(new MessageEmbed.Field("秒數太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_SECOND_OUT_OF_RANGE), "", false));
             }
         }
         if (fields.size() > 0) {
@@ -145,8 +146,8 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         long finalTime = time;
         event.getTextChannel().
                 sendMessageEmbeds(createEmbed(
-                        giveawayName, "獲勝人數：" + winnerCount + "\n",
-                        "結束剩餘", event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(),
+                        giveawayName, lang.get(GIVEAWAY_LK_WINNER_COUNT) + ": " + winnerCount + "\n",
+                        lang.get(GIVEAWAY_TIME_LEFT), event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(),
                         event.getUser().getAvatarUrl(), millisToOffset(finalTime), 0x00FFFF)
                 )
                 .queue(message -> {
@@ -162,7 +163,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                     settingHelper.getGuildSettingManager(guild.getId()).saveFile();
                 });
         event.getHook().
-                editOriginalEmbeds(createEmbed("設定成功", fields, 0x00FFFF)).
+                editOriginalEmbeds(createEmbed(lang.get(GIVEAWAY_SUCCESS), fields, 0x00FFFF)).
                 queue();
     }
 
@@ -214,7 +215,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         secThreadPool.submit(new Runnable() {
             final String channelID = data.getString(GIVEAWAY_CHANNEL_ID);
             final String messageID = data.getString(GIVEAWAY_MESSAGE_ID);
-            final Message message = Objects.requireNonNull(guild.getTextChannelById(channelID)).retrieveMessageById(messageID).complete();
+            final Message message = guild.getTextChannelById(channelID).retrieveMessageById(messageID).complete();
 
             @Override
             public void run() {

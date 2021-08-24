@@ -103,14 +103,14 @@ public class MusicBot {
     }
 
     public void remove(@NotNull SlashCommandEvent event, @NotNull Guild guild) {
-        int index = (int) Objects.requireNonNull(event.getOption("index")).getAsLong();
+        int index = (int) event.getOption("index").getAsLong();
         getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
 
     public void loadAndPlay(final @NotNull GenericInteractionCreateEvent event, @NotNull Guild guild, final String trackUrl, boolean search, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(guild.getId());
-        VoiceChannel vc = Objects.requireNonNull(Objects.requireNonNull(event.getMember()).getVoiceState()).getChannel();
-        GuildMusicManager manager = getMusicManager(Objects.requireNonNull(jda.getGuildById(guild.getId())));
+        VoiceChannel vc = event.getMember().getVoiceState().getChannel();
+        GuildMusicManager manager = getMusicManager(jda.getGuildById(guild.getId()));
         // 取得音樂
         playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
             @Override
@@ -152,23 +152,23 @@ public class MusicBot {
         }
 
         scheduler.calculatePauseTime();
-        MessageEmbed[] embed = playStatus(Objects.requireNonNull(event.getMember()), scheduler);
-        if (Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState()).getChannel() == null) {
+        MessageEmbed[] embed = playStatus(event.getMember(), scheduler);
+        if (musicManager.guild.getSelfMember().getVoiceState().getChannel() == null) {
             if (search)
                 event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).setEphemeral(true).queue();
             else
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
             return;
         }
-        String vcID = Objects.requireNonNull(musicManager.guild.getSelfMember().getVoiceState().getChannel()).getId();
+        String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (search) {
             event.getInteraction().deferReply(true).addEmbeds(embed[0], embed[1])
-                    .addActionRows(controlButtons(Objects.requireNonNull(event.getMember()).getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                    .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
         } else
             event.getHook().editOriginalComponents()
                     .setEmbeds(embed[0], embed[1])
-                    .setActionRows(controlButtons(Objects.requireNonNull(event.getMember()).getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
     }
 

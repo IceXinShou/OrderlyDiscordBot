@@ -14,12 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static main.java.Main.emoji;
+import static main.java.Main.language;
 import static main.java.event.Log.ignoreMessageID;
 import static main.java.event.Log.logChannel;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.COUNT;
@@ -32,6 +35,7 @@ public class Clear {
      */
 
     public void onCommand(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.MESSAGE_MANAGE, event, true))
             return;
         OptionMapping amountOption = event.getOption(COUNT);
@@ -45,7 +49,8 @@ public class Clear {
                 .queue();
     }
 
-    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
+    public void onButton(@NotNull ButtonClickEvent event, String @NotNull [] args) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Clear"))
             return;
         if (args[1].equals("delete")) {

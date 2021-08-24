@@ -9,6 +9,13 @@ URLSHORT_SUCCESS: "Created Successfully!"
 URLSHORT_FAIL: "Can not short this url or message!"
 
 
+# {@link main.java.command.list.Ban}
+BAN_NO_PERMISSION: "I must have `ban` permission to ban member"
+BAN_PERMISSION_DENIED: "The member's permission is higher than me"
+BAN_DEVELOPER: "The member is developer"
+BAN_SUCCESS: "Ban Successfully"
+
+
 # {@link main.java.command.list.UnBan}
 UNBAN_BOT_NO_PERMISSION: "I must have `ban` permission to unban member"
 UNBAN_SUCCESS: "Unban Successfully!"
@@ -126,6 +133,19 @@ SETTINGCHANNELSTATUS_REMOVE_SUCCESS: "Remove Successfully"
 SETTINGHELP_ADVANCE_HELP: "Advance Setting"
 
 
+# {@link main.java.command.list.Clear}
+CLEAR_CONFIRM_DELETE: "Are you sure to delete %d messages?"
+CLEAR_DELETED: "Deleted"
+CLEAR_MEMBER_NOT_FOUND: "Cannot found member"
+CLEAR_MEMBER_NAME_NOT_FOUND: "Cannot found name"
+CLEAR_MEMBER_NONE: "None"
+CLEAR_MESSAGE_NOT_FOUND: "Cannot Found"
+CLEAR_MESSAGE_DELETE: "Deleted: "
+CLEAR_MESSAGE_DELETE_EVENT: "Deleted Message"
+CLEAR_MESSAGE_ERROR_EVENT: "ERROR: "
+CLEAR_MESSAGE_COUNT: "%d message had been deleted!"
+
+
 # {@link main.java.command.list.Setting.SettingJoinLeave}
 SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL: "Can not find text channel"
 SETTINGJOINLEAVE_SETTING_FAIL: "Setting Failed"
@@ -134,6 +154,13 @@ SETTINGJOINLEAVE_NOTICE_MESSAGE: "Notice Message"
 SETTINGJOINLEAVE_DM_MESSAGE: "DM Message"
 SETTINGJOINLEAVE_ROLE_ADD: "Add Role"
 SETTINGJOINLEAVE_SETTING_SUCCESS: "Setting Successfully"
+SETTINGJOINLEAVE_HAD_NOT_SET: "The Channel had not been set"
+SETTINGJOINLEAVE_REMOVE_SUCCESS: "Remove Successfully"
+SETTINGJOINLEAVE_CAN_NOT_FIND: "Cannot found the text channel"
+
+
+# {@link main.java.command.list.Setting.SettingJoinLeave}
+INFO_SERVER_COUNT: "**Guild Count: **"
 
 
 # {@link main.java.command.CommandRegister}
@@ -324,3 +351,49 @@ LISTENERMANAGER_NOT_YOUR_BUTTON: "This is not your button"
 LANG_CHANGE: "Change Language"
 LANG_CHOOSE: "Please choose a language"
 LANG_SUCCESS: "Change Successfully"
+
+
+# {@link multiBot.MultiMusicBotManager}
+MUSICBOT_MG_UNKNOWN_VALUE: "Unknown Value"
+MUSICBOT_MG_ALL_BOT_USED: "All bot had been used"
+MUSICBOT_MG_SEARCH_NO_RESULT: "No Result"
+MUSICBOT_MG_SEARCH: "Result"
+MUSICBOT_MG_START_PLAY: "Playing..."
+MUSICBOT_MG_START_PLAY_ALREADY: "Already Playing..."
+MUSICBOT_MG_UNKNOWN_CHANNEL_BUTTON: "Unknown Channel Button"
+MUSICBOT_MG_NO_BOT_IN_CHANNEL: "No Bot in Channel"
+MUSICBOT_MG_NEED_USE_IN_CHANNEL: "Please type command after connect in voice channel"
+
+
+# {@link main.java.command.list.Kick}
+KICK_NO_PERMISSION: "I must have `kick` permission to ban member"
+KICK_PERMISSION_DENIED: "The member's permission is higher than me"
+KICK_DEVELOPER: "The member is developer"
+KICK_SUCCESS: "Kick Successfully"
+KICK_PERMISSION_ERROR: "Permission ERROR"
+KICK_UNKNOWN_ERROR: "Unknown ERROR"
+
+
+# {@link main.java.command.list.Giveaway}
+GIVEAWAY_NEED_ADMIN_PERMISSION: "I must have `Administrator` permission to do this"
+GIVEAWAY_SINGLE_DATE_FORMAT: "Can only format single data"
+GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR: "Absolute time ERROR"
+GIVEAWAY_ABSOLUTE_TIME_ERROR: "Absolute time ERROR"
+GIVEAWAY_MONTH_OUT_OF_RANGE: "Month out of range"
+GIVEAWAY_WEEK_OUT_OF_RANGE: "Week out of range"
+GIVEAWAY_DAY_OUT_OF_RANGE: "Day out of range"
+GIVEAWAY_HOUR_OUT_OF_RANGE: "Hour out of range"
+GIVEAWAY_MINUTE_OUT_OF_RANGE: "Minute out of range"
+GIVEAWAY_SECOND_OUT_OF_RANGE: "Second out of range"
+GIVEAWAY_SETTING_FAILED: "Setting Failed"
+GIVEAWAY_GIFT_NAME: "Giveaway Title"
+GIVEAWAY_LK_WINNER_COUNT: "Winner Count"
+GIVEAWAY_END_TIME: "End Time"
+GIVEAWAY_LK_EMOJI: "Emoji"
+GIVEAWAY_TIME_LEFT: "End in: "
+GIVEAWAY_SUCCESS: "Setting Successfully"
+
+
+# {@link main.java.command.list.Help}
+HELP_USAGE: "Usage Help"
+LANG_CREATE_SUCCESS: "Create Successfully"

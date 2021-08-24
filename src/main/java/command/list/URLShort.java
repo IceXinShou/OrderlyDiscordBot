@@ -37,7 +37,7 @@ public class URLShort {
     public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url, List<String> lang) {
         String result;
         if (!convert)
-            url = Objects.requireNonNull(event.getOption("url")).getAsString();
+            url = event.getOption("url").getAsString();
 
         result = UrlDataGetter.postCookie("https://reurl.cc/webapi/shorten/v2",
                 "{\"url\" : \"" + url + "\"}", v2Cookie);

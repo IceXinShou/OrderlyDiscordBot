@@ -172,6 +172,9 @@ public class LangKey {
     public static int SETTINGJOINLEAVE_DM_MESSAGE;
     public static int SETTINGJOINLEAVE_ROLE_ADD;
     public static int SETTINGJOINLEAVE_SETTING_SUCCESS;
+    public static int SETTINGJOINLEAVE_HAD_NOT_SET;
+    public static int SETTINGJOINLEAVE_REMOVE_SUCCESS;
+    public static int SETTINGJOINLEAVE_CAN_NOT_FIND;
 
 
     /**
@@ -371,6 +374,13 @@ public class LangKey {
     public static int LANG_CHANGE;
     public static int LANG_CHOOSE;
     public static int LANG_SUCCESS;
+
+
+    /**
+     * {@link main.java.command.list.Help}
+     */
+    public static int HELP_USAGE;
+    public static int LANG_CREATE_SUCCESS;
 
 
     public static void loadKey() {

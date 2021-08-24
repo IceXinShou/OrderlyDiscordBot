@@ -83,7 +83,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
-            musicBotManager.setBotToChannel(guild.getId(), Objects.requireNonNull(guild.getAudioManager().getConnectedChannel()).getId(), null);
+            musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
             guild.getAudioManager().closeAudioConnection();
         }
 

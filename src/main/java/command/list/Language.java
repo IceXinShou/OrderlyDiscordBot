@@ -28,7 +28,7 @@ public record Language(GuildSettingHelper settingHelper) {
             return;
         }
 
-        List<String> lang = Main.language.getGuildLang(Objects.requireNonNull(event.getGuild()).getId());
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         SelectionMenu.Builder builder = SelectionMenu.create("Lang:change:" + event.getUser().getId());
 
         for (String i : Main.language.languagesName) {
@@ -39,7 +39,7 @@ public record Language(GuildSettingHelper settingHelper) {
     }
 
     public void onSelect(@NotNull SelectionMenuEvent event, String @NotNull [] args, CommandRegister register) {
-        String guildID = Objects.requireNonNull(event.getGuild()).getId();
+        String guildID = event.getGuild().getId();
         if (!args[0].equals("Lang"))
             return;
         if (args[1].equals("change")) {

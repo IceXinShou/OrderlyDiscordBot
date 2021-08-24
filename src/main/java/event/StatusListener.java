@@ -112,11 +112,11 @@ public class StatusListener {
                             }
 
                             // 通話狀態
-                            if (Objects.requireNonNull(gMember.getVoiceState()).inVoiceChannel())
+                            if (gMember.getVoiceState().inVoiceChannel())
                                 inVoiceChannel_noBot++;
                         }
 
-                        if (Objects.requireNonNull(gMember.getVoiceState()).isStream())
+                        if (gMember.getVoiceState().isStream())
                             stream++;
 
                         if (gMember.getVoiceState().isSendingVideo())
@@ -269,8 +269,8 @@ public class StatusListener {
                             data.getJSONObject(channelID).getString(CS_FORMAT),
                             change, memberStatus);
                     GuildChannel channel = guild.getGuildChannelById(channelID);
-                    if (!Objects.requireNonNull(channel).getName().equals(newName))
-                        channel.getManager().setName(Objects.requireNonNull(newName)).queue();
+                    if (!channel.getName().equals(newName))
+                        channel.getManager().setName(newName).queue();
                 }
             } else
                 guildChannelChange.merge(channelID, change, (n1, n2) -> n1 | n2);
@@ -331,7 +331,7 @@ public class StatusListener {
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
         byte n = 1;
-        if (!Objects.requireNonNull(member.getVoiceState()).isStream())
+        if (!member.getVoiceState().isStream())
             n = -1;
 
         memberStatus.merge("stream", (int) n, Integer::sum); // 14
@@ -344,7 +344,7 @@ public class StatusListener {
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
         byte n = 1;
-        if (!Objects.requireNonNull(member.getVoiceState()).isSendingVideo())
+        if (!member.getVoiceState().isSendingVideo())
             n = -1;
 
         memberStatus.merge("camera", (int) n, Integer::sum); // 11

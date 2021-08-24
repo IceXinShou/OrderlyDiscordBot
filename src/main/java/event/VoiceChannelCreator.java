@@ -105,7 +105,7 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         if (event.getChannelJoined().getParent() == null)
             return;
 
-        if (data.has(Objects.requireNonNull(channelJoined.getParent()).getId())) {
+        if (data.has(channelJoined.getParent().getId())) {
             categoryInfo = data.getJSONObject(event.getChannelJoined().getParent().getId());
             if (channelJoined.getName().equals(categoryInfo.getString(AUTO_VC_NAME)) && channelJoined.getMembers().size() == 1)
                 event.getGuild().createCopyOfChannel(channelJoined).queue();

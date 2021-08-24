@@ -156,7 +156,6 @@ public class CommandRegister {
                 new CommandData("leave", lang.get(COMMANDREGISTER_LEAVE)),
                 new CommandData("disconnect", lang.get(COMMANDREGISTER_LEAVE)),
                 new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),
-
                 // Tool
 
                 new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true), // 若未填則回覆預設

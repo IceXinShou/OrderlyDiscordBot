@@ -9,6 +9,13 @@ URLSHORT_SUCCESS: "创建成功"
 URLSHORT_FAIL: "无法缩短此网址或讯息"
 
 
+# {@link main.java.command.list.Ban}
+BAN_NO_PERMISSION: "机器人并没有权限封禁成员"
+BAN_PERMISSION_DENIED: "此成员的力量大到让我无法执行此动作"
+BAN_DEVELOPER: "此成员为机器人的开发者"
+BAN_SUCCESS: "成功封禁成员"
+
+
 # {@link main.java.command.list.UnBan}
 UNBAN_BOT_NO_PERMISSION: "我必须要有封禁权限才可以解除封锁"
 UNBAN_SUCCESS: "已成功解除封锁"
@@ -126,6 +133,19 @@ SETTINGCHANNELSTATUS_REMOVE_SUCCESS: "移除成功"
 SETTINGHELP_ADVANCE_HELP: "进阶说明"
 
 
+# {@link main.java.command.list.Clear}
+CLEAR_CONFIRM_DELETE: "確定刪除 %d 則訊息?"
+CLEAR_DELETED: "已刪除"
+CLEAR_MEMBER_NOT_FOUND: "找無成員"
+CLEAR_MEMBER_NAME_NOT_FOUND: "名字找無"
+CLEAR_MEMBER_NONE: "無"
+CLEAR_MESSAGE_NOT_FOUND: "找無"
+CLEAR_MESSAGE_DELETE: "刪除: "
+CLEAR_MESSAGE_DELETE_EVENT: "刪除訊息"
+CLEAR_MESSAGE_ERROR_EVENT: "錯誤: "
+CLEAR_MESSAGE_COUNT: "則文字已刪除!"
+
+
 # {@link main.java.command.list.Setting.SettingJoinLeave}
 SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL: "找不到文字频道"
 SETTINGJOINLEAVE_SETTING_FAIL: "设定失败"
@@ -134,6 +154,13 @@ SETTINGJOINLEAVE_NOTICE_MESSAGE: "通知讯息"
 SETTINGJOINLEAVE_DM_MESSAGE: "私聊讯息"
 SETTINGJOINLEAVE_ROLE_ADD: "新增身分组"
 SETTINGJOINLEAVE_SETTING_SUCCESS: "设定成功"
+SETTINGJOINLEAVE_HAD_NOT_SET: "此频道无被设定纪录"
+SETTINGJOINLEAVE_REMOVE_SUCCESS: "移除成功"
+SETTINGJOINLEAVE_CAN_NOT_FIND: "找不到此文字频道"
+
+
+# {@link main.java.command.list.Setting.SettingJoinLeave}
+INFO_SERVER_COUNT: "**伺服器总数: **"
 
 
 # {@link main.java.command.CommandRegister}
@@ -324,3 +351,49 @@ LISTENERMANAGER_NOT_YOUR_BUTTON: "此为他人的按钮"
 LANG_CHANGE: "更换语言"
 LANG_CHOOSE: "请选择一项语言"
 LANG_SUCCESS: "更换成功"
+
+
+# {@link multiBot.MultiMusicBotManager}
+MUSICBOT_MG_UNKNOWN_VALUE: "未知的数值"
+MUSICBOT_MG_ALL_BOT_USED: "目前所有机器人都已被占用"
+MUSICBOT_MG_SEARCH_NO_RESULT: "查无搜寻结果!"
+MUSICBOT_MG_SEARCH: "搜寻结果"
+MUSICBOT_MG_START_PLAY: "已开始播放"
+MUSICBOT_MG_START_PLAY_ALREADY: "已经在播放中了"
+MUSICBOT_MG_UNKNOWN_CHANNEL_BUTTON: "未知的频道按钮"
+MUSICBOT_MG_NO_BOT_IN_CHANNEL: "没有机器人在语音频道馁..."
+MUSICBOT_MG_NEED_USE_IN_CHANNEL: "请在语音频道内使用此指令"
+
+
+# {@link main.java.command.list.Kick}
+KICK_NO_PERMISSION: "我必须要有踢出权限才可以踢出成员"
+KICK_PERMISSION_DENIED: "无法踢出此成员, 他的权限太高了"
+KICK_DEVELOPER: "此成员为机器人的开发者"
+KICK_SUCCESS: "已踢出"
+KICK_PERMISSION_ERROR: "权限错误"
+KICK_UNKNOWN_ERROR: "未知的错误"
+
+
+# {@link main.java.command.list.Giveaway}
+GIVEAWAY_NEED_ADMIN_PERMISSION: "请给予管理员权限才能够执行此操作"
+GIVEAWAY_SINGLE_DATE_FORMAT: "只能填写一种时间格式"
+GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR: "绝对时间格式错误"
+GIVEAWAY_ABSOLUTE_TIME_ERROR: "绝对时间错误"
+GIVEAWAY_MONTH_OUT_OF_RANGE: "月数太大"
+GIVEAWAY_WEEK_OUT_OF_RANGE: "周数太大"
+GIVEAWAY_DAY_OUT_OF_RANGE: "天数太大"
+GIVEAWAY_HOUR_OUT_OF_RANGE: "小时太大"
+GIVEAWAY_MINUTE_OUT_OF_RANGE: "分钟太大"
+GIVEAWAY_SECOND_OUT_OF_RANGE: "秒数太大"
+GIVEAWAY_SETTING_FAILED: "设定失败"
+GIVEAWAY_GIFT_NAME: "礼物名称"
+GIVEAWAY_LK_WINNER_COUNT: "获胜人数"
+GIVEAWAY_END_TIME: "结束时间"
+GIVEAWAY_LK_EMOJI: "表情符号"
+GIVEAWAY_TIME_LEFT: "结束剩馀"
+GIVEAWAY_SUCCESS: "设定成功"
+
+
+# {@link main.java.command.list.Help}
+HELP_USAGE: "使用说明"
+LANG_CREATE_SUCCESS: "创建成功"

@@ -30,9 +30,9 @@ public class Poll {
             fields.add(new MessageEmbed.Field(dotEmojis[i - 1].getAsMention() + event.getOptions().get(i).getAsString(), "", false));
         }
         event.getChannel().sendMessageEmbeds(createEmbed(
-                Objects.requireNonNull(event.getOption(QUESTION)).getAsString(), null,
+                event.getOption(QUESTION).getAsString(), null,
                 lang.get(POLL_MEMBER_POLL),
-                Objects.requireNonNull(event.getMember()).getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
+                event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {

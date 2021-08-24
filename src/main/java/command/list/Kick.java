@@ -1,12 +1,17 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Objects;
+
 import static main.java.BotSetting.botOwnerID;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.USER_TAG;
@@ -14,10 +19,11 @@ import static main.java.util.SlashCommandOption.USER_TAG;
 public class Kick {
 
     public void onCommand(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Member selfMember = event.getGuild().getSelfMember();
 
         if (!selfMember.hasPermission(Permission.KICK_MEMBERS)) {
-            event.getHook().editOriginalEmbeds(createEmbed("我必須要有踢出權限才可以踢出成員", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_NO_PERMISSION), 0xFF0000)).queue();
             return;
         } else if (!hasPermission(Permission.KICK_MEMBERS, event, true)) {
             return;
@@ -29,7 +35,7 @@ public class Kick {
         }
 
         if (member != null && botOwnerID.contains(member.getId())) {
-            event.getHook().editOriginalEmbeds(createEmbed("此成員為機器人的開發者", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_DEVELOPER), 0xFF0000)).queue();
             return;
         }
 

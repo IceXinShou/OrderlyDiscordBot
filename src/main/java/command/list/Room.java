@@ -79,7 +79,7 @@ public record Room(GuildSettingHelper settingHelper) {
         allow.add(Permission.VIEW_CHANNEL);
         allow.add(Permission.MANAGE_CHANNEL);
 
-        JSONObject data = inputData.getJSONObject(Objects.requireNonNull(event.getChannelJoined()).getId());
+        JSONObject data = inputData.getJSONObject(event.getChannelJoined().getId());
         final Category textCategory;
         Category voiceCategory = event.getGuild().getCategoryById(data.getString(ROOM_VOICE_CATEGORY_ID));
         boolean hasTextChannel;

@@ -23,8 +23,8 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
 
     public void newVCC(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        String detectCategoryID = Objects.requireNonNull(event.getOption("detectcategory")).getAsString();
-        String voiceName = Objects.requireNonNull(event.getOption("voicename")).getAsString();
+        String detectCategoryID = event.getOption("detectcategory")).getAsString();
+        String voiceName = event.getOption("voicename")).getAsString();
 
         Guild guild = event.getGuild();
 
@@ -39,11 +39,11 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
         }
 
         assert guild != null;
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), Objects.requireNonNull(guild.getCategoryById(detectCategoryID)).getName() + "\n`(" + detectCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), guild.getCategoryById(detectCategoryID)).getName() + "\n`(" + detectCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_NAME), voiceName, false));
 
         JSONObject VCCSetting = getSettingData(guild, settingHelper);
-        Objects.requireNonNull(VCCSetting).put(detectCategoryID, new JSONObject().put(AUTO_VC_NAME, voiceName));
+        VCCSetting).put(detectCategoryID, new JSONObject().put(AUTO_VC_NAME, voiceName));
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
 
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_SETTING_SUCCESS), fields, 0x11FF99)).queue();
@@ -51,10 +51,10 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
 
     public void removeVCC(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        String detectID = Objects.requireNonNull(event.getOption("detectcategory")).getAsString();
+        String detectID = event.getOption("detectcategory")).getAsString();
         Guild guild = event.getGuild();
 
-        Objects.requireNonNull(getSettingData(Objects.requireNonNull(guild), settingHelper)).remove(detectID);
+        getSettingData(guild), settingHelper)).remove(detectID);
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_REMOVE_SUCCESS), 0x00FFFF)).queue();
 
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();

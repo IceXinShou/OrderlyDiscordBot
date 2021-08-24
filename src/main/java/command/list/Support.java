@@ -25,7 +25,7 @@ public class Support {
         }
         channel.sendMessageEmbeds(
                         createEmbed(event.getUser().getAsTag(),
-                                Objects.requireNonNull(event.getOption(MESSAGE)).getAsString(),
+                                event.getOption(MESSAGE).getAsString(),
                                 event.getGuild() == null ? "[Private]" : event.getGuild().getName(), OffsetDateTime.now(), 0x00FFFF))
                 .queue();
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SUPPORT_SUCCESS), 0x50ff70)).queue();

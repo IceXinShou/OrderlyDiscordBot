@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -10,6 +11,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static main.java.lang.LangKey.HELP_USAGE;
+import static main.java.lang.LangKey.LANG_CREATE_SUCCESS;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.PermissionERROR.hasPermission;
 
@@ -17,14 +20,16 @@ public class Help {
 
 
     public void onAnnouncementCommand(@NotNull SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (hasPermission(Permission.ADMINISTRATOR, event, true)) {
-            event.getChannel().sendMessageEmbeds(createEmbed("使用說明：", "", "", "", "", summonAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("創建成功", 0x0FFFF)).queue();
+            event.getChannel().sendMessageEmbeds(createEmbed(lang.get(HELP_USAGE), "", "", "", "", summonAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
         }
     }
 
     public void onMemberCommand(@NotNull SlashCommandEvent event) {
-        event.getHook().editOriginalEmbeds(createEmbed("使用說明：", "", "", "", "", summonMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(HELP_USAGE), "", "", "", "", summonMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
     public List<MessageEmbed.Field> summonMemberFields(Member member, boolean showALL) {
