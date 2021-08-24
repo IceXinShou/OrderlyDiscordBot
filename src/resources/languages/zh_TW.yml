@@ -17,7 +17,7 @@ BAN_SUCCESS: "成功封禁成員"
 
 
 # {@link main.java.command.list.UnBan}
-UNBAN_BOT_NO_PERMISSION: "我必須要有封禁權限才可以解除封鎖"
+UNBAN_NO_PERMISSION: "我必須要有封禁權限才可以解除封鎖"
 UNBAN_SUCCESS: "已成功解除封鎖"
 UNBAN_PERMISSION_ERROR: "權限錯誤"
 UNBAN_UNKNOWN_ERROR: "未知的錯誤"

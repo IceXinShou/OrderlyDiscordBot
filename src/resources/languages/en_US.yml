@@ -17,7 +17,7 @@ BAN_SUCCESS: "Ban Successfully"
 
 
 # {@link main.java.command.list.UnBan}
-UNBAN_BOT_NO_PERMISSION: "I must have `ban` permission to unban member"
+UNBAN_NO_PERMISSION: "I must have `ban` permission to unban member"
 UNBAN_SUCCESS: "Unban Successfully!"
 UNBAN_PERMISSION_ERROR: "Permission ERROR"
 UNBAN_UNKNOWN_ERROR: "Unknown ERROR"

@@ -1,5 +1,6 @@
 package main.java.command.list;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -14,7 +15,10 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,12 +44,14 @@ public record Giveaway(GuildSettingHelper settingHelper) {
          * /giveaway <name> [month] [week] [day] [hour] [minute] [second] [winnerCount] [emoji]
          */
 
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+
         Guild guild;
         if ((guild = event.getGuild()) == null)
             return;
 
         if (!guild.getSelfMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
-            event.getHook().editOriginalEmbeds(createEmbed("請給予管理員權限才能夠執行此操作", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(GIVEAWAY_NEED_ADMIN_PERMISSION), 0xFF0000)).queue();
             return;
         }
 
@@ -66,7 +72,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                 event.getOption("month") != null || event.getOption("week") != null ||
                         event.getOption("day") != null || event.getOption("hour") != null ||
                         event.getOption("minute") != null || event.getOption("second") != null))
-            fields.add(new MessageEmbed.Field("只能填寫一種時間格式", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_SINGLE_DATE_FORMAT), "", false));
         else {
 
             // 絕對時間 yyyy.MM.dd.HH.mm.ss
@@ -75,72 +81,60 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                     time = new SimpleDateFormat("yyyy.MM.dd HH.mm.ss").parse(event.getOption("time").getAsString()).getTime();
                 } catch (ParseException e) {
 //                    System.err.println(e.getMessage());
-                    fields.add(new MessageEmbed.Field("絕對時間格式錯誤", "", false));
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR), "", false));
                 }
                 if (time - (1970L * 365 * 24 * 60 * 60) <= 0)
-                    fields.add(new MessageEmbed.Field("絕對時間錯誤", "", false));
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_ABSOLUTE_TIME_ERROR), "", false));
 
             } else {
                 // 相對時間
                 if (event.getOption("month") != null)
                     if (event.getOption("month").
-
                             getAsLong() <= 12) time += event.getOption("month").
-
                             getAsLong() * 30 * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field("月數太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MONTH_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("week") != null)
                     if (event.getOption("week").
-
                             getAsLong() <= 48) time += event.getOption("week").
-
                             getAsLong() * 7 * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field("週數太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_WEEK_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("day") != null)
                     if (event.getOption("day").
-
                             getAsLong() <= 365) time += event.getOption("day").
-
                             getAsLong() * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field("天數太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_DAY_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("hour") != null)
                     if (event.getOption("hour").
-
                             getAsLong() <= 8760) time += event.getOption("hour").
-
                             getAsLong() * 60 * 60;
-                    else fields.add(new MessageEmbed.Field("小時太大", "", false));
+                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_HOUR_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("minute") != null)
                     if (event.getOption("minute").
-
                             getAsLong() <= 625200) time += event.getOption("minute").
-
                             getAsLong() * 60;
                     else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MINUTE_OUT_OF_RANGE), "", false));
 
                 if (event.getOption("second") != null)
                     if (event.getOption("month").
-
                             getAsLong() <= 31536000) time += event.getOption("second").
-
                             getAsLong();
                     else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_SECOND_OUT_OF_RANGE), "", false));
             }
         }
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("設定失敗", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(GIVEAWAY_SETTING_FAILED), fields, 0xFF0000)).queue();
             return;
         }
 
 
-        fields.add(new MessageEmbed.Field("禮物名稱", giveawayName, false));
-        fields.add(new MessageEmbed.Field("獲勝人數", String.valueOf(winnerCount), false));
-        fields.add(new MessageEmbed.Field("結束時間", timeFormat(time), false));
-        fields.add(new MessageEmbed.Field("表情符號", buttonEmoji.getAsMention(), false));
+        fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_GIFT_NAME), giveawayName, false));
+        fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_LK_WINNER_COUNT), String.valueOf(winnerCount), false));
+        fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_END_TIME), timeFormat(time), false));
+        fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_LK_EMOJI), buttonEmoji.getAsMention(), false));
 
 
         long finalTime = time;

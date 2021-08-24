@@ -51,8 +51,8 @@ public class Invite {
     }
 
     public void onCommand(@NotNull SlashCommandEvent event) {
-        Member member = Objects.requireNonNull(event.getOption(USER_TAG)).getAsMember();
-        String userId = event.getUser().getId();
+        Member member = event.getOption(USER_TAG).getAsMember();
+        String userId= event.getUser().getId();
         // 還沒完成使用者設定
         if (!memberData.has(member.getId())) {
             event.getHook().editOriginalEmbeds(createEmbed("此成員尚未完設暱稱設定！請成員私訊機器人代碼：`J`", 0xFF0000)).queue();

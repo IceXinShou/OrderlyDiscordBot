@@ -17,7 +17,7 @@ import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.USER_TAG;
 
 public class Kick {
-
+    @SuppressWarnings("ALL")
     public void onCommand(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Member selfMember = event.getGuild().getSelfMember();
@@ -30,7 +30,7 @@ public class Kick {
         }
         Member member = event.getOption(USER_TAG).getAsMember();
         if (member != null && !selfMember.canInteract(member)) {
-            event.getHook().editOriginalEmbeds(createEmbed("無法踢出此成員, 他的權限太高了", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_PERMISSION_DENIED), 0xFF0000)).queue();
             return;
         }
 
@@ -39,16 +39,16 @@ public class Kick {
             return;
         }
 
-
+        String nickname = member.getNickname() != null ? member.getNickname() : member.getUser().getAsTag();
         event.getGuild().kick(member).queue(
-                success -> event.getHook().editOriginalEmbeds(createEmbed("已踢出", 0xffd2c5)).queue(),
+                success -> event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_SUCCESS) + ' ' + nickname, 0xffd2c5)).queue(),
                 error -> {
                     if (error instanceof PermissionException) {
                         event.getHook().editOriginalEmbeds(
-                                createEmbed("權限錯誤" + member.getEffectiveName() + ": " + error.getMessage(), 0xFF0000)).queue();
+                                createEmbed(lang.get(KICK_PERMISSION_ERROR) + member.getEffectiveName() + ": " + error.getMessage(), 0xFF0000)).queue();
                     } else {
                         event.getHook().editOriginalEmbeds(
-                                createEmbed("未知的錯誤" + member.getEffectiveName() + ": <" + error.getClass().getSimpleName() + ">: " + error.getMessage(), 0xFF0000)).queue();
+                                createEmbed(lang.get(KICK_UNKNOWN_ERROR) + member.getEffectiveName() + ": <" + error.getClass().getSimpleName() + ">: " + error.getMessage(), 0xFF0000)).queue();
                     }
                 });
     }

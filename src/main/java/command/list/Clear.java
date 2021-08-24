@@ -44,7 +44,7 @@ public class Clear {
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // set number to 2~200
         // arg
         String userId = event.getUser().getId();
-        event.getHook().editOriginalEmbeds(createEmbed("確定刪除 " + amount + " 則訊息?", 0xd0effe))
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(CLEAR_CONFIRM_DELETE).formatted(amount), 0xd0effe))
                 .setActionRow(Button.danger("Clear:delete:" + userId + ':' + amount, "Yes!"))
                 .queue();
     }
@@ -54,7 +54,7 @@ public class Clear {
         if (!args[0].equals("Clear"))
             return;
         if (args[1].equals("delete")) {
-            event.deferEdit().setEmbeds(createEmbed("已刪除", 0x9740b9)).setActionRows().queue();
+            event.deferEdit().setEmbeds(createEmbed(lang.get(CLEAR_DELETED), 0x9740b9)).setActionRows().queue();
             int amount = Integer.parseInt(args[3]);
             try {
                 List<Message> deleteMessage = event.getChannel().getIterableHistory()
@@ -77,14 +77,14 @@ public class Clear {
                     String messageContent = thisMessage.getContentRaw();
                     String memberNickName;
                     if (thisMessage.getMember() == null)
-                        memberNickName = "找無成員";
+                        memberNickName = lang.get(CLEAR_MEMBER_NOT_FOUND);
                     else if (thisMessage.getMember().getNickname() == null)
-                        memberNickName = "名字找無";
+                        memberNickName = lang.get(CLEAR_MEMBER_NAME_NOT_FOUND);
                     else
-                        memberNickName = "無";
+                    memberNickName = lang.get(CLEAR_MEMBER_NONE);
 
                     if (messageContent.length() == 0)
-                        messageContent = "找無";
+                        messageContent = lang.get(CLEAR_MESSAGE_NOT_FOUND);
                     int thisMessageLength = messageContent.length() + memberNickName.length();
 
                     if (textLength + thisMessageLength > 5000 || i == deleteMessage.size() - 1) {
@@ -94,8 +94,8 @@ public class Clear {
                             fields.add(new MessageEmbed.Field(memberNickName, messageContent, false)); // 加入最後一個訊息
                         }
                         logChannel.sendMessageEmbeds(createEmbed(
-                                "刪除: ", null,
-                                "刪除訊息",
+                                lang.get(CLEAR_MESSAGE_DELETE_EVENT), null,
+                                lang.get(CLEAR_MESSAGE_DELETE),
                                 Main.botNickname, Main.botAvatarUrl,
                                 fields,
                                 OffsetDateTime.now(), 0x1ABC9C)
@@ -111,11 +111,11 @@ public class Clear {
                 }
 
                 event.getChannel().sendMessageEmbeds(
-                        createEmbed(emoji.yesEmoji.getAsMention() + ' ' + amount + " 則文字已刪除！", 0xe3c6d6)
+                        createEmbed(emoji.yesEmoji.getAsMention() + ' ' + lang.get(CLEAR_MESSAGE_COUNT).formatted(amount), 0xe3c6d6)
                 ).queue(m -> Log.deleteNoLog(m, 2));
             } catch (InterruptedException | ExecutionException e) {
                 logChannel.sendMessageEmbeds(createEmbed(
-                        "錯誤: ", null,
+                        lang.get(CLEAR_MESSAGE_ERROR_EVENT), null,
                         e.getMessage(),
                         Main.botNickname, Main.botAvatarUrl,
                         OffsetDateTime.now(), 0x00FFFF)).queue();

@@ -17,7 +17,7 @@ public class Info {
     public void onCommand(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild()).getId());
         List<MessageEmbed.Field> fields = new ArrayList<>();
-        fields.add(new MessageEmbed.Field("**伺服器總數: **", String.valueOf((long) event.getJDA().getGuilds().size()), false));
+        fields.add(new MessageEmbed.Field(lang.get(INFO_SERVER_COUNT), String.valueOf((long) event.getJDA().getGuilds().size()), false));
 
 //        event.getHook().editOriginalEmbeds(createEmbed());
 

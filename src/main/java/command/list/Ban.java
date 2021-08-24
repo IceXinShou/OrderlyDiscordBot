@@ -29,7 +29,7 @@ public class Ban {
 
         Member selfMember = event.getGuild().getSelfMember();
         if (!selfMember.hasPermission(BAN_MEMBERS)) {
-            event.getHook().editOriginalEmbeds(createEmbed("機器人並沒有權限封禁成員", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_NO_PERMISSION), 0xFF0000)).queue();
             return;
         }
 

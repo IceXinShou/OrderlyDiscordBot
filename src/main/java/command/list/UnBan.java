@@ -22,7 +22,7 @@ public class UnBan {
             Member selfMember = event.getGuild().getSelfMember();
 
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
-                event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_BOT_NO_PERMISSION), 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_NO_PERMISSION), 0xFF0000)).queue();
             } else if (!hasPermission(Permission.BAN_MEMBERS, event, true))
                 return;
             try {

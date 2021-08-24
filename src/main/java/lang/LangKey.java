@@ -22,9 +22,18 @@ public class LangKey {
 
 
     /**
+     * {@link main.java.command.list.Ban}
+     */
+    public static int BAN_NO_PERMISSION;
+    public static int BAN_PERMISSION_DENIED;
+    public static int BAN_DEVELOPER;
+    public static int BAN_SUCCESS;
+
+
+    /**
      * {@link main.java.command.list.UnBan}
      */
-    public static int UNBAN_BOT_NO_PERMISSION;
+    public static int UNBAN_NO_PERMISSION;
     public static int UNBAN_PERMISSION_ERROR;
     public static int UNBAN_SUCCESS;
     public static int UNBAN_UNKNOWN_ERROR;
@@ -361,11 +370,79 @@ public class LangKey {
 
 
     /**
+     * {@link multiBot.MultiMusicBotManager}
+     */
+    public static int MUSICBOT_MG_UNKNOWN_VALUE;
+    public static int MUSICBOT_MG_ALL_BOT_USED;
+    public static int MUSICBOT_MG_SEARCH_NO_RESULT;
+    public static int MUSICBOT_MG_SEARCH;
+    public static int MUSICBOT_MG_START_PLAY;
+    public static int MUSICBOT_MG_START_PLAY_ALREADY;
+    public static int MUSICBOT_MG_UNKNOWN_CHANNEL_BUTTON;
+    public static int MUSICBOT_MG_NO_BOT_IN_CHANNEL;
+    public static int MUSICBOT_MG_NEED_USE_IN_CHANNEL;
+
+
+    /**
      * {@link main.java.ListenerManager}
      */
     public static int LISTENERMANAGER_CANT_DO_THIS;
     public static int LISTENERMANAGER_WRONG_CHANNEL;
     public static int LISTENERMANAGER_NOT_YOUR_BUTTON;
+
+
+    /**
+     * {@link main.java.command.list.Clear}
+     */
+    public static int CLEAR_CONFIRM_DELETE;
+    public static int CLEAR_DELETED;
+    public static int CLEAR_MEMBER_NOT_FOUND;
+    public static int CLEAR_MEMBER_NAME_NOT_FOUND;
+    public static int CLEAR_MEMBER_NONE;
+    public static int CLEAR_MESSAGE_NOT_FOUND;
+    public static int CLEAR_MESSAGE_DELETE;
+    public static int CLEAR_MESSAGE_DELETE_EVENT;
+    public static int CLEAR_MESSAGE_COUNT;
+    public static int CLEAR_MESSAGE_ERROR_EVENT;
+
+
+    /**
+     * {@link main.java.command.list.Info}
+     */
+    public static int INFO_SERVER_COUNT;
+
+
+    /**
+     * {@link main.java.command.list.Kick}
+     */
+    public static int KICK_NO_PERMISSION;
+    public static int KICK_PERMISSION_DENIED;
+    public static int KICK_DEVELOPER;
+    public static int KICK_SUCCESS;
+    public static int KICK_PERMISSION_ERROR;
+    public static int KICK_UNKNOWN_ERROR;
+
+
+    /**
+     * {@link main.java.command.list.Giveaway}
+     */
+    public static int GIVEAWAY_NEED_ADMIN_PERMISSION;
+    public static int GIVEAWAY_SINGLE_DATE_FORMAT;
+    public static int GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR;
+    public static int GIVEAWAY_ABSOLUTE_TIME_ERROR;
+    public static int GIVEAWAY_MONTH_OUT_OF_RANGE;
+    public static int GIVEAWAY_WEEK_OUT_OF_RANGE;
+    public static int GIVEAWAY_DAY_OUT_OF_RANGE;
+    public static int GIVEAWAY_HOUR_OUT_OF_RANGE;
+    public static int GIVEAWAY_MINUTE_OUT_OF_RANGE;
+    public static int GIVEAWAY_SECOND_OUT_OF_RANGE;
+    public static int GIVEAWAY_SETTING_FAILED;
+    public static int GIVEAWAY_GIFT_NAME;
+    public static int GIVEAWAY_LK_WINNER_COUNT;
+    public static int GIVEAWAY_END_TIME;
+    public static int GIVEAWAY_LK_EMOJI;
+    public static int GIVEAWAY_TIME_LEFT;
+    public static int GIVEAWAY_SUCCESS;
 
 
     /**
