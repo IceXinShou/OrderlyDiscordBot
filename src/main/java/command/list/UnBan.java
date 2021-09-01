@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 import java.util.List;
-import java.util.Objects;
 
 import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;

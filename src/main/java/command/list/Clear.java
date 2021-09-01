@@ -14,12 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static main.java.Main.emoji;
-import static main.java.Main.language;
 import static main.java.event.Log.ignoreMessageID;
 import static main.java.event.Log.logChannel;
 import static main.java.lang.LangKey.*;
@@ -81,7 +79,7 @@ public class Clear {
                     else if (thisMessage.getMember().getNickname() == null)
                         memberNickName = lang.get(CLEAR_MEMBER_NAME_NOT_FOUND);
                     else
-                    memberNickName = lang.get(CLEAR_MEMBER_NONE);
+                        memberNickName = lang.get(CLEAR_MEMBER_NONE);
 
                     if (messageContent.length() == 0)
                         messageContent = lang.get(CLEAR_MESSAGE_NOT_FOUND);

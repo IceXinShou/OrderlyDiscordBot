@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
@@ -79,8 +78,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void noMoreTrack(GenericInteractionCreateEvent event, @NotNull Guild guild) {
-        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+    public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild) {
+        List<String> lang = Main.language.getGuildLang(guild.getId());
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
             musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);

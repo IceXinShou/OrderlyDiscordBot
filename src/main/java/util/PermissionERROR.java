@@ -5,8 +5,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import static main.java.BotSetting.botOwnerID;
 import static main.java.BotSetting.noPermissionStringERROR;
 import static main.java.util.EmbedCreator.createEmbed;

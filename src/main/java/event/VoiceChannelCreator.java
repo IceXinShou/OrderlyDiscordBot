@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 import static main.java.util.JsonKeys.AUTO_VC_NAME;
 import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 

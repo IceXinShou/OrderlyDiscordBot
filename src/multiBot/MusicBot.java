@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -162,7 +161,7 @@ public class MusicBot {
         }
         String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (search) {
-            event.getInteraction().deferReply(true).addEmbeds(embed[0], embed[1])
+            event.replyEmbeds(embed[0], embed[1]).setEphemeral(true)
                     .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
         } else
@@ -356,3 +355,4 @@ public class MusicBot {
         return botID;
     }
 }
+

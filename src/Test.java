@@ -1,8 +1,6 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 import static main.java.util.UrlDataGetter.getData;
 
 public class Test {

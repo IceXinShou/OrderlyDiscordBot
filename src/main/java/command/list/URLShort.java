@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static main.java.lang.LangKey.URLSHORT_FAIL;
 import static main.java.lang.LangKey.URLSHORT_SUCCESS;

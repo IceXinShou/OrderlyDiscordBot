@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static main.java.lang.LangKey.POLL_MEMBER_POLL;
 import static main.java.lang.LangKey.POLL_SUCCESS;

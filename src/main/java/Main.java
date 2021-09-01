@@ -74,27 +74,27 @@ public class Main {
                     case "stop":
                         jda.shutdown();
                         threadPool.shutdown();
-                        System.out.println(TAG + " 已停止");
+                        System.out.println(TAG + " Stopped");
                         return;
                     case "reload":
-                        System.out.println(TAG + " 重新載入中...");
+                        System.out.println(TAG + " Reloading...");
                         // load new setting
                         setting.reloadConfig();
                         if (guild == null) {
-                            System.err.println(TAG + " 無法找到公會: " + GuildUtil.guildID);
+                            System.err.println(TAG + " Cannot found guild: " + GuildUtil.guildID);
                             break;
                         }
                         // get guild variable from setting
                         listener.reload(guild);
                         // 開始自動切換
                         startChangeActivity(jda);
-                        System.out.println(TAG + " 重新載入完成");
+                        System.out.println(TAG + " Reloaded!");
                         break;
                     default:
                         if (command.length() == 0)
                             setting.sendNoneToConsole();
                         else
-                            System.out.println(TAG + " 不知名的指令");
+                            System.out.println(TAG + " Unknown Command");
                         break;
                 }
             }

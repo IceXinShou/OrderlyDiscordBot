@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static main.java.BotSetting.defaultTicketChannelName;
 import static main.java.Main.botID;

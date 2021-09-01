@@ -17,7 +17,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-api-1.7.31.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-simple-1.7.31.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/snakeyaml-1.29.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/JDA-4.3.0_310-withDependencies.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/JDA-4.3.0_314-withDependencies.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
