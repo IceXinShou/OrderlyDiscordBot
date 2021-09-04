@@ -127,6 +127,22 @@ public class EmbedCreator {
     }
 
     @Contract("_, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String url, String description, List<MessageEmbed.Field> fields, String footer, String nickname, String avatarUrl, int color) {
+        return new MessageEmbed(url,
+                title,
+                description,
+                EmbedType.RICH,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                null, fields);
+    }
+
+    @Contract("_, _, _, _, _, _, _ -> new")
     public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color) {
         return new MessageEmbed(url,
                 title,
@@ -140,6 +156,55 @@ public class EmbedCreator {
                 null,
                 new MessageEmbed.Footer(footer, null, null),
                 null, null);
+    }
+
+    @Contract("_, _, _, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String image, String url, String description, String footer, String nickname, String avatarUrl, int color, List<MessageEmbed.Field> fields) {
+        return new MessageEmbed(url,
+                title,
+                description,
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, url, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                new MessageEmbed.ImageInfo(image, null, 0, 0),
+                fields);
+    }
+
+    @Contract("_, _, _, _, _, _, _, _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String image, String url, String description, String footer, String nickname, String avatarUrl, int color) {
+        return new MessageEmbed(url,
+                title,
+                description,
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, url, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                new MessageEmbed.ImageInfo(image, null, 0, 0), null);
+    }
+
+    @Contract("_, _, _, _, _, _, _, _ , _ -> new")
+    public static @NotNull MessageEmbed createEmbed(String title, String image, String titleUrl, String nicknameUrl, String description, String footer, int color, String nickname, String avatarUrl) {
+        return new MessageEmbed(titleUrl,
+                title,
+                description,
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, nicknameUrl, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                new MessageEmbed.ImageInfo(image, null, 0, 0), null);
     }
 
     @Contract("_, _ -> new")

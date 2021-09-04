@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.EmbedCreator.isBotOwner;
 
 @SuppressWarnings("ALL")
@@ -29,6 +30,7 @@ public class QuickUse {
 
         if (message.getContentRaw().startsWith("testCommand") && (isBotOwner(event) /*|| event.getMember().getId().equals(event.getGuild().retrieveOwner().complete().getId())*/)) {
 
+            event.getChannel().sendMessageEmbeds(createEmbed("Test", "Track cases globally, or in a country, by supplying 2-letter [country codes](https://countrycode.org/).", 0xFF0000)).queue();
             /**
              * Chinese
              */
@@ -112,7 +114,7 @@ public class QuickUse {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                 }
             }
 */

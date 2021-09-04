@@ -18,6 +18,6 @@ public class NewGuild {
                         "**> 進入 <**" + event.getGuild().getName() + "**>\n輸入 `/help` 顯示幫助列表\n" +
                         "You have invited <**" + event.getGuild().getSelfMember().getUser().getAsTag() +
                         "**> join <**" + event.getGuild().getName() +
-                        "**> Discord Server\nType `/help` to show helps", "", "", "", "", new Help().summonMemberFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
+                        "**> Discord Server\nType `/help` to show helps", "", "", "", "", new Help().summonSelfMemberFields(null, true), OffsetDateTime.now(), 0x00FFFF)).queue());
     }
 }

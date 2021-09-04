@@ -83,6 +83,7 @@ public class LangKey {
      * {@link main.java.command.list.Setting.SettingVCC}
      */
     public static int SETTINGVCC_LONG_OVER_100;
+    public static int SETTINGVCC_CATEGORY_ERROR;
     public static int SETTINGVCC_ERROR_REPORT;
     public static int SETTINGVCC_DETECT_CATEGORY;
     public static int SETTINGVCC_DETECT_NAME;
@@ -216,8 +217,10 @@ public class LangKey {
     public static int COMMANDREGISTER_POLL_OPTION_H;
     public static int COMMANDREGISTER_POLL_OPTION_I;
     public static int COMMANDREGISTER_POLL_OPTION_J;
-    public static int COMMANDREGISTER_HELP;
-    public static int COMMANDREGISTER_HELP_ANNOUNCEMENT;
+    public static int COMMANDREGISTER_HELP_ORDERLY;
+    public static int COMMANDREGISTER_HELP_ORDERLY_ANNOUNCEMENT;
+    public static int COMMANDREGISTER_HELP_NEKO_BOT;
+    public static int COMMANDREGISTER_HELP_NEKO_BOT_ANNOUNCEMENT;
     public static int COMMANDREGISTER_PLAY;
     public static int COMMANDREGISTER_PLAY_NAME_OR_URL;
     public static int COMMANDREGISTER_PLAYNOW;
@@ -251,6 +254,8 @@ public class LangKey {
     public static int COMMANDREGISTER_MTG_URL;
     public static int COMMANDREGISTER_MTG_OUT_PUT_NAME;
     public static int COMMANDREGISTER_MTG_FPS;
+    public static int COMMANDREGISTER_OSU;
+    public static int COMMANDREGISTER_HELP;
     public static int COMMANDREGISTER_SETTING;
     public static int COMMANDREGISTER_S_HELP;
     public static int COMMANDREGISTER_S_NEW_ROOM;

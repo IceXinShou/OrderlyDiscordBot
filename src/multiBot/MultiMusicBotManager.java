@@ -166,7 +166,6 @@ public class MultiMusicBotManager {
 
                 // 開始撥放
                 OptionMapping url = event.getOption(NAME);
-                assert url != null;
                 if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                     bot.loadAndPlay(event, event.getGuild(), url.getAsString(), false, playNow);
                 } else {

@@ -32,12 +32,14 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
         if (voiceName.length() > 100)
             fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_LONG_OVER_100), "", false));
 
+        if (guild.getCategoryById(detectCategoryID) == null)
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_CATEGORY_ERROR), "", false));
+
         if (fields.size() > 0) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_ERROR_REPORT), fields, 0xFF0000)).queue();
             return;
         }
 
-        assert guild != null;
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), guild.getCategoryById(detectCategoryID).getName() + "\n`(" + detectCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_NAME), voiceName, false));
 

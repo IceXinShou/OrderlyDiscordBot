@@ -408,8 +408,8 @@ public class StatusListener {
             case OFFLINE -> change += 32;
             case DO_NOT_DISTURB -> change += 512;
         }
-
-        memberStatus.merge(evnet.getOldOnlineStatus().name(), -1, Integer::sum); // 2
+        if (memberStatus == null)
+            memberStatus.merge(evnet.getOldOnlineStatus().name(), -1, Integer::sum); // 2
         memberStatus.merge(evnet.getNewOnlineStatus().name(), 1, Integer::sum); // 2
         if (!evnet.getUser().isBot()) {
 

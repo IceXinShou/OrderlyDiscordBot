@@ -20,7 +20,8 @@ public class EmojiUtil {
             rule, setting, ping, bell, lock, minecraftGrassBlock, nitro1, boost, discord, no1, partner,
             trashCan, leftArrow, rightArrow, join, leave, cute,
             borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
-            report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad, youtubeIcon;
+            report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad, youtubeIcon,
+            osu_ssh, osu_sh, osu_ss, osu_s, osu_a, osu_b, osu_c, osu_d, osu_f;
 
     public static Emote[] dotEmojis = new Emote[10];
 
@@ -74,6 +75,15 @@ public class EmojiUtil {
         back = getEmoji("BackBlue", guild);
         pingGood = getEmoji("PingGood", guild);
         pingBad = getEmoji("PingBad", guild);
+        osu_ssh = getEmoji("Osu_SSH", guild);
+        osu_sh = getEmoji("Osu_SH", guild);
+        osu_ss = getEmoji("Osu_SS", guild);
+        osu_s = getEmoji("Osu_S", guild);
+        osu_a = getEmoji("Osu_A", guild);
+        osu_b = getEmoji("Osu_B", guild);
+        osu_c = getEmoji("Osu_C", guild);
+        osu_d = getEmoji("Osu_D", guild);
+        osu_f = getEmoji("Osu_F", guild);
 
         System.out.println(TAG + " Emoji loaded");
     }

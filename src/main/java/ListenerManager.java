@@ -68,13 +68,14 @@ public class ListenerManager extends ListenerAdapter {
     Room room = new Room(guildSettingHelper);
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
-    //    QuickUse quickUse = new QuickUse();
+        QuickUse quickUse = new QuickUse();
     Ticket ticketChannel = new Ticket(guildSettingHelper);
     GeneralReplay generalReplay = new GeneralReplay();
     JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage(guildSettingHelper);
     MultiMusicBotManager musicManager = new MultiMusicBotManager();
     StatusListener statusListener = new StatusListener(guildSettingHelper);
     VoiceChannelCreator voiceChannelCreator = new VoiceChannelCreator(guildSettingHelper);
+    Economy economy = new Economy(guildSettingHelper);
     InformationReaction informationReaction = new InformationReaction();
 
     //command
@@ -94,6 +95,8 @@ public class ListenerManager extends ListenerAdapter {
     PopCat popCat = new PopCat();
     Giveaway giveaway = new Giveaway(guildSettingHelper);
     Language langCommand = new Language(guildSettingHelper);
+    Osu osu = new Osu();
+    SettingOsu settingOsu = new SettingOsu();
 
     /**
      * Guild Message
@@ -302,6 +305,7 @@ public class ListenerManager extends ListenerAdapter {
         ticketChannel.onButtonClick(event, args);
         clearCommand.onButton(event, args);
         musicManager.onButton(event, args);
+        economy.onDailyCheck(event, args);
     }
 
     @Override
@@ -322,7 +326,7 @@ public class ListenerManager extends ListenerAdapter {
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
             if (debugMode)
-                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
+                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: `" + event.getCommandString() + "`");
 
             switch (event.getName()) {
                 case "ping" -> {
@@ -349,7 +353,7 @@ public class ListenerManager extends ListenerAdapter {
         }
 
         if (debugMode) {
-            System.out.println("[" + event.getGuild().getName() + "] " + event.getUser().getAsTag() + " issued command: " + event.getCommandString());
+            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`");
         }
 
         // 取得輸入指令的頻道
@@ -399,10 +403,6 @@ public class ListenerManager extends ListenerAdapter {
                 pollCommand.onCommand(event);
                 return;
             }
-            case "help" -> {
-                helpCommand.onMemberCommand(event);
-                return;
-            }
             case "ping" -> {
                 ping.onCommand(event);
                 return;
@@ -413,10 +413,6 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "support" -> {
                 support.onCommand(event);
-                return;
-            }
-            case "helpannouncement" -> {
-                helpCommand.onAnnouncementCommand(event);
                 return;
             }
             case "surl" -> {
@@ -448,6 +444,47 @@ public class ListenerManager extends ListenerAdapter {
                     reload(event.getGuild());
                 return;
             }
+            case "help" -> {
+                switch (event.getSubcommandName()) {
+                    case "orderly" -> {
+                        helpCommand.onSelfMemberCommand(event);
+                        return;
+                    }
+                    case "orderlyannouncement" -> {
+                        helpCommand.onSelfAnnouncementCommand(event);
+                        return;
+                    }
+                    case "neko" -> {
+                        helpCommand.onNekoBotMemberCommand(event);
+                        return;
+                    }
+                    case "nekoannouncement" -> {
+                        helpCommand.onNekoBotAnnouncementCommand(event);
+                        return;
+                    }
+                }
+            }
+            case "osu" -> {
+                switch (event.getSubcommandName()) {
+                    case "search" -> {
+                        osu.search(event);
+                        return;
+                    }
+                    case "setuser" -> {
+                        settingOsu.onRegister(event);
+                        return;
+                    }
+                    case "last" -> {
+                        settingOsu.onPrevious(event);
+                        return;
+                    }
+                    case "top" -> {
+                        settingOsu.onTop(event);
+                        return;
+                    }
+                }
+            }
+
             case "setting" -> {
                 if (!hasPermission(Permission.ADMINISTRATOR, event, true))
                     return;

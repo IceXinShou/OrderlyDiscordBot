@@ -6,6 +6,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.net.StandardSocketOptions;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -47,7 +48,7 @@ public class FileConvert {
                         }
                     Thread.sleep(3000);
                 } catch (URISyntaxException | InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                 }
             }
             urlShort.onCommand(event, true, exportUrl, lang);

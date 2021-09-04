@@ -55,7 +55,7 @@ public class BotSetting {
     private final String TAG = "[Setting]";
 
     public BotSetting() {
-        setLog();
+//        setLog();
         loadConfigFile();
         loadVariable();
     }
@@ -175,7 +175,6 @@ public class BotSetting {
         logConsole.reset();
     }
 
-    @SuppressWarnings("ALL")
     private void setLog() {
         // 原本的console
         PrintStream originalErrConsole = System.err;
@@ -235,9 +234,10 @@ public class BotSetting {
                 }
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(700);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
             }
         }).start();
@@ -328,7 +328,7 @@ public class BotSetting {
         return yml.load(settingText);
     }
 
-    private File exportResource(String name) {
+    public File exportResource(String name) {
         InputStream fileInJar = this.getClass().getClassLoader().getResourceAsStream(name);
 
         try {

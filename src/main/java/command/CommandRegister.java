@@ -135,8 +135,6 @@ public class CommandRegister {
                         new OptionData(STRING, CHOICE_H, lang.get(COMMANDREGISTER_POLL_OPTION_H)),
                         new OptionData(STRING, CHOICE_I, lang.get(COMMANDREGISTER_POLL_OPTION_I)),
                         new OptionData(STRING, CHOICE_J, lang.get(COMMANDREGISTER_POLL_OPTION_J))),
-                new CommandData("help", lang.get(COMMANDREGISTER_HELP)),
-                new CommandData("helpannouncement", lang.get(COMMANDREGISTER_HELP_ANNOUNCEMENT)),
 
                 // Music
                 new CommandData("play", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL)), // 若未填則開始播放音樂
@@ -159,8 +157,8 @@ public class CommandRegister {
                 // Tool
 
                 new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true), // 若未填則回覆預設
-                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
-                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
+//                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
+//                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
                 new CommandData("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
                         new OptionData(STRING, "name", lang.get(COMMANDREGISTER_GIVEAWAY_NAME), true),
                         new OptionData(INTEGER, "winnercount", lang.get(COMMANDREGISTER_GIVEAWAY_WIN_COUNT)),
@@ -181,7 +179,23 @@ public class CommandRegister {
                         new OptionData(STRING, "fps", lang.get(COMMANDREGISTER_MTG_FPS))
                 ),
 
-                // Advance
+                // osu
+                new CommandData("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
+                        new SubcommandData("search", "取得玩家資料").addOption(STRING, "name", "請輸入名字", true),
+                        new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
+                        new SubcommandData("last", "查看上一首歌的成績").addOption(STRING, "name", "請輸入名字"),
+                        new SubcommandData("top", "顯示最佳成績").addOption(STRING, "name", "請輸入名字")
+                ),
+
+                // Help
+                new CommandData("help", lang.get(COMMANDREGISTER_HELP)).addSubcommands(
+                        new SubcommandData("orderly", lang.get(COMMANDREGISTER_HELP_ORDERLY)),
+                        new SubcommandData("orderlyannouncement", lang.get(COMMANDREGISTER_HELP_ORDERLY_ANNOUNCEMENT)),
+                        new SubcommandData("neko", lang.get(COMMANDREGISTER_HELP_NEKO_BOT)),
+                        new SubcommandData("nekoannouncement", lang.get(COMMANDREGISTER_HELP_NEKO_BOT_ANNOUNCEMENT))
+                ),
+
+                // Setting
                 new CommandData("setting", lang.get(COMMANDREGISTER_SETTING)).addSubcommands(
                         new SubcommandData("help", lang.get(COMMANDREGISTER_S_HELP)),
 

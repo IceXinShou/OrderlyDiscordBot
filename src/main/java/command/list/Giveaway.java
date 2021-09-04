@@ -218,7 +218,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        System.err.println(e.getMessage());
                     }
                 }
             }
