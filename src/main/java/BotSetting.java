@@ -55,7 +55,7 @@ public class BotSetting {
     private final String TAG = "[Setting]";
 
     public BotSetting() {
-//        setLog();
+        setLog();
         loadConfigFile();
         loadVariable();
     }
@@ -234,7 +234,7 @@ public class BotSetting {
                 }
 
                 try {
-                    Thread.sleep(700);
+                    Thread.sleep(800);
                 } catch (InterruptedException e) {
                     System.err.println(e.getMessage());
                     System.err.println(e.getMessage());

@@ -95,7 +95,6 @@ public class ListenerManager extends ListenerAdapter {
     PopCat popCat = new PopCat();
     Giveaway giveaway = new Giveaway(guildSettingHelper);
     Language langCommand = new Language(guildSettingHelper);
-    Osu osu = new Osu();
     SettingOsu settingOsu = new SettingOsu();
 
     /**
@@ -467,7 +466,7 @@ public class ListenerManager extends ListenerAdapter {
             case "osu" -> {
                 switch (event.getSubcommandName()) {
                     case "search" -> {
-                        osu.search(event);
+                        settingOsu.search(event);
                         return;
                     }
                     case "setuser" -> {

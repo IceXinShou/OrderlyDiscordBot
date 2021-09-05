@@ -20,8 +20,8 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
-        boolean has = false;
         for (String key : data.keySet()) {
+            boolean has = false;
             Category category;
             if ((category = event.getGuild().getCategoryById(key)) == null) {
                 data.remove(key);

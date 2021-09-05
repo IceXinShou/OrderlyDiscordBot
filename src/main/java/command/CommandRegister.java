@@ -42,7 +42,7 @@ public class CommandRegister {
         else {
             try {
                 addPublicSlashCommand(event.getGuild());
-                System.out.println("[" + event.getGuild().getName() + "] Command Updated! (Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + ")");
+//                System.out.println("[" + event.getGuild().getName() + "] Command Updated! (Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + ")");
             } catch (Exception e) {
                 System.err.println("[" + event.getGuild().getName() + "] Command Update Failed!");
                 System.err.println(e.getMessage());
@@ -181,7 +181,7 @@ public class CommandRegister {
 
                 // osu
                 new CommandData("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
-                        new SubcommandData("search", "取得玩家資料").addOption(STRING, "name", "請輸入名字", true),
+                        new SubcommandData("search", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
                         new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
                         new SubcommandData("last", "查看上一首歌的成績").addOption(STRING, "name", "請輸入名字"),
                         new SubcommandData("top", "顯示最佳成績").addOption(STRING, "name", "請輸入名字")
