@@ -42,6 +42,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
             event.replyEmbeds(nowPlaying).setEphemeral(true).queue();
         } else
             event.getHook().editOriginalEmbeds(nowPlaying).queue();
+        if (event.getGuild().getId().equals("882605953382514718"))
+            event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(nowPlaying).content(event.getUser().getAsTag()).queue();
     }
 
     @Override
@@ -64,7 +66,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         if (removedTrack == null)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REMOVED_FAIL), 0xFF0000)).queue();
         else
-            event.getHook().editOriginalEmbeds(createEmbed(removedTrack.getInfo().title + lang.get(MUSICBOTEVENT_REMOVED_SUCCESS), 0x00FFFF)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(removedTrack.getInfo().title + ' ' + lang.get(MUSICBOTEVENT_REMOVED_SUCCESS), 0x00FFFF)).queue();
     }
 
     @Override

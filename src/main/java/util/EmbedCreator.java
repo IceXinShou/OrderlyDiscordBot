@@ -144,7 +144,7 @@ public class EmbedCreator {
 
     @Contract("_, _, _, _, _, _, _ -> new")
     public static @NotNull MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color) {
-        return new MessageEmbed(url,
+        return new MessageEmbed(null,
                 title,
                 description,
                 EmbedType.RICH,
@@ -152,7 +152,7 @@ public class EmbedCreator {
                 color,
                 null,
                 null,
-                new MessageEmbed.AuthorInfo(nickname, null, avatarUrl, null),
+                new MessageEmbed.AuthorInfo(nickname, url, avatarUrl, null),
                 null,
                 new MessageEmbed.Footer(footer, null, null),
                 null, null);

@@ -5,10 +5,8 @@ import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -81,12 +79,7 @@ public class MultiMusicBotManager {
             // 全域頻道
             case "p":
             case "play":
-                if (event.getOptions().size() == 0) {
-                    if (checkVcState(event, bot)) {
-                        play(event, bot, false);
-                    }
-                } else
-                    play(event, bot, false);
+                play(event, bot, false);
                 break;
             case "pn":
             case "playnow":
@@ -357,7 +350,8 @@ public class MultiMusicBotManager {
                         GatewayIntent.DIRECT_MESSAGE_TYPING)
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES)
                 .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
-                .setCompression(Compression.ZLIB); // Disable compression (not recommended)
+                .setCompression(Compression.ZLIB)
+                .setStatus(OnlineStatus.IDLE); // Disable compression (not recommended)
         try {
             JDA jda = builder.build();
             bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, musicEvent));

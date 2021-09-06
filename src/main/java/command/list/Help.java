@@ -57,10 +57,10 @@ public class Help {
                 """
                         **__指令__ | __Commands__**
 
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　**音樂 | Music**
                         ┃
-                        ┃　　`/p {URL | NAME}` | 播放網址或查詢音樂
+                        ┃　　`/p <URL | NAME>` | 播放網址或查詢音樂
                         ┃　　`/s` | 播放下一首音樂
                         ┃　　`/q` | 顯示播放數據或列表
                         ┃　　`/pause` | 暫停播放
@@ -73,7 +73,7 @@ public class Help {
 
 
         helpFields.add(new MessageEmbed.Field("", "" +
-                "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
                 "┃　 ** 通用 | General **\n" +
                 "┃\n" +
                 "┃　　`/help` | 顯示通用幫助列表\n" +
@@ -93,7 +93,7 @@ public class Help {
 
         helpFields.add(new MessageEmbed.Field("",
                 """
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　 ** 進階 | Advance **
                         ┃
                         ┃　　`/setting help` | 顯示進階幫助列表
@@ -113,14 +113,13 @@ public class Help {
         List<MessageEmbed.Field> helpFields = new ArrayList<>();
 
         helpFields.add(new MessageEmbed.Field("",
-
                 """
                         **__指令__ | __Commands__**
 
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　**音樂 | Music**
                         ┃
-                        ┃　　`/p {URL | NAME}` | 播放網址或查詢音樂
+                        ┃　　`/p <URL | NAME>` | 播放網址或查詢音樂
                         ┃　　`/s` | 播放下一首音樂
                         ┃　　`/q` | 顯示播放數據或列表
                         ┃　　`/pause` | 暫停播放
@@ -131,10 +130,22 @@ public class Help {
                         """
                 , false));
 
+        helpFields.add(new MessageEmbed.Field("",
+                """
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┃　 ** OSU **
+                        ┃
+                        ┃　　`/osu setuser` | 綁定帳號
+                        ┃　　`/osu search` | 搜尋玩家資料
+                        ┃　　`/osu top` | 查看玩家最佳成績
+                        ┃　　`/osu last` | 查看上一首歌的成績
+                        ┗
+                        """
+                , false));
 
         helpFields.add(new MessageEmbed.Field("",
                 """
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　 ** 通用 | General **
                         ┃
                         ┃　　`/help` | 顯示幫助列表
@@ -163,7 +174,7 @@ public class Help {
 
                         預設前綴：`n!` 或 <@!310039170792030211>
 
-                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　**贊助者 | Donator**
                         ┃
                         ┃　　`apikey` | 取得 API KEY
@@ -177,7 +188,7 @@ public class Help {
 
 
         helpFields.add(new MessageEmbed.Field("", """
-                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                 ┃　 ** 經濟 | Economy **
                 ┃
                 ┃　　`balance` | 查看口袋摳摳
@@ -196,7 +207,7 @@ public class Help {
 
 
         helpFields.add(new MessageEmbed.Field("", """
-                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                 ┃　 ** NSFW | 高鐵 **
                 ┃
                 ┃　　`4k` | 4K 母湯

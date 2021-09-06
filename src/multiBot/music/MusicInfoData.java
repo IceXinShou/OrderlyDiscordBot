@@ -48,7 +48,10 @@ public class MusicInfoData {
         JSONObject resultJson = new JSONObject(result);
 
         if (resultJson.has("playerConfig")) {
-            loudness = resultJson.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
+            if (resultJson.getJSONObject("playerConfig").getJSONObject("audioConfig").has("loudnessDb"))
+                loudness = resultJson.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
+            else
+                loudness = 0f;
         }
         JSONObject videoDetails = resultJson.getJSONObject("videoDetails");
         title = videoDetails.getString("title");

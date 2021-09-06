@@ -170,7 +170,7 @@ public class OwnJoin {
                         "you had set nickname before, let's reset!", 0xe5b849)).queue();
                 initMemberOnJoin(userID, channel, true);
                 // 傳送設定檔
-                askForMinecraftID(userID, channel, false);
+                askPlayingMinecraft(userID, channel, false);
             }
         }
 
@@ -255,7 +255,7 @@ public class OwnJoin {
                         "you had set nickname before, let's reset!", 0xe5b849)).complete();
                 initMemberOnJoin(userID, channel, true);
                 // 傳送設定檔
-                askForMinecraftID(userID, channel, false);
+                askPlayingMinecraft(userID, channel, false);
             } else {
                 initMemberOnJoin(userID, channel, false);
             }
@@ -274,9 +274,13 @@ public class OwnJoin {
                             "You found a bug, please report to developers", 0xFF0000)).queue();
                     break;
                 case 1:
-                    askForMinecraftID(userID, channel, true);
+                    askPlayingMinecraft(userID, channel, true);
                     break;
                 case 4:
+                    if (message.equals("返回") || message.equalsIgnoreCase("cancel")) {
+                        askPlayingMinecraft(userID, channel, true);
+                        break;
+                    }
                     String result = getData("https://api.mojang.com/users/profiles/minecraft/" + message);
                     if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
                         channel.sendMessageEmbeds(createEmbed("查無此玩家！\n" +
@@ -292,7 +296,7 @@ public class OwnJoin {
                     }
                     break;
                 case 5:
-                    progress.englishNick = message;
+                    progress.englishNick = message + '*';
                     progress.minecraftID = null;
                     showUserInfo(channel, event.getAuthor(), progress);
                     getChineseNickName(userID, channel);
@@ -335,11 +339,11 @@ public class OwnJoin {
         } else {
             channel.sendMessageEmbeds(createEmbed("歡迎您來到 <" + guild.getName() + "> , 在正式進入前還需要通過驗證！\n" +
                     "Welcome to <" + guild.getName() + "> , before your join, you have to auth your account!", 0x9740b9)).queue();
-            askForMinecraftID(userID, channel, true);
+            askPlayingMinecraft(userID, channel, true);
         }
     }
 
-    private void askForMinecraftID(String userID, @NotNull MessageChannel channel, boolean newAccount) {
+    private void askPlayingMinecraft(String userID, @NotNull MessageChannel channel, boolean newAccount) {
         channel.sendMessageEmbeds(createEmbed("請問您是否有遊玩 **Minecraft**？\n" +
                 "Have you ever played **Minecraft**?", 0xe5b849)).queue(messageContent -> {
             messageContent.addReaction(emoji.yesEmoji).queue();
@@ -361,8 +365,8 @@ public class OwnJoin {
     }
 
     private void getMinecraftID(String userID, @NotNull MessageChannel channel) {
-        channel.sendMessageEmbeds(createEmbed("請輸入您的 **Minecraft ID**\n" +
-                "Please type your **Minecraft ID**", 0xe5b849)).queue(messageContent -> {
+        channel.sendMessageEmbeds(createEmbed("請輸入您的 **Minecraft ID** (輸入 `返回` 來返回)\n" +
+                "Please type your **Minecraft ID** (type `cancel` to previous)", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
             step.setStep(4);
             step.setMessageID(messageContent.getId());

@@ -68,7 +68,7 @@ public class ListenerManager extends ListenerAdapter {
     Room room = new Room(guildSettingHelper);
     Level level = new Level();
     NewGuild newGuild = new NewGuild();
-        QuickUse quickUse = new QuickUse();
+    QuickUse quickUse = new QuickUse();
     Ticket ticketChannel = new Ticket(guildSettingHelper);
     GeneralReplay generalReplay = new GeneralReplay();
     JoinLeaveMessage joinLeaveMessage = new JoinLeaveMessage(guildSettingHelper);
@@ -96,6 +96,7 @@ public class ListenerManager extends ListenerAdapter {
     Giveaway giveaway = new Giveaway(guildSettingHelper);
     Language langCommand = new Language(guildSettingHelper);
     SettingOsu settingOsu = new SettingOsu();
+    SettingHypixel settingHypixel = new SettingHypixel();
 
     /**
      * Guild Message
@@ -352,6 +353,8 @@ public class ListenerManager extends ListenerAdapter {
         }
 
         if (debugMode) {
+            if (event.getGuild().getId().equals("882605953382514718"))
+                event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024").sendMessage("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`").queue();
             System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`");
         }
 
@@ -465,8 +468,8 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "osu" -> {
                 switch (event.getSubcommandName()) {
-                    case "search" -> {
-                        settingOsu.search(event);
+                    case "info" -> {
+                        settingOsu.info(event);
                         return;
                     }
                     case "setuser" -> {
@@ -479,6 +482,33 @@ public class ListenerManager extends ListenerAdapter {
                     }
                     case "top" -> {
                         settingOsu.onTop(event);
+                        return;
+                    }
+                }
+            }
+            case "hy" -> {
+                switch (event.getSubcommandName()) {
+                    case "info" -> {
+                        settingHypixel.info(event);
+                        return;
+                    }
+                    case "setuser" -> {
+                        settingHypixel.onRegister(event);
+                        return;
+                    }
+                    case "skyblock" -> {
+//                        settingHypixel.onPrevious(event);
+                        event.getHook().editOriginalEmbeds(createEmbed("Making...", 0xFF0000)).queue();
+                        return;
+                    }
+                    case "skywars" -> {
+//                        settingHypixel.onTop(event);
+                        event.getHook().editOriginalEmbeds(createEmbed("Making...", 0xFF0000)).queue();
+                        return;
+                    }
+                    case "bedwars" -> {
+//                        settingHypixel.onTop(event);
+                        event.getHook().editOriginalEmbeds(createEmbed("Making...", 0xFF0000)).queue();
                         return;
                     }
                 }

@@ -18,6 +18,18 @@ public class GeneralReplay {
 
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (event.getAuthor().getId().equals(Main.botID)) return;
+//        if (event.getGuild().getId().equals("882605953382514718")) {
+//            if (event.getMessage().getContentRaw().contains("qaq") || event.getMessage().getContentRaw().contains("QAQ") || event.getMessage().getContentRaw().contains("QQ") || event.getMessage().getContentRaw().contains("qq"))
+//                if (System.currentTimeMillis() % 2 == 0)
+//                    event.getMessage().reply("哭屁!").queue();
+//                else
+//                    event.getMessage().reply("賣靠邀!").queue();
+//            if (event.getMessage().getContentRaw().contains("笑死"))
+//                if (System.currentTimeMillis() % 2 == 0)
+//                    event.getMessage().reply("笑屁!").queue();
+//                else
+//                    event.getMessage().reply("賣靠邀!").queue();
+//        }
         if (!event.getGuild().getId().equals(guildID)) return;
         TextChannel channel = event.getChannel();
         if (event.getMessage().getContentRaw().startsWith("你好乖")) {

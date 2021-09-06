@@ -26,7 +26,6 @@ public class SettingOsu {
 
 
     public void onRegister(@NotNull SlashCommandEvent event) {
-        // https://osu.ppy.sh/api/get_user_best?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=
         JSONArray dataArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));
 
         if (dataArray.length() == 0) {
@@ -145,7 +144,7 @@ public class SettingOsu {
         }
     }
 
-    public void search(@NotNull SlashCommandEvent event) {
+    public void info(@NotNull SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String result;
         if (event.getOption("name") == null) {

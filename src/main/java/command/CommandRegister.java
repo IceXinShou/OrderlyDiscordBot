@@ -137,8 +137,8 @@ public class CommandRegister {
                         new OptionData(STRING, CHOICE_J, lang.get(COMMANDREGISTER_POLL_OPTION_J))),
 
                 // Music
-                new CommandData("play", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL)), // 若未填則開始播放音樂
-                new CommandData("p", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL)), // 若未填則開始播放音樂
+                new CommandData("play", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL), true), // 若未填則開始播放音樂
+                new CommandData("p", lang.get(COMMANDREGISTER_PLAY)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL), true), // 若未填則開始播放音樂
                 new CommandData("playnow", lang.get(COMMANDREGISTER_PLAYNOW)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
                 new CommandData("pn", lang.get(COMMANDREGISTER_PLAYNOW)).addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
                 new CommandData("queue", lang.get(COMMANDREGISTER_QUEUE)),
@@ -181,10 +181,18 @@ public class CommandRegister {
 
                 // osu
                 new CommandData("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
-                        new SubcommandData("search", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
                         new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
+                        new SubcommandData("info", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
                         new SubcommandData("last", "查看上一首歌的成績").addOption(STRING, "name", "請輸入名字"),
                         new SubcommandData("top", "顯示最佳成績").addOption(STRING, "name", "請輸入名字")
+                ),
+                // Hypixel
+                new CommandData("hy", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
+                        new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
+                        new SubcommandData("info", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
+                        new SubcommandData("bedwars", "取得床戰戰績").addOption(STRING, "name", "請輸入名字"),
+                        new SubcommandData("skywars", "取得 Skywars 戰績").addOption(STRING, "name", "請輸入名字"),
+                        new SubcommandData("skyblock", "取得 Skyblock 資料").addOption(STRING, "name", "請輸入名字")
                 ),
 
                 // Help

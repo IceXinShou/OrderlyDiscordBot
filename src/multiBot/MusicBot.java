@@ -169,6 +169,9 @@ public class MusicBot {
                     .setEmbeds(embed[0], embed[1])
                     .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
+        if (event.getGuild().getId().equals("882605953382514718"))
+            event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(embed[0], embed[1]).setActionRows(controlButtons("", scheduler.musicPause, scheduler.loopStatus, vcID)).content(event.getUser().getAsTag()).queue();
+
     }
 
     public void disconnect(@NotNull SlashCommandEvent event, Guild guild) {
