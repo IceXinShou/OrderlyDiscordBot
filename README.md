@@ -55,8 +55,18 @@
   * Show server status on channel name
   * All of Placehodlers can use
   * You can calculate with Placeholders like `${%online_member%-%working_member%}`
+  
+ 
+### OSU
+  * Get User Status
+  * Show Top Maps
+  * Map VS
 
-
+ 
+### Minecraft Hypixel
+  * Get User Status
+  * Show Bedwars Skywars... Status
+  
 <br><br><br><br><br>
 
 # Report and Support
