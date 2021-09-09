@@ -79,6 +79,11 @@
   * [Join us](https://discord.gg/ZV3PaCscc7) and type `/support` <message>
   * Contact Discord: XinShou#0404 
 
+# Language Support
+  * Chinese Traditional
+  * Chinese Simplified
+  * English
+ 
 
 # Setup
   > Working...
