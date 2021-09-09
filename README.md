@@ -67,6 +67,12 @@
   * Get User Status
   * Show Bedwars Skywars... Status
   
+ 
+### Yande.re Image Update Notify
+  * Select all tags you want
+  * check per 30 second
+  
+  
 <br><br><br><br><br>
 
 # Report and Support
