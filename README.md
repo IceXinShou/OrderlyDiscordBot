@@ -80,9 +80,9 @@
   * Contact Discord: XinShou#0404 
 
 # Language Support
-  * Chinese Traditional
-  * Chinese Simplified
-  * English
+  * Chinese Traditional (100%)
+  * Chinese Simplified (90%)
+  * English (90%)
  
 
 # Setup
