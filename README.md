@@ -67,12 +67,23 @@
   * Get User Status
   * Show Bedwars Skywars... Status
   
+ 
+### Yande.re Image Update Notify
+  * Select all tags you want
+  * check per 30 second
+  
+  
 <br><br><br><br><br>
 
 # Report and Support
   * [Join us](https://discord.gg/ZV3PaCscc7) and type `/support` <message>
   * Contact Discord: XinShou#0404 
 
+# Language Support
+  * Chinese Traditional (100%)
+  * Chinese Simplified (90%)
+  * English (90%)
+ 
 
 # Setup
   > Working...
