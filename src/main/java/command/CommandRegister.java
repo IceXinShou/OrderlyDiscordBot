@@ -299,8 +299,7 @@ public class CommandRegister {
                                 new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_NL_CHANNEL), true),
                                 new OptionData(STRING, "message", lang.get(COMMANDREGISTER_S_NL_MESSAGE), true)
                         ),
-                        new SubcommandData("removeleave", lang.get(COMMANDREGISTER_S_REMOVE_LEAVE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RL_CHANNEL), true)
-                        ,
+                        new SubcommandData("removeleave", lang.get(COMMANDREGISTER_S_REMOVE_LEAVE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RL_CHANNEL), true),
                         new SubcommandData("newyande", "新增取得 yande 圖片").addOptions(
                                 new OptionData(STRING, "tag1", "標籤", true),
                                 new OptionData(STRING, "tag2", "標籤"),
@@ -311,7 +310,8 @@ public class CommandRegister {
                                 new OptionData(STRING, "tag7", "標籤"),
                                 new OptionData(STRING, "tag8", "標籤"),
                                 new OptionData(STRING, "tag9", "標籤"),
-                                new OptionData(CHANNEL, "channel", "頻道"))
+                                new OptionData(CHANNEL, "channel", "頻道")),
+                        new SubcommandData("removeyande", "移除頻道 yande 設定").addOption(CHANNEL, "channel", "頻道", true)
 
                         // -------------------
                 ),

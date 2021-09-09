@@ -108,7 +108,7 @@ public class Clear {
                 }
 
                 event.getChannel().sendMessageEmbeds(
-                        createEmbed(emoji.yesEmoji.getAsMention() + ' ' + lang.get(CLEAR_MESSAGE_COUNT).formatted(amount), 0xe3c6d6)
+                        createEmbed(emoji.yesEmoji.getAsMention() + ' ' + amount + ' ' + lang.get(CLEAR_MESSAGE_COUNT).formatted(amount), 0xe3c6d6)
                 ).queue(m -> Log.deleteNoLog(m, 2));
             } catch (InterruptedException | ExecutionException e) {
                 logChannel.sendMessageEmbeds(createEmbed(

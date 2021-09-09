@@ -525,6 +525,10 @@ public class ListenerManager extends ListenerAdapter {
                         settingYande.newYande(event);
                         return;
                     }
+                    case "removeyande" -> {
+                        settingYande.removeYande(event);
+                        return;
+                    }
                     case "newroom" -> {
                         settingRoom.newRoom(event);
                         return;
