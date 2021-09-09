@@ -44,35 +44,40 @@ public record SettingYande(GuildSettingHelper settingHelper) {
                     map.put(event.getGuild().getId(), k);
                 }
         );
+
+        startThread(event.getGuild());
+    }
+
+    private void startThread(Guild guild) {
         Map<String, Integer> tagsToID = new HashMap<>();
         Map<String, Map<String, Integer>> channelIDToMap = new HashMap<>();
-
-        map.get(event.getGuild().getId()).keySet().forEach(i ->
-                map.get(event.getGuild().getId()).get(i).forEach(j -> {
+        map.get(guild.getId()).keySet().forEach(i ->
+                map.get(guild.getId()).get(i).forEach(j -> {
 
                     tagsToID.put(j, 0);
                     channelIDToMap.put(i, tagsToID);
 
-                    old.put(event.getGuild().getId(), channelIDToMap);
+                    old.put(guild.getId(), channelIDToMap);
                 }));
-
         executor.submit(() -> {
             while (true) {
-                map.get(event.getGuild().getId()).keySet().forEach(i -> { // i = channelID
-                    map.get(event.getGuild().getId()).get(i).forEach(j -> {
+                if (map.get(guild.getId()).size() == 0)
+                    return;
+                map.get(guild.getId()).keySet().forEach(i -> { // i = channelID
+                    map.get(guild.getId()).get(i).forEach(j -> {
 
                         String result = getData("https://yande.re/post.json?limit=1&tags=" + j);
                         JSONArray array = new JSONArray(result);
                         if (array.length() != 0) {
                             int id = array.getJSONObject(0).getInt("id");
-                            if (!old.get(event.getGuild().getId()).get(i).get(j).equals(id)) {
+                            if (!old.get(guild.getId()).get(i).get(j).equals(id)) {
 
                                 tagsToID.put(j, id);
                                 channelIDToMap.put(i, tagsToID);
 
-                                old.put(event.getGuild().getId(), channelIDToMap);
+                                old.put(guild.getId(), channelIDToMap);
                                 TextChannel channel;
-                                if ((channel = event.getGuild().getTextChannelById(i)) != null)
+                                if ((channel = guild.getTextChannelById(i)) != null)
                                     if (channel.isNSFW())
                                         channel.sendMessage("https://yande.re/post/show/" + id).queue();
                                     else
@@ -112,7 +117,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
             } else {
                 if (!option.getAsGuildChannel().getType().equals(ChannelType.TEXT))
                     fields.add(new MessageEmbed.Field("您選擇的頻道並不是文字頻道", "", false));
-                 else
+                else
                     channel = (TextChannel) option.getAsGuildChannel();
 
             }
@@ -125,11 +130,12 @@ public record SettingYande(GuildSettingHelper settingHelper) {
         }
         if (data.has(channel.getId()))
             data.put(channel.getId(), data.getJSONArray(channel.getId()).putAll(tags));
-         else
+        else
             data.put(channel.getId(), tags);
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0x00FFFF)).queue();
+        startThread(event.getGuild());
     }
 
     public void removeYande(SlashCommandEvent event) {
@@ -144,6 +150,8 @@ public record SettingYande(GuildSettingHelper settingHelper) {
             return;
         }
         data.remove(channelID);
+        map.get(event.getGuild().getId()).remove(channelID);
+        old.get(event.getGuild().getId()).remove(channelID);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("移除完成", 0x00FFFF)).queue();
     }
