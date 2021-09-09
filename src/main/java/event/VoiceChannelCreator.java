@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import static main.java.util.JsonKeys.AUTO_VC_NAME;
@@ -16,7 +15,7 @@ import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 
 public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
 
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
+    public void onGuildReady(GuildReadyEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), AUTO_VC_SETTING)) == null)
             return;
@@ -45,7 +44,7 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         }
     }
 
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         Guild guild = event.getGuild();
         if (event.getChannelJoined().getParent() == null)
             return;
@@ -62,7 +61,7 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         }
     }
 
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         if (event.getChannelLeft().getParent() == null)
             return;
         JSONObject data;
@@ -81,7 +80,7 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         }
     }
 
-    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         if (event.getChannelLeft().getParent() == null)
             return;
 

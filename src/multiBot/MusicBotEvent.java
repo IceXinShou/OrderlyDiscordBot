@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void addToQueue(AudioTrack track, @NotNull GenericInteractionCreateEvent event, boolean search, boolean playNow) {
+    public void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
@@ -47,7 +46,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void addPlayerListToQueue(AudioPlaylist playlist, @NotNull GenericInteractionCreateEvent event) {
+    public void addPlayerListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event) {
 //        event.getHook().editOriginalEmbeds(createEmbed("加入 `" + playlist.getName() + "` ", 0xBCE9B6)).setEphemeral(true).queue();
     }
 
@@ -61,7 +60,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void remove(AudioTrack removedTrack, @NotNull SlashCommandEvent event) {
+    public void remove(AudioTrack removedTrack, SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (removedTrack == null)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REMOVED_FAIL), 0xFF0000)).queue();
@@ -70,7 +69,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void loop(boolean loopState, @NotNull SlashCommandEvent event) {
+    public void loop(boolean loopState, SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (loopState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
@@ -93,7 +92,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void repeat(AudioTrack track, boolean repeatState, @NotNull SlashCommandEvent event) {
+    public void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (repeatState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REPEAT_PLAY), 0x7d95b9)).queue();

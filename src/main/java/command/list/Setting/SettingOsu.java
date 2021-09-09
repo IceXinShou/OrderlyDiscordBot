@@ -3,7 +3,6 @@ package main.java.command.list.Setting;
 import main.java.Main;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,7 +16,7 @@ import static main.java.util.UrlDataGetter.getData;
 public class SettingOsu {
     private final String TAG = "SettingOsu";
     public JSONObject osuFileData;
-    private JsonFileManager jsonFileManager;
+    private final JsonFileManager jsonFileManager;
 
     public SettingOsu() {
         jsonFileManager = new JsonFileManager(System.getProperty("user.dir") + "/osu.json");
@@ -25,7 +24,7 @@ public class SettingOsu {
     }
 
 
-    public void onRegister(@NotNull SlashCommandEvent event) {
+    public void onRegister(SlashCommandEvent event) {
         JSONArray dataArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));
 
         if (dataArray.length() == 0) {
@@ -40,7 +39,7 @@ public class SettingOsu {
         event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0xFF0000)).queue();
     }
 
-    public void onTop(@NotNull SlashCommandEvent event) {
+    public void onTop(SlashCommandEvent event) {
         String osuID;
         if ((osuID = getOsuID(event)) == null)
             return;
@@ -93,7 +92,7 @@ public class SettingOsu {
         }
     }
 
-    public void onPrevious(@NotNull SlashCommandEvent event) {
+    public void onPrevious(SlashCommandEvent event) {
         String osuID;
         if ((osuID = getOsuID(event)) == null)
             return;
@@ -144,7 +143,7 @@ public class SettingOsu {
         }
     }
 
-    public void info(@NotNull SlashCommandEvent event) {
+    public void info(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String result;
         if (event.getOption("name") == null) {
@@ -210,7 +209,7 @@ public class SettingOsu {
 
     }
 
-    private String getOsuID(@NotNull SlashCommandEvent event) {
+    private String getOsuID(SlashCommandEvent event) {
         String osuID;
         if (event.getOption("name") != null) {
             JSONArray dataArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));

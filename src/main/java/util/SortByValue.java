@@ -1,11 +1,9 @@
 package main.java.util;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 
 public class SortByValue {
-    public static <K, V> @NotNull Map<K, V> sortByValue(@NotNull Map<K, V> map) {
+    public static <K, V> Map<K, V> sortByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         list.sort((Comparator<Object>) (o1, o2) -> ((Comparable<V>) ((Map.Entry<K, V>) (o2)).getValue()).compareTo(((Map.Entry<K, V>) (o1)).getValue()));
 

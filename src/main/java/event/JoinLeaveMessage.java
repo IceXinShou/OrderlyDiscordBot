@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import static main.java.util.EmbedCreator.createEmbed;
@@ -14,7 +13,7 @@ import static main.java.util.JsonKeys.*;
 
 public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
 
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), J_SETTING)) == null)
             return;
@@ -45,7 +44,7 @@ public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
     }
 
 
-    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), L_SETTING)) == null)
             return;

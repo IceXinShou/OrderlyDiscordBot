@@ -1,9 +1,7 @@
 package main.java.util;
 
-import org.jetbrains.annotations.NotNull;
-
 public class CountryCodeToEmoji {
-    public static @NotNull String countryCodeToEmoji(String code) {
+    public static String countryCodeToEmoji(String code) {
         // offset between uppercase ascii and regional indicator symbols
         int OFFSET = 127397;
         // validate code

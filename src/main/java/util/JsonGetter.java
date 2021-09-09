@@ -1,11 +1,10 @@
 package main.java.util;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JsonGetter {
-    public static JSONObject getOrDefault(@NotNull JSONObject input, String key) {
+    public static JSONObject getOrDefault(JSONObject input, String key) {
         if (input.has(key))
             return input.getJSONObject(key);
         else {
@@ -15,7 +14,7 @@ public class JsonGetter {
         }
     }
 
-    public static JSONArray getOrDefaultArray(@NotNull JSONObject input, String key) {
+    public static JSONArray getOrDefaultArray(JSONObject input, String key) {
         if (input.has(key))
             return input.getJSONArray(key);
         else {

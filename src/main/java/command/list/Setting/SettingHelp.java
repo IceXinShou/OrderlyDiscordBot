@@ -3,7 +3,6 @@ package main.java.command.list.Setting;
 import main.java.Main;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +12,12 @@ import static main.java.util.EmbedCreator.createEmbed;
 
 public class SettingHelp {
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGHELP_ADVANCE_HELP), helpEmbed(), 0x00FFFF)).queue();
     }
 
-    private @NotNull List<MessageEmbed.Field> helpEmbed() {
+    private List<MessageEmbed.Field> helpEmbed() {
         List<MessageEmbed.Field> helpFields = new ArrayList<>();
 
         helpFields.add(new MessageEmbed.Field("",

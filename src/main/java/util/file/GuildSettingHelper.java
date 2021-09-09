@@ -1,7 +1,6 @@
 package main.java.util.file;
 
 import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -27,7 +26,7 @@ public class GuildSettingHelper {
         return levelFileManager;
     }
 
-    public JSONObject getSettingData(@NotNull Guild guild, String key) {
+    public JSONObject getSettingData(Guild guild, String key) {
         JsonFileManager fileManager = getGuildSettingManager(guild.getId());
         if (fileManager.data.has(key))
             return fileManager.data.getJSONObject(key);

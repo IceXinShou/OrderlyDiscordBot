@@ -4,7 +4,6 @@ import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -34,7 +33,7 @@ public class Lang {
         return lang;
     }
 
-    private List<String> getLang(@NotNull String lang) {
+    private List<String> getLang(String lang) {
         switch (lang) {
             case "zh_TW", "zh_HK", "zh_SG", "zh_MO" -> {
                 return zh_TW;
@@ -48,7 +47,7 @@ public class Lang {
         }
     }
 
-    public void loadGuildSetting(@NotNull Guild guild, GuildSettingHelper settingHelper) {
+    public void loadGuildSetting(Guild guild, GuildSettingHelper settingHelper) {
 //        guildSetting.put(guild.getId(), getLang(guild.getLocale().toString()));
         JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
 

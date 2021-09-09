@@ -1,7 +1,6 @@
 package multiBot.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,7 +32,7 @@ public class MusicInfoData {
     private long length;
     private boolean stream;
 
-    public MusicInfoData(@NotNull AudioTrack track) {
+    public MusicInfoData(AudioTrack track) {
         videoID = track.getInfo().identifier;
 
         // 影片資料
@@ -68,6 +67,7 @@ public class MusicInfoData {
         result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + apiKEY);
         channelURL = ("https://www.youtube.com/channel/" + channelID);
         if (result == null) return;
+//        System.out.println(result);
         JSONObject channelInfo = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("snippet");
         channelThumbnailUrl = channelInfo.getJSONObject("thumbnails").getJSONObject("default").getString("url");
         channelName = channelInfo.getString("title");
@@ -158,7 +158,7 @@ public class MusicInfoData {
         return stream;
     }
 
-    private String getMaximum(@NotNull JSONArray data) {
+    private String getMaximum(JSONArray data) {
         int maxWidth = -1;
         String url = null;
         for (Object i : data) {

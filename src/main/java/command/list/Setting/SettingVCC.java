@@ -6,8 +6,6 @@ import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ import static main.java.util.JsonKeys.AUTO_VC_SETTING;
 
 public record SettingVCC(GuildSettingHelper settingHelper) {
 
-    public void newVCC(@NotNull SlashCommandEvent event) {
+    public void newVCC(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String detectCategoryID = event.getOption("detectcategory").getAsString();
         String voiceName = event.getOption("voicename").getAsString();
@@ -43,26 +41,25 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), guild.getCategoryById(detectCategoryID).getName() + "\n`(" + detectCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_NAME), voiceName, false));
 
-        JSONObject VCCSetting = getSettingData(guild, settingHelper);
+        JSONObject VCCSetting = getSettingData(guild);
         VCCSetting.put(detectCategoryID, new JSONObject().put(AUTO_VC_NAME, voiceName));
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
 
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
-    public void removeVCC(@NotNull SlashCommandEvent event) {
+    public void removeVCC(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String detectID = event.getOption("detectcategory").getAsString();
         Guild guild = event.getGuild();
 
-        getSettingData(guild, settingHelper).remove(detectID);
+        getSettingData(guild).remove(detectID);
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_REMOVE_SUCCESS), 0x00FFFF)).queue();
 
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
     }
 
-    private @Nullable
-    JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
+    JSONObject getSettingData(Guild guild) {
         JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
         if (fileManager.data.has(AUTO_VC_SETTING))
             return fileManager.data.getJSONObject(AUTO_VC_SETTING);

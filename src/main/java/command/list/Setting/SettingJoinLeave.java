@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,7 +23,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
 
 
     @SuppressWarnings("ALL")
-    public void newJoin(@NotNull SlashCommandEvent event) {
+    public void newJoin(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -71,7 +70,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_SUCCESS), fields, 0x00FFFF)).queue();
     }
 
-    public void newLeave(@NotNull SlashCommandEvent event) {
+    public void newLeave(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -92,7 +91,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_SUCCESS), fields, 0x00FFFF)).queue();
     }
 
-    public void removeJoin(@NotNull SlashCommandEvent event) {
+    public void removeJoin(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -111,7 +110,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_REMOVE_SUCCESS), 0x00FFFF)).queue();
     }
 
-    public void removeLeave(@NotNull SlashCommandEvent event) {
+    public void removeLeave(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;

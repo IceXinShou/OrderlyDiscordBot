@@ -2,7 +2,6 @@ package main.java.command.list;
 
 import main.java.util.UrlDataGetter;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class URLShort {
         }
     }
 
-    public void onCommand(@NotNull SlashCommandEvent event, boolean convert, String url, List<String> lang) {
+    public void onCommand(SlashCommandEvent event, boolean convert, String url, List<String> lang) {
         String result;
         if (!convert)
             url = event.getOption("url").getAsString();

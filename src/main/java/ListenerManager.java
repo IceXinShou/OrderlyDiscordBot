@@ -37,7 +37,6 @@ import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEv
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -48,6 +47,7 @@ import static main.java.command.list.Invite.authChannelID;
 import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
+import static main.java.util.GuildUtil.guildID;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.Tag.tagChannelID;
 
@@ -56,6 +56,7 @@ public class ListenerManager extends ListenerAdapter {
     GuildSettingHelper guildSettingHelper = new GuildSettingHelper();
     SettingHelp settingHelp = new SettingHelp();
     SettingRoom settingRoom = new SettingRoom(guildSettingHelper);
+    SettingYande settingYande = new SettingYande(guildSettingHelper);
     SettingVCC settingVCC = new SettingVCC(guildSettingHelper);
     SettingTicket settingTicket = new SettingTicket(guildSettingHelper);
     SettingChannelStatus settingChannelStatus = new SettingChannelStatus(guildSettingHelper);
@@ -112,7 +113,7 @@ public class ListenerManager extends ListenerAdapter {
     // member | 特定成員
     // guild | 特定公會
     @Override
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 //        quickUse.onGuildMessageReceived(event); // word("testCommand") && owner
         level.onGuildMessageReceived(event); // always
         generalReplay.onGuildMessageReceived(event); // word
@@ -120,36 +121,36 @@ public class ListenerManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
+    public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         log.onGuildMessageUpdate(event); // guild(own)
     }
 
     @Override
-    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
+    public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
         log.onGuildMessageDelete(event); // guild(own)
     }
 
     @Override
-    public void onGuildMessageEmbed(@NotNull GuildMessageEmbedEvent event) {
+    public void onGuildMessageEmbed(GuildMessageEmbedEvent event) {
     }
 
     @Override
-    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         informationReaction.onGuildMessageReactionAdd(event); // channel && emoji("RightArrow") (Renew Announcement)
         log.onGuildMessageReactionAdd(event); // guild(own)
     }
 
     @Override
-    public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
+    public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
         log.onGuildMessageReactionRemove(event); // guild(own)
     }
 
     @Override
-    public void onGuildMessageReactionRemoveAll(@NotNull GuildMessageReactionRemoveAllEvent event) {
+    public void onGuildMessageReactionRemoveAll(GuildMessageReactionRemoveAllEvent event) {
     }
 
     @Override
-    public void onGuildMessageReactionRemoveEmote(@NotNull GuildMessageReactionRemoveEmoteEvent event) {
+    public void onGuildMessageReactionRemoveEmote(GuildMessageReactionRemoveEmoteEvent event) {
         log.onGuildMessageReactionRemoveEmote(event); // guild(own)
     }
 
@@ -158,29 +159,30 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildJoin(@NotNull GuildJoinEvent event) {
+    public void onGuildJoin(GuildJoinEvent event) {
         language.loadGuildSetting(event.getGuild(), guildSettingHelper);
         newGuild.onCommand(event, commandRegister); // always
         statusListener.updateGuild(event.getGuild());
     }
 
     @Override
-    public void onGuildLeave(@NotNull GuildLeaveEvent event) {
+    public void onGuildLeave(GuildLeaveEvent event) {
     }
 
     /**
      * Ready
      */
     @Override
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
+    public void onGuildReady(GuildReadyEvent event) {
         language.loadGuildSetting(event.getGuild(), guildSettingHelper);
         commandRegister.onGuildReady(event); // register commands
         voiceChannelCreator.onGuildReady(event);
+        settingYande.onGuildReady(event);
         statusListener.updateGuild(event.getGuild());
     }
 
     @Override
-    public void onReady(@NotNull ReadyEvent event) {
+    public void onReady(ReadyEvent event) {
         musicManager.setupAllBot();
         statusListener.startListen(event.getJDA());
     }
@@ -190,11 +192,11 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildBan(@NotNull GuildBanEvent event) {
+    public void onGuildBan(GuildBanEvent event) {
     }
 
     @Override
-    public void onGuildUnban(@NotNull GuildUnbanEvent event) {
+    public void onGuildUnban(GuildUnbanEvent event) {
     }
 
     /**
@@ -202,11 +204,11 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildInviteCreate(@NotNull GuildInviteCreateEvent event) {
+    public void onGuildInviteCreate(GuildInviteCreateEvent event) {
     }
 
     @Override
-    public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent event) {
+    public void onGuildInviteDelete(GuildInviteDeleteEvent event) {
     }
 
     /**
@@ -214,37 +216,38 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         joinLeaveMessage.onGuildMemberRemove(event);
         statusListener.memberLeave(event);
     }
 
     @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         join.onGuildMemberJoin(event); // guild(own)
         joinLeaveMessage.onGuildMemberJoin(event);
         statusListener.memberJoin(event.getMember());
     }
 
     @Override
-    public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
+    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
         log.onGuildMemberRoleAdd(event); // guild(own)
     }
 
     @Override
-    public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent event) {
+    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
         log.onGuildMemberRoleRemove(event); // guild(own)
     }
 
     @Override
-    public void onGuildMemberUpdateBoostTime(@NotNull GuildMemberUpdateBoostTimeEvent event) {
-        if (!event.getMember().getRoles().contains(boostedRole)) {
-            guild.addRoleToMember(event.getMember(), boostedRole).queue();
-        }
+    public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event) {
+        if (event.getGuild().getId().equals(guildID))
+            if (!event.getMember().getRoles().contains(boostedRole)) {
+                guild.addRoleToMember(event.getMember(), boostedRole).queue();
+            }
     }
 
     @Override
-    public void onUserUpdateOnlineStatus(@NotNull UserUpdateOnlineStatusEvent event) {
+    public void onUserUpdateOnlineStatus(UserUpdateOnlineStatusEvent event) {
         statusListener.statusChange(event);
     }
 
@@ -253,7 +256,7 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         room.onGuildVoiceJoin(event); // guild(own)
         log.onGuildVoiceJoin(event); // guild(own)
         voiceChannelCreator.onGuildVoiceJoin(event);
@@ -261,7 +264,7 @@ public class ListenerManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         room.onGuildVoiceLeave(event); // guild(own)
         log.onGuildVoiceLeave(event); // guild(own)
         musicManager.onVoiceLeave(event);
@@ -270,18 +273,18 @@ public class ListenerManager extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         room.onGuildVoiceMove(event); // guild(own)
         voiceChannelCreator.onGuildVoiceMove(event);
     }
 
     @Override
-    public void onGuildVoiceStream(@NotNull GuildVoiceStreamEvent event) {
+    public void onGuildVoiceStream(GuildVoiceStreamEvent event) {
         statusListener.memberVoiceStream(event.getMember());
     }
 
     @Override
-    public void onGuildVoiceVideo(@NotNull GuildVoiceVideoEvent event) {
+    public void onGuildVoiceVideo(GuildVoiceVideoEvent event) {
         statusListener.memberVoiceVideo(event.getMember());
     }
 
@@ -291,7 +294,7 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onButtonClick(@NotNull ButtonClickEvent event) {
+    public void onButtonClick(ButtonClickEvent event) {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals("") && !args[2].equals("everyone")) {
@@ -309,7 +312,7 @@ public class ListenerManager extends ListenerAdapter {
     }
 
     @Override
-    public void onSelectionMenu(@NotNull SelectionMenuEvent event) {
+    public void onSelectionMenu(SelectionMenuEvent event) {
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
             return;
@@ -321,7 +324,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+    public void onSlashCommand(SlashCommandEvent event) {
         event.getInteraction().deferReply(true).queue();
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
@@ -518,6 +521,10 @@ public class ListenerManager extends ListenerAdapter {
                 if (!hasPermission(Permission.ADMINISTRATOR, event, true))
                     return;
                 switch (event.getSubcommandName()) {
+                    case "newyande" -> {
+                        settingYande.newYande(event);
+                        return;
+                    }
                     case "newroom" -> {
                         settingRoom.newRoom(event);
                         return;
@@ -586,29 +593,29 @@ public class ListenerManager extends ListenerAdapter {
      */
 
     @Override
-    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         join.onPrivateMessageReceived(event); // guild(own)
     }
 
     @Override
-    public void onPrivateMessageUpdate(@NotNull PrivateMessageUpdateEvent event) {
+    public void onPrivateMessageUpdate(PrivateMessageUpdateEvent event) {
     }
 
     @Override
-    public void onPrivateMessageDelete(@NotNull PrivateMessageDeleteEvent event) {
+    public void onPrivateMessageDelete(PrivateMessageDeleteEvent event) {
     }
 
     @Override
-    public void onPrivateMessageEmbed(@NotNull PrivateMessageEmbedEvent event) {
+    public void onPrivateMessageEmbed(PrivateMessageEmbedEvent event) {
     }
 
     @Override
-    public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
+    public void onPrivateMessageReactionAdd(PrivateMessageReactionAddEvent event) {
         join.onPrivateMessageReactionAdd(event); // guild(own)
     }
 
     @Override
-    public void onPrivateMessageReactionRemove(@NotNull PrivateMessageReactionRemoveEvent event) {
+    public void onPrivateMessageReactionRemove(PrivateMessageReactionRemoveEvent event) {
     }
 
     public void reload(Guild guild) {

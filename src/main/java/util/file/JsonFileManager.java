@@ -1,6 +1,5 @@
 package main.java.util.file;
 
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -30,7 +29,7 @@ public class JsonFileManager {
         }
     }
 
-    private @Nullable String readFile() {
+    private String readFile() {
         File file = new File(filepath);
         if (!file.exists())
             return null;

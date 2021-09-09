@@ -4,7 +4,6 @@ import main.java.util.file.PopCatHelper;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,17 +13,17 @@ public class PopCat {
     PopCatHelper helper = new PopCatHelper();
 
 
-    public void onCommandTop(@NotNull SlashCommandEvent event) {
+    public void onCommandTop(SlashCommandEvent event) {
         SelectionMenu.Builder builder = SelectionMenu.create("PopCat:top:" + event.getUser().getId() + ":1"); // page1
         helper.getAllData(builder, event, 1, true, true);
     }
 
-    public void onCommandSpeed(@NotNull SlashCommandEvent event) {
+    public void onCommandSpeed(SlashCommandEvent event) {
         SelectionMenu.Builder builder = SelectionMenu.create("PopCat:speed:" + event.getUser().getId() + ":1"); // page1
         helper.getAllData(builder, event, 1, true, false);
     }
 
-    public void onSelectTop(@NotNull SelectionMenuEvent event, String @NotNull [] args) {
+    public void onSelectTop(SelectionMenuEvent event, String[] args) {
         if (!args[0].equals("PopCat") || !args[1].equals("top"))
             return;
         if (event.getValues().get(0).startsWith("page")) {
@@ -35,7 +34,7 @@ public class PopCat {
             helper.getOneData(event, true);
     }
 
-    public void onSelectSpeed(@NotNull SelectionMenuEvent event, String @NotNull [] args) {
+    public void onSelectSpeed(SelectionMenuEvent event, String[] args) {
         if (!args[0].equals("PopCat") || !args[1].equals("speed"))
             return;
         if (event.getValues().get(0).startsWith("page")) {

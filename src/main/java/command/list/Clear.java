@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.Button;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
@@ -32,7 +31,7 @@ public class Clear {
      * clear 指令
      */
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.MESSAGE_MANAGE, event, true))
             return;
@@ -47,7 +46,7 @@ public class Clear {
                 .queue();
     }
 
-    public void onButton(@NotNull ButtonClickEvent event, String @NotNull [] args) {
+    public void onButton(ButtonClickEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Clear"))
             return;

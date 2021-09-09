@@ -6,7 +6,10 @@ import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -17,7 +20,6 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,7 +62,7 @@ public class MultiMusicBotManager {
 
     private int commandState = 0;
 
-    public int onCommand(@NotNull SlashCommandEvent event) {
+    public int onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Map<String, MusicBot> botInGuild = channelBot.get(event.getGuild().getId());
         MusicBot bot;
@@ -137,7 +139,7 @@ public class MultiMusicBotManager {
         return commandState;
     }
 
-    private void play(@NotNull SlashCommandEvent event, MusicBot bot, boolean playNow) {
+    private void play(SlashCommandEvent event, MusicBot bot, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getOptions().size() > 0) {
             if (checkVcState(event)) {
@@ -199,7 +201,7 @@ public class MultiMusicBotManager {
         }
     }
 
-    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
+    public void onButton(ButtonClickEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("MusicBot"))
             return;
@@ -269,7 +271,7 @@ public class MultiMusicBotManager {
 
     }
 
-    public void onSelectMenu(@NotNull SelectionMenuEvent event, String @NotNull [] args) {
+    public void onSelectMenu(SelectionMenuEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("MultiMusicBotManager"))
             return;
@@ -283,7 +285,7 @@ public class MultiMusicBotManager {
         }
     }
 
-    private boolean checkVcState(@NotNull GenericInteractionCreateEvent event, MusicBot botsInChannel) {
+    private boolean checkVcState(GenericInteractionCreateEvent event, MusicBot botsInChannel) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
@@ -301,7 +303,7 @@ public class MultiMusicBotManager {
         return true;
     }
 
-    private boolean checkVcState(@NotNull GenericInteractionCreateEvent event) {
+    private boolean checkVcState(GenericInteractionCreateEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!event.getMember().getVoiceState().inVoiceChannel()) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
@@ -361,7 +363,7 @@ public class MultiMusicBotManager {
         }
     }
 
-    public void onVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+    public void onVoiceLeave(GuildVoiceLeaveEvent event) {
         if (event.getMember().getUser().isBot() && bots.containsKey(event.getMember().getId())) {
             try {
                 MusicBot bot = channelBot.get(event.getGuild().getId()).put(event.getChannelLeft().getId(), null);

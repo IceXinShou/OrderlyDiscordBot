@@ -1,7 +1,6 @@
 package main.java.util;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -9,7 +8,7 @@ import java.time.ZoneId;
 
 public class TimeFormatter {
     @Contract(pure = true)
-    public static @NotNull String timeFormat(Long input) {
+    public static String timeFormat(Long input) {
 
         long sec = input % 60;
         Long min = input / 60 % 60 < 0 ? null : input / 60 % 60;
@@ -20,7 +19,7 @@ public class TimeFormatter {
     }
 
     @Contract("_ -> new")
-    public static @NotNull OffsetDateTime millisToOffset(long epochMillis) {
+    public static OffsetDateTime millisToOffset(long epochMillis) {
         return OffsetDateTime.ofInstant(Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault());
     }
 }

@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class InformationReaction {
     public static Role logRole;
     public static Role internalRole;
 
-    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         if (!event.getMessageId().equals("864033587446415410")) return;
         if ("RightArrow".equals(event.getReactionEmote().getEmote().getName())) {
             List<MessageEmbed.Field> fields = new ArrayList<>();
@@ -90,7 +89,7 @@ public class InformationReaction {
         }
     }
 
-    public void onButtonClick(@NotNull ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonClickEvent event, String[] args) {
         if (!args[0].equals("InformationReaction"))
             return;
         switch (event.getComponentId().split(":")[1]) {

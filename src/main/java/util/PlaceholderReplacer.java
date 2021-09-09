@@ -1,12 +1,11 @@
 package main.java.util;
 
 import net.dv8tion.jda.api.entities.Member;
-import org.jetbrains.annotations.NotNull;
 
 import static main.java.util.Tag.tagUserID;
 
 public class PlaceholderReplacer {
-    public static @NotNull String placeholderReplacer(@NotNull String input, @NotNull Member member) {
+    public static String placeholderReplacer(String input, Member member) {
         String fullName = member.getUser().getAsTag();
         return input
                 .replace("%guild_name%", member.getGuild().getName())

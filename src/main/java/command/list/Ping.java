@@ -1,7 +1,6 @@
 package main.java.command.list;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 
@@ -9,7 +8,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 
 public class Ping {
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         event.getHook().editOriginalEmbeds(
                 createEmbed("Pong!  \uD83C\uDFD3", "⌛ : xx ms\n\n⏱️ :  ms", "", "", "", OffsetDateTime.now(), 0x00FFFF)
         ).queue(

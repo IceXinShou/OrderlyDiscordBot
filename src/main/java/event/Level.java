@@ -3,7 +3,6 @@ package main.java.event;
 import main.java.util.file.JsonFileManager;
 import main.java.util.file.LevelLogHelper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import static main.java.util.JsonKeys.COUNT;
@@ -12,7 +11,7 @@ public class Level {
 
     LevelLogHelper llh = new LevelLogHelper();
 
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getMember() != null) {
             JsonFileManager channelFileManager = llh.getLevelFileManager(event.getGuild().getId());
             JSONObject data = channelFileManager.data;

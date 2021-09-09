@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import static main.java.util.SlashCommandOption.USER_TAG;
 
 public class Kick {
     @SuppressWarnings("ALL")
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Member selfMember = event.getGuild().getSelfMember();
 

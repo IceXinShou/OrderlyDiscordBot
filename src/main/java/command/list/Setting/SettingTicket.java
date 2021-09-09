@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,7 +31,7 @@ import static main.java.util.Tag.tagChannelID;
 public record SettingTicket(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ConstantConditions")
-    public void newTicket(@NotNull SlashCommandEvent event, boolean newTicket) {
+    public void newTicket(SlashCommandEvent event, boolean newTicket) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         List<MessageEmbed.Field> fields = new ArrayList<>();
@@ -146,7 +144,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         }
 
 
-        JSONObject ticketSetting = getSettingData(event.getGuild(), settingHelper);
+        JSONObject ticketSetting = getSettingData(event.getGuild());
         JSONObject channelKey = getOrDefault(ticketSetting, sendTicketMessageChannel.getId());
         JSONArray buttonSettings = null;
         int buttonLength = 0;
@@ -261,9 +259,9 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
-    public void removeTicket(@NotNull SlashCommandEvent event, Ticket ticket) {
+    public void removeTicket(SlashCommandEvent event, Ticket ticket) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        JSONObject data = getSettingData(event.getGuild(), settingHelper);
+        JSONObject data = getSettingData(event.getGuild());
         String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();
         if (data.has(channelID)) {
             TextChannel channel;
@@ -329,8 +327,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL), 0xFF0000)).queue();
     }
 
-    private @Nullable
-    JSONObject getSettingData(@NotNull Guild guild, @NotNull GuildSettingHelper settingHelper) {
+    JSONObject getSettingData(Guild guild) {
         JsonFileManager fileManager = settingHelper.getGuildSettingManager(guild.getId());
         if (fileManager.data.has(TICKET_SETTING))
             return fileManager.data.getJSONObject(TICKET_SETTING);

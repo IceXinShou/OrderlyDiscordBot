@@ -3,7 +3,6 @@ package main.java.command.list;
 import main.java.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -14,7 +13,7 @@ import static main.java.util.GuildUtil.guild;
 import static main.java.util.SlashCommandOption.MESSAGE;
 
 public class Support {
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SUPPORT_SENDING), 0x00FFFF)).queue();
         TextChannel channel;

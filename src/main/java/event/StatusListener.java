@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -74,7 +73,7 @@ public class StatusListener {
             "playMinecraft",
     };
 
-    public void updateGuild(@NotNull Guild guild) {
+    public void updateGuild(Guild guild) {
         if (settingHelper.getSettingData(guild, CS_SETTING) == null)
             return;
         guild.loadMembers()
@@ -291,7 +290,7 @@ public class StatusListener {
         return input;
     }
 
-    public void memberVoiceLeave(@NotNull Member member) {
+    public void memberVoiceLeave(Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
@@ -308,7 +307,7 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), change, memberStatus);
     }
 
-    public void memberVoiceJoin(@NotNull Member member) {
+    public void memberVoiceJoin(Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
@@ -325,7 +324,7 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), change, memberStatus);
     }
 
-    public void memberVoiceStream(@NotNull Member member) {
+    public void memberVoiceStream(Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
@@ -338,7 +337,7 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), 16384, memberStatus);
     }
 
-    public void memberVoiceVideo(@NotNull Member member) {
+    public void memberVoiceVideo(Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
@@ -351,7 +350,7 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), 32768, memberStatus);
     }
 
-    public void memberJoin(@NotNull Member member) {
+    public void memberJoin(Member member) {
         if (settingHelper.getSettingData(member.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(member.getGuild().getId());
@@ -382,13 +381,13 @@ public class StatusListener {
         updateChannelStatus(member.getGuild(), change, memberStatus);
     }
 
-    public void memberLeave(@NotNull GuildMemberRemoveEvent event) {
+    public void memberLeave(GuildMemberRemoveEvent event) {
         if (settingHelper.getSettingData(event.getGuild(), CS_SETTING) == null)
             return;
         updateGuild(event.getGuild());
     }
 
-    public void statusChange(@NotNull UserUpdateOnlineStatusEvent evnet) {
+    public void statusChange(UserUpdateOnlineStatusEvent evnet) {
         if (settingHelper.getSettingData(evnet.getGuild(), CS_SETTING) == null)
             return;
         Map<String, Integer> memberStatus = guildsMemberStatus.get(evnet.getGuild().getId());

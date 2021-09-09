@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import static main.java.util.SlashCommandOption.USER_TAG;
 import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         User user = event.getOption(USER_TAG).getAsUser();
         Member member = event.getGuild().retrieveMemberById(user.getId()).complete();

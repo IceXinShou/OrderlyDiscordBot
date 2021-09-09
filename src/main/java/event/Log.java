@@ -19,7 +19,6 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemove
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
@@ -46,7 +45,7 @@ public class Log {
      * 語音事件
      */
 
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
                 createEmbed(
@@ -57,7 +56,7 @@ public class Log {
         ).queue();
     }
 
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
                 createEmbed(" 退出 " + event.getChannelLeft().getName()
@@ -73,7 +72,7 @@ public class Log {
      * 訊息事件
      */
 
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String channelID = event.getMessage().getChannel().getId();
 
         if (channelID.equals(consoleChannelID) || channelID.equals(logChannelID) || event.getMessage().getContentRaw().length() == 0)
@@ -89,7 +88,7 @@ public class Log {
         channelFileManager.saveFile();
     }
 
-    public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
+    public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
 
         JsonFileManager channelFileManager = clh.getChannelFileManager(event.getGuild().getId(), event.getChannel().getId());
@@ -111,7 +110,7 @@ public class Log {
         ).queue();
     }
 
-    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
+    public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         if (ignoreMessageID.contains(event.getMessageId())) return;
         if (event.getChannel().getId().equals(logChannelID)) return;
@@ -165,7 +164,7 @@ public class Log {
      * 身分組事件
      */
 
-    public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
+    public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
                 createEmbed(
@@ -176,7 +175,7 @@ public class Log {
         ).queue();
     }
 
-    public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent event) {
+    public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
@@ -184,16 +183,16 @@ public class Log {
     /**
      * 反應事件
      */
-    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
 
-    public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
+    public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
-    public void onGuildMessageReactionRemoveEmote(@NotNull GuildMessageReactionRemoveEmoteEvent event) {
+    public void onGuildMessageReactionRemoveEmote(GuildMessageReactionRemoveEmoteEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
     }
 
@@ -214,64 +213,64 @@ public class Log {
             ).queue();
     }
 
-    public static void deleteNoLog(@NotNull ReplyAction action, long delaySec) {
+    public static void deleteNoLog(ReplyAction action, long delaySec) {
         action.queue(act -> {
             ignoreMessageID.add(act.getInteraction().getId());
             act.deleteOriginal().queueAfter(delaySec, TimeUnit.SECONDS);
         });
     }
 
-    public static void deleteNoLog(@NotNull InteractionHook message, long delaySec) {
+    public static void deleteNoLog(InteractionHook message, long delaySec) {
         ignoreMessageID.add(message.getInteraction().getId());
         message.deleteOriginal().queueAfter(delaySec, TimeUnit.SECONDS);
     }
 
-    public static void deleteNoLog(@NotNull Message message, long delaySec) {
+    public static void deleteNoLog(Message message, long delaySec) {
         ignoreMessageID.add(message.getId());
         message.delete().queueAfter(delaySec, TimeUnit.SECONDS);
     }
 
-    public static void deleteNoLog(@NotNull Message message) {
+    public static void deleteNoLog(Message message) {
         ignoreMessageID.add(message.getId());
         message.delete().queue();
     }
 
-    public static void deleteNoLog(@NotNull ButtonClickEvent event) {
+    public static void deleteNoLog(ButtonClickEvent event) {
         ignoreMessageID.add(event.getMessageId());
         event.getHook().deleteOriginal().queue();
     }
 //    @Override
-//    public void onGenericTextChannel(@NotNull GenericTextChannelEvent event) {
+//    public void onGenericTextChannel(GenericTextChannelEvent event) {
 //        super.onGenericTextChannel(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }
 //
 //    @Override
-//    public void onGenericTextChannelUpdate(@NotNull GenericTextChannelUpdateEvent event) {
+//    public void onGenericTextChannelUpdate(GenericTextChannelUpdateEvent event) {
 //        super.onGenericTextChannelUpdate(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }
 //
 //    @Override
-//    public void onGenericVoiceChannel(@NotNull GenericVoiceChannelEvent event) {
+//    public void onGenericVoiceChannel(GenericVoiceChannelEvent event) {
 //        super.onGenericVoiceChannel(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }
 //
 //    @Override
-//    public void onGenericVoiceChannelUpdate(@NotNull GenericVoiceChannelUpdateEvent event) {
+//    public void onGenericVoiceChannelUpdate(GenericVoiceChannelUpdateEvent event) {
 //        super.onGenericVoiceChannelUpdate(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }
 //
 //    @Override
-//    public void onGenericEmote(@NotNull GenericEmoteEvent event) {
+//    public void onGenericEmote(GenericEmoteEvent event) {
 //        super.onGenericEmote(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }
 //
 //    @Override
-//    public void onGenericEmoteUpdate(@NotNull GenericEmoteUpdateEvent event) {
+//    public void onGenericEmoteUpdate(GenericEmoteUpdateEvent event) {
 //        super.onGenericEmoteUpdate(event);
 //        if (!guild.getId().equals(Main.guildID)) return;
 //    }

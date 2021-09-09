@@ -1,7 +1,6 @@
 package main.java.util;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
-import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,7 +11,7 @@ import java.io.IOException;
 import java.util.Base64;
 
 public class GifGenerator {
-    public static byte @NotNull [] gifGenerator(String @NotNull [] base64Images) {
+    public static byte[] gifGenerator(String[] base64Images) {
         AnimatedGifEncoder encoder = new AnimatedGifEncoder();
         encoder.setRepeat(0);
         encoder.setFrameRate(30);

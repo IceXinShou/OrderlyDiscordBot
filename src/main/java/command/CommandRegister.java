@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -24,19 +23,19 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 public class CommandRegister {
 
-    public void addOwnSlashCommand(@NotNull Guild guild) {
+    public void addOwnSlashCommand(Guild guild) {
         guild.updateCommands().addCommands(publicCommands(guild.getId())).addCommands(ownCommands(guild.getId())).queue();
     }
 
-    public void addPublicSlashCommand(@NotNull Guild guild) {
+    public void addPublicSlashCommand(Guild guild) {
         guild.updateCommands().addCommands(publicCommands(guild.getId())).queue();
     }
 
-    public void addCommandEveryWhere(@NotNull JDA jda) {
+    public void addCommandEveryWhere(JDA jda) {
         jda.updateCommands().addCommands(everywhereCommands()).queue();
     }
 
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
+    public void onGuildReady(GuildReadyEvent event) {
         if (event.getGuild().getId().equals(GuildUtil.guildID))
             getMainGuildVariable(event.getGuild());
         else {
@@ -50,7 +49,7 @@ public class CommandRegister {
         }
     }
 
-    public void getMainGuildVariable(@NotNull Guild guild) {
+    public void getMainGuildVariable(Guild guild) {
         // 註冊全域指令
         addCommandEveryWhere(guild.getJDA());
         // 註冊主要公會指令
@@ -105,7 +104,7 @@ public class CommandRegister {
     }
 
 
-    private CommandData @NotNull [] publicCommands(String guildID) {
+    private CommandData[] publicCommands(String guildID) {
         List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
 
@@ -301,13 +300,25 @@ public class CommandRegister {
                                 new OptionData(STRING, "message", lang.get(COMMANDREGISTER_S_NL_MESSAGE), true)
                         ),
                         new SubcommandData("removeleave", lang.get(COMMANDREGISTER_S_REMOVE_LEAVE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RL_CHANNEL), true)
+                        ,
+                        new SubcommandData("newyande", "新增取得 yande 圖片").addOptions(
+                                new OptionData(STRING, "tag1", "標籤", true),
+                                new OptionData(STRING, "tag2", "標籤"),
+                                new OptionData(STRING, "tag3", "標籤"),
+                                new OptionData(STRING, "tag4", "標籤"),
+                                new OptionData(STRING, "tag5", "標籤"),
+                                new OptionData(STRING, "tag6", "標籤"),
+                                new OptionData(STRING, "tag7", "標籤"),
+                                new OptionData(STRING, "tag8", "標籤"),
+                                new OptionData(STRING, "tag9", "標籤"),
+                                new OptionData(CHANNEL, "channel", "頻道"))
 
                         // -------------------
                 ),
         };
     }
 
-    private CommandData @NotNull [] ownCommands(String guildID) {
+    private CommandData[] ownCommands(String guildID) {
         List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
                 new CommandData("reload", lang.get(COMMANDREGISTER_RELOAD)),
@@ -316,7 +327,7 @@ public class CommandRegister {
         };
     }
 
-    private CommandData @NotNull [] everywhereCommands() {
+    private CommandData[] everywhereCommands() {
         return new CommandData[]{
                 new CommandData("ping", "Ping Test (延遲測試)"),
                 new CommandData("support", "Report ERROR or Support us (傳送問題回報)").addOption(STRING, MESSAGE, "Message (訊息內容)", true),

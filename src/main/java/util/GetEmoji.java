@@ -3,13 +3,12 @@ package main.java.util;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class GetEmoji {
 
-    public static Emoji toEmoji(@NotNull String emojiName, Guild guild) {
+    public static Emoji toEmoji(String emojiName, Guild guild) {
         int startIndex;
         if ((startIndex = emojiName.indexOf("<")) != -1) {
             int endIndex = emojiName.indexOf(">", startIndex);
@@ -32,7 +31,7 @@ public class GetEmoji {
         return null;
     }
 
-    private static boolean isDigit(@NotNull String emojiName) {
+    private static boolean isDigit(String emojiName) {
         for (char i : emojiName.toCharArray()) {
             if (i < '0' || i > '9')
                 return false;

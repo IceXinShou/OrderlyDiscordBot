@@ -3,10 +3,8 @@ package main.java.command.list;
 import main.java.Main;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.apache.http.client.utils.URIBuilder;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.net.StandardSocketOptions;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +18,7 @@ import static main.java.util.UrlDataGetter.postDataAuthorization;
 public class FileConvert {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public void onCommand(@NotNull SlashCommandEvent event, URLShort urlShort) {
+    public void onCommand(SlashCommandEvent event, URLShort urlShort) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         // run thread
         executor.submit(() -> {

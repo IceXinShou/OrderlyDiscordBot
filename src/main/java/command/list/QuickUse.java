@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public class QuickUse {
     Map<String, List<ActionRow>> games = new HashMap<>();
     Map<String, String[]> Ids = new HashMap<>();
 
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getMember() == null || event.getMember().getUser().isBot())
             return;
 
@@ -273,7 +272,7 @@ public class QuickUse {
         return actionRow;
     }
 
-    public void onButtonClick(@NotNull ButtonClickEvent event, String @NotNull [] args) {
+    public void onButtonClick(ButtonClickEvent event, String[] args) {
         if (!args[0].equals("OOXXgame"))
             return;
 

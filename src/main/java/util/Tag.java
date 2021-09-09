@@ -2,7 +2,6 @@ package main.java.util;
 
 import net.dv8tion.jda.api.entities.GuildChannel;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,25 +13,25 @@ public class Tag {
      */
 
     @Contract(pure = true)
-    public static @NotNull String tagUserID(String ID) {
+    public static String tagUserID(String ID) {
         return "<@!" + ID + '>';
     }
 
     @Contract(pure = true)
-    public static @NotNull String tagChannelID(String ID) {
+    public static String tagChannelID(String ID) {
         return "<#" + ID + '>';
     }
 
-    public static @NotNull String tagChannel(@NotNull GuildChannel channel) {
+    public static String tagChannel(GuildChannel channel) {
         return "<#" + channel.getId() + '>';
     }
 
     @Contract(pure = true)
-    public static @NotNull String tagRoleID(String ID) {
+    public static String tagRoleID(String ID) {
         return "<@&" + ID + '>';
     }
 
-    public static @NotNull String tagUsersID(@NotNull List<String> ID) {
+    public static String tagUsersID(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -40,7 +39,7 @@ public class Tag {
         return n.toString();
     }
 
-    public static @NotNull String tagChannelsID(@NotNull List<String> ID) {
+    public static String tagChannelsID(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');
@@ -48,7 +47,7 @@ public class Tag {
         return n.toString();
     }
 
-    public static @NotNull String tagRolesID(@NotNull List<String> ID) {
+    public static String tagRolesID(List<String> ID) {
         StringBuilder n = new StringBuilder();
         for (String str : ID) {
             n.append("<@&").append(str).append('>');

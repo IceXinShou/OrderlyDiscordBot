@@ -1,7 +1,5 @@
 package main.java.util;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,15 +17,15 @@ public class UrlDataGetter {
         return getData(url, authorization);
     }
 
-    public static String postData(String input, @NotNull String payload) {
+    public static String postData(String input, String payload) {
         return postData(input, payload, null, null);
     }
 
-    public static String postCookie(String input, @NotNull String payload, String cookie) {
+    public static String postCookie(String input, String payload, String cookie) {
         return postData(input, payload, cookie, null);
     }
 
-    public static String postDataAuthorization(String input, @NotNull String payload, String authorization) {
+    public static String postDataAuthorization(String input, String payload, String authorization) {
         return postData(input, payload, null, authorization);
     }
 
@@ -53,7 +51,7 @@ public class UrlDataGetter {
         }
     }
 
-    public static String postData(String input, @NotNull String payload, String cookie, String authorization) {
+    public static String postData(String input, String payload, String cookie, String authorization) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(input).openConnection();
             conn.setRequestMethod("POST");
@@ -81,7 +79,7 @@ public class UrlDataGetter {
         }
     }
 
-    private static String readResponse(@NotNull InputStream in) {
+    private static String readResponse(InputStream in) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];

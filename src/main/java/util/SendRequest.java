@@ -1,8 +1,5 @@
 package main.java.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,7 +11,7 @@ import static main.java.BotSetting.botToken;
 
 public class SendRequest {
 
-    public HttpURLConnection sendRequestNoResponse(String endPoint, @NotNull String method, byte[] payload, String contentType) {
+    public HttpURLConnection sendRequestNoResponse(String endPoint, String method, byte[] payload, String contentType) {
         try {
             java.net.URL url = new URL("https://discordapp.com/api/v9" + URLEncoder.encode(endPoint, StandardCharsets.UTF_8));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -58,7 +55,7 @@ public class SendRequest {
 
     }
 
-    private @Nullable String readResponse(@NotNull InputStream in) {
+    private String readResponse(InputStream in) {
         try {
             StringBuilder builder = new StringBuilder();
             byte[] buff = new byte[1024];

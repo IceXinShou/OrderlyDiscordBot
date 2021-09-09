@@ -4,7 +4,6 @@ import main.java.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import static main.java.util.SlashCommandOption.QUESTION;
 
 public class Poll {
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.MANAGE_CHANNEL, event, true))
             return;

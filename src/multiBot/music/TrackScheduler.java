@@ -9,7 +9,6 @@ import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.queue = new ArrayList<>();
     }
 
-    public void addPlayListToQueue(@NotNull AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
+    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
@@ -150,7 +149,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     @Override
-    public void onTrackEnd(AudioPlayer player, AudioTrack track, @NotNull AudioTrackEndReason endReason) {
+    public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
             lastIndex = index;

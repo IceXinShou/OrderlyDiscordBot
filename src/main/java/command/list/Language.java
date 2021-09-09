@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import static main.java.util.JsonKeys.GUILD_LANG;
 import static main.java.util.PermissionERROR.hasPermission;
 
 public record Language(GuildSettingHelper settingHelper) {
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         if (!hasPermission(Permission.ADMINISTRATOR, event, true)) {
             return;
         }
@@ -37,7 +36,7 @@ public record Language(GuildSettingHelper settingHelper) {
 
     }
 
-    public void onSelect(@NotNull SelectionMenuEvent event, String @NotNull [] args, CommandRegister register) {
+    public void onSelect(SelectionMenuEvent event, String[] args, CommandRegister register) {
         String guildID = event.getGuild().getId();
         if (!args[0].equals("Lang"))
             return;

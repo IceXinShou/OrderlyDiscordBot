@@ -34,6 +34,9 @@ public class JsonKeys {
     public final static String AUTO_VC_SETTING = "autoVC";
     public final static String AUTO_VC_NAME = "N";
 
+    // for Yande
+    public final static String YANDE_SETTING = "yande";
+
     // for Ticket
     public final static String TICKET_SETTING = "ticket";
     public final static String TICKET_TEXT_NAME = "TN";

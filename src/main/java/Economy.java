@@ -2,7 +2,6 @@ package main.java;
 
 import main.java.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import static main.java.util.JsonKeys.*;
 
 record Economy(GuildSettingHelper settingHelper) {
 
-    void onDailyCheck(@NotNull ButtonClickEvent event, String[] args) {
+    void onDailyCheck(ButtonClickEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Economy"))
             return;

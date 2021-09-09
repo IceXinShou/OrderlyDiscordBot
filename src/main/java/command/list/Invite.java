@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,7 +37,7 @@ public class Invite {
     }
 
     // 加入族譜
-    private void addMemberToGenealogy(@NotNull Member inviter, String invitedUserID) {
+    private void addMemberToGenealogy(Member inviter, String invitedUserID) {
         JSONArray invited;
         if (genealogyData.has(inviter.getId()))
             invited = genealogyData.getJSONArray(inviter.getId());
@@ -49,7 +48,7 @@ public class Invite {
         genealogyFile.saveFile();
     }
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         Member member = event.getOption(USER_TAG).getAsMember();
         String userId = event.getUser().getId();
         // 還沒完成使用者設定
@@ -69,7 +68,7 @@ public class Invite {
                 .queue();
     }
 
-    public void onButton(ButtonClickEvent event, String @NotNull [] args) {
+    public void onButton(ButtonClickEvent event, String[] args) {
         if (!args[0].equals("Invite"))
             return;
 

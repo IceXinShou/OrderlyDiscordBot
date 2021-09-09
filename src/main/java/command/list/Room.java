@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -22,7 +21,7 @@ public record Room(GuildSettingHelper settingHelper) {
     public static Map<String, Map<String, List<String>>> voiceState = new HashMap<>();
 
 
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), ROOM_SETTING)) == null)
             return;
@@ -30,7 +29,7 @@ public record Room(GuildSettingHelper settingHelper) {
             newChannel(event, data);
     }
 
-    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
         if (membersID != null) {
             String memberID = event.getMember().getId();
@@ -48,7 +47,7 @@ public record Room(GuildSettingHelper settingHelper) {
         }
     }
 
-    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         JSONObject data;
         if ((data = settingHelper.getSettingData(event.getGuild(), ROOM_SETTING)) == null)
             return;
@@ -74,7 +73,7 @@ public record Room(GuildSettingHelper settingHelper) {
      * Funtion
      */
 
-    private void newChannel(@NotNull GenericGuildVoiceUpdateEvent event, @NotNull JSONObject inputData) {
+    private void newChannel(GenericGuildVoiceUpdateEvent event, JSONObject inputData) {
         Collection<Permission> allow = new ArrayList<>();
         allow.add(Permission.VIEW_CHANNEL);
         allow.add(Permission.MANAGE_CHANNEL);

@@ -2,7 +2,6 @@ package main.java.command.list;
 
 import main.java.Main;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ import static net.dv8tion.jda.api.Permission.ADMINISTRATOR;
 
 public class Reload {
 
-    public boolean onCommand(@NotNull SlashCommandEvent event) {
+    public boolean onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(ADMINISTRATOR, event, true))
             return false;

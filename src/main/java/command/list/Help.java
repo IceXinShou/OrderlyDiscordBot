@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import static main.java.util.PermissionERROR.hasPermission;
 
 public class Help {
 
-    public void onSelfAnnouncementCommand(@NotNull SlashCommandEvent event) {
+    public void onSelfAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (hasPermission(Permission.ADMINISTRATOR, event, true)) {
             event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
@@ -26,12 +25,12 @@ public class Help {
         }
     }
 
-    public void onSelfMemberCommand(@NotNull SlashCommandEvent event) {
+    public void onSelfMemberCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
-    public void onNekoBotAnnouncementCommand(@NotNull SlashCommandEvent event) {
+    public void onNekoBotAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (hasPermission(Permission.ADMINISTRATOR, event, true)) {
             event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
@@ -39,7 +38,7 @@ public class Help {
         }
     }
 
-    public void onNekoBotMemberCommand(@NotNull SlashCommandEvent event) {
+    public void onNekoBotMemberCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
@@ -104,7 +103,7 @@ public class Help {
         return helpFields;
     }
 
-    private @NotNull List<MessageEmbed.Field> summonSelfAnnouncementFields() {
+    private List<MessageEmbed.Field> summonSelfAnnouncementFields() {
 
         /**
          * Help Fields
@@ -251,7 +250,7 @@ public class Help {
         return helpFields;
     }
 
-    private @NotNull List<MessageEmbed.Field> summonNekoBotAnnouncementFields() {
+    private List<MessageEmbed.Field> summonNekoBotAnnouncementFields() {
 
         /**
          * Help Fields

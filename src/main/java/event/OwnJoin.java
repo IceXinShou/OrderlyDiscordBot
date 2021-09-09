@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
@@ -42,7 +41,7 @@ public class OwnJoin {
     /**
      * 加入事件
      */
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         String userID = event.getUser().getId();
 
@@ -71,12 +70,12 @@ public class OwnJoin {
     }
 
 
-    private void changeNickName(@NotNull Member member, String chinese, String english) {
+    private void changeNickName(Member member, String chinese, String english) {
 //        String nameSpace = "%name% - %MinecraftID%";
         member.modifyNickname(chinese + " - " + english).queue();
     }
 
-    private void showUserInfo(MessageChannel privateChannel, User user, @NotNull QuestionStep progress) {
+    private void showUserInfo(MessageChannel privateChannel, User user, QuestionStep progress) {
         if (progress.infoMessageID != null)
             privateChannel.deleteMessageById(progress.infoMessageID).queue();
 
@@ -120,7 +119,7 @@ public class OwnJoin {
     }
 
     // 儲存使用者到資料
-    private void saveMember(@NotNull Member member) {
+    private void saveMember(Member member) {
         QuestionStep progress = userProgress.get(member.getId());
 
         JSONObject memberInfo = new JSONObject();
@@ -138,7 +137,7 @@ public class OwnJoin {
         memberFile.saveFile();
     }
 
-    public void onCommand(@NotNull SlashCommandEvent event) {
+    public void onCommand(SlashCommandEvent event) {
         /*
         String userID = event.getUser().getId();
         if (userID.equals(Main.botID)) return;
@@ -181,7 +180,7 @@ public class OwnJoin {
     /**
      * 回覆導向 (反應)
      */
-    public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
+    public void onPrivateMessageReactionAdd(PrivateMessageReactionAddEvent event) {
         String userID = event.getUserId();
         if (userID.equals(Main.botID)) return;
 
@@ -242,7 +241,7 @@ public class OwnJoin {
     /**
      * 回覆導向 (對話)
      */
-    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         String userID = event.getAuthor().getId();
         if (userID.equals(Main.botID)) return;
         String message = event.getMessage().getContentRaw();
@@ -343,7 +342,7 @@ public class OwnJoin {
         }
     }
 
-    private void askPlayingMinecraft(String userID, @NotNull MessageChannel channel, boolean newAccount) {
+    private void askPlayingMinecraft(String userID, MessageChannel channel, boolean newAccount) {
         channel.sendMessageEmbeds(createEmbed("請問您是否有遊玩 **Minecraft**？\n" +
                 "Have you ever played **Minecraft**?", 0xe5b849)).queue(messageContent -> {
             messageContent.addReaction(emoji.yesEmoji).queue();
@@ -364,7 +363,7 @@ public class OwnJoin {
         });
     }
 
-    private void getMinecraftID(String userID, @NotNull MessageChannel channel) {
+    private void getMinecraftID(String userID, MessageChannel channel) {
         channel.sendMessageEmbeds(createEmbed("請輸入您的 **Minecraft ID** (輸入 `返回` 來返回)\n" +
                 "Please type your **Minecraft ID** (type `cancel` to previous)", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
@@ -374,7 +373,7 @@ public class OwnJoin {
         });
     }
 
-    private void getEnglishNickName(String userID, @NotNull MessageChannel channel) {
+    private void getEnglishNickName(String userID, MessageChannel channel) {
         channel.sendMessageEmbeds(createEmbed("請輸入您的**英文暱稱**\n" +
                 "Please type your English nickname", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
@@ -384,7 +383,7 @@ public class OwnJoin {
         });
     }
 
-    private void getChineseNickName(String userID, @NotNull MessageChannel channel) {
+    private void getChineseNickName(String userID, MessageChannel channel) {
         channel.sendMessageEmbeds(createEmbed("請輸入您的**兩字中文暱稱**\n" +
                 "Please type your Two Words Chinese nickname", 0xe5b849)).queue(messageContent -> {
             QuestionStep step = userProgress.get(userID);
@@ -394,7 +393,7 @@ public class OwnJoin {
         });
     }
 
-    private void FollowRoles(String userID, @NotNull MessageChannel channel) {
+    private void FollowRoles(String userID, MessageChannel channel) {
         channel.sendMessageEmbeds(createEmbed("請問您是否會**遵從管理員指示並服從**？\n" +
                 "Will you follow the Server Rules and be good?", 0xe5b849)).queue(messageContent -> {
             messageContent.addReaction(emoji.yesEmoji).queue();
