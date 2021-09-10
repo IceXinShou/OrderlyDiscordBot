@@ -33,10 +33,11 @@ public class PopCatHelper {
     public PopCatHelper() {
         try {
             Map<String, Object> data = new JSONObject(Files.readString(Paths.get("countryCode.json"))).toMap();
-            data.forEach((key, value) -> {
-                countryCode.put((String) value, key);
-                countryName.put(key, (String) value);
-            });
+
+            for (Map.Entry<String, Object> i : data.entrySet()) {
+                countryCode.put((String) i.getValue(), i.getKey());
+                countryName.put(i.getKey(), (String) i.getValue());
+            }
 
         } catch (IOException e) {
             System.err.println(TAG + " " + e.getMessage());

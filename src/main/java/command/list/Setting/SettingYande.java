@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.YANDE_SETTING;
@@ -25,79 +26,70 @@ import static main.java.util.UrlDataGetter.getData;
 
 public record SettingYande(GuildSettingHelper settingHelper) {
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
+    private static ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
     static Map<String, Map<String, List<String>>> map = new HashMap<>();
-    static Map<String, Map<String, Map<String, Integer>>> old = new HashMap<>();
+    static Map<String, Map<String, List<Integer>>> old = new HashMap<>();
 
     public void onGuildReady(GuildReadyEvent event) {
         JSONObject data = getSettingData(event.getGuild());
         if (data.length() == 0)
             return;
 
-        data.keySet().forEach(i -> {
-                    List<String> tags = new ArrayList<>();
-                    data.getJSONArray(i).forEach(j -> tags.add((String) j));
+        for (String i : data.keySet()) {
+            List<String> tags = new ArrayList<>();
+            for (Object j : data.getJSONArray(i))
+                tags.add((String) j);
 
-                    Map<String, List<String>> k = new HashMap<>();
-                    k.put(i, tags);
 
-                    map.put(event.getGuild().getId(), k);
-                }
-        );
+            Map<String, List<String>> k = new HashMap<>();
+            k.put(i, tags);
+
+            map.put(event.getGuild().getId(), k);
+        }
 
         startThread(event.getGuild());
     }
 
     private void startThread(Guild guild) {
-        Map<String, Integer> tagsToID = new HashMap<>();
-        Map<String, Map<String, Integer>> channelIDToMap = new HashMap<>();
-        map.get(guild.getId()).keySet().forEach(i ->
-                map.get(guild.getId()).get(i).forEach(j -> {
 
-                    tagsToID.put(j, 0);
-                    channelIDToMap.put(i, tagsToID);
+        for (String i : map.get(guild.getId()).keySet()) {
+            Map<String, List<Integer>> j = new HashMap<>();
+            j.put(i, new ArrayList<>());
+            old.put(guild.getId(), j);
+        }
 
-                    old.put(guild.getId(), channelIDToMap);
-                }));
-        executor.submit(() -> {
-            while (true) {
-                if (map.get(guild.getId()).size() == 0)
-                    return;
-                map.get(guild.getId()).keySet().forEach(i -> { // i = channelID
-                    map.get(guild.getId()).get(i).forEach(j -> {
+        if (threadPool != null && !threadPool.isShutdown())
+            threadPool.shutdown();
 
-                        String result = getData("https://yande.re/post.json?limit=1&tags=" + j);
-                        JSONArray array = new JSONArray(result);
-                        if (array.length() != 0) {
-                            int id = array.getJSONObject(0).getInt("id");
-                            if (!old.get(guild.getId()).get(i).get(j).equals(id)) {
+        threadPool = Executors.newSingleThreadScheduledExecutor();
+        threadPool.scheduleWithFixedDelay(() -> {
+            if (map.get(guild.getId()).size() == 0)
+                return;
 
-                                tagsToID.put(j, id);
-                                channelIDToMap.put(i, tagsToID);
+            for (String i : map.get(guild.getId()).keySet()) {
+                for (String j : map.get(guild.getId()).keySet()) {
+                    JSONArray array = new JSONArray(getData("https://yande.re/post.json?limit=1&tags=" + j));
 
-                                old.put(guild.getId(), channelIDToMap);
-                                TextChannel channel;
-                                if ((channel = guild.getTextChannelById(i)) != null)
-                                    if (channel.isNSFW())
-                                        channel.sendMessage("https://yande.re/post/show/" + id).queue();
-                                    else
-                                        channel.sendMessage("請開啟 NSFW").queue();
-                            }
+                    if (array.length() != 0) {
+                        int id = array.getJSONObject(0).getInt("id");
+                        if (!old.get(guild.getId()).get(i).contains(id)) {
+                            old.get(guild.getId()).get(i).add(id);
+                            TextChannel channel;
+                            if ((channel = guild.getTextChannelById(i)) != null)
+                                if (channel.isNSFW())
+                                    channel.sendMessage("https://yande.re/post/show/" + id).queue();
+                                else
+                                    channel.sendMessage("請開啟 NSFW").queue();
                         }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            System.err.println(e.getMessage());
-                        }
-                    });
+                    }
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.err.println(e.getMessage());
                     }
-                });
+                }
             }
-        });
+        }, 0, 30000, TimeUnit.MILLISECONDS);
     }
 
     public void newYande(SlashCommandEvent event) {
@@ -122,7 +114,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
 
             }
         }
-        if (channel.isNSFW())
+        if (!channel.isNSFW())
             fields.add(new MessageEmbed.Field("尚未開啟 NSFW", "", false));
         if (fields.size() > 0) {
             event.getHook().editOriginalEmbeds(createEmbed("創建失敗", fields, 0xFF0000)).queue();

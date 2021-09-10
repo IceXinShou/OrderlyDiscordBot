@@ -20,7 +20,7 @@ public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
 
         Guild guild = event.getGuild();
 
-        data.keySet().forEach(i -> {
+        for (String i : data.keySet()) {
             TextChannel channel;
 
             if ((channel = guild.getTextChannelById(i)) == null) {
@@ -40,7 +40,7 @@ public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
 
             if (data.has(J_JOIN_MESSAGE) && channel.canTalk())
                 channel.sendMessageEmbeds(createEmbed(data.getString(J_JOIN_MESSAGE), 0xd6ff8e)).queue();
-        });
+        }
     }
 
 
@@ -51,7 +51,7 @@ public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
 
         Guild guild = event.getGuild();
 
-        data.keySet().forEach(i -> {
+        for (String i : data.keySet()) {
             TextChannel channel;
 
             if ((channel = guild.getTextChannelById(i)) == null) {
@@ -61,6 +61,6 @@ public record JoinLeaveMessage(GuildSettingHelper settingHelper) {
 
             if (data.has(L_LEAVE_MESSAGE) && channel.canTalk())
                 channel.sendMessageEmbeds(createEmbed(data.getString(L_LEAVE_MESSAGE), 0xef4565)).queue();
-        });
+        }
     }
 }

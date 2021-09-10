@@ -192,14 +192,14 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         // run thread
         minThreadPool.scheduleWithFixedDelay(() -> {
             long time = System.currentTimeMillis() / 1000;
-            giveawayData.forEach((key, giveaways) -> {
-                for (int i = 0; i < giveaways.size(); i++) {
-                    long timeLeft = giveaways.get(i) - time;
+            for (Map.Entry<String, List<Long>> data : giveawayData.entrySet()) {
+                for (int i = 0; i < data.getValue().size(); i++) {
+                    long timeLeft = data.getValue().get(i) - time;
                     if (timeLeft <= 61) {
-                        secDetectGiveaway(jda.getGuildById(key), i);
+                        secDetectGiveaway(jda.getGuildById(data.getKey()), i);
                     }
                 }
-            });
+            }
         }, 0, 1, TimeUnit.MINUTES);
     }
 

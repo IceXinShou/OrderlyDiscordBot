@@ -58,7 +58,9 @@ public class Clear {
                         .skipTo(event.getMessageIdLong())
                         .takeAsync(amount)
                         .get();
-                deleteMessage.forEach(i -> ignoreMessageID.add(i.getId())); // 取得訊息
+                for (Message i : deleteMessage)
+                    ignoreMessageID.add(i.getId());
+
                 event.getChannel().purgeMessages(deleteMessage);
 
                 /**
