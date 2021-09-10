@@ -358,7 +358,7 @@ public class ListenerManager extends ListenerAdapter {
         if (debugMode) {
             if (event.getGuild().getId().equals("882605953382514718"))
                 event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024").sendMessage("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`").queue();
-            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`");
+            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "`");
         }
 
         // 取得輸入指令的頻道
