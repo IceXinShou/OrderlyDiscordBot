@@ -96,6 +96,7 @@ public class ListenerManager extends ListenerAdapter {
     PopCat popCat = new PopCat();
     Giveaway giveaway = new Giveaway(guildSettingHelper);
     Language langCommand = new Language(guildSettingHelper);
+    ChannelChange channelChange = new ChannelChange();
     SettingOsu settingOsu = new SettingOsu();
     SettingHypixel settingHypixel = new SettingHypixel();
 
@@ -442,6 +443,14 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "lang" -> {
                 langCommand.onCommand(event);
+                return;
+            }
+            case "rename", "setname" -> {
+                channelChange.setName(event);
+                return;
+            }
+            case "rebitrate", "setbitrate" -> {
+                channelChange.setBitrate(event);
                 return;
             }
             case "reload" -> {

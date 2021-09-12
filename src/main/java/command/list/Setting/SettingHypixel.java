@@ -60,8 +60,8 @@ public class SettingHypixel {
         JSONObject playerData;
 
         try {
-            statusData = new JSONObject(getData("https://api.hypixel.net/status?key=a661ea37-fffe-4c1b-b3dd-53af331e4aeb&uuid=" + uuid)).getJSONObject("session");
-            playerData = new JSONObject(getData("https://api.hypixel.net/player?key=a661ea37-fffe-4c1b-b3dd-53af331e4aeb&uuid=" + uuid)).getJSONObject("player");
+            statusData = new JSONObject(getData("https://api.hypixel.net/status?key=e3a78fc6-2d53-438f-b905-0e13bed60224&uuid=" + uuid)).getJSONObject("session");
+            playerData = new JSONObject(getData("https://api.hypixel.net/player?key=e3a78fc6-2d53-438f-b905-0e13bed60224&uuid=" + uuid)).getJSONObject("player");
         } catch (Exception e) {
             System.err.println(e.getMessage());
             event.getHook().editOriginalEmbeds(createEmbed("錯誤，請重試！", 0xFF0000)).queue();
@@ -157,11 +157,11 @@ public class SettingHypixel {
         String rank = "";
         int color = 0xFFFFFF;
         long bedwars_coins;
-        JSONObject statusData;
         JSONObject playerData;
+        JSONObject playerStats;
         try {
-            statusData = new JSONObject(getData("https://api.hypixel.net/status?key=a661ea37-fffe-4c1b-b3dd-53af331e4aeb&uuid=" + uuid)).getJSONObject("session");
-            playerData = new JSONObject(getData("https://api.hypixel.net/player?key=a661ea37-fffe-4c1b-b3dd-53af331e4aeb&uuid=" + uuid)).getJSONObject("player");
+            playerData = new JSONObject(getData("https://api.hypixel.net/player?key=e3a78fc6-2d53-438f-b905-0e13bed60224&uuid=" + uuid)).getJSONObject("player");
+            playerStats = playerData.getJSONObject("stats").getJSONObject("Bedwars");
         } catch (Exception e) {
             System.err.println(e.getMessage());
             event.getHook().editOriginalEmbeds(createEmbed("錯誤，請重試！", 0xFF0000)).queue();
@@ -195,6 +195,7 @@ public class SettingHypixel {
                     }
                 }
 
+        bedwars_coins = playerStats.getLong("coins");
 
         StringBuilder description = new StringBuilder();
 //        description

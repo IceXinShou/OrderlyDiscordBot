@@ -155,7 +155,23 @@ public class CommandRegister {
                 new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),
                 // Tool
 
-                new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true), // 若未填則回覆預設
+                new CommandData("rename", "更改頻道名稱").addOptions(
+                        new OptionData(STRING, "name", "名稱", true),
+                        new OptionData(CHANNEL, "channel", "頻道")
+                ),
+                new CommandData("setname", "更改頻道名稱").addOptions(
+                        new OptionData(STRING, "name", "名稱", true),
+                        new OptionData(CHANNEL, "channel", "頻道")
+                ),
+                new CommandData("rebitrate", "更改頻道位元率").addOptions(
+                        new OptionData(CHANNEL, "channel", "頻道", true),
+                        new OptionData(INTEGER, "bitrate", "位元率", true)
+                ),
+                new CommandData("setbitrate", "更改頻道位元率").addOptions(
+                        new OptionData(CHANNEL, "channel", "頻道", true),
+                        new OptionData(INTEGER, "bitrate", "位元率", true)
+                ),
+                new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
 //                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
 //                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
                 new CommandData("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
