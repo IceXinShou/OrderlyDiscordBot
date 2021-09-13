@@ -66,10 +66,9 @@ public record SettingYande(GuildSettingHelper settingHelper) {
             if (map.get(guild.getId()).size() == 0)
                 return;
 
-            for (String i : map.get(guild.getId()).keySet()) {
-                for (String j : map.get(guild.getId()).keySet()) {
+            for (String i : map.get(guild.getId()).keySet())
+                for (String j : map.get(guild.getId()).get(i)) {
                     JSONArray array = new JSONArray(getData("https://yande.re/post.json?limit=1&tags=" + j));
-
                     if (array.length() != 0) {
                         int id = array.getJSONObject(0).getInt("id");
                         if (!old.get(guild.getId()).get(i).contains(id)) {
@@ -88,7 +87,6 @@ public record SettingYande(GuildSettingHelper settingHelper) {
                         System.err.println(e.getMessage());
                     }
                 }
-            }
         }, 0, 30000, TimeUnit.MILLISECONDS);
     }
 
