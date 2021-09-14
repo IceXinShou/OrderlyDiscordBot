@@ -70,7 +70,7 @@
  
 ### Yande.re Image Update Notify
   * Select all tags you want
-  * check per 30 second
+  * check per minute
   
   
 <br><br><br><br><br>
@@ -81,8 +81,8 @@
 
 # Language Support
   * Chinese Traditional (100%)
-  * Chinese Simplified (90%)
-  * English (90%)
+  * Chinese Simplified (85%)
+  * English (85%)
  
 
 # Setup
