@@ -243,9 +243,9 @@ public class SettingHypixel {
         } else if (!hypixelFileData.has(event.getUser().getId())) {
             event.getHook().editOriginalEmbeds(createEmbed("請先使用 `/hy setuser <name>` 綁定帳號", 0xFF0000)).queue();
             return null;
-        } else {
+        } else
             uuid = hypixelFileData.getString(event.getUser().getId());
-        }
+
         return uuid;
     }
 }

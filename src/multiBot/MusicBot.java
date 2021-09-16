@@ -195,7 +195,7 @@ public class MusicBot {
             MusicInfoData musicInfo = scheduler.musicInfo;
             int nowPlayingTime = (int) ((System.currentTimeMillis() - scheduler.startPlayTime) / 1000);
             int playPercent = (int) ((nowPlayingTime / (float) (musicInfo.getLength() / 1000)) * 20);
-            if (playPercent < 0)
+            if (playPercent < 0 || playPercent > 20)
                 playPercent = 0;
             progress.append("\n\n**[")
                     .append(timeCalculator(nowPlayingTime))
