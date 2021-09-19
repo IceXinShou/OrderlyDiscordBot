@@ -17,33 +17,33 @@ public class LangKey {
     /**
      * {@link main.java.command.list.Setting.SettingHypixel}
      */
-    public static int HYPIXEL_NAME_ERROR;
-    public static int HYPIXEL_SETTING_SUCCESSFULLY;
-    public static int HYPIXEL_SETTING_ERROR;
-    public static int HYPIXEL_STATUS;
-    public static int HYPIXEL_STATUS_ONLINE;
-    public static int HYPIXEL_STATUS_OFFLINE;
-    public static int HYPIXEL_FIRST_JOIN_TIME;
-    public static int HYPIXEL_JOIN_TIME;
-    public static int HYPIXEL_LEFT_TIME;
-    public static int HYPIXEL_KARMA;
-    public static int HYPIXEL_ACHIEVEMENT_POINT;
-    public static int HYPIXEL_LEVEL;
-    public static int HYPIXEL_REGISTER_FIRST;
-    public static int HYPIXEL_BW_STAR;
-    public static int HYPIXEL_BW_KILL;
-    public static int HYPIXEL_BW_DEATH;
-    public static int HYPIXEL_BW_FINAL_KILL;
-    public static int HYPIXEL_BW_FINAL_DEATH;
-    public static int HYPIXEL_BW_WIN;
-    public static int HYPIXEL_BW_LOSE;
-    public static int HYPIXEL_BW_1S;
-    public static int HYPIXEL_BW_2S;
-    public static int HYPIXEL_BW_COINS;
-    public static int HYPIXEL_BW_3S;
-    public static int HYPIXEL_BW_4S;
-    public static int HYPIXEL_BW_4V4;
-    public static int HYPIXEL_BW_TOTAL;
+//    public static int HYPIXEL_NAME_ERROR;
+//    public static int HYPIXEL_SETTING_SUCCESSFULLY;
+//    public static int HYPIXEL_SETTING_ERROR;
+//    public static int HYPIXEL_STATUS;
+//    public static int HYPIXEL_STATUS_ONLINE;
+//    public static int HYPIXEL_STATUS_OFFLINE;
+//    public static int HYPIXEL_FIRST_JOIN_TIME;
+//    public static int HYPIXEL_JOIN_TIME;
+//    public static int HYPIXEL_LEFT_TIME;
+//    public static int HYPIXEL_KARMA;
+//    public static int HYPIXEL_ACHIEVEMENT_POINT;
+//    public static int HYPIXEL_LEVEL;
+//    public static int HYPIXEL_REGISTER_FIRST;
+//    public static int HYPIXEL_BW_STAR;
+//    public static int HYPIXEL_BW_KILL;
+//    public static int HYPIXEL_BW_DEATH;
+//    public static int HYPIXEL_BW_FINAL_KILL;
+//    public static int HYPIXEL_BW_FINAL_DEATH;
+//    public static int HYPIXEL_BW_WIN;
+//    public static int HYPIXEL_BW_LOSE;
+//    public static int HYPIXEL_BW_1S;
+//    public static int HYPIXEL_BW_2S;
+//    public static int HYPIXEL_BW_COINS;
+//    public static int HYPIXEL_BW_3S;
+//    public static int HYPIXEL_BW_4S;
+//    public static int HYPIXEL_BW_4V4;
+//    public static int HYPIXEL_BW_TOTAL;
 
 
     /**

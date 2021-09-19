@@ -14,7 +14,7 @@ import static main.java.util.GuildUtil.guildID;
 import static main.java.util.UrlDataGetter.getData;
 
 public class SettingOsu {
-    private final String TAG = "SettingOsu";
+    private final String TAG = "[SettingOsu]";
     public JSONObject osuFileData;
     private final JsonFileManager jsonFileManager;
 
