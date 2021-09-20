@@ -106,7 +106,7 @@ public class MultiMusicBotManager {
             case "leave":
             case "disconnect":
                 if (checkVcState(event, bot))
-                    bot.disconnect(event, event.getGuild());
+                    bot.stopPlay(event, event.getGuild());
                 break;
 
             case "loop":
@@ -354,9 +354,10 @@ public class MultiMusicBotManager {
                         GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                         GatewayIntent.DIRECT_MESSAGE_TYPING)
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES)
-                .setBulkDeleteSplittingEnabled(false) // Enable the bulk delete event
+                .setBulkDeleteSplittingEnabled(false)
                 .setCompression(Compression.ZLIB)
-                .setStatus(OnlineStatus.IDLE); // Disable compression (not recommended)
+                .setStatus(OnlineStatus.IDLE)
+                .setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
         try {
             JDA jda = builder.build();
             bots.put(jda.getSelfUser().getId(), new MusicBot(jda, this, musicEvent));
@@ -371,7 +372,7 @@ public class MultiMusicBotManager {
             try {
                 MusicBot bot = channelBot.get(event.getGuild().getId()).put(event.getChannelLeft().getId(), null);
                 if (bot == null) return;
-                bot.stopPlay(event.getGuild());
+                bot.stopPlay(null, event.getGuild());
             } catch (Exception ignored) {
             }
         }

@@ -26,8 +26,7 @@ import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
@@ -38,11 +37,10 @@ public class MusicBot {
     private final String botID;
     private final GuildMusicManager.Event event;
     private final MultiMusicBotManager musicBotManager;
-
-
     // music
     private final AudioPlayerManager playerManager;
     public Map<String, GuildMusicManager> musicManagers;
+    private int workCount = 0;
 
     public MusicBot(JDA jda, MultiMusicBotManager musicBotManager, GuildMusicManager.Event event) {
         this.jda = jda;
@@ -61,17 +59,19 @@ public class MusicBot {
      */
     private void play(AudioPlaylist playlist, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        connectVC(manager.guild, vc, event);
-        if (playNow) {
-            event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
-            return;
-        }
-        manager.scheduler.addPlayListToQueue(playlist, event, this);
+        connectVC(manager.guild, vc, event, (i) -> {
+            if (playNow) {
+                event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
+                return;
+            }
+            manager.scheduler.addPlayListToQueue(playlist, event, this);
+        });
     }
 
     private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
-        connectVC(manager.guild, vc, event);
-        manager.scheduler.queue(track, event, this, -1, search, playNow);
+        connectVC(manager.guild, vc, event, (i) -> {
+            manager.scheduler.queue(track, event, this, -1, search, playNow);
+        });
     }
 
     public void changeVolume(int volume, Guild guild, SlashCommandEvent event) {
@@ -242,11 +242,11 @@ public class MusicBot {
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        if (scheduler.getQueue().size() == 0)
+        if (scheduler.getQueue() == null)
             stringBuilder.append(lang.get(MUSICBOT_NONE));
         else {
-            List<AudioTrack> inQueue = scheduler.getQueue();
-            int index = inQueue.size();
+            AudioTrack[] inQueue = scheduler.getQueue();
+            int index = inQueue.length;
             for (AudioTrack track : inQueue) {
                 stringBuilder.append("[").append(index--).append("] ")
                         .append(track.getInfo().title);
@@ -296,32 +296,41 @@ public class MusicBot {
     }
 
     @SuppressWarnings("ALL")
-    private void connectVC(Guild guild, VoiceChannel vc, GenericInteractionCreateEvent event) {
+    private void connectVC(Guild guild, VoiceChannel vc, GenericInteractionCreateEvent event, Consumer consumer) {
         if (!guild.getAudioManager().isConnected()) {
             try {
                 guild.getAudioManager().openAudioConnection(vc);
             } catch (Exception e) {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
-                System.out.println(e.getMessage());
                 return;
             }
-            CountDownLatch countDownLatch = new CountDownLatch(1);
+            final MusicBot bot = this;
             guild.getAudioManager().setConnectionListener(new ConnectionListener() {
                 @Override
-                public void onPing(long l) {
-
+                public void onStatusChange(ConnectionStatus connectionStatus) {
+                    if (connectionStatus == ConnectionStatus.CONNECTED) {
+                        consumer.accept(null);
+                        if (workCount == 0) {
+                            jda.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+                            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
+                        }
+                        workCount++;
+                        jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個伺服器"));
+                        guild.getAudioManager().setConnectionListener(null);
+                        // 新增bot到頻道
+                        musicBotManager.setBotToChannel(guild.getId(), vc.getId(), bot);
+                        if (guild.getSelfMember().getPermissions().contains(Permission.VOICE_DEAF_OTHERS))
+                            guild.getSelfMember().deafen(true).queue();
+                    }
                 }
 
                 @Override
-                public void onStatusChange(ConnectionStatus connectionStatus) {
-                    if (connectionStatus == ConnectionStatus.CONNECTED)
-                        countDownLatch.countDown();
+                public void onPing(long l) {
                 }
 
                 @Override
                 public void onUserSpeaking(User user, boolean b) {
-
                 }
             });
         }

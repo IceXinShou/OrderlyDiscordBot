@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -13,9 +14,6 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class schedules tracks for the audio player. It contains the queue of tracks.
- */
 public class TrackScheduler extends AudioEventAdapter {
     private final Guild guild;
     private final AudioPlayer player;
@@ -36,9 +34,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public int loopStatus = 0;
 
-    /**
-     * @param player The audio player this scheduler uses
-     */
     public TrackScheduler(AudioPlayer player, Guild guild) {
         this.guild = guild;
         this.player = player;
@@ -59,15 +54,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.event.addPlayerListToQueue(playlist, event);
     }
 
-    /**
-     * Add the next track to queue or play right away if nothing is in the queue.
-     *
-     * @param track The track to play or add to queue.
-     */
     public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean search, boolean playNow) {
-        // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
-        // something is playing, it returns false and does nothing. In that case the player was already playing so this
-        // track goes to the queue instead.
         if (position != -1)
             queue.add(position, track);
         else if (playNow && queue.size() > 0) {
@@ -107,7 +94,7 @@ public class TrackScheduler extends AudioEventAdapter {
         AudioTrack track;
         if (repeat) {
             index = lastIndex;
-            track = playingTrack.makeClone();
+            track = playingTrack;
         } else {
             if (index < 0)
                 index = lastIndex;
@@ -120,12 +107,8 @@ public class TrackScheduler extends AudioEventAdapter {
 
             // 取得歌曲
             track = queue.get(index);
-            if (index < lastIndex)
-                track = track.makeClone();
-            if (loop)
-                track = track.makeClone();
         }
-        if (player.startTrack(track, false)) {
+        if (player.startTrack(track.makeClone(), false)) {
             playingTrack = track;
             startPlayTime = System.currentTimeMillis();
             musicInfo = new MusicInfoData(track);
@@ -172,12 +155,13 @@ public class TrackScheduler extends AudioEventAdapter {
         this.event.noMoreTrack(event, guild);
     }
 
-    public List<AudioTrack> getQueue() {
+    public AudioTrack[] getQueue() {
         if (index + 1 >= queue.size())
-            return new ArrayList<>();
-        List<AudioTrack> out = new ArrayList<>();
+            return null;
+        AudioTrack[] out = new AudioTrack[loop ? queue.size() : queue.size() - index - 1];
+        int index = 0;
         for (int i = queue.size() - 1; i > (loop ? -1 : index); i--) {
-            out.add(queue.get(i));
+            out[index++] = queue.get(i);
         }
         return out;
     }

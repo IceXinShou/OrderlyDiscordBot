@@ -51,7 +51,6 @@ public class BotSetting {
     public static Map<String, Object> GeneralSettings;
     public static Map<String, Object> MultiBot;
     // console
-    public static ByteArrayOutputStream logConsole, errConsole;
     private final String TAG = "[Setting]";
 
     public BotSetting() {
@@ -169,6 +168,7 @@ public class BotSetting {
 
     private final String commandPr = "> ";
     private final PrintStream originalConsole = System.out;
+    private ByteArrayOutputStream logConsole, errConsole;
 
     public void sendNoneToConsole() {
         originalConsole.print(commandPr);
@@ -188,7 +188,6 @@ public class BotSetting {
 
         // 暫存 給discord console用的
         consoleBuff = new StringBuilder();
-        errBuff = new StringBuilder();
 
         originalConsole.print(commandPr);
         logConsole.reset();
@@ -196,8 +195,8 @@ public class BotSetting {
         // 把log的東西print出來
         new Thread(() -> {
             while (true) {
-                String time = ('[' + OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ");
                 if (logConsole.size() > 0) {
+                    String time = ('[' + OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ");
                     String log = logConsole.toString(StandardCharsets.UTF_8);
                     String[] lines = log.split(System.lineSeparator());
                     StringBuilder builder = new StringBuilder();
@@ -210,10 +209,11 @@ public class BotSetting {
 
                     originalConsole.print('\r' + builder.toString() + commandPr);
                     if (builder.length() > 0)
-                        printConsole(builder.toString());
+                        sendToConsole(builder.toString(), false);
                     logConsole.reset();
                 }
                 if (errConsole.size() > 0) {
+                    String time = ('[' + OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ");
                     String log = errConsole.toString(StandardCharsets.UTF_8);
                     String[] lines = log.split(System.lineSeparator());
                     StringBuilder builder = new StringBuilder();
@@ -229,58 +229,45 @@ public class BotSetting {
 
                     originalErrConsole.print('\r' + builder.toString());
                     if (builder.length() > 0)
-                        printError(builder.toString());
+                        sendToConsole(builder.toString(), true);
                     errConsole.reset();
                 }
 
                 try {
-                    Thread.sleep(800);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    System.err.println(e.getMessage());
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }).start();
     }
 
     private StringBuilder consoleBuff;
-    private StringBuilder errBuff;
 
-    private void printConsole(String log) {
+    private void sendToConsole(String log, boolean error) {
         consoleBuff.append(log);
         if (consoleChannel == null)
             return;
-        List<String> messageSplit = new ArrayList<>();
-        String message;
-        while ((message = consoleBuff + System.lineSeparator()).length() > 2000)
-            for (int i = 0; i < (message.length() / 2000) - 1; i++) {
-                int locate = message.indexOf('\n');
-                messageSplit.add(message.substring(0, locate));
-                message = message.substring(locate);
-            }
-        for (String msg : messageSplit) {
-            consoleChannel.sendMessage(msg).queue();
+        for (String msg : textSplit(log)) {
+            if (msg.contains("@everyone"))
+                msg.replace("@everyone", "everyone");
+            if (error)
+                consoleChannel.sendMessage("```" + msg + "```").queue();
+            else
+                consoleChannel.sendMessage(msg).queue();
         }
-        consoleChannel.sendMessage(message).queue();
         consoleBuff.setLength(0);
     }
 
-    private void printError(String log) {
-        if (consoleChannel == null)
-            return;
-        List<String> messageSplit = new ArrayList<>();
-        String message;
-        while ((message = errBuff.append(log).toString()).length() > 2000)
-            for (int i = 0; i < (message.length() / 2000) - 1; i++) {
-                int locate = message.indexOf('\n');
-                messageSplit.add(message.substring(0, locate));
-                message = message.substring(locate);
-            }
-        for (String msg : messageSplit) {
-            consoleChannel.sendMessage(msg).queue();
+    private String[] textSplit(String input) {
+        int maxLength = 1994;
+        String[] split = new String[(input.length() / maxLength) + 1];
+        int i;
+        for (i = 0; i < split.length - 1; i++) {
+            split[i] = input.substring(i * maxLength, (i + 1) * maxLength);
         }
-        consoleChannel.sendMessage(message).queue();
-        errBuff.setLength(0);
+        split[i] = input.substring(i * maxLength);
+        return split;
     }
 
     private void loadConfigFile() {

@@ -2,10 +2,8 @@ package main.java.command.list;
 
 import main.java.Main;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +34,6 @@ public class FileConvert {
             }
             String urlID = new JSONObject(result).getJSONObject("data").getJSONArray("tasks").getJSONObject(2).getString("id");
             JSONObject expertData = new JSONObject(getDataAuthorization("https://api.cloudconvert.com/v2/tasks/" + urlID, authorization)).getJSONObject("data");
-            String exportUrl = "none";
             while (!expertData.getString("status").equals("finished")) {
                 try {
                     expertData = new JSONObject(getDataAuthorization("https://api.cloudconvert.com/v2/tasks/" + urlID, authorization)).getJSONObject("data");
@@ -51,7 +48,6 @@ public class FileConvert {
                     System.err.println(e.getMessage());
                 }
             }
-            urlShort.onCommand(event, true, exportUrl, lang);
         });
     }
 }
