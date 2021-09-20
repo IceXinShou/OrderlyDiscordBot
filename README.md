@@ -15,6 +15,11 @@
   * Fast loading of songs
   * Control Button with menu
   * Supports video, playlist and stream!
+### Usage:
+1. Join the main bot to you server by using this [link](https://reurl.cc/eE78aM), main bot is for controlling music bots
+2. Join least 1 music bot in your server from the following list
+3. Type `/p URL` to play music
+4. Type `/help orderly` for more usage
 ### Music bots:
 1. 序之犬 - Doge [Invite Link](https://reurl.cc/eE7Nz7)
 2. 序之狐 - Fox [Invite Link](https://reurl.cc/lR4xDj)
