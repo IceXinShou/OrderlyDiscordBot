@@ -40,12 +40,14 @@ public class FileConvert {
             while (!expertData.getString("status").equals("finished")) {
                 try {
                     expertData = new JSONObject(getDataAuthorization("https://api.cloudconvert.com/v2/tasks/" + urlID, authorization)).getJSONObject("data");
-                    if (expertData.getString("status").equals("finished"))
-                        for (Object i : expertData.getJSONObject("result").getJSONArray("files")) {
-                            exportUrl = String.valueOf(new URIBuilder(((JSONObject) i).getString("url")).build());
-                        }
+                    if (expertData.getString("status").equals("finished")) {
+                        urlShort.onCommand(event, true,
+                                expertData.getJSONObject("result").getJSONArray("files").getJSONObject(0).getString("url")
+                                , lang);
+                        return;
+                    }
                     Thread.sleep(3000);
-                } catch (URISyntaxException | InterruptedException e) {
+                } catch (InterruptedException e) {
                     System.err.println(e.getMessage());
                 }
             }

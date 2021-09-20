@@ -8,6 +8,7 @@ import main.java.util.file.GuildSettingHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
 import static main.java.BotSetting.debugMode;
+import static main.java.Main.botID;
 import static main.java.Main.language;
 import static main.java.command.list.Invite.authChannelID;
 import static main.java.lang.LangKey.*;
@@ -115,15 +117,21 @@ public class ListenerManager extends ListenerAdapter {
     // guild | 特定公會
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-//        quickUse.onGuildMessageReceived(event); // word("testCommand") && owner
+        quickUse.onGuildMessageReceived(event); // word("testCommand") && owner
         level.onGuildMessageReceived(event); // always
         generalReplay.onGuildMessageReceived(event); // word
         log.onGuildMessageReceived(event); // always
+        if (event.getMember() != null && !event.getMember().getId().equals(botID))
+            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
+                    " sent a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }
 
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         log.onGuildMessageUpdate(event); // guild(own)
+        if (event.getMember() != null && !event.getMember().getId().equals(botID))
+            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
+                    " edited a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }
 
     @Override
@@ -186,6 +194,7 @@ public class ListenerManager extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         musicManager.setupAllBot();
         statusListener.startListen(event.getJDA());
+        settingYande.startThread(event.getJDA());
     }
 
     /**
@@ -194,10 +203,14 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildBan(GuildBanEvent event) {
+        System.out.println("[" + event.getGuild().getName() + "] " +
+                "ban member: " + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     @Override
     public void onGuildUnban(GuildUnbanEvent event) {
+        System.out.println("[" + event.getGuild().getName() + "] " +
+                "unban member: " + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     /**
@@ -206,10 +219,16 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildInviteCreate(GuildInviteCreateEvent event) {
+        Member member = event.getGuild().getMember(event.getInvite().getInviter());
+        if (member != null)
+            System.out.println("[" + event.getGuild().getName() + "] " + (member.getNickname() == null ? event.getInvite().getInviter().getAsTag() : (member.getNickname() + " (" + event.getInvite().getInviter().getAsTag() + ")")) +
+                    " generated an invite: " + event.getUrl() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getInvite().getInviter().getId() + ')');
     }
 
     @Override
     public void onGuildInviteDelete(GuildInviteDeleteEvent event) {
+        System.out.println("[" + event.getGuild().getName() + "] an invite had been deleted: "
+                + event.getUrl() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + ')');
     }
 
     /**
@@ -220,6 +239,8 @@ public class ListenerManager extends ListenerAdapter {
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         joinLeaveMessage.onGuildMemberRemove(event);
         statusListener.memberLeave(event);
+        System.out.println("[" + event.getGuild().getName() + "] a member had been kicked: "
+                + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     @Override
@@ -330,7 +351,7 @@ public class ListenerManager extends ListenerAdapter {
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
             if (debugMode)
-                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: `" + event.getCommandString() + "`");
+                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: `" + event.getCommandString() + "` (" + event.getUser().getId() + ')');
 
             switch (event.getName()) {
                 case "ping" -> {
@@ -359,7 +380,7 @@ public class ListenerManager extends ListenerAdapter {
         if (debugMode) {
             if (event.getGuild().getId().equals("882605953382514718"))
                 event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024").sendMessage("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`").queue();
-            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "`");
+            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "`" + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getUser().getId() + ')');
         }
 
         // 取得輸入指令的頻道
@@ -368,11 +389,11 @@ public class ListenerManager extends ListenerAdapter {
         int type;
 
         type = musicManager.onCommand(event);
-        if (type == -1) { // 輸入的頻道錯誤
+        if (type == -1)  // 輸入的頻道錯誤
             return;
-        } else if (type == 1) { // 已經執行完成並 return
+        else if (type == 1)  // 已經執行完成並 return
             return;
-        }
+
 
         // 邀請
         if (event.getName().equals("invite")) {
@@ -608,10 +629,14 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         join.onPrivateMessageReceived(event); // guild(own)
+        System.out.println("[Private] " + event.getAuthor().getAsTag() +
+                " sent a message: " + event.getMessage().getContentRaw() + " (" + event.getAuthor().getId() + ')');
     }
 
     @Override
     public void onPrivateMessageUpdate(PrivateMessageUpdateEvent event) {
+        System.out.println("[Private] " + event.getAuthor().getAsTag() +
+                " update a message: " + event.getMessage().getContentRaw() + " (" + event.getAuthor().getId() + ')');
     }
 
     @Override
@@ -630,6 +655,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onPrivateMessageReactionRemove(PrivateMessageReactionRemoveEvent event) {
     }
+
 
     public void reload(Guild guild) {
         commandRegister.getMainGuildVariable(guild); // guild(own)

@@ -6,10 +6,7 @@ import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -32,7 +29,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static main.java.BotSetting.apiKEY;
+import static main.java.BotSetting.YT_APIKEY;
 import static main.java.BotSetting.multiMusicBotTokens;
 import static main.java.Main.emoji;
 import static main.java.command.list.Invite.authChannelID;
@@ -163,13 +160,19 @@ public class MultiMusicBotManager {
                 OptionMapping url = event.getOption(NAME);
                 if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
                     bot.loadAndPlay(event, event.getGuild(), url.getAsString(), false, playNow);
+                } else if (Pattern.matches(".*open.spotify.com/playlist/\\w*", url.getAsString())) {
+                    bot.loadAndPlaySpotify(event, event.getGuild(), url.getAsString(), false, playNow);
                 } else {
+//                    if (true) {
+//                        event.getHook().editOriginalEmbeds(createEmbed("目前 YouTube API 無法使用搜尋功能！正在等待修復", 0xFF0000)).queue();
+//                        return;
+//                    }
                     String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
                     SelectionMenu.Builder builder = SelectionMenu.create("MultiMusicBotManager:searchResult:" + event.getUser().getId() + ':' + bot.getID() + ':' + playNow);
 
                     String result = getData(
                             "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +
-                                    keyWord + "&key=" + apiKEY);
+                                    keyWord + "&key=" + YT_APIKEY);
                     if (result == null) return;
                     JSONArray videoInfo = new JSONObject(result).getJSONArray("items");
 

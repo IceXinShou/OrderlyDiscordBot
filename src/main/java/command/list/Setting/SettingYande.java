@@ -2,6 +2,7 @@ package main.java.command.list.Setting;
 
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -27,8 +28,9 @@ import static main.java.util.UrlDataGetter.getData;
 public record SettingYande(GuildSettingHelper settingHelper) {
 
     private static ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+    static List<String> tags = new ArrayList<>();
     static Map<String, Map<String, List<String>>> map = new HashMap<>();
-    static Map<String, Map<String, List<Integer>>> old = new HashMap<>();
+    static List<Integer> old = new ArrayList<>();
 
     public void onGuildReady(GuildReadyEvent event) {
         JSONObject data = getSettingData(event.getGuild());
@@ -36,57 +38,66 @@ public record SettingYande(GuildSettingHelper settingHelper) {
             return;
 
         for (String i : data.keySet()) {
-            List<String> tags = new ArrayList<>();
-            for (Object j : data.getJSONArray(i))
-                tags.add((String) j);
-
+            List<String> tagList = new ArrayList<>();
+            for (Object j : data.getJSONArray(i)) {
+                if (!tags.contains(String.valueOf(j)))
+                    tags.add(String.valueOf(j));
+                tagList.add((String) j);
+            }
 
             Map<String, List<String>> k = new HashMap<>();
-            k.put(i, tags);
+            k.put(i, tagList);
 
             map.put(event.getGuild().getId(), k);
         }
-
-        startThread(event.getGuild());
     }
 
-    private void startThread(Guild guild) {
 
-        for (String i : map.get(guild.getId()).keySet()) {
-            Map<String, List<Integer>> j = new HashMap<>();
-            j.put(i, new ArrayList<>());
-            old.put(guild.getId(), j);
-        }
-
+    public void startThread(JDA jda) {
         if (threadPool != null && !threadPool.isShutdown())
             threadPool.shutdown();
 
         threadPool = Executors.newSingleThreadScheduledExecutor();
         threadPool.scheduleWithFixedDelay(() -> {
-            if (map.get(guild.getId()).size() == 0)
+
+            if (tags.size() == 0)
                 return;
 
-            for (String i : map.get(guild.getId()).keySet())
-                for (String j : map.get(guild.getId()).get(i)) {
-                    JSONArray array = new JSONArray(getData("https://yande.re/post.json?limit=1&tags=" + j));
-                    if (array.length() != 0) {
-                        int id = array.getJSONObject(0).getInt("id");
-                        if (!old.get(guild.getId()).get(i).contains(id)) {
-                            old.get(guild.getId()).get(i).add(id);
-                            TextChannel channel;
-                            if ((channel = guild.getTextChannelById(i)) != null)
-                                if (channel.isNSFW())
-                                    channel.sendMessage("https://yande.re/post/show/" + id).queue();
-                                else
-                                    channel.sendMessage("請開啟 NSFW").queue();
-                        }
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        System.err.println(e.getMessage());
-                    }
+            for (String tag : tags) {
+                JSONArray array = new JSONArray(getData("https://yande.re/post.json?limit=1&tags=" + tag));
+                if (array.length() != 0) {
+                    int id;
+                    boolean success = false;
+                    if (!old.contains(id = array.getJSONObject(0).getInt("id")))
+                        for (Map.Entry<String, Map<String, List<String>>> i : map.entrySet())
+                            for (Map.Entry<String, List<String>> j : i.getValue().entrySet())
+                                if (j.getValue().contains(tag)) {
+                                    Guild guild;
+                                    if ((guild = jda.getGuildById(i.getKey())) != null) {
+                                        TextChannel channel;
+                                        if ((channel = guild.getTextChannelById(j.getKey())) != null) {
+                                            success = true;
+                                            if (old.size() > 20)
+                                                old.remove(20);
+                                            old.add(id);
+                                            if (channel.isNSFW())
+                                                channel.sendMessage("https://yande.re/post/show/" + id).queue();
+                                            else
+                                                channel.sendMessage("請開啟 NSFW").queue();
+                                        } else
+                                            map.get(guild.getId()).remove(j.getKey());
+                                    } else
+                                        map.remove(i.getKey());
+                                }
+                    if (!success)
+                        tags.remove(tag);
                 }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
         }, 0, 30000, TimeUnit.MILLISECONDS);
     }
 
@@ -104,13 +115,11 @@ public record SettingYande(GuildSettingHelper settingHelper) {
                 else
                     tags.put(tags.length(), option.getAsString());
 
-            } else {
-                if (!option.getAsGuildChannel().getType().equals(ChannelType.TEXT))
-                    fields.add(new MessageEmbed.Field("您選擇的頻道並不是文字頻道", "", false));
-                else
-                    channel = (TextChannel) option.getAsGuildChannel();
+            } else if (!option.getAsGuildChannel().getType().equals(ChannelType.TEXT))
+                fields.add(new MessageEmbed.Field("您選擇的頻道並不是文字頻道", "", false));
+            else
+                channel = (TextChannel) option.getAsGuildChannel();
 
-            }
         }
         if (!channel.isNSFW())
             fields.add(new MessageEmbed.Field("尚未開啟 NSFW", "", false));
@@ -125,7 +134,6 @@ public record SettingYande(GuildSettingHelper settingHelper) {
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0x00FFFF)).queue();
-        startThread(event.getGuild());
     }
 
     public void removeYande(SlashCommandEvent event) {
@@ -141,7 +149,6 @@ public record SettingYande(GuildSettingHelper settingHelper) {
         }
         data.remove(channelID);
         map.get(event.getGuild().getId()).remove(channelID);
-        old.get(event.getGuild().getId()).remove(channelID);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
         event.getHook().editOriginalEmbeds(createEmbed("移除完成", 0x00FFFF)).queue();
     }

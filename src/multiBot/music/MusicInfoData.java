@@ -4,7 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static main.java.BotSetting.apiKEY;
+import static main.java.BotSetting.YT_APIKEY;
 import static main.java.util.UrlDataGetter.getData;
 import static main.java.util.UrlDataGetter.postData;
 
@@ -64,7 +64,7 @@ public class MusicInfoData {
 
         // 頻道
         channelID = videoDetails.getString("channelId");
-        result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + apiKEY);
+        result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + YT_APIKEY);
         channelURL = ("https://www.youtube.com/channel/" + channelID);
         if (result == null) return;
 //        System.out.println(result);
@@ -73,7 +73,7 @@ public class MusicInfoData {
         channelName = channelInfo.getString("title");
 
         // 影片統計
-        result = getData("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + videoID + "&key=" + apiKEY);
+        result = getData("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + videoID + "&key=" + YT_APIKEY);
         if (result == null) return;
         JSONObject statistics = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("statistics");
         viewCount = Long.parseLong(statistics.getString("viewCount"));

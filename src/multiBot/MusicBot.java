@@ -12,6 +12,7 @@ import multiBot.music.GuildMusicManager;
 import multiBot.music.MusicInfoData;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener;
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
+import static multiBot.music.SpotifyToYouTube.Translate;
 
 public class MusicBot {
     private final JDA jda;
@@ -105,6 +107,13 @@ public class MusicBot {
         getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
 
+    public void loadAndPlaySpotify(final GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow) {
+        String[] ids = Translate(trackUrl);
+        for (String i : ids) {
+            loadAndPlay(event, guild, "https://youtu.be/" + i, search, playNow);
+        }
+    }
+
     public void loadAndPlay(final GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(guild.getId());
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
@@ -174,12 +183,13 @@ public class MusicBot {
 
     }
 
-    public void disconnect(SlashCommandEvent event, Guild guild) {
+    public void stopPlay(SlashCommandEvent event, Guild guild) {
         getMusicManager(guild).scheduler.stopPlay(event);
-    }
-
-    public void stopPlay(Guild guild) {
-        getMusicManager(guild).scheduler.stopPlay(null);
+        workCount--;
+        if (workCount == 0) {
+            jda.getPresence().setStatus(OnlineStatus.IDLE);
+            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
+        }
     }
 
     /**
@@ -314,16 +324,6 @@ public class MusicBot {
 
                 }
             });
-            try {
-                countDownLatch.await(2000, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            guild.getAudioManager().setConnectionListener(null);
-            // 新增bot到頻道
-            musicBotManager.setBotToChannel(guild.getId(), vc.getId(), this);
-            if (guild.getSelfMember().getPermissions().contains(Permission.VOICE_DEAF_OTHERS))
-                guild.getSelfMember().deafen(true).queue();
         }
     }
 

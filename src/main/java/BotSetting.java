@@ -27,7 +27,7 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionStringERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, defaultTicketChannelName, newServiceName, boostedRoleID, apiKEY;
+            defaultServiceMessage, defaultTicketChannelName, newServiceName, boostedRoleID, YT_APIKEY;
     public static boolean debugMode;
     public static Role boostedRole;
 
@@ -100,7 +100,7 @@ public class BotSetting {
         /*
          * Text
          */
-        apiKEY = (String) GeneralSettings.get("apiKey");
+        YT_APIKEY = (String) GeneralSettings.get("apiKey");
         helpBlockFooter = (String) GeneralSettings.get("helpBlockFooter");
         noPermissionStringERROR = (String) GeneralSettings.get("noPermissionERROR");
         if (activityMessages.size() > 0) activityMessages.clear();
