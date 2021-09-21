@@ -185,11 +185,6 @@ public class MusicBot {
 
     public void stopPlay(SlashCommandEvent event, Guild guild) {
         getMusicManager(guild).scheduler.stopPlay(event);
-        workCount--;
-        if (workCount == 0) {
-            jda.getPresence().setStatus(OnlineStatus.IDLE);
-            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
-        }
     }
 
     /**
@@ -316,7 +311,7 @@ public class MusicBot {
                             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
                         }
                         workCount++;
-                        jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個伺服器"));
+                        jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個頻道"));
                         guild.getAudioManager().setConnectionListener(null);
                         // 新增bot到頻道
                         musicBotManager.setBotToChannel(guild.getId(), vc.getId(), bot);

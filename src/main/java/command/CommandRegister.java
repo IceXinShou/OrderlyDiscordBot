@@ -155,21 +155,21 @@ public class CommandRegister {
                 new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),
                 // Tool
 
-                new CommandData("rename", "更改頻道名稱").addOptions(
-                        new OptionData(STRING, "name", "名稱", true),
-                        new OptionData(CHANNEL, "channel", "頻道")
+                new CommandData("rename", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
+                        new OptionData(STRING, "name", lang.get(COMMANDREGISTER_CHANNEL_RENAME_NAME), true),
+                        new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_CHANNEL_RENAME_CHANNEL))
                 ),
-                new CommandData("setname", "更改頻道名稱").addOptions(
-                        new OptionData(STRING, "name", "名稱", true),
-                        new OptionData(CHANNEL, "channel", "頻道")
+                new CommandData("setname", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
+                        new OptionData(STRING, "name", lang.get(COMMANDREGISTER_CHANNEL_RENAME_NAME), true),
+                        new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_CHANNEL_RENAME_CHANNEL))
                 ),
-                new CommandData("rebitrate", "更改頻道位元率").addOptions(
-                        new OptionData(CHANNEL, "channel", "頻道", true),
-                        new OptionData(INTEGER, "bitrate", "位元率", true)
+                new CommandData("rebitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
+                        new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_CHANNEL), true),
+                        new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
-                new CommandData("setbitrate", "更改頻道位元率").addOptions(
-                        new OptionData(CHANNEL, "channel", "頻道", true),
-                        new OptionData(INTEGER, "bitrate", "位元率", true)
+                new CommandData("setbitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
+                        new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_CHANNEL), true),
+                        new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
                 new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
 //                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
@@ -196,18 +196,18 @@ public class CommandRegister {
 
                 // osu
                 new CommandData("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
-                        new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
-                        new SubcommandData("info", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
-                        new SubcommandData("last", "查看上一首歌的成績").addOption(STRING, "name", "請輸入名字"),
-                        new SubcommandData("top", "顯示最佳成績").addOption(STRING, "name", "請輸入名字")
+                        new SubcommandData("setuser", lang.get(COMMANDREGISTER_OSU_BIND_ACCOUNT)).addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME), true),
+                        new SubcommandData("info", lang.get(COMMANDREGISTER_OSU_GET_INFO)).addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME)),
+                        new SubcommandData("last", lang.get(COMMANDREGISTER_OSU_GET_LAST)).addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME)),
+                        new SubcommandData("top", lang.get(COMMANDREGISTER_OSU_SHOW_TOP)).addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME))
                 ),
                 // Hypixel
-                new CommandData("hy", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
-                        new SubcommandData("setuser", "綁定帳號").addOption(STRING, "name", "請輸入名字", true),
-                        new SubcommandData("info", "取得玩家資料").addOption(STRING, "name", "請輸入名字"),
-                        new SubcommandData("bedwars", "取得床戰戰績").addOption(STRING, "name", "請輸入名字"),
-                        new SubcommandData("skywars", "取得 Skywars 戰績").addOption(STRING, "name", "請輸入名字"),
-                        new SubcommandData("skyblock", "取得 Skyblock 資料").addOption(STRING, "name", "請輸入名字")
+                new CommandData("hy", lang.get(COMMANDREGISTER_HYPIXEL)).addSubcommands(
+                        new SubcommandData("setuser", lang.get(COMMANDREGISTER_HYPIXEL_BIND_ACCOUNT)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME), true),
+                        new SubcommandData("info", lang.get(COMMANDREGISTER_HYPIXEL_GET_INFO)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME)),
+                        new SubcommandData("bedwars", lang.get(COMMANDREGISTER_HYPIXEL_GET_BEDWARS)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME)),
+                        new SubcommandData("skywars", lang.get(COMMANDREGISTER_HYPIXEL_GET_SKYWARS)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME)),
+                        new SubcommandData("skyblock", lang.get(COMMANDREGISTER_HYPIXEL_GET_SKYBLOCK)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME))
                 ),
 
                 // Help
@@ -316,18 +316,18 @@ public class CommandRegister {
                                 new OptionData(STRING, "message", lang.get(COMMANDREGISTER_S_NL_MESSAGE), true)
                         ),
                         new SubcommandData("removeleave", lang.get(COMMANDREGISTER_S_REMOVE_LEAVE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_S_RL_CHANNEL), true),
-                        new SubcommandData("newyande", "新增取得 yande 圖片").addOptions(
-                                new OptionData(STRING, "tag1", "標籤", true),
-                                new OptionData(STRING, "tag2", "標籤"),
-                                new OptionData(STRING, "tag3", "標籤"),
-                                new OptionData(STRING, "tag4", "標籤"),
-                                new OptionData(STRING, "tag5", "標籤"),
-                                new OptionData(STRING, "tag6", "標籤"),
-                                new OptionData(STRING, "tag7", "標籤"),
-                                new OptionData(STRING, "tag8", "標籤"),
-                                new OptionData(STRING, "tag9", "標籤"),
-                                new OptionData(CHANNEL, "channel", "頻道")),
-                        new SubcommandData("removeyande", "移除頻道 yande 設定").addOption(CHANNEL, "channel", "頻道", true)
+                        new SubcommandData("newyande", lang.get(COMMANDREGISTER_NEWYANDE)).addOptions(
+                                new OptionData(STRING, "tag1", lang.get(COMMANDREGISTER_NEWYANDE_TAG), true),
+                                new OptionData(STRING, "tag2", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag3", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag4", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag5", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag6", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag7", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag8", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(STRING, "tag9", lang.get(COMMANDREGISTER_NEWYANDE_TAG)),
+                                new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_NEWYANDE_CHANNEL))),
+                        new SubcommandData("removeyande", lang.get(COMMANDREGISTER_REMOVEYANDE)).addOption(CHANNEL, "channel", lang.get(COMMANDREGISTER_REMOVEYANDE_CHANNEL), true)
 
                         // -------------------
                 ),

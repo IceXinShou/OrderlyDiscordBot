@@ -28,7 +28,6 @@ public class Test {
             if ((data = array.get(1)).equals(0)) {
                 break;
             }
-            System.out.println(data);
         }
     }
 //    private ImageGraphMaker getPopGraph() {

@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.UrlDataGetter.getData;
@@ -26,20 +27,21 @@ public class SettingHypixel {
 
 
     public void onRegister(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String result = getData("https://api.mojang.com/users/profiles/minecraft/" + event.getOption("name").getAsString());
         if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
-            event.getHook().editOriginalEmbeds(createEmbed("名字錯誤", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_NAME_ERROR), 0xFF0000)).queue();
             return;
         }
 
-        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         hypixelFileData.put(event.getUser().getId(), (new JSONObject(result)).getString("id"));
         jsonFileManager.saveFile();
 
-        event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0xFF0000)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_SETTING_SUCCESSFULLY), 0xFF0000)).queue();
     }
 
     public void info(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if ((uuid = getUUID(event)) == null)
             return;
@@ -54,7 +56,6 @@ public class SettingHypixel {
         String rank = "";
         int color = 0xFFFFFF;
         int achievementPoints;
-        long general_coins;
         long karma;
         JSONObject statusData;
         JSONObject playerData;
@@ -64,7 +65,7 @@ public class SettingHypixel {
             playerData = new JSONObject(getData("https://api.hypixel.net/player?key=e3a78fc6-2d53-438f-b905-0e13bed60224&uuid=" + uuid)).getJSONObject("player");
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤，請重試！", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_ERROR_PLEASE_TRY_AGAIN), 0xFF0000)).queue();
             return;
         }
 
@@ -86,7 +87,6 @@ public class SettingHypixel {
         displayName = playerData.getString("displayname");
         userLanguage = playerData.getString("userLanguage");
         achievementPoints = playerData.getInt("achievementPoints");
-        general_coins = playerData.getJSONObject("stats").getJSONObject("Arcade").getLong("coins");
         karma = playerData.getLong("karma");
         if (playerData.has("newPackageRank"))
             if (playerData.has("monthlyPackageRank")) {
@@ -117,14 +117,13 @@ public class SettingHypixel {
 
         StringBuilder description = new StringBuilder();
         description
-                .append("▸ **狀態:** ").append(onlineStats ? "線上 (" + gameType + " - " + mode + ')' : "離線").append("\n\n")
-                .append("▸ **第一次加入時間:** ").append(firstTime).append('\n')
-                .append("▸ **使用語言:** ").append(userLanguage).append('\n')
-                .append("▸ **人品值:** ").append(String.format("%,d", karma)).append('\n')
-                .append("▸ **金錢:** ").append(String.format("%,d", general_coins)).append('\n')
-                .append("▸ **成就點數:** ").append(String.format("%,d", achievementPoints)).append("\n\n")
-                .append("▸ **最後一次上線:** ").append(lastTime).append('\n')
-                .append("▸ **最後一次離線:** ").append(lastoutTime).append('\n');
+                .append("▸ **" + lang.get(HYPIXEL_STATUS) + ":** ").append(onlineStats ? lang.get(HYPIXEL_STATUS_ONLINE) + " (" + gameType + " - " + mode + ')' : lang.get(HYPIXEL_STATUS_OFFLINE)).append("\n\n")
+                .append("▸ **" + lang.get(HYPIXEL_FIRST_JOIN_TIME) + ":** ").append(firstTime).append('\n')
+                .append("▸ **" + lang.get(HYPIXEL_USING_LANGUAGE) + ":** ").append(userLanguage).append('\n')
+                .append("▸ **" + lang.get(HYPIXEL_KARMA) + ":** ").append(String.format("%,d", karma)).append('\n')
+                .append("▸ **" + lang.get(HYPIXEL_ACHIEVEMENT_POINT) + ":** ").append(String.format("%,d", achievementPoints)).append("\n\n")
+                .append("▸ **" + lang.get(HYPIXEL_JOIN_TIME) + ":** ").append(lastTime).append('\n')
+                .append("▸ **" + lang.get(HYPIXEL_LEFT_TIME) + ":** ").append(lastoutTime).append('\n');
         if (event.getGuild().getId().equals(guildID))
             event.getHook().editOriginalEmbeds(createEmbed(
                     "",
@@ -145,11 +144,12 @@ public class SettingHypixel {
                     "https://crafatar.com/avatars/" + uuid,
                     color
             )).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("完成", 0x00ffff)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_SETTING_SUCCESSFULLY), 0x00ffff)).queue();
         }
     }
 
     public void bedwars(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if ((uuid = getUUID(event)) == null)
             return;
@@ -164,7 +164,7 @@ public class SettingHypixel {
             playerStats = playerData.getJSONObject("stats").getJSONObject("Bedwars");
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            event.getHook().editOriginalEmbeds(createEmbed("錯誤，請重試！", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_ERROR_PLEASE_TRY_AGAIN), 0xFF0000)).queue();
             return;
         }
 
@@ -227,21 +227,22 @@ public class SettingHypixel {
                     "https://crafatar.com/avatars/" + uuid,
                     color
             )).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("完成", 0x00ffff)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_SETTING_SUCCESSFULLY), 0x00ffff)).queue();
         }
     }
 
     private String getUUID(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if (event.getOption("name") != null) {
             String result = getData("https://api.mojang.com/users/profiles/minecraft/" + event.getOption("name").getAsString());
             if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
-                event.getHook().editOriginalEmbeds(createEmbed("名字錯誤", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_NAME_ERROR), 0xFF0000)).queue();
                 return null;
             }
             uuid = (new JSONObject(result)).getString("id");
         } else if (!hypixelFileData.has(event.getUser().getId())) {
-            event.getHook().editOriginalEmbeds(createEmbed("請先使用 `/hy setuser <name>` 綁定帳號", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_REGISTER_FIRST), 0xFF0000)).queue();
             return null;
         } else
             uuid = hypixelFileData.getString(event.getUser().getId());
