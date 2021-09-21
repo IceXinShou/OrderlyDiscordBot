@@ -242,8 +242,8 @@ public class MusicBot {
             AudioTrack[] inQueue = scheduler.getQueue();
             int index = inQueue.length;
             for (AudioTrack track : inQueue) {
-                stringBuilder.append("[").append(index--).append("] ")
-                        .append(track.getInfo().title);
+                stringBuilder.append("[").append(index--).append("] [")
+                        .append(track.getInfo().title).append("](").append(track.getInfo().uri);
                 if (track.getInfo().isStream)
                     stringBuilder.append(") **[LIVE]**\n");
                 else

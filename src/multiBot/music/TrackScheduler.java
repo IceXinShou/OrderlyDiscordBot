@@ -125,6 +125,7 @@ public class TrackScheduler extends AudioEventAdapter {
         lastIndex = index;
         index++;
         if (playTrack()) {
+//            this.event.skip(playingTrack, event, guild);
             this.event.trackStart(playingTrack, event, guild, musicBot, search);
         } else {
             stopPlay(event);
