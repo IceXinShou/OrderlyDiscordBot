@@ -327,17 +327,17 @@ public class MusicBot {
                 public void onUserSpeaking(User user, boolean b) {
                 }
             });
-        }else
+        } else
             consumer.accept(null);
     }
 
-    public void disconnect(Guild guild){
+    public void disconnect(Guild guild) {
         workCount--;
         musicManagers.remove(guild.getId());
         if (workCount == 0) {
             jda.getPresence().setStatus(OnlineStatus.IDLE);
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
-        }else{
+        } else {
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個頻道"));
         }
         if (guild.getAudioManager().isConnected()) {

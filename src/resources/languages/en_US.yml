@@ -149,6 +149,16 @@ SETTINGROOM_REMOVE_SUCCESS: "Delete Successfully"
 SETTINGROOM_NONE: "`NONE`"
 
 
+# {@link main.java.command.list.Setting.SettingRoom}
+SETTINGYANDE_WRONG_TAG: "Wrong Tag"
+SETTINGYANDE_WRONG_CHANNEL_TYPE: "Please Select Channel Type is **TEXT**"
+SETTINGYANDE_NSFW_IS_NOT_OPEN: "NSFW is **OFF**"
+SETTINGYANDE_CREATE_FAILED: "Create Failed"
+SETTINGYANDE_CREATE_SUCCESSFULLY: "Setting Successfully"
+SETTINGYANDE_NO_SET: "The channel had not been set"
+SETTINGYANDE_REMOVE_SUCCESSFULLY: "Remove Successfully"
+
+
 # {@link main.java.command.list.FileConvert}
 FILECONVERT_CONVERTING: "Converting..."
 FILECONVERT_WAIT_TIME: "It will take a few time..."

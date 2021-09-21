@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.EmbedCreator.isBotOwner;
 
 @SuppressWarnings("ALL")
@@ -30,7 +28,7 @@ public class QuickUse {
 
         if (message.getContentRaw().startsWith("testCommand") && (isBotOwner(event) /*|| event.getMember().getId().equals(event.getGuild().retrieveOwner().complete().getId())*/)) {
 
-            event.getJDA().getGuildById("864051459121086484").getTextChannelById("864347411165347840").sendMessage("execute at @a run summon creeper ~2 ~ ~2").queue(i-> i.delete().queue());
+            event.getJDA().getGuildById("864051459121086484").getTextChannelById("864347411165347840").sendMessage("execute at @a run summon creeper ~2 ~ ~2").queue(i -> i.delete().queue());
 //            event.getJDA().getGuildById("858672865355890708").getTextChannelById("858672866283356217").sendMessage("pl").queue(i->i.delete().queue());
 
 //            event.getChannel().sendMessageEmbeds(createEmbed("Test", "Track cases globally, or in a country, by supplying 2-letter [country codes](https://countrycode.org/).", 0xFF0000)).queue();

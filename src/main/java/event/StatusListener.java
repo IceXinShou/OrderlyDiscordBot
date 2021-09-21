@@ -129,6 +129,8 @@ public class StatusListener {
                                     activityName.equals("Badlion Client") ||
                                     activityName.equals("Impact") ||
                                     activityName.equals("Aristois") ||
+                                    activityName.equals("SkyClient") ||
+                                    activityName.contains("FTB") ||
                                     activityName.equals("Skyblock")
                             )
                                 playMinecraft++;

@@ -7,7 +7,6 @@ import java.net.URLEncoder;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static main.java.BotSetting.YT_APIKEY;
-import static main.java.util.SlashCommandOption.NAME;
 import static main.java.util.UrlDataGetter.getData;
 import static main.java.util.UrlDataGetter.getDataAuthorization;
 
@@ -33,7 +32,8 @@ public class SpotifyToYouTube {
             String videoData = getData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&type=video&q=" +
                     URLEncoder.encode(track.getString("name"), UTF_8) + URLEncoder.encode(builder.toString(), UTF_8) + "&key=" + YT_APIKEY);
 
-            if (videoData == null) return new String[]{"error"};output[count] = (new JSONObject(videoData)).getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId");
+            if (videoData == null) return new String[]{"error"};
+            output[count] = (new JSONObject(videoData)).getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId");
 
         }
 

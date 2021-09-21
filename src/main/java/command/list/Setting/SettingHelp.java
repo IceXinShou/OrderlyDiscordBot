@@ -155,6 +155,46 @@ public class SettingHelp {
 
                 """
                         ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        ┃　**自動取得 Yande 圖片**　
+                        ┃　　
+                        ┃　　`/setting newyande`\040
+                        ┃　　
+                        ┃　　**介紹**：自由設定提醒標籤
+                        ┃　　　　　小心不要被 Discord 官方封禁
+                        ┃　　
+                        ┃　　**參數 | Parameter**
+                        ┃　　
+                        ┃　　`<tag1>` 須提醒的標籤
+                        ┃　　`[tag2...]` 須提醒的標籤
+                        ┃　　`[channel]` 提醒的頻道
+                        ┃　　
+                        """
+                , false));
+
+
+        helpFields.add(new MessageEmbed.Field("",
+
+                """
+                        ┃　**移除自動取得 Yande 圖片**　
+                        ┃　　
+                        ┃　　**方法 1.**
+                        ┃　　將含頻道刪除即可
+                        ┃　　
+                        ┃　　**方法 2.**
+                        ┃　　`/setting removeyande`\040
+                        ┃　　
+                        ┃　　**參數 | Parameter**
+                        ┃　　
+                        ┃　　`<channel>` 頻道
+                        ┗
+                        """
+                , false));
+
+
+        helpFields.add(new MessageEmbed.Field("",
+
+                """
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                         ┃　**添加同訊息多個客服按鈕**　
                         ┃　　
                         ┃　　`/setting addticket`\040
@@ -248,7 +288,7 @@ public class SettingHelp {
                         ┃　　`%stream%` 直播成員人數
                         ┃　　`%camera%` 視訊成員人數
                         ┃　　`%play_minecraft%` 正在遊玩 minecraft 人數
-                        ┃　　(支援: Vanilla, Badlion Client, Lunar Client, LabyMod, Impact, Aristois)
+                        ┃　　(支援: Vanilla, Badlion Client, Lunar Client, LabyMod, Impact, Aristois, SkyClient, FTB)
                         ┃　　(若有未支援到的請使用: `/support` 提供建議)
                         """
                 , false));

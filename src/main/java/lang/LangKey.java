@@ -184,6 +184,18 @@ public class LangKey {
 
 
     /**
+     * {@link main.java.command.list.Setting.SettingYande}
+     */
+    public static int SETTINGYANDE_WRONG_TAG;
+    public static int SETTINGYANDE_WRONG_CHANNEL_TYPE;
+    public static int SETTINGYANDE_NSFW_IS_NOT_OPEN;
+    public static int SETTINGYANDE_CREATE_FAILED;
+    public static int SETTINGYANDE_CREATE_SUCCESSFULLY;
+    public static int SETTINGYANDE_NO_SET;
+    public static int SETTINGYANDE_REMOVE_SUCCESSFULLY;
+
+
+    /**
      * {@link main.java.command.list.FileConvert}
      */
     public static int FILECONVERT_CONVERTING;

@@ -1,5 +1,6 @@
 package main.java.command.list.Setting;
 
+import main.java.Main;
 import main.java.util.file.GuildSettingHelper;
 import main.java.util.file.JsonFileManager;
 import net.dv8tion.jda.api.JDA;
@@ -21,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.JsonKeys.YANDE_SETTING;
 import static main.java.util.UrlDataGetter.getData;
@@ -83,7 +85,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
                                             if (channel.isNSFW())
                                                 channel.sendMessage("https://yande.re/post/show/" + id).queue();
                                             else
-                                                channel.sendMessage("請開啟 NSFW").queue();
+                                                channel.sendMessage("NSFW is off").queue();
                                         } else
                                             map.get(guild.getId()).remove(j.getKey());
                                     } else
@@ -102,6 +104,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
     }
 
     public void newYande(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(event.getGuild());
         TextChannel channel = event.getTextChannel();
         JSONArray tags = new JSONArray();
@@ -111,20 +114,20 @@ public record SettingYande(GuildSettingHelper settingHelper) {
                 String result = getData("https://yande.re/post.json?limit=1&tags=" + option.getAsString());
                 JSONArray array = new JSONArray(result);
                 if (array.length() == 0)
-                    fields.add(new MessageEmbed.Field("錯誤的 Tag (" + option.getAsString() + ')', "", false));
+                    fields.add(new MessageEmbed.Field(lang.get(SETTINGYANDE_WRONG_TAG) + " (" + option.getAsString() + ')', "", false));
                 else
                     tags.put(tags.length(), option.getAsString());
 
             } else if (!option.getAsGuildChannel().getType().equals(ChannelType.TEXT))
-                fields.add(new MessageEmbed.Field("您選擇的頻道並不是文字頻道", "", false));
+                fields.add(new MessageEmbed.Field(lang.get(SETTINGYANDE_WRONG_CHANNEL_TYPE), "", false));
             else
                 channel = (TextChannel) option.getAsGuildChannel();
 
         }
         if (!channel.isNSFW())
-            fields.add(new MessageEmbed.Field("尚未開啟 NSFW", "", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGYANDE_NSFW_IS_NOT_OPEN), "", false));
         if (fields.size() > 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("創建失敗", fields, 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_CREATE_FAILED), fields, 0xFF0000)).queue();
             return;
         }
         if (data.has(channel.getId()))
@@ -133,24 +136,25 @@ public record SettingYande(GuildSettingHelper settingHelper) {
             data.put(channel.getId(), tags);
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_CREATE_SUCCESSFULLY), 0x00FFFF)).queue();
     }
 
     public void removeYande(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(event.getGuild());
         if (!event.getOption("channel").getAsGuildChannel().getType().equals(ChannelType.TEXT)) {
-            event.getHook().editOriginalEmbeds(createEmbed("您選擇的頻道並不是文字頻道", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_WRONG_CHANNEL_TYPE), 0xFF0000)).queue();
             return;
         }
         String channelID = event.getOption("channel").getAsGuildChannel().getId();
         if (!data.has(channelID)) {
-            event.getHook().editOriginalEmbeds(createEmbed("此頻道未被設定過", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_NO_SET), 0xFF0000)).queue();
             return;
         }
         data.remove(channelID);
         map.get(event.getGuild().getId()).remove(channelID);
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-        event.getHook().editOriginalEmbeds(createEmbed("移除完成", 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_REMOVE_SUCCESSFULLY), 0x00FFFF)).queue();
     }
 
     private JSONObject getSettingData(Guild guild) {
