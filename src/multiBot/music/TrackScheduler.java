@@ -17,6 +17,7 @@ import java.util.List;
 public class TrackScheduler extends AudioEventAdapter {
     private final Guild guild;
     private final AudioPlayer player;
+    private final MusicBot musicBot;
     private final List<AudioTrack> queue;
     private int lastIndex = 0;
     private int index = 0;
@@ -34,13 +35,14 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public int loopStatus = 0;
 
-    public TrackScheduler(AudioPlayer player, Guild guild) {
+    public TrackScheduler(AudioPlayer player, Guild guild, MusicBot musicBot) {
         this.guild = guild;
         this.player = player;
+        this.musicBot = musicBot;
         this.queue = new ArrayList<>();
     }
 
-    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event, MusicBot musicBot) {
+    public void addPlayListToQueue(AudioPlaylist playlist, GenericInteractionCreateEvent event) {
         List<AudioTrack> trackList = playlist.getTracks();
         if (trackList.size() == 0)
             return;
@@ -49,12 +51,12 @@ public class TrackScheduler extends AudioEventAdapter {
             queue.add(trackList.get(i));
         }
         // 嘗試播放
-        queue(trackList.get(0), event, musicBot, 0, false, false);
+        queue(trackList.get(0), event, 0, false, false);
 
         this.event.addPlayerListToQueue(playlist, event);
     }
 
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, MusicBot musicBot, int position, boolean search, boolean playNow) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, int position, boolean search, boolean playNow) {
         if (position != -1)
             queue.add(position, track);
         else if (playNow && queue.size() > 0) {
@@ -63,7 +65,7 @@ public class TrackScheduler extends AudioEventAdapter {
                 index++;
                 playingTrack = track;
             }
-            nextTrack(event, musicBot, search);
+            nextTrack(event, search);
             return;
         } else
             queue.add(track);
@@ -120,11 +122,10 @@ public class TrackScheduler extends AudioEventAdapter {
         return false;
     }
 
-    public void nextTrack(GenericInteractionCreateEvent event, MusicBot musicBot, boolean search) {
+    public void nextTrack(GenericInteractionCreateEvent event, boolean search) {
         lastIndex = index;
         index++;
         if (playTrack()) {
-//            this.event.skip(playingTrack, event, guild);
             this.event.trackStart(playingTrack, event, guild, musicBot, search);
         } else {
             stopPlay(event);
@@ -133,7 +134,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
             lastIndex = index;
             index++;
@@ -152,16 +152,16 @@ public class TrackScheduler extends AudioEventAdapter {
         musicPause = false;
         player.setPaused(false);
         player.stopTrack();
-        this.event.noMoreTrack(event, guild);
+        this.event.noMoreTrack(event, guild, musicBot);
     }
 
     public AudioTrack[] getQueue() {
         if (index + 1 >= queue.size())
             return null;
         AudioTrack[] out = new AudioTrack[loop ? queue.size() : queue.size() - index - 1];
-        int index = 0;
+        int j = 0;
         for (int i = queue.size() - 1; i > (loop ? -1 : index); i--) {
-            out[index++] = queue.get(i);
+            out[j++] = queue.get(i);
         }
         return out;
     }

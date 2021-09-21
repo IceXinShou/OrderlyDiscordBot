@@ -244,7 +244,7 @@ public class MultiMusicBotManager {
                 scheduler.switchPause();
                 break;
             case "next":
-                scheduler.nextTrack(null, null, false);
+                scheduler.nextTrack(null, false);
                 break;
             case "volumeUp":
                 volume = scheduler.getVolume() + 5;

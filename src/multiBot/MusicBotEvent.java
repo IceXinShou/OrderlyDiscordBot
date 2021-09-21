@@ -19,7 +19,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
 
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search) {
-        if (musicBot != null) {
+        if (event != null) {
             musicBot.displayQueue(event, search, event.getGuild());
         }
     }
@@ -79,13 +79,9 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild) {
+    public void noMoreTrack(GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot) {
+        musicBot.disconnect(guild);
         List<String> lang = Main.language.getGuildLang(guild.getId());
-        if (guild.getAudioManager().isConnected()) {
-            // 從頻道移除bot
-            musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
-            guild.getAudioManager().closeAudioConnection();
-        }
 
         if (event instanceof SlashCommandEvent)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_STOP_PLAY), 0xFF3B7D)).queue();

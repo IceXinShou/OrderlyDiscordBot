@@ -29,9 +29,9 @@ public class GuildMusicManager {
      *
      * @param manager Audio player manager to use for creating the player.
      */
-    public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
+    public GuildMusicManager(AudioPlayerManager manager, Guild guild, MusicBot musicBot) {
         player = manager.createPlayer();
-        scheduler = new TrackScheduler(player, guild);
+        scheduler = new TrackScheduler(player, guild, musicBot);
         this.guild = guild;
         guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
         player.addListener(scheduler);
@@ -45,7 +45,7 @@ public class GuildMusicManager {
 
         void addPlayerListToQueue(AudioPlaylist track, GenericInteractionCreateEvent event);
 
-        void noMoreTrack(GenericInteractionCreateEvent event, Guild guild);
+        void noMoreTrack(GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot);
 
         void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild);
 

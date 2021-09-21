@@ -64,13 +64,13 @@ public class MusicBot {
                 event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
                 return;
             }
-            manager.scheduler.addPlayListToQueue(playlist, event, this);
+            manager.scheduler.addPlayListToQueue(playlist, event);
         });
     }
 
     private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean search, boolean playNow) {
         connectVC(manager.guild, vc, event, (i) -> {
-            manager.scheduler.queue(track, event, this, -1, search, playNow);
+            manager.scheduler.queue(track, event, -1, search, playNow);
         });
     }
 
@@ -82,8 +82,7 @@ public class MusicBot {
         Guild guild;
         if ((guild = event.getGuild()) == null)
             return;
-        getMusicManager(guild).scheduler.nextTrack(event, this, search);
-
+        getMusicManager(guild).scheduler.nextTrack(event, search);
     }
 
     public void toggleRepeat(SlashCommandEvent event, Guild guild) {
@@ -328,6 +327,23 @@ public class MusicBot {
                 public void onUserSpeaking(User user, boolean b) {
                 }
             });
+        }else
+            consumer.accept(null);
+    }
+
+    public void disconnect(Guild guild){
+        workCount--;
+        musicManagers.remove(guild.getId());
+        if (workCount == 0) {
+            jda.getPresence().setStatus(OnlineStatus.IDLE);
+            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
+        }else{
+            jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個頻道"));
+        }
+        if (guild.getAudioManager().isConnected()) {
+            // 從頻道移除bot
+            musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
+            guild.getAudioManager().closeAudioConnection();
         }
     }
 
@@ -341,7 +357,7 @@ public class MusicBot {
     private GuildMusicManager getMusicManager(Guild guild) {
         GuildMusicManager musicManager = musicManagers.get(guild.getId());
         if (musicManager == null) {
-            musicManager = new GuildMusicManager(playerManager, guild);
+            musicManager = new GuildMusicManager(playerManager, guild, this);
             musicManager.scheduler.setManagerEvent(event);
             musicManagers.put(guild.getId(), musicManager);
         }
