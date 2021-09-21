@@ -97,8 +97,8 @@
 ## Language Support
 
 * Chinese Traditional \(100%\)
-* Chinese Simplified \(85%\)
-* English \(85%\)
+* Chinese Simplified \(100%\)
+* English \(100%\)
 
 ## Setup
 
