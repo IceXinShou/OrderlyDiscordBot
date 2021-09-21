@@ -196,6 +196,33 @@ public class LangKey {
 
 
     /**
+     * {@link main.java.command.list.Setting.SettingOsu}
+     */
+    public static int SETTINGOSU_WRONG_NAME;
+    public static int SETTINGOSU_SETTING_SUCCESSFULLY;
+    public static int SETTINGOSU_24H_NO_PLAY;
+    public static int SETTINGOSU_SUCCESSFULLY;
+    public static int SETTINGOSU_RANK;
+    public static int SETTINGOSU_LEVEL;
+    public static int SETTINGOSU_PP;
+    public static int SETTINGOSU_PLAY_COUNT;
+    public static int SETTINGOSU_POINT;
+    public static int SETTINGOSU_SCORE;
+    public static int SETTINGOSU_REGISTER_FIRST;
+    public static int SETTINGOSU_COMBO;
+    public static int SETTINGOSU_HOUR;
+
+
+    /**
+     * {@link main.java.command.list.ChannelChange}
+     */
+    public static int ChannelChange_TOO_LONG;
+    public static int ChannelChange_CHANGE_SUCCESSFULLY;
+    public static int ChannelChange_CHANNEL_TYPE_ERROR;
+    public static int ChannelChange_BITRATE_ERROR;
+
+
+    /**
      * {@link main.java.command.list.FileConvert}
      */
     public static int FILECONVERT_CONVERTING;

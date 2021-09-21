@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import static main.java.Main.emoji;
+import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.UrlDataGetter.getData;
@@ -25,21 +26,22 @@ public class SettingOsu {
 
 
     public void onRegister(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONArray dataArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));
 
         if (dataArray.length() == 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("名字錯誤", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_WRONG_NAME), 0xFF0000)).queue();
             return;
         }
 
-        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         osuFileData.put(event.getUser().getId(), dataArray.getJSONObject(0).getString("user_id"));
         jsonFileManager.saveFile();
 
-        event.getHook().editOriginalEmbeds(createEmbed("設定完成", 0xFF0000)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_SETTING_SUCCESSFULLY), 0xFF0000)).queue();
     }
 
     public void onTop(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if ((osuID = getOsuID(event)) == null)
             return;
@@ -62,9 +64,9 @@ public class SettingOsu {
             }
             description.append(rankEmoji)
                     .append(" **[").append(mapData.getString("title")).append(" [").append(mapData.getString("version")).append(']').append("](https://osu.ppy.sh/beatmapsets/").append(mapData.getString("beatmapset_id")).append("/)**\n")
-                    .append("▸ **連擊:** ").append(data.getString("maxcombo")).append('/').append(mapData.getString("max_combo")).append(' ')
-                    .append("▸ **PP:** ").append(String.format("%.2f", Float.parseFloat(data.getString("pp")))).append(' ').append('\n')
-                    .append("▸ **分數:** ").append(String.format("%,d", Integer.parseInt(data.getString("score")))).append("\n\n");
+                    .append("▸ **" + lang.get(SETTINGOSU_COMBO) + ":** ").append(data.getString("maxcombo")).append('/').append(mapData.getString("max_combo")).append(' ')
+                    .append("▸ **" + lang.get(SETTINGOSU_PP) + ":** ").append(String.format("%.2f", Float.parseFloat(data.getString("pp")))).append(' ').append('\n')
+                    .append("▸ **" + lang.get(SETTINGOSU_SCORE) + ":** ").append(String.format("%,d", Integer.parseInt(data.getString("score")))).append("\n\n");
         }
         if (event.getGuild().getId().equals(guildID))
             event.getHook().editOriginalEmbeds(createEmbed(
@@ -88,18 +90,19 @@ public class SettingOsu {
                     "https://www.countryflags.io/" + userData.getString("country") + "/flat/64.png",
                     0x00FFFF
             )).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("完成", 0x00ffff)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_SUCCESSFULLY), 0x00ffff)).queue();
         }
     }
 
     public void onPrevious(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if ((osuID = getOsuID(event)) == null)
             return;
         JSONObject userData = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&type=id&u=" + osuID)).getJSONObject(0);
         JSONArray mapArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user_recent?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&type=id&limit=1&u=" + osuID));
         if (mapArray.length() == 0) {
-            event.getHook().editOriginalEmbeds(createEmbed("你沒有在24小時內玩過遊戲", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_24H_NO_PLAY), 0xFF0000)).queue();
             return;
         }
         JSONObject data = new JSONArray(getData("https://osu.ppy.sh/api/get_user_recent?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&type=id&limit=1&u=" + osuID)).getJSONObject(0);
@@ -121,7 +124,7 @@ public class SettingOsu {
                     "https://assets.ppy.sh/beatmaps/" + mapData.getString("beatmapset_id") + "/covers/cover.jpg\n",
                     "https://osu.ppy.sh/beatmaps/" + data.getString("beatmap_id"),
                     "https://osu.ppy.sh/users/" + osuID,
-                    "\n▸ **連擊:** " + data.getString("maxcombo") + '/' + mapData.getString("max_combo") + "\n▸ **PP:** " + String.format("%.2f", Float.parseFloat(data.getString("pp"))) + "\n▸ **分數:** " + String.format("%,d", Integer.parseInt(data.getString("score"))),
+                    "\n▸ **" + lang.get(SETTINGOSU_COMBO) + ":** " + data.getString("maxcombo") + '/' + mapData.getString("max_combo") + "\n▸ **" + lang.get(SETTINGOSU_PP) + ":** " + String.format("%.2f", Float.parseFloat(data.getString("pp"))) + "\n▸ **" + lang.get(SETTINGOSU_SCORE) + ":** " + String.format("%,d", Integer.parseInt(data.getString("score"))),
                     "",
                     0x00FFFF,
                     userData.getString("username"),
@@ -133,13 +136,13 @@ public class SettingOsu {
                     "https://assets.ppy.sh/beatmaps/" + mapData.getString("beatmapset_id") + "/covers/cover.jpg\n",
                     "https://osu.ppy.sh/beatmaps/" + data.getString("beatmap_id"),
                     "https://osu.ppy.sh/users/" + osuID,
-                    "\n▸ **連擊:** " + data.getString("maxcombo") + '/' + mapData.getString("max_combo") + /*"\n▸ **PP:** " + String.format("%.2f", Float.parseFloat(data.getString("pp"))) +*/ "\n▸ **分數:** " + String.format("%,d", Integer.parseInt(data.getString("score"))),
+                    "\n▸ **" + lang.get(SETTINGOSU_COMBO) + ":** " + data.getString("maxcombo") + '/' + mapData.getString("max_combo") + "\n▸ **" + lang.get(SETTINGOSU_PP) + ":** " + String.format("%.2f", Float.parseFloat(data.getString("pp"))) + "\n▸ **" + lang.get(SETTINGOSU_SCORE) + ":** " + String.format("%,d", Integer.parseInt(data.getString("score"))),
                     "",
                     0x00FFFF,
                     userData.getString("username"),
                     "https://a.ppy.sh/" + osuID + "?476"
             )).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("完成", 0x00FFFF)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_SUCCESSFULLY), 0x00FFFF)).queue();
         }
     }
 
@@ -155,7 +158,7 @@ public class SettingOsu {
         } else {
             result = getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_'));
             if (new JSONArray(result).length() == 0) {
-                event.getHook().editOriginalEmbeds(createEmbed("名字錯誤", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_WRONG_NAME), 0xFF0000)).queue();
                 return;
             }
         }
@@ -166,12 +169,12 @@ public class SettingOsu {
                     "https://a.ppy.sh/" + data.getString("user_id") + "?476",
                     "https://osu.ppy.sh/users/" + data.getString("user_id"),
                     "" +
-                            "▸**排行: **" + '#' + String.format("%,d", Integer.parseInt(data.getString("pp_rank"))) + " (" + data.getString("country") + " #" + String.format("%,d", Integer.parseInt(data.getString("pp_country_rank"))) + ')' + '\n' +
-                            "▸**等級: **" + ((int) (Float.parseFloat(data.getString("level")))) + '\n' +
-                            "▸**PP: **" + String.format("%,.2f", Float.parseFloat(data.getString("pp_raw"))) + "  **Acc: **" + String.format("%.2f", Float.parseFloat(data.getString("accuracy"))) + "%\n" +
-                            "▸**遊玩次數: **" + String.format("%,d", Integer.parseInt(data.getString("playcount"))) + " (" + String.format("%.2f", (Float.parseFloat(data.getString("total_seconds_played")) / 60 / 60)) + " 小時)\n" +
+                            "▸**" + lang.get(SETTINGOSU_RANK) + ": **" + '#' + String.format("%,d", Integer.parseInt(data.getString("pp_rank"))) + " (" + data.getString("country") + " #" + String.format("%,d", Integer.parseInt(data.getString("pp_country_rank"))) + ')' + '\n' +
+                            "▸**" + lang.get(SETTINGOSU_LEVEL) + ": **" + ((int) (Float.parseFloat(data.getString("level")))) + '\n' +
+                            "▸**" + lang.get(SETTINGOSU_PP) + ": **" + String.format("%,.2f", Float.parseFloat(data.getString("pp_raw"))) + "  **Acc: **" + String.format("%.2f", Float.parseFloat(data.getString("accuracy"))) + "%\n" +
+                            "▸**" + lang.get(SETTINGOSU_PLAY_COUNT) + ": **" + String.format("%,d", Integer.parseInt(data.getString("playcount"))) + " (" + String.format("%.2f", (Float.parseFloat(data.getString("total_seconds_played")) / 60 / 60)) + ' ' + lang.get(SETTINGOSU_HOUR) + ")\n" +
 //                        "▸**等級: **" + String.format("%.0f", Float.parseFloat(data.getString("level"))) + '\n' +
-                            "▸**成績: **" +
+                            "▸**" + lang.get(SETTINGOSU_POINT) + ": **" +
                             emoji.osu_ssh.getAsMention() + '`' + data.getString("count_rank_ssh") + '`' +
                             emoji.osu_sh.getAsMention() + '`' + data.getString("count_rank_sh") + '`' +
                             emoji.osu_ss.getAsMention() + '`' + data.getString("count_rank_ss") + '`' +
@@ -188,12 +191,12 @@ public class SettingOsu {
                     "https://a.ppy.sh/" + data.getString("user_id") + "?476",
                     "https://osu.ppy.sh/users/" + data.getString("user_id"),
                     "" +
-                            "▸**排行: **" + '#' + String.format("%,d", Integer.parseInt(data.getString("pp_rank"))) + " (" + data.getString("country") + " #" + String.format("%,d", Integer.parseInt(data.getString("pp_country_rank"))) + ')' + '\n' +
-                            "▸**等級: **" + ((int) (Float.parseFloat(data.getString("level")))) + '\n' +
-                            "▸**PP: **" + String.format("%,.2f", Float.parseFloat(data.getString("pp_raw"))) + "  **Acc: **" + String.format("%.2f", Float.parseFloat(data.getString("accuracy"))) + "%\n" +
-                            "▸**遊玩次數: **" + String.format("%,d", Integer.parseInt(data.getString("playcount"))) + " (" + String.format("%.2f", (Float.parseFloat(data.getString("total_seconds_played")) / 60 / 60)) + " 小時)\n" +
+                            "▸**" + lang.get(SETTINGOSU_RANK) + ": **" + '#' + String.format("%,d", Integer.parseInt(data.getString("pp_rank"))) + " (" + data.getString("country") + " #" + String.format("%,d", Integer.parseInt(data.getString("pp_country_rank"))) + ')' + '\n' +
+                            "▸**" + lang.get(SETTINGOSU_LEVEL) + ": **" + ((int) (Float.parseFloat(data.getString("level")))) + '\n' +
+                            "▸**" + lang.get(SETTINGOSU_PP) + ": **" + String.format("%,.2f", Float.parseFloat(data.getString("pp_raw"))) + "  **Acc: **" + String.format("%.2f", Float.parseFloat(data.getString("accuracy"))) + "%\n" +
+                            "▸**" + lang.get(SETTINGOSU_PLAY_COUNT) + ": **" + String.format("%,d", Integer.parseInt(data.getString("playcount"))) + " (" + String.format("%.2f", (Float.parseFloat(data.getString("total_seconds_played")) / 60 / 60)) + ' ' + lang.get(SETTINGOSU_HOUR) + ")\n" +
 //                        "▸**等級: **" + String.format("%.0f", Float.parseFloat(data.getString("level"))) + '\n' +
-                            "▸**成績: **" +
+                            "▸**" + lang.get(SETTINGOSU_POINT) + ": **" +
                             emoji.osu_ssh.getAsMention() + '`' + data.getString("count_rank_ssh") + '`' +
                             emoji.osu_sh.getAsMention() + '`' + data.getString("count_rank_sh") + '`' +
                             emoji.osu_ss.getAsMention() + '`' + data.getString("count_rank_ss") + '`' +
@@ -204,22 +207,23 @@ public class SettingOsu {
                     "https://www.countryflags.io/" + data.getString("country") + "/flat/64.png",
                     0x00FFFF
             )).queue();
-            event.getHook().editOriginalEmbeds(createEmbed("完成", 0x00ffff)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_SUCCESSFULLY), 0x00ffff)).queue();
         }
 
     }
 
     private String getOsuID(SlashCommandEvent event) {
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if (event.getOption("name") != null) {
             JSONArray dataArray = new JSONArray(getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));
             if (dataArray.length() == 0) {
-                event.getHook().editOriginalEmbeds(createEmbed("名字錯誤", 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_WRONG_NAME), 0xFF0000)).queue();
                 return null;
             }
             osuID = dataArray.getJSONObject(0).getString("user_id");
         } else if (!osuFileData.has(event.getUser().getId())) {
-            event.getHook().editOriginalEmbeds(createEmbed("請先使用 `/osu setuser <name>` 綁定帳號", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_REGISTER_FIRST), 0xFF0000)).queue();
             return null;
         } else {
             osuID = osuFileData.getString(event.getUser().getId());

@@ -149,7 +149,7 @@ SETTINGROOM_REMOVE_SUCCESS: "移除成功"
 SETTINGROOM_NONE: "`无`"
 
 
-# {@link main.java.command.list.Setting.SettingRoom}
+# {@link main.java.command.list.Setting.SettingYande}
 SETTINGYANDE_WRONG_TAG: "错误的 Tag"
 SETTINGYANDE_WRONG_CHANNEL_TYPE: "您选择的频道并不是文字频道"
 SETTINGYANDE_NSFW_IS_NOT_OPEN: "尚未开启 NSFW"
@@ -157,6 +157,29 @@ SETTINGYANDE_CREATE_FAILED: "创建失败"
 SETTINGYANDE_CREATE_SUCCESSFULLY: "设定完成"
 SETTINGYANDE_NO_SET: "此频道未被设定过"
 SETTINGYANDE_REMOVE_SUCCESSFULLY: "移除完成"
+
+
+# {@link main.java.command.list.Setting.SettingOsu}
+SETTINGOSU_WRONG_NAME: "名字错误"
+SETTINGOSU_SETTING_SUCCESSFULLY: "设定完成"
+SETTINGOSU_24H_NO_PLAY: "此玩家没有在24小时内玩过游戏"
+SETTINGOSU_SUCCESSFULLY: "完成"
+SETTINGOSU_RANK: "排行"
+SETTINGOSU_LEVEL: "等级"
+SETTINGOSU_PP: "PP"
+SETTINGOSU_PLAY_COUNT: "游玩次数"
+SETTINGOSU_POINT: "成绩"
+SETTINGOSU_REGISTER_FIRST: "请先使用 `/osu setuser <name>` 绑定帐号"
+SETTINGOSU_COMBO: "连击"
+SETTINGOSU_SCORE: "分数"
+SETTINGOSU_HOUR: "小时"
+
+
+# {@link main.java.command.list.ChannelChange}
+ChannelChange_TOO_LONG: "名字长度不能超过 100 字"
+ChannelChange_CHANGE_SUCCESSFULLY: "更改完成!"
+ChannelChange_CHANNEL_TYPE_ERROR: "频道类型错误"
+ChannelChange_BITRATE_ERROR: "位元率错误"
 
 
 # {@link main.java.command.list.FileConvert}

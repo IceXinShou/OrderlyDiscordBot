@@ -1,4 +1,5 @@
-//package main.java.util;
+package main.java.util;
+
 //
 //import com.madgag.gif.fmsware.AnimatedGifEncoder;
 //
@@ -10,7 +11,7 @@
 //import java.io.IOException;
 //import java.util.Base64;
 //
-//public class GifGenerator {
+public class GifGenerator {
 //    public static byte[] gifGenerator(String[] base64Images) {
 //        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
 //        encoder.setRepeat(0);
@@ -31,4 +32,4 @@
 //        encoder.finish();
 //        return out.toByteArray();
 //    }
-//}
+}
