@@ -58,9 +58,9 @@ UNBAN_CAN_NOTE_FOUND_MEMBER: "无法找到此成员"
 # {@link main.java.command.list.Ticket}
 TICKET_ALREADY_CLICKED: "您已经使用过此按扭了"
 TICKET_SIZE_LIMIT: "没有足够的空间 (类别中频道数量达到最大值)"
-TICKET_LOCK: "解除封存"
+TICKET_LOCK: "封存"
 TICKET_DELETE: "删除"
-TICKET_UNLOCK: "封存"
+TICKET_UNLOCK: "解除封存"
 
 
 # {@link main.java.command.list.Support}

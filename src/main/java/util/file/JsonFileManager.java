@@ -43,7 +43,7 @@ public class JsonFileManager {
                 builder.append(buff, 0, length);
             fileReader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
         return builder.toString();
     }

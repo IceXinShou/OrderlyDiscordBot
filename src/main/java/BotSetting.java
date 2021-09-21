@@ -236,7 +236,7 @@ public class BotSetting {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                 }
             }
         }).start();
@@ -251,6 +251,8 @@ public class BotSetting {
         for (String msg : textSplit(log)) {
             if (msg.contains("@everyone"))
                 msg.replace("@everyone", "everyone");
+            if (msg.contains("@here"))
+                msg.replace("@here", "here");
             if (error)
                 consoleChannel.sendMessage("```" + msg + "```").queue();
             else

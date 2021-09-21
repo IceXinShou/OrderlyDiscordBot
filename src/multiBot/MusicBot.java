@@ -245,8 +245,9 @@ public class MusicBot {
                 stringBuilder.append("[").append(index--).append("] ")
                         .append(track.getInfo().title);
                 if (track.getInfo().isStream)
-                    stringBuilder.append(" **[LIVE]**");
-                stringBuilder.append("\n");
+                    stringBuilder.append(") **[LIVE]**\n");
+                else
+                    stringBuilder.append(")\n");
             }
         }
 

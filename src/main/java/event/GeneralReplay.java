@@ -4,6 +4,11 @@ import main.java.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static main.java.BotSetting.memberRole;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guildID;
 
@@ -11,9 +16,17 @@ import static main.java.util.GuildUtil.guildID;
 public class GeneralReplay {
 
 
+    Map<String, Integer> warnCount = new HashMap<>();
     /**
      * 訊息接收事件反饋
      */
+
+    public void warnMember(String id) {
+        if (warnCount.containsKey(id))
+            warnCount.put(id, warnCount.get(id) + 1);
+        else
+            warnCount.put(id, 0);
+    }
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().getId().equals(Main.botID)) return;
@@ -30,6 +43,20 @@ public class GeneralReplay {
 //                    event.getMessage().reply("賣靠邀!").queue();
 //        }
         if (!event.getGuild().getId().equals(guildID)) return;
+
+        if (event.getChannel().getId().equals("860469251176792065") && !event.getAuthor().isSystem()) {
+            event.getMessage().replyEmbeds(createEmbed("請勿在此處發送訊息，請使用 `/invite` 指令", 0xFF0000))
+                    .queue(i -> i.delete().queueAfter(3000, TimeUnit.MILLISECONDS));
+            event.getMessage().delete().queue();
+
+            warnMember(event.getMember().getId());
+            if (warnCount.get(event.getMember().getId()) > 3)
+                event.getGuild().removeRoleFromMember(event.getMember(), memberRole);
+
+            return;
+        }
+
+
         TextChannel channel = event.getChannel();
         if (event.getMessage().getContentRaw().startsWith("你好乖")) {
             channel.sendMessage("謝謝讚美").queue(i -> Log.deleteNoLog(i, 1));

@@ -49,7 +49,7 @@ public class SendRequest {
             }
             return conn;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return null;
         }
 

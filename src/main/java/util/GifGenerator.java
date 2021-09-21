@@ -27,7 +27,7 @@ public class GifGenerator {
 //                encoder.addFrame(image);
 //            }
 //        } catch (IOException e) {
-//            e.printStackTrace();
+//            System.err.println(e.getMessage());
 //        }
 //        encoder.finish();
 //        return out.toByteArray();

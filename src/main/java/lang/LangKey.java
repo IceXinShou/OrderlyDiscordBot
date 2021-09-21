@@ -566,7 +566,7 @@ public class LangKey {
             try {
                 field.set(LangKey.class, n++);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
     }
 }

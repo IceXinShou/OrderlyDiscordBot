@@ -58,9 +58,9 @@ UNBAN_CAN_NOTE_FOUND_MEMBER: "Can not find this member!"
 # {@link main.java.command.list.Ticket}
 TICKET_ALREADY_CLICKED: "You have clicked this button already!"
 TICKET_SIZE_LIMIT: "This category is not enough to create channel!"
-TICKET_LOCK: "UnLock"
+TICKET_LOCK: "Lock"
 TICKET_DELETE: "Delete"
-TICKET_UNLOCK: "Lock"
+TICKET_UNLOCK: "UnLock"
 
 
 # {@link main.java.command.list.Support}
