@@ -4,16 +4,31 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static main.java.BotSetting.*;
 import static main.java.util.UrlDataGetter.*;
 
 public class SpotifyToYouTube {
+    /**
+     * spotify_id
+     * spotify_secret
+     * spotify_refresh
+     */
 
-    static public String[] Translate(String oldURL) {
+    private final String SpotifyTokenApiUrl = "https://accounts.spotify.com/api/token";
+    private String bearerToken;
+    private final String basicAuthorization;
+
+    public SpotifyToYouTube() {
+        basicAuthorization = Base64.getEncoder().encodeToString((spotify_id + ':' + spotify_secret).getBytes());
+        refreshToken();
+    }
+
+    public String[] translate(String oldURL) {
         String url = "https://api.spotify.com/v1/playlists/" + oldURL.split("playlist/")[1] + "/tracks?fields=items(track(name%2Cartists(name)))";
-        String token = "Bearer AQC6T36odeCn9XKFj0TWa7dmo5IOOTlysGxfVpLydPw28aMOQ0ugzTSemhNbqOgsYzdWaH2FXJ-JxKea5Ns1DTIUSSytstbx-FbMEei2EcOxqtnLgi4AAiNPn6kTI01YlOL9XixTrbrxg3qYPVqHz2U5rdNb9xUdKngnQaYvLA";
+        String token = "Bearer " + bearerToken;
         JSONObject result = new JSONObject(getDataAuthorization(url, token));
 
         if (result.has("error"))
@@ -37,5 +52,14 @@ public class SpotifyToYouTube {
         }
 
         return output;
+    }
+
+    public void refreshToken() {
+        String result = postDataAuthorization(
+                SpotifyTokenApiUrl,
+                "application/x-www-form-urlencoded", "grant_type=refresh_token&refresh_token=" + spotify_refresh,
+                "Basic " + basicAuthorization);
+        JSONObject data = new JSONObject(result);
+        bearerToken = data.getString("access_token");
     }
 }

@@ -3,6 +3,7 @@ package main.java;
 import main.java.command.list.Invite;
 import main.java.event.Log;
 import main.java.util.GuildUtil;
+import multiBot.music.SpotifyToYouTube;
 import net.dv8tion.jda.api.entities.Role;
 import org.yaml.snakeyaml.Yaml;
 
@@ -138,7 +139,7 @@ public class BotSetting {
         newServiceName = (String) TicketSettings.get("newTicketName");
 
         /**
-         * File
+         * API keys
          */
         Map<String, Object> keys = (Map<String, Object>) GeneralSettings.get("keys");
         YT_APIKEY = (String) keys.get("youtube");

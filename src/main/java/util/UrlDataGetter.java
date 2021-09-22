@@ -17,18 +17,21 @@ public class UrlDataGetter {
         return getData(url, authorization);
     }
 
-    public static String postData(String input, String payload) {
-        return postData(input, payload, null, null);
+    public static String postData(String url, String payload) {
+        return postData(url, "application/json; charset=UTF-8", payload, null, null);
     }
 
-    public static String postCookie(String input, String payload, String cookie) {
-        return postData(input, payload, cookie, null);
+    public static String postCookie(String url, String payload, String cookie) {
+        return postData(url, "application/json; charset=UTF-8", payload, cookie, null);
     }
 
-    public static String postDataAuthorization(String input, String payload, String authorization) {
-        return postData(input, payload, null, authorization);
+    public static String postDataAuthorization(String url, String payload, String authorization) {
+        return postData(url, "application/json; charset=UTF-8", payload, null, authorization);
     }
 
+    public static String postDataAuthorization(String url, String contentType, String payload, String authorization) {
+        return postData(url, contentType, payload, null, authorization);
+    }
 
     private static String getData(String urlStr, String authorization) {
         try {
@@ -51,11 +54,11 @@ public class UrlDataGetter {
         }
     }
 
-    public static String postData(String input, String payload, String cookie, String authorization) {
+    public static String postData(String url, String contentType, String payload, String cookie, String authorization) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(input).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            conn.setRequestProperty("Content-Type", contentType);
             if (authorization != null)
                 conn.setRequestProperty("Authorization", authorization);
             if (cookie != null)
