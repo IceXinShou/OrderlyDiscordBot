@@ -27,7 +27,9 @@ public class BotSetting {
             informationChannelID,
             memberRoleID, noPermissionStringERROR,
             logRoleID, internalRoleID,
-            defaultServiceMessage, defaultTicketChannelName, newServiceName, boostedRoleID, YT_APIKEY;
+            defaultServiceMessage, defaultTicketChannelName, newServiceName, boostedRoleID, YT_APIKEY,
+            spotify_id, spotify_secret, spotify_refresh;
+    public static SpotifyToYouTube spotifyToYouTube;
     public static boolean debugMode;
     public static Role boostedRole;
 
@@ -99,7 +101,6 @@ public class BotSetting {
         /*
          * Text
          */
-        YT_APIKEY = (String) GeneralSettings.get("apiKey");
         helpBlockFooter = (String) GeneralSettings.get("helpBlockFooter");
         noPermissionStringERROR = (String) GeneralSettings.get("noPermissionERROR");
         if (activityMessages.size() > 0) activityMessages.clear();
@@ -135,6 +136,17 @@ public class BotSetting {
         defaultServiceMessage = (String) TicketSettings.get("defaultTicketMessage");
         defaultTicketChannelName = (String) TicketSettings.get("defaultTicketMessage");
         newServiceName = (String) TicketSettings.get("newTicketName");
+
+        /**
+         * File
+         */
+        Map<String, Object> keys = (Map<String, Object>) GeneralSettings.get("keys");
+        YT_APIKEY = (String) keys.get("youtube");
+        Map<String, Object> spotify = (Map<String, Object>) keys.get("spotify");
+        spotify_id = (String) spotify.get("id");
+        spotify_secret = (String) spotify.get("secret");
+        spotify_refresh = (String) spotify.get("refresh");
+        spotifyToYouTube = new SpotifyToYouTube();
 
         /**
          * File
@@ -249,10 +261,8 @@ public class BotSetting {
         if (consoleChannel == null)
             return;
         for (String msg : textSplit(log)) {
-            if (msg.contains("@everyone"))
-                msg.replace("@everyone", "everyone");
-            if (msg.contains("@here"))
-                msg.replace("@here", "here");
+            if (msg.contains("<@"))
+                msg.replace("<@", "@");
             if (error)
                 consoleChannel.sendMessage("```" + msg + "```").queue();
             else

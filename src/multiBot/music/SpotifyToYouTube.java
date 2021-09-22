@@ -6,9 +6,8 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static main.java.BotSetting.YT_APIKEY;
-import static main.java.util.UrlDataGetter.getData;
-import static main.java.util.UrlDataGetter.getDataAuthorization;
+import static main.java.BotSetting.*;
+import static main.java.util.UrlDataGetter.*;
 
 public class SpotifyToYouTube {
 
@@ -22,9 +21,8 @@ public class SpotifyToYouTube {
 
         JSONArray data = result.getJSONArray("items");
         String[] output = new String[data.length()];
-        int count = 0;
-        for (Object i : data) {
-            JSONObject track = ((JSONObject) i).getJSONObject("track");
+        for (int i = 0; i < output.length; i++) {
+            JSONObject track = data.getJSONObject(i).getJSONObject("track");
             StringBuilder builder = new StringBuilder();
             for (Object artist : track.getJSONArray("artists"))
                 builder.append(' ').append(((JSONObject) artist).getString("name"));
@@ -32,9 +30,10 @@ public class SpotifyToYouTube {
             String videoData = getData("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&type=video&q=" +
                     URLEncoder.encode(track.getString("name"), UTF_8) + URLEncoder.encode(builder.toString(), UTF_8) + "&key=" + YT_APIKEY);
 
-            if (videoData == null) return new String[]{"error"};
-            output[count] = (new JSONObject(videoData)).getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId");
-
+            if (videoData == null) continue;
+            JSONObject jd;
+            if ((jd = new JSONObject(videoData)).has("items"))
+                output[i] = jd.getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId");
         }
 
         return output;

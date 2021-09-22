@@ -21,14 +21,23 @@ GeneralSettings:
     - "watching;Server Name"
     - "playing;Cat❤Dog"
     - "competing;Mama❤XinShou"
+
   folder:
     channelLogFolder: "channelLog"
     configFolder: "configFolder"
     levelFolder: "levelFolder"
     guildSettingFolder: "guildFolder"
 
-  # Youtube API KEY (https:// console.cloud.google.com/apis/)
-  apiKey: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
+
+  keys:
+    # Youtube API KEY (https://console.cloud.google.com/apis/)
+    youtube: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
+
+    # Spotify API KEY (https://developer.spotify.com/dashboard/applications)
+    spotify:
+      id: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
+      secret: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
+      refresh: "Forgez87MineCraftTWavJaby.love_a4.IceXinShouFebricAPI87Spigot"
 
   # Will send command used message to console.
   debugMode: true

@@ -8,6 +8,7 @@ import multiBot.music.MusicInfoData;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.List;
@@ -18,9 +19,9 @@ import static main.java.util.EmbedCreator.createEmbed;
 public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements GuildMusicManager.Event {
 
     @Override
-    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search) {
+    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
         if (event != null) {
-            musicBot.displayQueue(event, search, event.getGuild());
+            musicBot.displayQueue(event, search, event.getGuild(), null);
         }
     }
 

@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.ArrayList;
@@ -50,12 +51,12 @@ public class TrackScheduler extends AudioEventAdapter {
             queue.add(trackList.get(i));
         }
         // 嘗試播放
-        queue(trackList.get(0), event, 0, false, false);
+        queue(trackList.get(0), event, 0, false, false, null);
 
         this.event.addPlayerListToQueue(playlist, event);
     }
 
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, int position, boolean search, boolean playNow) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, int position, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         if (position != -1)
             queue.add(position, track);
         else if (playNow && queue.size() > 0) {
@@ -74,7 +75,7 @@ public class TrackScheduler extends AudioEventAdapter {
             startPlayTime = System.currentTimeMillis();
             musicInfo = new MusicInfoData(track);
             calculateNormalized(musicInfo.getLoudness());
-            this.event.trackStart(track, event, guild, musicBot, search);
+            this.event.trackStart(track, event, guild, musicBot, search, selectionMenuEvent);
         } else {
             // 加入序列
             this.event.addToQueue(track, event, search, playNow);
@@ -126,7 +127,7 @@ public class TrackScheduler extends AudioEventAdapter {
         index++;
         if (playTrack()) {
 //            this.event.skip(playingTrack, event, guild);
-            this.event.trackStart(playingTrack, event, guild, musicBot, search);
+            this.event.trackStart(playingTrack, event, guild, musicBot, search, null);
         } else {
             stopPlay(event);
         }

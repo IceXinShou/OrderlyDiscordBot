@@ -151,9 +151,9 @@ public class SettingOsu {
         String result;
         if (event.getOption("name") == null) {
             String osuID;
-            if ((osuID = getOsuID(event)) == null) {
+            if ((osuID = getOsuID(event)) == null)
                 return;
-            }
+
             result = getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + osuID);
         } else {
             result = getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_'));
@@ -225,9 +225,9 @@ public class SettingOsu {
         } else if (!osuFileData.has(event.getUser().getId())) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_REGISTER_FIRST), 0xFF0000)).queue();
             return null;
-        } else {
+        } else
             osuID = osuFileData.getString(event.getUser().getId());
-        }
+
         return osuID;
     }
 }

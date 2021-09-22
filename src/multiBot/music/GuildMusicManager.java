@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 /**
@@ -39,7 +40,7 @@ public class GuildMusicManager {
 
     @SuppressWarnings("ALL")
     public interface Event {
-        void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search);
+        void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent);
 
         void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow);
 

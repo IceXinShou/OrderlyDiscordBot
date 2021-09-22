@@ -2,6 +2,7 @@ package multiBot;
 
 import main.java.Main;
 import multiBot.music.GuildMusicManager;
+import multiBot.music.SpotifyToYouTube;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -117,7 +118,7 @@ public class MultiMusicBotManager {
             case "queue":
             case "playing":
                 if (checkVcState(event, bot))
-                    bot.displayQueue(event, false, event.getGuild());
+                    bot.displayQueue(event, false, event.getGuild(), null);
                 break;
             case "volume":
                 if (checkVcState(event, bot)) {
@@ -159,9 +160,9 @@ public class MultiMusicBotManager {
                 // 開始撥放
                 OptionMapping url = event.getOption(NAME);
                 if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
-                    bot.loadAndPlay(event, event.getGuild(), url.getAsString(), false, playNow);
+                    bot.loadAndPlay(event, event.getGuild(), url.getAsString(), false, playNow, null);
                 } else if (Pattern.matches(".*open.spotify.com/playlist/\\w*", url.getAsString())) {
-                    bot.loadAndPlaySpotify(event, event.getGuild(), url.getAsString(), false, playNow);
+                    bot.loadAndPlaySpotify(event, event.getGuild(), url.getAsString(), false, playNow, null);
                 } else {
 //                    if (true) {
 //                        event.getHook().editOriginalEmbeds(createEmbed("目前 YouTube API 無法使用搜尋功能！正在等待修復", 0xFF0000)).queue();
@@ -283,7 +284,7 @@ public class MultiMusicBotManager {
             if (event.getMember().getVoiceState().inVoiceChannel() && !event.getMember().getVoiceState().getChannel().getType().equals(ChannelType.VOICE))
                 event.replyEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).setEphemeral(true).queue();
             else {
-                bot.loadAndPlay(event, event.getGuild(), "https://youtu.be/" + event.getValues().get(0), true, Boolean.parseBoolean(args[4]));
+                bot.loadAndPlay(event, event.getGuild(), "https://youtu.be/" + event.getValues().get(0), true, Boolean.parseBoolean(args[4]), event);
             }
         }
     }

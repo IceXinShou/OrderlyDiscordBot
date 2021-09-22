@@ -84,7 +84,7 @@ public class JsonKeys {
     public final static String ECONOMY_ENABLE = "EN";
     public final static String ECONOMY_BAL = "MY";
 
-    // for ECONOMY
+    // for OSU
     public final static String OSU_SETTING = "osu";
     public final static String OSU_ = "EN";
 }
