@@ -67,7 +67,7 @@ public class MusicInfoData {
         result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + YT_APIKEY);
         channelURL = ("https://www.youtube.com/channel/" + channelID);
         if (result == null) return;
-        System.out.println(result);
+//        System.out.println(result);
 //        System.out.println(channelURL);
         JSONObject channelInfo = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("snippet");
         channelThumbnailUrl = channelInfo.getJSONObject("thumbnails").getJSONObject("default").getString("url");

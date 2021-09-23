@@ -157,6 +157,23 @@ public class EmbedCreator {
                 null, null);
     }
 
+    @Contract("_, _, _, _, _, _, _, _ -> new")
+    public static MessageEmbed createEmbed(String title, String url, String description, String footer, String nickname, String avatarUrl, int color, String image) {
+        return new MessageEmbed(null,
+                title,
+                description,
+                EmbedType.IMAGE,
+                null,
+                color,
+                null,
+                null,
+                new MessageEmbed.AuthorInfo(nickname, url, avatarUrl, null),
+                null,
+                new MessageEmbed.Footer(footer, null, null),
+                new MessageEmbed.ImageInfo(image, null, 0, 0),
+                null);
+    }
+
     @Contract("_, _, _, _, _, _, _, _, _ -> new")
     public static MessageEmbed createEmbed(String title, String image, String url, String description, String footer, String nickname, String avatarUrl, int color, List<MessageEmbed.Field> fields) {
         return new MessageEmbed(url,

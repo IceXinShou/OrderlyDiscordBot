@@ -80,6 +80,7 @@ public class ListenerManager extends ListenerAdapter {
     VoiceChannelCreator voiceChannelCreator = new VoiceChannelCreator(guildSettingHelper);
     Economy economy = new Economy(guildSettingHelper);
     InformationReaction informationReaction = new InformationReaction();
+    NHentai nHentai = new NHentai();
 
     //command
     Ping ping = new Ping();
@@ -129,7 +130,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         log.onGuildMessageUpdate(event); // guild(own)
-        if (event.getMember() != null && !event.getMember().getId().equals(botID))
+        if (event.getMember() != null && !event.getMember().getId().equals(botID) )
             System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
                     " edited a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }
@@ -331,6 +332,7 @@ public class ListenerManager extends ListenerAdapter {
         clearCommand.onButton(event, args);
         musicManager.onButton(event, args);
         economy.onDailyCheck(event, args);
+        nHentai.onButtonClick(event, args);
     }
 
     @Override
@@ -472,6 +474,10 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "rebitrate", "setbitrate" -> {
                 channelChange.setBitrate(event);
+                return;
+            }
+            case "nhentai" -> {
+                nHentai.onCommand(event);
                 return;
             }
             case "reload" -> {

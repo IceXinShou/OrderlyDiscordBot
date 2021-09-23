@@ -172,6 +172,7 @@ public class CommandRegister {
                         new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
                 new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
+                new CommandData("nhentai", "取得本本").addOption(INTEGER, "id", "請輸入番號", true),
 //                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
 //                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
                 new CommandData("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
