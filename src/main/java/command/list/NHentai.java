@@ -66,7 +66,7 @@ public class NHentai {
 
                 event.replyEmbeds(createEmbed(
                                 title, "https://nhentai.to/g/" + args[4],
-                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" +  page + (page > 1 ? ".png" : ".jpg")))
+                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + (page > 1 ? ".png" : ".jpg")))
                         .addActionRows(ActionRow.of(Button.primary("NHentai:previousPage::0:" + page, Emoji.fromEmote(emoji.back)),
                                 Button.success("NHentai:nextPage::" + page + ":" + args[4], Emoji.fromEmote(emoji.next))))
                         .setEphemeral(true).queue();
@@ -79,7 +79,7 @@ public class NHentai {
 
                 event.replyEmbeds(createEmbed(
                                 title, "https://nhentai.to/g/" + args[4],
-                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" +  page + (page > 1 ? ".png" : ".jpg")))
+                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + (page > 1 ? ".png" : ".jpg")))
                         .addActionRows(ActionRow.of(Button.primary("NHentai:previousPage::0:" + page, Emoji.fromEmote(emoji.back)),
                                 Button.success("NHentai:nextPage::" + page + ":" + args[4], Emoji.fromEmote(emoji.next))))
                         .setEphemeral(true).queue();

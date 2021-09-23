@@ -17,6 +17,7 @@ public class GeneralReplay {
 
 
     Map<String, Integer> warnCount = new HashMap<>();
+
     /**
      * 訊息接收事件反饋
      */

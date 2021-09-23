@@ -130,7 +130,7 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         log.onGuildMessageUpdate(event); // guild(own)
-        if (event.getMember() != null && !event.getMember().getId().equals(botID) )
+        if (event.getMember() != null && !event.getMember().getId().equals(botID))
             System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
                     " edited a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }

@@ -2,7 +2,6 @@ package multiBot;
 
 import main.java.Main;
 import multiBot.music.GuildMusicManager;
-import multiBot.music.SpotifyToYouTube;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
