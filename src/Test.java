@@ -45,8 +45,8 @@ public class Test {
 //
 //    }
 
-    @SuppressWarnings("ALL")
-    public static void main(String[] args) {
-        new Test();
-    }
+//    @SuppressWarnings("ALL")
+//    public static void main(String[] args) {
+//        new Test();
+//    }
 }

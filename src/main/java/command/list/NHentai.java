@@ -24,19 +24,21 @@ public class NHentai {
             event.getHook().editOriginalEmbeds(createEmbed("番號錯誤", 0xFF0000)).queue();
 
         int jsonStart = result.indexOf("gallery:") + 9;
-        int jsonEnd = result.indexOf("images") - 19;
+        int jsonEnd = result.indexOf("start_page") - 19;
 
         JSONObject data = new JSONObject(result.substring(jsonStart, jsonEnd) + '}');
 
         String convertedID = data.getString("media_id");
         String title = data.getJSONObject("title").getString("pretty");
+        int maxPage = data.getInt("num_pages");
 
 
         event.getHook().editOriginalEmbeds(createEmbed(
                         title, "https://nhentai.to/g/" + id,
                         "", "介紹", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF))
-                .setActionRows(ActionRow.of(Button.primary("NHentai:previousPage::0:" + id, Emoji.fromEmote(emoji.back)),
-                        Button.success("NHentai:nextPage::0:" + id, Emoji.fromEmote(emoji.next))))
+                .setActionRows(ActionRow.of(
+                        Button.primary("NHentai:previousPage::0:" + id + ':' + maxPage, Emoji.fromUnicode("⬅️")),
+                        Button.success("NHentai:nextPage::0:" + id + ':' + maxPage, Emoji.fromUnicode("➡️"))))
                 .queue();
     }
 
@@ -57,34 +59,42 @@ public class NHentai {
 
         switch (args[1]) {
             case "previousPage" -> {
-                if (args[3].equals("0")) {
+                if (args[3].equals("0")) { // 目的地錯誤
                     event.deferEdit().queue();
+                    return;
+                } else if (args[3].equals("1")) { // 目的地為首頁時
+                    event.replyEmbeds(createEmbed(
+                                    title, "https://nhentai.to/g/" + args[4],
+                                    "", "介紹", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF))
+                            .addActionRows(ActionRow.of(
+                                    Button.primary("NHentai:previousPage::0:" + args[4] + ':' + args[5], Emoji.fromUnicode("⬅️")),
+                                    Button.success("NHentai:nextPage::0:" + args[4] + ':' + args[5], Emoji.fromUnicode("➡️"))))
+                            .setEphemeral(true).queue();
                     return;
                 }
 
                 int page = Integer.parseInt(args[3]) - 1;
 
-                event.replyEmbeds(createEmbed(
+                event.replyEmbeds(createEmbed( // 上一頁
                                 title, "https://nhentai.to/g/" + args[4],
-                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + (page > 1 ? ".png" : ".jpg")))
-                        .addActionRows(ActionRow.of(Button.primary("NHentai:previousPage::0:" + page, Emoji.fromEmote(emoji.back)),
-                                Button.success("NHentai:nextPage::" + page + ":" + args[4], Emoji.fromEmote(emoji.next))))
+                                "", "第 " + (page) + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + ".jpg"))
+                        .addActionRows(ActionRow.of(
+                                Button.primary("NHentai:previousPage::" + (page - 2) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("⬅️")),
+                                Button.success("NHentai:nextPage::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("➡️"))))
                         .setEphemeral(true).queue();
             }
             case "nextPage" -> {
 
                 int page = Integer.parseInt(args[3]) + 1;
 
-                System.out.println("https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + (page > 1 ? ".png" : ".jpg"));
-
                 event.replyEmbeds(createEmbed(
                                 title, "https://nhentai.to/g/" + args[4],
-                                "", "內文", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + (page > 1 ? ".png" : ".jpg")))
-                        .addActionRows(ActionRow.of(Button.primary("NHentai:previousPage::0:" + page, Emoji.fromEmote(emoji.back)),
-                                Button.success("NHentai:nextPage::" + page + ":" + args[4], Emoji.fromEmote(emoji.next))))
+                                "", "第 " + page + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + convertedID + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + convertedID + "/" + page + ".jpg"))
+                        .addActionRows(ActionRow.of(
+                                Button.primary("NHentai:previousPage::" + (page - 2) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("⬅️")),
+                                Button.success("NHentai:nextPage::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("➡️"))))
                         .setEphemeral(true).queue();
             }
         }
-
     }
 }

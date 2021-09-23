@@ -18,12 +18,11 @@ import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
     public void onCommand(SlashCommandEvent event) {
-        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        User user = event.getOption(USER_TAG).getAsUser();
-        Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
-
         if (hasPermission(BAN_MEMBERS, event, true))
             return;
+        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+        User user = event.getOption(USER_TAG).getAsUser();
+//        Member member = event.getGuild().retrieveMemberById(user.getId()).complete();
 
         Member selfMember = event.getGuild().getSelfMember();
         if (!selfMember.hasPermission(BAN_MEMBERS)) {
@@ -31,12 +30,7 @@ public class Ban {
             return;
         }
 
-        if (!selfMember.canInteract(member)) {
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_PERMISSION_DENIED), 0xFF0000)).queue();
-            return;
-        }
-
-        if (botOwnerID.contains(member.getId())) {
+        if (botOwnerID.contains(user.getId())) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(BAN_DEVELOPER), 0xFF0000)).queue();
             return;
         }

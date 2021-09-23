@@ -29,7 +29,7 @@ public class QuickUse {
 
         if (message.getContentRaw().startsWith("testCommand") && (isBotOwner(event) /*|| event.getMember().getId().equals(event.getGuild().retrieveOwner().complete().getId())*/)) {
 
-            event.getChannel().sendMessageEmbeds(createEmbed("原之序 | ORDERLY SERVER", null, "請輸入 `/invite` 來邀請別人為正式成員\nPlease type `/invite` to invite people join this server", "新手 XinShou", "", event.getJDA().getSelfUser().getAvatarUrl(), 0x00ffff)).queue();
+//            event.getChannel().sendMessageEmbeds(createEmbed("原之序 | ORDERLY SERVER", null, "請輸入 `/invite` 來邀請別人為正式成員\nPlease type `/invite` to invite people join this server", "新手 XinShou", "", event.getJDA().getSelfUser().getAvatarUrl(), 0x00ffff)).queue();
 
 
 //            event.getJDA().getGuildById("864051459121086484").getTextChannelById("864347411165347840").sendMessage("execute at @a run summon creeper ~2 ~ ~2").queue(i -> i.delete().queue());
@@ -145,13 +145,13 @@ public class QuickUse {
 //                }
 //            }
 
-//            List<ActionRow> game = gameButtons(3);
-//            event.getChannel().sendMessageEmbeds(createEmbed("**OOXX大賽!**", 0xFF0000))
-//                    .setActionRows(game)
-//                    .queue(m -> {
-//                        games.put(m.getId(), game);
-//                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
-//                    });
+            List<ActionRow> game = gameButtons(3);
+            event.getChannel().sendMessageEmbeds(createEmbed("**OOXX大賽!**", 0xFF0000))
+                    .setActionRows(game)
+                    .queue(m -> {
+                        games.put(m.getId(), game);
+                        Ids.put(m.getId(), new String[]{event.getMember().getId(), message.getContentRaw().split(" ")[1]});
+                    });
 
 //            event.getGuild().getSelfMember().modifyNickname("我叫做序之徒").queue();
 

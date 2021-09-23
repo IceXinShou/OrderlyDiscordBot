@@ -326,7 +326,7 @@ public class ListenerManager extends ListenerAdapter {
             return;
         }
         createInviteCommand.onButton(event, args);
-//        quickUse.onButtonClick(event, args);
+        quickUse.onButtonClick(event, args);
         informationReaction.onButtonClick(event, args);
         ticketChannel.onButtonClick(event, args);
         clearCommand.onButton(event, args);
