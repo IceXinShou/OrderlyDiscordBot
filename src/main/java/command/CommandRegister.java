@@ -18,6 +18,7 @@ import static main.java.event.InformationReaction.internalRole;
 import static main.java.event.InformationReaction.logRole;
 import static main.java.event.Log.*;
 import static main.java.lang.LangKey.*;
+import static main.java.util.GuildUtil.guildID;
 import static main.java.util.SlashCommandOption.*;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
@@ -36,8 +37,10 @@ public class CommandRegister {
     }
 
     public void onGuildReady(GuildReadyEvent event) {
-        if (event.getGuild().getId().equals(GuildUtil.guildID))
+        if (event.getGuild().getId().equals(guildID))
             getMainGuildVariable(event.getGuild());
+        else if (event.getGuild().getId().equals("817940392418607124"))
+            Main.emoji.loadSubEmoji(event.getGuild());
         else {
             try {
                 addPublicSlashCommand(event.getGuild());
@@ -55,7 +58,7 @@ public class CommandRegister {
         // 註冊主要公會指令
         addOwnSlashCommand(guild);
 
-        Main.emoji.loadEmoji(guild);
+        Main.emoji.loadMainEmoji(guild);
         // 偵測管理員 ID
 //        Role role = guild.getRoleById(adminPermissionID);
 //        if (role == null)

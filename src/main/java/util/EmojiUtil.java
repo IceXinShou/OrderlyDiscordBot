@@ -17,28 +17,18 @@ public class EmojiUtil {
             yesEmoji, noEmoji,
             rule, setting, ping, bell, lock, minecraftGrassBlock, nitro1, boost, discord, no1, partner,
             trashCan, leftArrow, rightArrow, join, leave, cute,
-            borderTop, borderRightTop, borderRightBottom, borderRight, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
+            borderTop, borderLeftTop, borderLeftBottom, borderLeft, borderBottom,
             report, update, bot, voiceFull, voiceDown, next, back, pingGood, pingBad, youtubeIcon,
             osu_ssh, osu_sh, osu_ss, osu_s, osu_a, osu_b, osu_c, osu_d, osu_f;
 
     public static Emote[] dotEmojis = new Emote[10];
 
-    public void loadEmoji(Guild guild) {
+    public void loadMainEmoji(Guild guild) {
         youtubeIcon = getEmoji("YoutubeIcon", guild);
         leaveEmoji = getEmoji("LeaveBlue", guild);
         joinEmoji = getEmoji("JoinBlue", guild);
         yesEmoji = getEmoji("Yes_Tick", guild);
         noEmoji = getEmoji("No_Tick", guild);
-        dotEmojis[0] = getEmoji("DotPink", guild);
-        dotEmojis[1] = getEmoji("DotBrown", guild);
-        dotEmojis[2] = getEmoji("DotOrange", guild);
-        dotEmojis[3] = getEmoji("DotGreen", guild);
-        dotEmojis[4] = getEmoji("DotBlue", guild);
-        dotEmojis[5] = getEmoji("DotRed", guild);
-        dotEmojis[6] = getEmoji("DotYellow", guild);
-        dotEmojis[7] = getEmoji("DotPurple", guild);
-        dotEmojis[8] = getEmoji("DotGray", guild);
-        dotEmojis[9] = getEmoji("DotBlack", guild);
         rule = getEmoji("RuleBlue", guild);
         setting = getEmoji("SettingBlue", guild);
         ping = getEmoji("PingBlue", guild);
@@ -56,14 +46,6 @@ public class EmojiUtil {
         join = getEmoji("Join_Ani", guild);
         leave = getEmoji("Leave_Ani", guild);
         cute = getEmoji("AxolotlGif", guild);
-        borderTop = getEmoji("BT", guild);
-        borderRightTop = getEmoji("BRT", guild);
-        borderRightBottom = getEmoji("BRB", guild);
-        borderRight = getEmoji("BR", guild);
-        borderLeftTop = getEmoji("BLT", guild);
-        borderLeftBottom = getEmoji("BLB", guild);
-        borderLeft = getEmoji("BL", guild);
-        borderBottom = getEmoji("BB", guild);
         report = getEmoji("Report", guild);
         update = getEmoji("Update", guild);
         bot = getEmoji("Bot", guild);
@@ -82,6 +64,21 @@ public class EmojiUtil {
         osu_c = getEmoji("Osu_C", guild);
         osu_d = getEmoji("Osu_D", guild);
         osu_f = getEmoji("Osu_F", guild);
+
+        System.out.println(TAG + " Emoji loaded");
+    }
+
+    public void loadSubEmoji(Guild guild) {
+        dotEmojis[0] = getEmoji("DotPink", guild);
+        dotEmojis[1] = getEmoji("DotBrown", guild);
+        dotEmojis[2] = getEmoji("DotOrange", guild);
+        dotEmojis[3] = getEmoji("DotGreen", guild);
+        dotEmojis[4] = getEmoji("DotBlue", guild);
+        dotEmojis[5] = getEmoji("DotRed", guild);
+        dotEmojis[6] = getEmoji("DotYellow", guild);
+        dotEmojis[7] = getEmoji("DotPurple", guild);
+        dotEmojis[8] = getEmoji("DotGray", guild);
+        dotEmojis[9] = getEmoji("DotBlack", guild);
 
         System.out.println(TAG + " Emoji loaded");
     }

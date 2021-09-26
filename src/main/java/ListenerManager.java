@@ -8,7 +8,6 @@ import main.java.util.file.GuildSettingHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
@@ -43,7 +42,6 @@ import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
 import static main.java.BotSetting.debugMode;
-import static main.java.Main.botID;
 import static main.java.Main.language;
 import static main.java.command.list.Invite.authChannelID;
 import static main.java.lang.LangKey.*;
@@ -122,17 +120,11 @@ public class ListenerManager extends ListenerAdapter {
         level.onGuildMessageReceived(event); // always
         generalReplay.onGuildMessageReceived(event); // word
         log.onGuildMessageReceived(event); // always
-        if (event.getMember() != null && !event.getMember().getId().equals(botID))
-            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
-                    " sent a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }
 
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
         log.onGuildMessageUpdate(event); // guild(own)
-        if (event.getMember() != null && !event.getMember().getId().equals(botID))
-            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getMember().getUser().getAsTag() + ")")) +
-                    " edited a message: " + event.getMessage().getContentRaw() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getMember().getId() + ')');
     }
 
     @Override
@@ -204,14 +196,10 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildBan(GuildBanEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] " +
-                "ban member: " + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     @Override
     public void onGuildUnban(GuildUnbanEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] " +
-                "unban member: " + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     /**
@@ -220,16 +208,10 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildInviteCreate(GuildInviteCreateEvent event) {
-        Member member = event.getGuild().getMember(event.getInvite().getInviter());
-        if (member != null)
-            System.out.println("[" + event.getGuild().getName() + "] " + (member.getNickname() == null ? event.getInvite().getInviter().getAsTag() : (member.getNickname() + " (" + event.getInvite().getInviter().getAsTag() + ")")) +
-                    " generated an invite: " + event.getUrl() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getInvite().getInviter().getId() + ')');
     }
 
     @Override
     public void onGuildInviteDelete(GuildInviteDeleteEvent event) {
-        System.out.println("[" + event.getGuild().getName() + "] an invite had been deleted: "
-                + event.getUrl() + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + ')');
     }
 
     /**
@@ -238,10 +220,6 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-        joinLeaveMessage.onGuildMemberRemove(event);
-        statusListener.memberLeave(event);
-        System.out.println("[" + event.getGuild().getName() + "] a member had been kicked: "
-                + event.getUser().getAsTag() + " (" + event.getGuild().getId() + " - " + event.getUser().getId() + ')');
     }
 
     @Override
