@@ -11,29 +11,30 @@ import static main.java.BotSetting.guildSettingFolder;
 
 public class GuildSettingHelper {
     // GuildID    JsonFileManager
-    Map<String, JsonFileManager> levelFolders = new HashMap<>();
+    private final Map<String, JsonFileManager> guildSetting = new HashMap<>();
 
     public JsonFileManager getGuildSettingManager(String guildID) {
-        if (levelFolders.containsKey(guildID))
-            return levelFolders.get(guildID);
+        JsonFileManager fileManager = guildSetting.get(guildID);
+        if (fileManager != null)
+            return fileManager;
 
         File filepath = new File(guildSettingFolder.getPath() + '/' + guildID);
         if (!filepath.exists())
             filepath.mkdirs();
 
         JsonFileManager levelFileManager = new JsonFileManager(filepath.getPath() + "/guildSetting.json");
-        levelFolders.put(guildID, levelFileManager);
+        guildSetting.put(guildID, levelFileManager);
         return levelFileManager;
     }
 
     public JSONObject getSettingData(Guild guild, String key) {
         JsonFileManager fileManager = getGuildSettingManager(guild.getId());
-        if (fileManager.data.has(key))
-            return fileManager.data.getJSONObject(key);
-        else {
-            JSONObject data = new JSONObject();
-            getGuildSettingManager(guild.getId()).data.put(key, data);
-            return data;
-        }
+        Object data = fileManager.data.get(key);
+        if (data != null)
+            return (JSONObject) data;
+        JSONObject newJson = new JSONObject();
+        fileManager.data.put(key, data);
+        fileManager.saveFile();
+        return newJson;
     }
 }

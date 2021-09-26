@@ -18,19 +18,20 @@ public record SettingChannelStatus(GuildSettingHelper settingHelper) {
     public void newCS(SlashCommandEvent event, StatusListener listener) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String name = event.getOption("channelname").getAsString();
-        String format = String.valueOf(event.getOption("format").getAsLong());
-        if (Integer.parseInt(format) < 0 || Integer.parseInt(format) > 10)
+        int formatInt = Integer.parseInt(String.valueOf(event.getOption("format").getAsLong()));
+        if (formatInt < 0 || formatInt > 10)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGCHANNELSTATUS_FAIL), 0xFF0000)).queue();
         else {
-            format = "%." + format + "f";
+            String format = "%." + formatInt + "f";
+            listener.updateGuild(event.getGuild());
             StringCalculate check = new StringCalculate();
-            check.processes(name, format);
+            check.processes(listener.replace(event.getGuild().getId(), name), format);
             if (check.haveError())
                 event.getHook().editOriginalEmbeds(createEmbed(check.getError(), 0xFF0000)).queue();
             else {
                 settingHelper.getSettingData(event.getGuild(), CS_SETTING).put(event.getOption("channel").getAsGuildChannel().getId(), new JSONObject().put(CS_NAME, name).put(CS_FORMAT, format));
                 settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();
-                listener.updateGuild(event.getGuild());
+                listener.updateGuild(event.getGuild(), true);
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGCHANNELSTATUS_SETTING_SUCCESS), 0x00FFFF)).queue();
             }
         }

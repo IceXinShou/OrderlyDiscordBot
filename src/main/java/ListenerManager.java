@@ -180,7 +180,7 @@ public class ListenerManager extends ListenerAdapter {
         commandRegister.onGuildReady(event); // register commands
         voiceChannelCreator.onGuildReady(event);
         settingYande.onGuildReady(event);
-        statusListener.updateGuild(event.getGuild());
+        statusListener.onGuildReady(event.getGuild());
     }
 
     @Override

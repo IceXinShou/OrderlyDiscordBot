@@ -8,11 +8,12 @@ import static main.java.BotSetting.guildSettingFolder;
 
 
 public class LevelLogHelper {
-    Map<String, JsonFileManager> levelFolders = new HashMap<>();
+    private final Map<String, JsonFileManager> levelFolders = new HashMap<>();
 
     public JsonFileManager getLevelFileManager(String guildID) {
-        if (levelFolders.containsKey(guildID))
-            return levelFolders.get(guildID);
+        JsonFileManager fileManager = levelFolders.get(guildID);
+        if (fileManager != null)
+            return fileManager;
 
         File filepath = new File(guildSettingFolder.getPath() + '/' + guildID);
         if (!filepath.exists())

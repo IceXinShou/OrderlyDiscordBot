@@ -43,14 +43,19 @@ public class StatusListener {
         // run thread
         threadPool.scheduleWithFixedDelay(() -> {
             try {
-                for (Guild guild : jda.getGuilds()) {
-                    updateGuild(guild);
+                for (String guildID : guildsMemberStatus.keySet()) {
+                    updateGuild(jda.getGuildById(guildID));
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException e) {
                 System.err.println(TAG + " " + e.getMessage());
             }
-        }, 0, 30, TimeUnit.MINUTES);
+        }, 0, 3, TimeUnit.MINUTES);
+    }
+
+    public void onGuildReady(Guild guild) {
+        if (settingHelper.getSettingData(guild, CS_SETTING) != null)
+            updateGuild(guild);
     }
 
     private final String[] keys = new String[]{
@@ -74,8 +79,10 @@ public class StatusListener {
     };
 
     public void updateGuild(Guild guild) {
-        if (settingHelper.getSettingData(guild, CS_SETTING) == null)
-            return;
+        updateGuild(guild, false);
+    }
+
+    public void updateGuild(Guild guild, boolean useSetting) {
         guild.loadMembers()
                 .onError(error -> System.err.println(TAG + " " + error.getMessage()))
                 .onSuccess(members -> {
@@ -246,29 +253,28 @@ public class StatusListener {
                         memberStatus.put("playMinecraft", playMinecraft);
                         guildsMemberStatus.put(guild.getId(), memberStatus);
                     }
-                    updateChannelStatus(guild, change, memberStatus);
+                    updateChannelStatus(guild, useSetting ? 25535 : change, memberStatus);
                 });
     }
 
     private void updateChannelStatus(Guild guild, int change, Map<String, Integer> memberStatus) {
-        JSONObject data = settingHelper.getSettingData(guild, CS_SETTING);
-        for (String channelID : data.keySet()) {
+        JSONObject guildData = settingHelper.getSettingData(guild, CS_SETTING);
+        for (String channelID : guildData.keySet()) {
             Long lastTime;
             int minChangeDelay = (int) (5.5f * 60 * 1000);
             if ((lastTime = guildChannelTimer.get(channelID)) == null || System.currentTimeMillis() - lastTime > minChangeDelay) {
-                if (guildChannelChange.containsKey(channelID)) {
-                    change = guildChannelChange.get(channelID);
-                    guildChannelChange.put(channelID, 0);
-                }
+                change |= guildChannelChange.getOrDefault(channelID, 0);
+                guildChannelChange.put(channelID, 0);
+
                 guildChannelTimer.put(channelID, System.currentTimeMillis());
-                if (guild.getGuildChannelById(channelID) == null)
-                    data.remove(channelID);
-                else {
-                    String newName = data.getJSONObject(channelID).getString(CS_NAME);
-                    newName = guildStatusReplace(newName,
-                            data.getJSONObject(channelID).getString(CS_FORMAT),
-                            change, memberStatus);
-                    GuildChannel channel = guild.getGuildChannelById(channelID);
+                GuildChannel channel;
+                if ((channel = guild.getGuildChannelById(channelID)) == null) {
+                    guildData.remove(channelID);
+                    settingHelper.getGuildSettingManager(guild.getId()).saveFile();
+                } else {
+                    JSONObject data = guildData.getJSONObject(channelID);
+                    String newName = data.getString(CS_NAME);
+                    newName = guildStatusReplace(newName, data.getString(CS_FORMAT), change, memberStatus);
                     if (!channel.getName().equals(newName))
                         channel.getManager().setName(newName).queue();
                 }
@@ -278,16 +284,26 @@ public class StatusListener {
     }
 
     private String guildStatusReplace(String input, String format, int change, Map<String, Integer> memberStatus) {
+        String result = input;
         for (int i = 0; i < keys.length; i++) {
-            if ((change & 1 << i) > 0 && input.contains('%' + keys[i] + '%'))
-                input = input.replace('%' + keys[i] + '%', memberStatus.get(keys[i]).toString());
+            if ((change & 1 << i) > 0 && result.contains('%' + keys[i] + '%'))
+                result = result.replace('%' + keys[i] + '%', memberStatus.get(keys[i]).toString());
         }
 
         if (input.contains("${")) {
             StringCalculate calculate = new StringCalculate();
             input = calculate.processes(input, format);
             if (calculate.haveError())
-                return null;
+                return input;
+        }
+        return result;
+    }
+
+    public String replace(String guildID, String input) {
+        Map<String, Integer> memberStatus = guildsMemberStatus.get(guildID);
+        for (int i = 0; i < keys.length; i++) {
+            if (input.contains('%' + keys[i] + '%'))
+                input = input.replace('%' + keys[i] + '%', memberStatus.get(keys[i]).toString());
         }
         return input;
     }

@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 public class JsonFileManager {
     private final String TAG = "[FileManager]";
     private final String filepath;
-    public JSONObject data;
+    public final JSONObject data;
 
     public JsonFileManager(String filepath) {
         this.filepath = filepath;
@@ -34,18 +34,19 @@ public class JsonFileManager {
         if (!file.exists())
             return null;
 
-        StringBuilder builder = new StringBuilder();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            char[] buff = new char[4096];
+            InputStream in = new FileInputStream(file);
+            byte[] buff = new byte[1024];
             int length;
-            while ((length = fileReader.read(buff)) > 0)
-                builder.append(buff, 0, length);
-            fileReader.close();
+            while ((length = in.read(buff)) > 0) {
+                out.write(buff, 0, length);
+            }
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return builder.toString();
     }
 
     public void removeKey(String key) {

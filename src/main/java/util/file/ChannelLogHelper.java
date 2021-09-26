@@ -8,13 +8,16 @@ import static main.java.BotSetting.channelLogFolder;
 import static main.java.BotSetting.guildSettingFolder;
 
 public class ChannelLogHelper {
-    Map<String, JsonFileManager> channelLogs = new HashMap<>();
-
+    private final Map<String, JsonFileManager> channelLogs = new HashMap<>();
 
     @SuppressWarnings("ALL")
     public JsonFileManager getChannelFileManager(String guildID, String channelID) {
         if (channelLogs.containsKey(channelID))
             return channelLogs.get(channelID);
+
+        JsonFileManager fileManager = channelLogs.get(channelID);
+        if (fileManager != null)
+            return fileManager;
 
         File filepath = new File(guildSettingFolder.getPath() + '/' + guildID + '/' + channelLogFolder.getPath());
         if (!filepath.exists()) {

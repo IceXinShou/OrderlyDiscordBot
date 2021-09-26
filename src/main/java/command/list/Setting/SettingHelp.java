@@ -271,20 +271,20 @@ public class SettingHelp {
                         ┃　　
                         ┃　　**佔位符 | Placeholder**
                         ┃　　
-                        ┃　　`%member%` 成員人數
-                        ┃　　`%member_bot%` 成員與機器人數
-                        ┃　　`%online_member%` 線上成員人數
-                        ┃　　`%online_member_bot%` 線上成員與機器人數
-                        ┃　　`%offline_member%` 離線成員人數
-                        ┃　　`%offline_member_bot%` 離線成員與機器人數
-                        ┃　　`%afk_member%` 閒置成員人數
-                        ┃　　`%afk_member_bot%` 閒置成員與機器人數
-                        ┃　　`%working_member%` 勿擾成員人數
-                        ┃　　`%working_member_bot%` 勿擾成員與機器人數
-                        ┃　　`%in_voicechannel%` 通話成員人數
-                        ┃　　`%in_voicechannel_bot%` 通話成員與機器人數
-                        ┃　　`%not_in_voicechannel%` 通話成員人數
-                        ┃　　`%not_in_voicechannel_bot%` 未在通話成員與機器人數
+                        ┃　　`%member_noBot%` 成員人數
+                        ┃　　`%member%` 成員與機器人數
+                        ┃　　`%online_noBot%` 線上成員人數
+                        ┃　　`%online%` 線上成員與機器人數
+                        ┃　　`%offline_noBot%` 離線成員人數
+                        ┃　　`%offline%` 離線成員與機器人數
+                        ┃　　`%idle_noBot%` 閒置成員人數
+                        ┃　　`%idle%` 閒置成員與機器人數
+                        ┃　　`%dnd_noBot%` 勿擾成員人數
+                        ┃　　`%dnd%` 勿擾成員與機器人數
+                        ┃　　`%inVoicechannel_noBot%` 通話成員人數
+                        ┃　　`%inVoicechannel%` 通話成員與機器人數
+                        ┃　　`%inVoicechannel_noBot%` 通話成員人數
+                        ┃　　`%inVoicechannel%` 未在通話成員與機器人數
                         ┃　　`%stream%` 直播成員人數
                         ┃　　`%camera%` 視訊成員人數
                         ┃　　`%play_minecraft%` 正在遊玩 minecraft 人數
