@@ -22,7 +22,13 @@ public class JsonFileManager {
     public void saveFile() {
         try {
             FileOutputStream fileWriter = new FileOutputStream(filepath);
-            fileWriter.write(data.toString().getBytes(StandardCharsets.UTF_8));
+            ByteArrayInputStream in = new ByteArrayInputStream(data.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] buff = new byte[1024];
+            int length;
+            while ((length = in.read(buff)) > 0) {
+                fileWriter.write(buff, 0, length);
+            }
+            in.close();
             fileWriter.close();
         } catch (IOException e) {
             System.err.println(TAG + " can not save file");
@@ -42,6 +48,8 @@ public class JsonFileManager {
             while ((length = in.read(buff)) > 0) {
                 out.write(buff, 0, length);
             }
+            in.close();
+            out.close();
             return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();

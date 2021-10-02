@@ -29,9 +29,8 @@ public class GuildSettingHelper {
 
     public JSONObject getSettingData(Guild guild, String key) {
         JsonFileManager fileManager = getGuildSettingManager(guild.getId());
-        Object data = fileManager.data.get(key);
-        if (data != null)
-            return (JSONObject) data;
+        if (fileManager.data.has(key))
+            return fileManager.data.getJSONObject(key);
         JSONObject newJson = new JSONObject();
         fileManager.data.put(key, newJson);
         fileManager.saveFile();

@@ -21,7 +21,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
         if (event != null) {
-            musicBot.displayQueue(event, search, event.getGuild(), null);
+            musicBot.displayQueue(event, search, event.getGuild(), selectionMenuEvent);
         }
     }
 

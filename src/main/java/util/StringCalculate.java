@@ -25,6 +25,9 @@ public class StringCalculate {
                     .append(String.format(format, value));
             lastEndIndex = newPos + 1;
         }
+        if(lastEndIndex == 0)
+            return input;
+        result.append(input, lastEndIndex, input.length());
         if (haveError())
             return input;
         return result.toString();

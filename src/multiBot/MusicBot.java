@@ -167,8 +167,8 @@ public class MusicBot {
         }
         String vcID = musicManager.guild.getSelfMember().getVoiceState().getChannel().getId();
         if (search) {
-            selectionMenuEvent.replyEmbeds(embed[0], embed[1])
-                    .setEphemeral(true).addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+            selectionMenuEvent.replyEmbeds(embed[0], embed[1]).setEphemeral(true)
+                    .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
         } else
             event.getHook().editOriginalComponents()
