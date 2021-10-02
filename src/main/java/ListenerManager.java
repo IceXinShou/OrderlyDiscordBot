@@ -101,6 +101,7 @@ public class ListenerManager extends ListenerAdapter {
     ChannelChange channelChange = new ChannelChange();
     SettingOsu settingOsu = new SettingOsu();
     SettingHypixel settingHypixel = new SettingHypixel();
+    NoneReaction noneReaction = new NoneReaction();
 
     /**
      * Guild Message
@@ -141,6 +142,7 @@ public class ListenerManager extends ListenerAdapter {
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         informationReaction.onGuildMessageReactionAdd(event); // channel && emoji("RightArrow") (Renew Announcement)
         log.onGuildMessageReactionAdd(event); // guild(own)
+        noneReaction.onReaction(event);
     }
 
     @Override
@@ -422,6 +424,10 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "support" -> {
                 support.onCommand(event);
+                return;
+            }
+            case "nonereaction" -> {
+                noneReaction.onCommand(event);
                 return;
             }
             case "surl" -> {
