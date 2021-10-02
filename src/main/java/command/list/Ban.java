@@ -18,7 +18,7 @@ import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
     public void onCommand(SlashCommandEvent event) {
-        if (hasPermission(BAN_MEMBERS, event, true))
+        if (!hasPermission(BAN_MEMBERS, event, true))
             return;
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         User user = event.getOption(USER_TAG).getAsUser();

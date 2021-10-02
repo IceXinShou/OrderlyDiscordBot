@@ -112,11 +112,11 @@ public class CommandRegister {
         return new CommandData[]{
 
                 // General
-                new CommandData("warn", lang.get(COMMANDREGISTER_WARN)).addOptions(
-                        new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE), true),
-                        new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_WARN_REASON))
-                ),
-                new CommandData("remove_warn", lang.get(COMMANDREGISTER_REMOVE_WARM)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE), true),
+//                new CommandData("warn", lang.get(COMMANDREGISTER_WARN)).addOptions(
+//                        new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE), true),
+//                        new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_WARN_REASON))
+//                ),
+//                new CommandData("remove_warn", lang.get(COMMANDREGISTER_REMOVE_WARM)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE), true),
                 new CommandData("kick", lang.get(COMMANDREGISTER_KICK)).addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_KICK_MEMBER_YOU_CHOOSE), true),
                 new CommandData("ban", lang.get(COMMANDREGISTER_BAN)).addOptions(
                         new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_BAN_MEMBER_YOU_CHOOSE), true),
@@ -175,6 +175,15 @@ public class CommandRegister {
                         new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
                 new CommandData("surl", lang.get(COMMANDREGISTER_SURL)).addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
+                new CommandData("rolebutton", "按鈕切換身分組").addOptions(
+                        new OptionData(CHANNEL, "channel", "請輸入來源訊息頻道", true),
+                        new OptionData(STRING, "messageid", "請輸入來源訊息ID", true),
+                        new OptionData(ROLE, "role", "請選擇身分組", true),
+                        new OptionData(STRING, "buttonname", "請輸入按鈕名稱"),
+                        new OptionData(STRING, "buttonemoji", "請輸入按鈕圖示"),
+                        new OptionData(STRING, "buttonstyle", "請輸入按鈕類型 (green, red, blue, gray)")
+
+                ),
                 new CommandData("nhentai", "取得本本").addOption(INTEGER, "id", "請輸入番號", true),
 //                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
 //                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
@@ -213,7 +222,6 @@ public class CommandRegister {
                         new SubcommandData("skywars", lang.get(COMMANDREGISTER_HYPIXEL_GET_SKYWARS)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME)),
                         new SubcommandData("skyblock", lang.get(COMMANDREGISTER_HYPIXEL_GET_SKYBLOCK)).addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME))
                 ),
-
                 // Help
                 new CommandData("help", lang.get(COMMANDREGISTER_HELP)).addSubcommands(
                         new SubcommandData("orderly", lang.get(COMMANDREGISTER_HELP_ORDERLY)),

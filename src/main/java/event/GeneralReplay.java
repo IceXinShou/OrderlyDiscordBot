@@ -100,7 +100,7 @@ public class GeneralReplay {
             case "操妳媽":
                 event.getMessage().replyEmbeds(createEmbed("已刪除汙辱訊息 (" + event.getAuthor().getAsMention() + ")", 0xFF0000)).queue();
                 event.getMessage().delete().queue();
-                System.out.println("[" + event.getGuild().getName() + "] " + event.getAuthor().getAsTag() + " swore: " + event.getMessage().getContentRaw());
+//                System.out.println("[" + event.getGuild().getName() + "] " + event.getAuthor().getAsTag() + " swore: " + event.getMessage().getContentRaw());
                 break;
         }
 

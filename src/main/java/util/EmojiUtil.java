@@ -78,7 +78,6 @@ public class EmojiUtil {
         dotEmojis[6] = getEmoji("DotYellow", guild);
         dotEmojis[7] = getEmoji("DotPurple", guild);
         dotEmojis[8] = getEmoji("DotGray", guild);
-        dotEmojis[9] = getEmoji("DotBlack", guild);
 
         System.out.println(TAG + " Emoji loaded");
     }

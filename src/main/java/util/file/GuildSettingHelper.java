@@ -33,7 +33,7 @@ public class GuildSettingHelper {
         if (data != null)
             return (JSONObject) data;
         JSONObject newJson = new JSONObject();
-        fileManager.data.put(key, data);
+        fileManager.data.put(key, newJson);
         fileManager.saveFile();
         return newJson;
     }

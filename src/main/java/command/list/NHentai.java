@@ -38,7 +38,6 @@ public class NHentai {
                         Button.primary("NHentai:pP::0:" + id + ':' + maxPage + ':' + convertedID, Emoji.fromUnicode("⬅️")),
                         Button.success("NHentai:nP::0:" + id + ':' + maxPage + ':' + convertedID, Emoji.fromUnicode("➡️"))))
                 .queue();
-        System.out.println(convertedID);
     }
 
     public void onButtonClick(ButtonClickEvent event, String[] args) {

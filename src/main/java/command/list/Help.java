@@ -19,10 +19,11 @@ public class Help {
 
     public void onSelfAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (hasPermission(Permission.ADMINISTRATOR, event, true)) {
-            event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
-        }
+        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+            return;
+        event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
+
     }
 
     public void onSelfMemberCommand(SlashCommandEvent event) {
@@ -32,10 +33,11 @@ public class Help {
 
     public void onNekoBotAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (hasPermission(Permission.ADMINISTRATOR, event, true)) {
-            event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
-        }
+        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+            return;
+        event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
+
     }
 
     public void onNekoBotMemberCommand(SlashCommandEvent event) {

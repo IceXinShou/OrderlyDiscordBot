@@ -79,6 +79,7 @@ public class ListenerManager extends ListenerAdapter {
     Economy economy = new Economy(guildSettingHelper);
     InformationReaction informationReaction = new InformationReaction();
     NHentai nHentai = new NHentai();
+    ButtonRole roleButton = new ButtonRole();
 
     //command
     Ping ping = new Ping();
@@ -311,6 +312,7 @@ public class ListenerManager extends ListenerAdapter {
         musicManager.onButton(event, args);
         economy.onDailyCheck(event, args);
         nHentai.onButtonClick(event, args);
+        roleButton.onButtonClick(event, args);
     }
 
     @Override
@@ -456,6 +458,10 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "nhentai" -> {
                 nHentai.onCommand(event);
+                return;
+            }
+            case "rolebutton" -> {
+                roleButton.onCommand(event);
                 return;
             }
             case "reload" -> {
