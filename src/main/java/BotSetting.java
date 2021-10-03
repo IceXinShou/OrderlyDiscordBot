@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -209,7 +208,7 @@ public class BotSetting {
         // 把log的東西print出來
         new Thread(() -> {
             while (true) {
-                String time = MessageFormat.format("[%s] ", OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                String time = ('[' + OffsetDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ");
                 if (logConsole.size() > 0) {
                     String log = logConsole.toString(StandardCharsets.UTF_8);
                     String[] lines = log.split(System.lineSeparator());
