@@ -39,14 +39,14 @@ public class CommandRegister {
     public void onGuildReady(GuildReadyEvent event) {
         if (event.getGuild().getId().equals(guildID))
             getMainGuildVariable(event.getGuild());
-        else if (event.getGuild().getId().equals("817940392418607124"))
+        else if (event.getGuild().getId().equals("817940392418607124")) // sub emoji library
             Main.emoji.loadSubEmoji(event.getGuild());
         else {
             try {
                 addPublicSlashCommand(event.getGuild());
 //                System.out.println("[" + event.getGuild().getName() + "] Command Updated! (Owner: " + event.getGuild().retrieveOwner().complete().getUser().getAsTag() + ")");
             } catch (Exception e) {
-                System.err.println("[" + event.getGuild().getName() + "] Command Update Failed!");
+                System.err.printf("[%s%n] Command Update Failed!", event.getGuild().getName());
                 System.err.println(e.getMessage());
             }
         }

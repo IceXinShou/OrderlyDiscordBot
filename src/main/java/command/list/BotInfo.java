@@ -14,18 +14,25 @@ import static main.java.util.EmbedCreator.createEmbed;
 public class BotInfo {
 
     public void onCommand(SlashCommandEvent event) {
-        List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        List<MessageEmbed.Field> fields = new ArrayList<>();
 
         int members = 0;
-
-        for (int i = 0; i < event.getJDA().getGuilds().size(); i++) {
+        for (int i = 0; i < event.getJDA().getGuilds().size(); i++)
             members = members + event.getJDA().getGuilds().get(i).getMemberCount();
+
+        List<MessageEmbed.Field> fields = new ArrayList<>();
+        if (event.getGuild() != null) {
+            List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
+
+            fields.add(new MessageEmbed.Field(lang.get(BOTINFO_GUILD_TOTAL_COUNT), String.valueOf(event.getJDA().getGuilds().stream().count()), false));
+            fields.add(new MessageEmbed.Field(lang.get(BOTINFO_MEMBER_TOTAL_COUNT), String.valueOf(members), false));
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(BOTINFO_INFORMATION), "", "", "", "", fields, OffsetDateTime.now(), 0x00FFFF)).queue();
+
+        } else {
+
+            fields.add(new MessageEmbed.Field("Guild Count ", String.valueOf(event.getJDA().getGuilds().stream().count()), false));
+            fields.add(new MessageEmbed.Field("Member Count ", String.valueOf(members), false));
+            event.getHook().editOriginalEmbeds(createEmbed("Bot Info", "", "", "", "", fields, OffsetDateTime.now(), 0x00FFFF)).queue();
+
         }
-
-        fields.add(new MessageEmbed.Field(lang.get(BOTINFO_GUILD_TOTAL_COUNT), String.valueOf(event.getJDA().getGuilds().stream().count()), false));
-        fields.add(new MessageEmbed.Field(lang.get(BOTINFO_MEMBER_TOTAL_COUNT), String.valueOf(members), false));
-        event.getHook().editOriginalEmbeds(createEmbed(lang.get(BOTINFO_INFORMATION), "", "", "", "", fields, OffsetDateTime.now(), 0x00FFFF)).queue();
     }
-
 }

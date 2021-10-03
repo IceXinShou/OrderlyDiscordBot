@@ -4,6 +4,7 @@ import main.java.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -98,9 +99,8 @@ public class GeneralReplay {
             case "操":
             case "操你媽":
             case "操妳媽":
-                event.getMessage().replyEmbeds(createEmbed("已刪除汙辱訊息 (" + event.getAuthor().getAsMention() + ")", 0xFF0000)).queue();
+                event.getMessage().replyEmbeds(createEmbed(MessageFormat.format("已刪除汙辱訊息 (%s)", event.getAuthor().getAsMention()), 0xFF0000)).queue();
                 event.getMessage().delete().queue();
-//                System.out.println("[" + event.getGuild().getName() + "] " + event.getAuthor().getAsTag() + " swore: " + event.getMessage().getContentRaw());
                 break;
         }
 

@@ -38,6 +38,7 @@ import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemov
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
@@ -49,6 +50,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.PermissionERROR.hasPermission;
+import static main.java.util.Tag.getMemberName;
 import static main.java.util.Tag.tagChannelID;
 
 public class ListenerManager extends ListenerAdapter {
@@ -335,7 +337,7 @@ public class ListenerManager extends ListenerAdapter {
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
             if (debugMode)
-                System.out.println("[Private] " + event.getUser().getAsTag() + " issued command: `" + event.getCommandString() + "` (" + event.getUser().getId() + ')');
+                System.out.printf("[Private] %s issued command: `%s` (%s)", event.getUser().getAsTag(), event.getCommandString(), event.getUser().getId());
 
             switch (event.getName()) {
                 case "ping" -> {
@@ -363,8 +365,20 @@ public class ListenerManager extends ListenerAdapter {
 
         if (debugMode) {
             if (event.getGuild().getId().equals("882605953382514718"))
-                event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024").sendMessage("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "\r`").queue();
-            System.out.println("[" + event.getGuild().getName() + "] " + (event.getMember().getNickname() == null ? event.getUser().getAsTag() : (event.getMember().getNickname() + " (" + event.getUser().getAsTag() + ")")) + " issued command: `" + event.getCommandString() + "`" + " (" + event.getGuild().getId() + " - " + event.getChannel().getId() + " - " + event.getUser().getId() + ')');
+                event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024")
+                        .sendMessage(MessageFormat.format(
+                                "[%s] %s issued command: `%s`",
+                                event.getGuild().getName(),
+                                getMemberName(event),
+                                event.getCommandString())).queue();
+
+            System.out.printf("[%s] %s issued command: `%s` (%s - %s - %s)",
+                    event.getGuild().getName(),
+                    getMemberName(event),
+                    event.getCommandString(),
+                    event.getGuild().getId(),
+                    event.getChannel().getId(),
+                    event.getUser().getId());
         }
 
         // 取得輸入指令的頻道
@@ -385,7 +399,8 @@ public class ListenerManager extends ListenerAdapter {
                 createInviteCommand.onCommand(event);
             else {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-                event.getHook().editOriginalEmbeds(createEmbed(lang.get(LISTENERMANAGER_WRONG_CHANNEL) + " (" + tagChannelID(authChannelID) + ")", 0xFF0000)).queue();
+                ;
+                event.getHook().editOriginalEmbeds(createEmbed(MessageFormat.format("%s (%s)", lang.get(LISTENERMANAGER_WRONG_CHANNEL), tagChannelID(authChannelID)), 0xFF0000)).queue();
             }
             return;
         }
@@ -625,14 +640,14 @@ public class ListenerManager extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         join.onPrivateMessageReceived(event); // guild(own)
-        System.out.println("[Private] " + event.getAuthor().getAsTag() +
-                " sent a message: " + event.getMessage().getContentRaw() + " (" + event.getAuthor().getId() + ')');
+        System.out.printf("[Private] %s sent a message: %s (%s)"
+                , event.getAuthor().getAsTag(), event.getMessage().getContentRaw(), event.getAuthor().getId());
     }
 
     @Override
     public void onPrivateMessageUpdate(PrivateMessageUpdateEvent event) {
-        System.out.println("[Private] " + event.getAuthor().getAsTag() +
-                " update a message: " + event.getMessage().getContentRaw() + " (" + event.getAuthor().getId() + ')');
+        System.out.printf("[Private] %s update a message: %s (%s)"
+                , event.getAuthor().getAsTag(), event.getMessage().getContentRaw(), event.getAuthor().getId());
     }
 
     @Override

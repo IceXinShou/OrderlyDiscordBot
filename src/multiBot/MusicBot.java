@@ -332,7 +332,7 @@ public class MusicBot {
 
     public void disconnect(Guild guild) {
         workCount--;
-        if (workCount<0)
+        if (workCount < 0)
             workCount = 0;
         musicManagers.remove(guild.getId());
         if (workCount == 0) {

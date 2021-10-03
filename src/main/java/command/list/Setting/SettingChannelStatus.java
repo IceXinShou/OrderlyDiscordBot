@@ -23,7 +23,7 @@ public record SettingChannelStatus(GuildSettingHelper settingHelper) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGCHANNELSTATUS_FAIL), 0xFF0000)).queue();
         else {
             String format = "%." + formatInt + "f";
-            StringCalculate check = listener.testInput(event.getGuild(),event.getOption("channel").getAsGuildChannel().getId(), name, format);
+            StringCalculate check = listener.testInput(event.getGuild(), event.getOption("channel").getAsGuildChannel().getId(), name, format);
 
             if (check.haveError())
                 event.getHook().editOriginalEmbeds(createEmbed(check.getError(), 0xFF0000)).queue();

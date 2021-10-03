@@ -31,6 +31,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.GuildUtil.guildID;
 import static main.java.util.JsonKeys.*;
+import static main.java.util.Tag.getMemberName;
 
 public class Log {
     public static TextChannel logChannel;
@@ -48,10 +49,13 @@ public class Log {
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
-                createEmbed(
-                        (" 進入 " + event.getChannelJoined().getName()), null, "進入語音",
-                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
-                        OffsetDateTime.now(), 0x34E718
+                createEmbed(" 進入 " + event.getChannelJoined().getName(),
+                        null,
+                        "進入語音",
+                        getMemberName(event),
+                        event.getMember().getUser().getAvatarUrl(),
+                        OffsetDateTime.now(),
+                        0x34E718
                 )
         ).queue();
     }
@@ -59,11 +63,13 @@ public class Log {
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         if (!event.getGuild().getId().equals(guildID)) return;
         logChannel.sendMessageEmbeds(
-                createEmbed(" 退出 " + event.getChannelLeft().getName()
-                        , null,
+                createEmbed(" 退出 " + event.getChannelLeft().getName(),
+                        null,
                         "退出語音",
-                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
-                        OffsetDateTime.now(), 0xFF5151
+                        getMemberName(event),
+                        event.getMember().getUser().getAvatarUrl(),
+                        OffsetDateTime.now(),
+                        0xFF5151
                 )
         ).queue();
     }
@@ -82,8 +88,7 @@ public class Log {
         JSONObject messageContent = new JSONObject()
                 .put(MESSAGE, event.getMessage().getContentRaw()) // Message
                 .put(SENDER, event.getAuthor().getId()) // Sender
-                .put(TIME, event.getMessage().getTimeCreated()) // Time
-                ;
+                .put(TIME, event.getMessage().getTimeCreated()); // Time
         data.put(event.getMessage().getId(), messageContent);
         channelFileManager.saveFile();
     }
@@ -104,7 +109,7 @@ public class Log {
                 createEmbed(
                         "更改訊息", null,
                         "更改訊息",
-                        event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : event.getMember().getNickname(), event.getMember().getUser().getAvatarUrl(),
+                        getMemberName(event), event.getMember().getUser().getAvatarUrl(),
                         OffsetDateTime.now(), 0x51FFFF
                 )
         ).queue();

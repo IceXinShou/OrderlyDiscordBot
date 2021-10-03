@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 
 import static main.java.BotSetting.*;
@@ -19,6 +20,7 @@ import static main.java.event.OwnJoin.memberData;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GuildUtil.guild;
 import static main.java.util.SlashCommandOption.USER_TAG;
+import static main.java.util.Tag.getMemberName;
 
 public class Invite {
     public static String authChannelID;
@@ -63,7 +65,7 @@ public class Invite {
             return;
         }
 
-        event.getHook().editOriginalEmbeds(createEmbed("確定要邀請 " + (member.getNickname() == null ? member.getUser().getAsTag() : member.getNickname()) + " ?", 0xbc153b))
+        event.getHook().editOriginalEmbeds(createEmbed(MessageFormat.format("確定要邀請 %s ?", getMemberName(event)), 0xbc153b))
                 .setActionRow(Button.danger("Invite:invite:" + userId + ':' + member.getId(), "我會為他負責"))
                 .queue();
     }
@@ -83,9 +85,10 @@ public class Invite {
 
             logChannel.sendMessageEmbeds(
                     createEmbed(
-                            "增產報國!", emoji.cute.getAsMention() + event.getMember().getAsMention() + " 生出了 " + targetMember.getAsMention(),
+                            "增產報國!",
+                            MessageFormat.format("%s %s 生出了 %s", emoji.cute.getAsMention(), event.getMember().getAsMention(), targetMember.getAsMention()),
                             "成員誕生",
-                            event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), targetMember.getUser().getAvatarUrl(),
+                            getMemberName(event), targetMember.getUser().getAvatarUrl(),
                             OffsetDateTime.now(), 0xFFD1DC
                     )
             ).queue();

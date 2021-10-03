@@ -28,6 +28,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.GetEmoji.toEmoji;
 import static main.java.util.JsonGetter.getOrDefaultArray;
 import static main.java.util.JsonKeys.*;
+import static main.java.util.Tag.getMemberName;
 import static main.java.util.TimeFormatter.millisToOffset;
 import static main.java.util.TimeFormatter.timeFormat;
 
@@ -140,7 +141,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         event.getTextChannel().
                 sendMessageEmbeds(createEmbed(
                         giveawayName, lang.get(GIVEAWAY_LK_WINNER_COUNT) + ": " + winnerCount + "\n",
-                        lang.get(GIVEAWAY_TIME_LEFT), event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(),
+                        lang.get(GIVEAWAY_TIME_LEFT), getMemberName(event),
                         event.getUser().getAvatarUrl(), millisToOffset(finalTime), 0x00FFFF)
                 )
                 .queue(message -> {

@@ -15,6 +15,7 @@ import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.EmojiUtil.dotEmojis;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.QUESTION;
+import static main.java.util.Tag.getMemberName;
 
 public class Poll {
 
@@ -30,7 +31,7 @@ public class Poll {
         event.getChannel().sendMessageEmbeds(createEmbed(
                 event.getOption(QUESTION).getAsString(), null,
                 lang.get(POLL_MEMBER_POLL),
-                event.getMember().getNickname() == null ? event.getUser().getAsTag() : event.getMember().getNickname(), event.getUser().getAvatarUrl(),
+                getMemberName(event), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {

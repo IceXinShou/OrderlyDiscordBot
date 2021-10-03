@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import static main.java.BotSetting.botOwnerID;
@@ -13,6 +14,7 @@ import static main.java.lang.LangKey.*;
 import static main.java.util.EmbedCreator.createEmbed;
 import static main.java.util.PermissionERROR.hasPermission;
 import static main.java.util.SlashCommandOption.USER_TAG;
+import static main.java.util.Tag.getMemberName;
 
 public class Kick {
     @SuppressWarnings("ALL")
@@ -37,16 +39,20 @@ public class Kick {
             return;
         }
 
-        String nickname = member.getNickname() != null ? member.getNickname() : member.getUser().getAsTag();
+        String nickname = getMemberName(event);
         event.getGuild().kick(member).queue(
                 success -> event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_SUCCESS) + ' ' + nickname, 0xffd2c5)).queue(),
                 error -> {
                     if (error instanceof PermissionException) {
                         event.getHook().editOriginalEmbeds(
-                                createEmbed(lang.get(KICK_PERMISSION_ERROR) + member.getEffectiveName() + ": " + error.getMessage(), 0xFF0000)).queue();
+                                createEmbed(MessageFormat.format("%s %s: %s", lang.get(KICK_PERMISSION_ERROR), member.getEffectiveName(), error.getMessage()), 0xFF0000)).queue();
                     } else {
-                        event.getHook().editOriginalEmbeds(
-                                createEmbed(lang.get(KICK_UNKNOWN_ERROR) + member.getEffectiveName() + ": <" + error.getClass().getSimpleName() + ">: " + error.getMessage(), 0xFF0000)).queue();
+                        event.getHook().editOriginalEmbeds(createEmbed(
+                                MessageFormat.format("%s %s: <%s>: %s",
+                                        lang.get(KICK_UNKNOWN_ERROR),
+                                        member.getEffectiveName(),
+                                        error.getClass().getSimpleName(),
+                                        error.getMessage()), 0xFF0000)).queue();
                     }
                 });
     }

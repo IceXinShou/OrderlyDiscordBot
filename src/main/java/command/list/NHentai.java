@@ -81,8 +81,8 @@ public class NHentai {
             }
             case "nP" -> {
 
-                int page = Integer.parseInt(args[3])+1;
-                if (page > Integer.parseInt(args[5])){
+                int page = Integer.parseInt(args[3]) + 1;
+                if (page > Integer.parseInt(args[5])) {
                     event.deferEdit().queue();
                     return;
                 }
