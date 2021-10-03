@@ -78,9 +78,13 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         }
 
         fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_DETECT_VOICE_CHANNEL), detectChannel.getName() + "\n`(" + detectID + ")`", false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CATEGORY), guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_CATEGORY),
+                guild.getCategoryById(voiceCategoryID).getName() + "\n`(" + voiceCategoryID + ")`", false));
+
         if (hasTextChannel)
-            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CATEGORY), guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
+            fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_CATEGORY),
+                    guild.getCategoryById(textCategoryID).getName() + "\n`(" + textCategoryID + ")`", false));
+
         fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_VOICE_NAME), "`" + voiceName + "`", false));
         if (hasTextChannel)
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_TEXT_NAME), "`" + textName + "`", false));

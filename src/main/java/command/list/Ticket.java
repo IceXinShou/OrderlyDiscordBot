@@ -116,10 +116,13 @@ public class Ticket {
                                     .replace("%role%", tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)))
                                     .replace("%role_name%", allowRole.getName())
                                     .replace("%num%", countStr)
-                                    + "_\u200B".repeat(397) + '_' + (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
+                                    + "_\u200B".repeat(397) + '_' +
+                                    (data.getBoolean(TICKET_ALLOW_TAG) ? tagRoleID(data.getString(TICKET_ALLOW_ROLE_ID)) : "") + member.getAsMention());
                             builder.setActionRows(ActionRow.of(
-                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey, lang.get(TICKET_LOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
-                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey, lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
+                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + buttonPos + ':' + member.getId() + ':' + allowRole.getId() + ":" + messageKey,
+                                            lang.get(TICKET_LOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + buttonPos + ":" + member.getId() + ':' + messageKey,
+                                            lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
                             ));
                             tc.sendMessage(builder.build()).queue();
                             event.deferEdit().queue();
@@ -141,8 +144,10 @@ public class Ticket {
                 if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                     event.getHook().editOriginalEmbeds().setActionRows(
                             ActionRow.of(
-                                    Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], lang.get(TICKET_UNLOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
-                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6], lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
+                                    Button.of(ButtonStyle.SUCCESS, "Ticket:uLock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6],
+                                            lang.get(TICKET_UNLOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ":" + args[6],
+                                            lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
                             )).queue();
                     removePermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
                     removePermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), List.of(MESSAGE_WRITE));
@@ -161,8 +166,10 @@ public class Ticket {
                 if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
                     event.getHook().editOriginalEmbeds().setActionRows(
                             ActionRow.of(
-                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6], lang.get(TICKET_LOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
-                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6], lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
+                                    Button.of(ButtonStyle.PRIMARY, "Ticket:lock::" + args[3] + ':' + args[4] + ':' + args[5] + ':' + args[6],
+                                            lang.get(TICKET_LOCK), Emoji.fromUnicode("\uD83D\uDCC1")),
+                                    Button.of(ButtonStyle.DANGER, "Ticket:delC::" + args[3] + ':' + args[4] + ':' + args[6],
+                                            lang.get(TICKET_DELETE), Emoji.fromEmote(emoji.trashCan))
                             )).queue();
                     addPermission(guild.getRoleById(args[5]), event.getGuildChannel(), Arrays.asList(MESSAGE_WRITE, MANAGE_CHANNEL));
                     addPermission(guild.retrieveMemberById(args[4]).complete(), event.getGuildChannel(), List.of(MESSAGE_WRITE));

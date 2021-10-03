@@ -122,7 +122,8 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             try {
                 message = sendTicketMessageChannel.retrieveMessageById(messageID).complete();
             } catch (Exception e) {
-                fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_CAN_NOT_FOUND_MESSAGE_BY_ID) + " (" + tagChannel(sendTicketMessageChannel) + ") (`" + messageID + "`)", "", false));
+                fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_CAN_NOT_FOUND_MESSAGE_BY_ID) +
+                        " (" + tagChannel(sendTicketMessageChannel) + ") (`" + messageID + "`)", "", false));
             }
         }
 
@@ -236,11 +237,13 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         channelKey.put(messageID, buttonSettings);
 
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_ID), messageID, false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_CHANNEL), tagChannel(sendTicketMessageChannel) + "\n`(" + sendTicketMessageChannel.getId() + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_MESSAGE_CHANNEL),
+                tagChannel(sendTicketMessageChannel) + "\n`(" + sendTicketMessageChannel.getId() + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_ENTERED_MESSAGE), "\n`(" + message.getId() + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_TEXT_CHANNEL_NAME), textName, false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_TEXT_CHANNEL_CATEGORY), tagChannelID(textCategoryID) + "\n`(" + textCategoryID + ")`", false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_CHANNEL), hasVoiceChannel ? lang.get(SETTINGTICKET_TICKET_VOICE_HAVE) : lang.get(SETTINGTICKET_TICKET_VOICE_NOT_HAVE), false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_CHANNEL),
+                hasVoiceChannel ? lang.get(SETTINGTICKET_TICKET_VOICE_HAVE) : lang.get(SETTINGTICKET_TICKET_VOICE_NOT_HAVE), false));
         if (hasVoiceChannel) {
             fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_NAME), voiceName, false));
             fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_VOICE_CATEGORY), tagChannelID(voiceCategoryID) + "\n`(" + voiceCategoryID + ")`", false));
@@ -251,8 +254,10 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
             fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_BUTTON_EMOJI), buttonEmoji.getAsMention(), false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_BUTTON_COLOR), buttonColor + "\n`(0x" + Integer.toHexString(buttonColorInt) + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ALLOW_ROLE), allowRole.getAsMention() + "\n`(" + allowRole.getId() + ")`", false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ALLOW_TAG_ROLE), "`" + (tagRole ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ONLY_ONE), "`" + (onlyone ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ALLOW_TAG_ROLE),
+                "`" + (tagRole ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGTICKET_TICKET_ONLY_ONE),
+                "`" + (onlyone ? lang.get(SETTINGTICKET_TICKET_YES) : lang.get(SETTINGTICKET_TICKET_NO)) + "`", false));
 
 
         settingHelper.getGuildSettingManager(event.getGuild().getId()).saveFile();

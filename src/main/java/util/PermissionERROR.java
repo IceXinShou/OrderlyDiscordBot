@@ -11,7 +11,8 @@ import static main.java.util.EmbedCreator.createEmbed;
 public class PermissionERROR {
 
     public static MessageEmbed noPermissionERROREmbed(Permission permission) {
-        return createEmbed(noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000);
+        return createEmbed(
+                noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000);
     }
 
     public static boolean hasPermission(Permission permission, SlashCommandEvent event, Boolean ownerSkip) {

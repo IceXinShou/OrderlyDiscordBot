@@ -305,7 +305,8 @@ public class ListenerManager extends ListenerAdapter {
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals("") && !args[2].equals("everyone")) {
             List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-            event.getInteraction().deferReply(true).addEmbeds(createEmbed(lang.get(LISTENERMANAGER_NOT_YOUR_BUTTON), 0xFF0000)).queue();
+            event.getInteraction().deferReply(true).addEmbeds(
+                    createEmbed(lang.get(LISTENERMANAGER_NOT_YOUR_BUTTON), 0xFF0000)).queue();
             return;
         }
         createInviteCommand.onButton(event, args);
@@ -400,7 +401,8 @@ public class ListenerManager extends ListenerAdapter {
             else {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
                 ;
-                event.getHook().editOriginalEmbeds(createEmbed(MessageFormat.format("%s (%s)", lang.get(LISTENERMANAGER_WRONG_CHANNEL), tagChannelID(authChannelID)), 0xFF0000)).queue();
+                event.getHook().editOriginalEmbeds(createEmbed(
+                        MessageFormat.format("%s (%s)", lang.get(LISTENERMANAGER_WRONG_CHANNEL), tagChannelID(authChannelID)), 0xFF0000)).queue();
             }
             return;
         }

@@ -45,7 +45,8 @@ public class Kick {
                 error -> {
                     if (error instanceof PermissionException) {
                         event.getHook().editOriginalEmbeds(
-                                createEmbed(MessageFormat.format("%s %s: %s", lang.get(KICK_PERMISSION_ERROR), member.getEffectiveName(), error.getMessage()), 0xFF0000)).queue();
+                                createEmbed(MessageFormat.format("%s %s: %s", lang.get(KICK_PERMISSION_ERROR),
+                                        member.getEffectiveName(), error.getMessage()), 0xFF0000)).queue();
                     } else {
                         event.getHook().editOriginalEmbeds(createEmbed(
                                 MessageFormat.format("%s %s: <%s>: %s",

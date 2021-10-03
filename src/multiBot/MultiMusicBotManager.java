@@ -168,7 +168,8 @@ public class MultiMusicBotManager {
 //                        return;
 //                    }
                     String keyWord = URLEncoder.encode(event.getOption(NAME).getAsString(), UTF_8);
-                    SelectionMenu.Builder builder = SelectionMenu.create("MultiMusicBotManager:searchResult:" + event.getUser().getId() + ':' + bot.getID() + ':' + playNow);
+                    SelectionMenu.Builder builder = SelectionMenu.
+                            create("MultiMusicBotManager:searchResult:" + event.getUser().getId() + ':' + bot.getID() + ':' + playNow);
 
                     String result = getData(
                             "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&type=video&q=" +

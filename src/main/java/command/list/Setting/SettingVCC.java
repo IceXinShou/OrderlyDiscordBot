@@ -38,7 +38,8 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
             return;
         }
 
-        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY), guild.getCategoryById(detectCategoryID).getName() + "\n`(" + detectCategoryID + ")`", false));
+        fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_CATEGORY),
+                guild.getCategoryById(detectCategoryID).getName() + "\n`(" + detectCategoryID + ")`", false));
         fields.add(new MessageEmbed.Field(lang.get(SETTINGVCC_DETECT_NAME), voiceName, false));
 
         JSONObject VCCSetting = getSettingData(guild);

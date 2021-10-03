@@ -117,7 +117,8 @@ public class SettingHypixel {
 
         StringBuilder description = new StringBuilder();
         description
-                .append("▸ **" + lang.get(HYPIXEL_STATUS) + ":** ").append(onlineStats ? lang.get(HYPIXEL_STATUS_ONLINE) + " (" + gameType + " - " + mode + ')' : lang.get(HYPIXEL_STATUS_OFFLINE)).append("\n\n")
+                .append("▸ **" + lang.get(HYPIXEL_STATUS) + ":** ").append(
+                        onlineStats ? (lang.get(HYPIXEL_STATUS_ONLINE) + " (" + gameType + " - " + mode + ')') : lang.get(HYPIXEL_STATUS_OFFLINE)).append("\n\n")
                 .append("▸ **" + lang.get(HYPIXEL_FIRST_JOIN_TIME) + ":** ").append(firstTime).append('\n')
                 .append("▸ **" + lang.get(HYPIXEL_USING_LANGUAGE) + ":** ").append(userLanguage).append('\n')
                 .append("▸ **" + lang.get(HYPIXEL_KARMA) + ":** ").append(String.format("%,d", karma)).append('\n')

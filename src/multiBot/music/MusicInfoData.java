@@ -37,7 +37,8 @@ public class MusicInfoData {
 
         // 影片資料
         String url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-        String payload = "{\"videoId\":\"" + videoID + "\",\"context\":{\"client\":{\"hl\":\"zh\",\"gl\":\"TW\",\"clientName\":\"MWEB\",\"clientVersion\":\"2.20210330.08.00\"}}}";
+        String payload = "{\"videoId\":\"" + videoID + "\",\"context\"" +
+                "{\"client\":{\"hl\":\"zh\",\"gl\":\"TW\",\"clientName\":\"MWEB\",\"clientVersion\":\"2.20210330.08.00\"}}}";
         String result = postData(url, payload);
         if (result == null) {
             return;

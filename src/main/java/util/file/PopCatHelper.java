@@ -55,7 +55,8 @@ public class PopCatHelper {
             long endTime = lastPopLeaderboardGetTime / 1000;
             int step = 1;
 
-            String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=max(popcat)%20by%20(region)&start=" + endTime + "&end=" + endTime + "&step=" + step;
+            String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=max(popcat)%20by%20(region)&start=" +
+                    endTime + "&end=" + endTime + "&step=" + step;
 
             JSONObject resultJson = new JSONObject(getData(popUrl));
             JSONArray allRegion = resultJson.getJSONObject("data").getJSONArray("result");
@@ -75,7 +76,8 @@ public class PopCatHelper {
                 break;
             if (++count > offset) {
                 try {
-                    builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(), String.format("%,d", country.getValue()), Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
+                    builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(),
+                            String.format("%,d", country.getValue()), Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -90,7 +92,8 @@ public class PopCatHelper {
             long endTime = lastSpeedLeaderboardGetTime / 1000;
             int step = 1;
 
-            String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=sum(rate(popcat%5B5m%5D))%20by%20(region)&start=" + endTime + "&end=" + endTime + "&step=" + step;
+            String popUrl = "https://grafana.tipsy.coffee/api/datasources/proxy/1/api/v1/query_range?query=sum(rate(popcat%5B5m%5D))%20by%20(region)&start=" +
+                    endTime + "&end=" + endTime + "&step=" + step;
 
             JSONObject resultJson = new JSONObject(getData(popUrl));
             JSONArray allRegion = resultJson.getJSONObject("data").getJSONArray("result");
@@ -110,7 +113,8 @@ public class PopCatHelper {
                 break;
             if (++count > offset) {
                 try {
-                    builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(), String.format("%,d", country.getValue()) + " PPS", Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
+                    builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(),
+                            String.format("%,d", country.getValue()) + " PPS", Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -129,9 +133,11 @@ public class PopCatHelper {
             getSpeedLeaderboard(page == 1 ? 0 : page * 23 - 22, builder);
         builder.addOption(lang.get(POPCATHELPER_NEXT), "page:down:" + (page + 1), Emoji.fromUnicode("➡️"));
         if (first)
-            event.getHook().editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
+            event.getHook().editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(
+                    createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
         else
-            event.deferReply(true).addActionRows(ActionRow.of(builder.build())).addEmbeds(createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
+            event.deferReply(true).addActionRows(ActionRow.of(builder.build())).addEmbeds(
+                    createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
 
     }
 

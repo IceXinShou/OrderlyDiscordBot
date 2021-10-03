@@ -43,7 +43,8 @@ public class ChannelChange {
             return;
         }
         if ((bitrate = (int) event.getOption("bitrate").getAsLong() * 1000) > event.getGuild().getMaxBitrate()) {
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(ChannelChange_BITRATE_ERROR) + " (8 ~ " + event.getGuild().getMaxBitrate() + " kbps", 0xFF0000)).queue();
+            event.getHook().editOriginalEmbeds(createEmbed(lang.get(ChannelChange_BITRATE_ERROR) +
+                    " (8 ~ " + event.getGuild().getMaxBitrate() + " kbps", 0xFF0000)).queue();
             return;
         }
 

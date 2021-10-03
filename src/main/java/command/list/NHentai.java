@@ -73,7 +73,8 @@ public class NHentai {
 
                 event.replyEmbeds(createEmbed( // 上一頁
                                 args[4], "https://nhentai.to/g/" + args[4],
-                                "", "第 " + (page) + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + args[5] + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + args[5] + "/" + page + ".jpg"))
+                                "", "第 " + (page) + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + args[5] + "/cover.jpg", 0x00FFFF,
+                                "https://t.dogehls.xyz/galleries/" + args[5] + "/" + page + ".jpg"))
                         .addActionRows(ActionRow.of(
                                 Button.primary("NHentai:pP::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("⬅️")),
                                 Button.success("NHentai:nP::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("➡️"))))
@@ -88,7 +89,8 @@ public class NHentai {
                 }
                 event.replyEmbeds(createEmbed(
                                 args[4], "https://nhentai.to/g/" + args[4],
-                                "", "第 " + page + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + args[5] + "/cover.jpg", 0x00FFFF, "https://t.dogehls.xyz/galleries/" + args[5] + "/" + page + ".jpg"))
+                                "", "第 " + page + " 頁", "nhentai", "https://t.dogehls.xyz/galleries/" + args[5] + "/cover.jpg", 0x00FFFF,
+                                "https://t.dogehls.xyz/galleries/" + args[5] + "/" + page + ".jpg"))
                         .addActionRows(ActionRow.of(
                                 Button.primary("NHentai:pP::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("⬅️")),
                                 Button.success("NHentai:nP::" + (page) + ":" + args[4] + ':' + args[5], Emoji.fromUnicode("➡️"))))

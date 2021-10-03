@@ -19,7 +19,8 @@ import static main.java.util.EmbedCreator.createEmbed;
 public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements GuildMusicManager.Event {
 
     @Override
-    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
+    public void trackStart(AudioTrack track, GenericInteractionCreateEvent event,
+                           Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
         if (event != null) {
             musicBot.displayQueue(event, search, event.getGuild(), selectionMenuEvent);
         }
@@ -30,7 +31,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         MusicInfoData musicInfo = new MusicInfoData(track);
         // 組裝
-        MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(), playNow ? lang.get(MUSICBOTEVENT_PLAY_NOW) : lang.get(MUSICBOTEVENT_ADDED_QUEUE),
+        MessageEmbed nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(),
+                playNow ? lang.get(MUSICBOTEVENT_PLAY_NOW) : lang.get(MUSICBOTEVENT_ADDED_QUEUE),
                 " \uD83D\uDC40 " + String.format("%,d", musicInfo.getViewCount()) +
                         " | \uD83D\uDC4D " + String.format("%,d", musicInfo.getLikeCount()) +
                         " | \uD83D\uDC4E " + String.format("%,d", musicInfo.getDislikeCount()) +
@@ -102,7 +104,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     public void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild) {
         if (event != null) {
             List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-            event.getHook().editOriginalEmbeds(pause ? createEmbed(lang.get(MUSICBOTEVENT_PAUSE), 0xFF3B7D) : createEmbed(lang.get(MUSICBOTEVENT_UNPAUSE), 0x75C44C)).queue();
+            event.getHook().editOriginalEmbeds(
+                    pause ? createEmbed(lang.get(MUSICBOTEVENT_PAUSE), 0xFF3B7D) : createEmbed(lang.get(MUSICBOTEVENT_UNPAUSE), 0x75C44C)).queue();
         }
     }
 

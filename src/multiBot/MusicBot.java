@@ -69,7 +69,8 @@ public class MusicBot {
         });
     }
 
-    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
+    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager,
+                      GenericInteractionCreateEvent event, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         connectVC(manager.guild, vc, event, (i) -> manager.scheduler.queue(track, event, -1, search, playNow, selectionMenuEvent));
     }
 
@@ -105,14 +106,16 @@ public class MusicBot {
         getMusicManager(guild.getId()).scheduler.remove(index, event);
     }
 
-    public void loadAndPlaySpotify(final GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
+    public void loadAndPlaySpotify(final GenericInteractionCreateEvent event, Guild guild,
+                                   final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         String[] ids = BotSetting.spotifyToYouTube.translate(trackUrl);
         for (String i : ids) {
             loadAndPlay(event, guild, "https://youtu.be/" + i, search, playNow, selectionMenuEvent);
         }
     }
 
-    public void loadAndPlay(final GenericInteractionCreateEvent event, Guild guild, final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
+    public void loadAndPlay(final GenericInteractionCreateEvent event, Guild guild,
+                            final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         List<String> lang = Main.language.getGuildLang(guild.getId());
         VoiceChannel vc = event.getMember().getVoiceState().getChannel();
         GuildMusicManager manager = getMusicManager(jda.getGuildById(guild.getId()));
@@ -176,7 +179,8 @@ public class MusicBot {
                     .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
         if (event.getGuild().getId().equals("882605953382514718"))
-            event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(embed[0], embed[1]).setActionRows(controlButtons("", scheduler.musicPause, scheduler.loopStatus, vcID)).content(event.getUser().getAsTag()).queue();
+            event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(embed[0], embed[1])
+                    .setActionRows(controlButtons("", scheduler.musicPause, scheduler.loopStatus, vcID)).content(event.getUser().getAsTag()).queue();
 
     }
 
@@ -216,7 +220,8 @@ public class MusicBot {
                     .append(": **")
                     .append("◆".repeat(volumePercent))
                     .append("◇".repeat(20 - volumePercent))
-                    .append(scheduler.loopStatus == 0 ? " <" + lang.get(MUSICBOT_NORMAL_PLAY) + ">\n" : (scheduler.loopStatus == 1 ? " <" + lang.get(MUSICBOT_LOOP_PLAY) + ">\n" : " <" + lang.get(MUSICBOT_REPEAT_PLAY) + ">\n"));
+                    .append(scheduler.loopStatus == 0 ? " <" + lang.get(MUSICBOT_NORMAL_PLAY) + ">\n" :
+                            (scheduler.loopStatus == 1 ? " <" + lang.get(MUSICBOT_LOOP_PLAY) + ">\n" : " <" + lang.get(MUSICBOT_REPEAT_PLAY) + ">\n"));
 
             // 組裝
             nowPlaying = createEmbed("**" + musicInfo.getTitle() + "**", "https://www.youtube.com/watch?v=" + musicInfo.getVideoID(),

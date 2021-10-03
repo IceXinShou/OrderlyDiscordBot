@@ -21,28 +21,32 @@ public class Help {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.ADMINISTRATOR, event, true))
             return;
-        event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "",
+                summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
 
     }
 
     public void onSelfMemberCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        event.getHook().editOriginalEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "", summonSelfMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "",
+                summonSelfMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
     public void onNekoBotAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!hasPermission(Permission.ADMINISTRATOR, event, true))
             return;
-        event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "",
+                summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(LANG_CREATE_SUCCESS), 0x0FFFF)).queue();
 
     }
 
     public void onNekoBotMemberCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        event.getHook().editOriginalEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "", summonNekoBotMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
+        event.getHook().editOriginalEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "",
+                summonNekoBotMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
     public List<MessageEmbed.Field> summonSelfMemberFields(Member member, boolean showALL) {

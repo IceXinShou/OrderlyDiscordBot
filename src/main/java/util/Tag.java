@@ -61,18 +61,22 @@ public class Tag {
     }
 
     public static String getMemberName(GenericInteractionCreateEvent event) {
-        return (event.getMember().getNickname() == null ? event.getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getUser().getAsTag()));
+        return (event.getMember().getNickname() == null ?
+                event.getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getUser().getAsTag()));
     }
 
     public static String getMemberName(GenericGuildVoiceEvent event) {
-        return (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+        return (event.getMember().getNickname() == null ?
+                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 
     public static String getMemberName(GenericComponentInteractionCreateEvent event) {
-        return (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+        return (event.getMember().getNickname() == null ?
+                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 
     public static String getMemberName(GuildMessageUpdateEvent event) {
-        return (event.getMember().getNickname() == null ? event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+        return (event.getMember().getNickname() == null ?
+                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 }
