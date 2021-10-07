@@ -38,7 +38,6 @@ import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemov
 import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import static main.java.BotSetting.boostedRole;
@@ -104,6 +103,7 @@ public class ListenerManager extends ListenerAdapter {
     SettingOsu settingOsu = new SettingOsu();
     SettingHypixel settingHypixel = new SettingHypixel();
     NoneReaction noneReaction = new NoneReaction();
+    MessageManager messageManager = new MessageManager();
 
     /**
      * Guild Message
@@ -338,7 +338,7 @@ public class ListenerManager extends ListenerAdapter {
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
             if (debugMode)
-                System.out.printf("[Private] %s issued command: `%s` (%s)", event.getUser().getAsTag(), event.getCommandString(), event.getUser().getId());
+                System.out.printf("[Private] %s issued command: `%s` (%s)", event.getUser().getAsTag() + ((event.getUser().isBot() ? " (Bot)" : (event.getUser().isSystem() ? " (System)" : ""))), event.getCommandString(), event.getUser().getId());
 
             switch (event.getName()) {
                 case "ping" -> {
@@ -367,7 +367,7 @@ public class ListenerManager extends ListenerAdapter {
         if (debugMode) {
             if (event.getGuild().getId().equals("882605953382514718"))
                 event.getJDA().getGuildById("882605953382514718").getTextChannelById("884425527513985024")
-                        .sendMessage(MessageFormat.format(
+                        .sendMessage(String.format(
                                 "[%s] %s issued command: `%s`",
                                 event.getGuild().getName(),
                                 getMemberName(event),
@@ -402,7 +402,7 @@ public class ListenerManager extends ListenerAdapter {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
                 ;
                 event.getHook().editOriginalEmbeds(createEmbed(
-                        MessageFormat.format("%s (%s)", lang.get(LISTENERMANAGER_WRONG_CHANNEL), tagChannelID(authChannelID)), 0xFF0000)).queue();
+                        String.format("%s (%s)", lang.get(LISTENERMANAGER_WRONG_CHANNEL), tagChannelID(authChannelID)), 0xFF0000)).queue();
             }
             return;
         }
@@ -429,6 +429,22 @@ public class ListenerManager extends ListenerAdapter {
             }
             case "poll" -> {
                 pollCommand.onCommand(event);
+                return;
+            }
+            case "removemessage" -> {
+                messageManager.onDeleteCommand(event);
+                return;
+            }
+            case "removereactions" -> {
+                messageManager.onRemoveReactionsCommand(event);
+                return;
+            }
+            case "pinmessage" -> {
+                messageManager.onPinCommand(event);
+                return;
+            }
+            case "unpinmessage" -> {
+                messageManager.onUnPinCommand(event);
                 return;
             }
             case "ping" -> {

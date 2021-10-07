@@ -27,8 +27,8 @@ public class ButtonRole {
         String buttonName = event.getOption("buttonname") == null ? null : event.getOption("buttonname").getAsString();
         String buttonEmojiName = event.getOption("buttonemoji") == null ? null : event.getOption("buttonemoji").getAsString();
         Emoji buttonEmoji = (buttonEmojiName == null ? null : toEmoji(buttonEmojiName, event.getGuild()));
-        Message message;
         Role role;
+        Message message;
         try {
             message = channel.retrieveMessageById(event.getOption("messageid").getAsString()).complete();
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class ButtonRole {
 
         Button button = null;
         if (buttonName == null && buttonEmoji != null)
-            button = Button.of(buttonStyle, "BR:roleToggle::" + role.getId(), "", buttonEmoji);
+            button = Button.of(buttonStyle, "BR:roleToggle::" + role.getId(), null, buttonEmoji);
         else if (buttonName != null && buttonEmoji != null)
             button = Button.of(buttonStyle, "BR:roleToggle::" + role.getId(), buttonName, buttonEmoji);
         else if (buttonName != null && buttonEmoji == null)
@@ -90,7 +90,11 @@ public class ButtonRole {
                 message.editMessageComponents(actionRows).queue();
 
         } else { // 創建
-            event.getChannel().sendMessage(message.getContentRaw()).setActionRows(ActionRow.of(button)).queue();
+            if (message.getEmbeds().size() > 0)
+                event.getChannel().sendMessage(message).setActionRows(ActionRow.of(button)).queue();
+            else
+                event.getChannel().sendMessageEmbeds(createEmbed(message.getContentRaw(), 0x00FFFF)).setActionRows(ActionRow.of(button)).queue();
+
             done = true;
         }
 
@@ -104,8 +108,14 @@ public class ButtonRole {
 
         Role role = event.getGuild().getRoleById(args[3]);
 
-        if (!event.getGuild().getSelfMember().canInteract(event.getMember()) || !event.getGuild().getSelfMember().canInteract(role))
+        if (!event.getGuild().getSelfMember().canInteract(role)) {
             event.replyEmbeds(createEmbed("無法編輯比自己權限更高的成員。修復此問題，需將機器人權限組調高!", 0xFF0000)).setEphemeral(true).queue();
+            return;
+        }
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
+            event.replyEmbeds(createEmbed("機器人無法編輯身分組，請給予編輯權限!", 0xFF0000)).setEphemeral(true).queue();
+            return;
+        }
 
         if (role == null || event.getMember() == null) {
             event.deferEdit().queue();

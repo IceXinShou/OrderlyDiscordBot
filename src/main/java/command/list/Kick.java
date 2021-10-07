@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import static main.java.BotSetting.botOwnerID;
@@ -45,11 +44,11 @@ public class Kick {
                 error -> {
                     if (error instanceof PermissionException) {
                         event.getHook().editOriginalEmbeds(
-                                createEmbed(MessageFormat.format("%s %s: %s", lang.get(KICK_PERMISSION_ERROR),
+                                createEmbed(String.format("%s %s: %s", lang.get(KICK_PERMISSION_ERROR),
                                         member.getEffectiveName(), error.getMessage()), 0xFF0000)).queue();
                     } else {
                         event.getHook().editOriginalEmbeds(createEmbed(
-                                MessageFormat.format("%s %s: <%s>: %s",
+                                String.format("%s %s: <%s>: %s",
                                         lang.get(KICK_UNKNOWN_ERROR),
                                         member.getEffectiveName(),
                                         error.getClass().getSimpleName(),

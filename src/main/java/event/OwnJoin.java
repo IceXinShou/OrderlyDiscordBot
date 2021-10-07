@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import org.json.JSONObject;
 
-import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -337,9 +336,8 @@ public class OwnJoin {
             // 加入progress
             userProgress.put(userID, progress);
         } else {
-            channel.sendMessageEmbeds(createEmbed(MessageFormat.format("" +
-                    "歡迎您來到 <%s> , 在正式進入前還需要通過驗證！\n" +
-                    "Welcome to <%s> , before your join, you have to auth your account!", guild.getName(), guild.getName()), 0x9740b9)).queue();
+            channel.sendMessageEmbeds(createEmbed(String.format("" +
+                    "歡迎您來到 <%s> , 在正式進入前還需要通過驗證！\n Welcome to <%s> , before your join, you have to auth your account!", guild.getName(), guild.getName()), 0x9740b9)).queue();
             askPlayingMinecraft(userID, channel, true);
         }
     }

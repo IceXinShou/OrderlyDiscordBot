@@ -194,7 +194,22 @@ public class CommandRegister {
                         new OptionData(STRING, "buttonname", "請輸入按鈕名稱"),
                         new OptionData(STRING, "buttonemoji", "請輸入按鈕圖示"),
                         new OptionData(STRING, "buttonstyle", "請輸入按鈕類型 (green, red, blue, gray)")
-
+                ),
+                new CommandData("removemessage", "刪除訊息").addOptions(
+                        new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
+                        new OptionData(STRING, "messageid", "請輸入訊息ID", true)
+                ),
+                new CommandData("removereactions", "刪除訊息反應").addOptions(
+                        new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
+                        new OptionData(STRING, "messageid", "請輸入訊息ID", true)
+                ),
+                new CommandData("pinmessage", "釘選訊息").addOptions(
+                        new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
+                        new OptionData(STRING, "messageid", "請輸入訊息ID", true)
+                ),
+                new CommandData("unpinmessage", "取消釘選訊息").addOptions(
+                        new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
+                        new OptionData(STRING, "messageid", "請輸入訊息ID", true)
                 ),
                 new CommandData("nhentai", "取得本本").addOption(INTEGER, "id", "請輸入番號", true),
 //                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),

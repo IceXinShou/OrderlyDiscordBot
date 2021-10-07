@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 
 import static main.java.BotSetting.*;
@@ -65,7 +64,7 @@ public class Invite {
             return;
         }
 
-        event.getHook().editOriginalEmbeds(createEmbed(MessageFormat.format("確定要邀請 %s ?", getMemberName(event)), 0xbc153b))
+        event.getHook().editOriginalEmbeds(createEmbed(String.format("確定要邀請 %s ?", getMemberName(event)), 0xbc153b))
                 .setActionRow(Button.danger("Invite:invite:" + userId + ':' + member.getId(), "我會為他負責"))
                 .queue();
     }
@@ -86,7 +85,7 @@ public class Invite {
             logChannel.sendMessageEmbeds(
                     createEmbed(
                             "增產報國!",
-                            MessageFormat.format("%s %s 生出了 %s", emoji.cute.getAsMention(), event.getMember().getAsMention(), targetMember.getAsMention()),
+                            String.format("%s %s 生出了 %s", emoji.cute.getAsMention(), event.getMember().getAsMention(), targetMember.getAsMention()),
                             "成員誕生",
                             getMemberName(event), targetMember.getUser().getAvatarUrl(),
                             OffsetDateTime.now(), 0xFFD1DC

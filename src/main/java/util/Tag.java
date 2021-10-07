@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import org.jetbrains.annotations.Contract;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 public class Tag {
@@ -62,21 +61,21 @@ public class Tag {
 
     public static String getMemberName(GenericInteractionCreateEvent event) {
         return (event.getMember().getNickname() == null ?
-                event.getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getUser().getAsTag()));
+                event.getUser().getAsTag() : String.format("%s (%s)", event.getMember().getNickname(), event.getUser().getAsTag()));
     }
 
     public static String getMemberName(GenericGuildVoiceEvent event) {
         return (event.getMember().getNickname() == null ?
-                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+                event.getMember().getUser().getAsTag() : String.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 
     public static String getMemberName(GenericComponentInteractionCreateEvent event) {
         return (event.getMember().getNickname() == null ?
-                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+                event.getMember().getUser().getAsTag() : String.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 
     public static String getMemberName(GuildMessageUpdateEvent event) {
         return (event.getMember().getNickname() == null ?
-                event.getMember().getUser().getAsTag() : MessageFormat.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
+                event.getMember().getUser().getAsTag() : String.format("%s (%s)", event.getMember().getNickname(), event.getMember().getUser().getAsTag()));
     }
 }
