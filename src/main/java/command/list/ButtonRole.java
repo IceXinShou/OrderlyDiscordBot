@@ -108,6 +108,11 @@ public class ButtonRole {
 
         Role role = event.getGuild().getRoleById(args[3]);
 
+        if (role == null || event.getMember() == null) {
+            event.deferEdit().queue();
+            return;
+        }
+
         if (!event.getGuild().getSelfMember().canInteract(role)) {
             event.replyEmbeds(createEmbed("無法編輯比自己權限更高的成員。修復此問題，需將機器人權限組調高!", 0xFF0000)).setEphemeral(true).queue();
             return;
@@ -117,10 +122,6 @@ public class ButtonRole {
             return;
         }
 
-        if (role == null || event.getMember() == null) {
-            event.deferEdit().queue();
-            return;
-        }
 
         if (event.getMember().getRoles().contains(role))
             event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
