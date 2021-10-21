@@ -463,10 +463,10 @@ public class ListenerManager extends ListenerAdapter {
                 noneReaction.onCommand(event);
                 return;
             }
-            case "surl" -> {
-                sortURL.onCommand(event, false, null, Main.language.getGuildLang(event.getGuild().getId()));
-                return;
-            }
+//            case "surl" -> {
+//                sortURL.onCommand(event, false, null, Main.language.getGuildLang(event.getGuild().getId()));
+//                return;
+//            }
             case "mp4togif" -> {
                 fileConvert.onCommand(event, sortURL);
                 return;
