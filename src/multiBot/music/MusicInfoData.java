@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import static main.java.BotSetting.YT_APIKEY;
 import static main.java.util.UrlDataGetter.getData;
-import static main.java.util.UrlDataGetter.postData;
 
 @SuppressWarnings("ALL")
 public class MusicInfoData {
@@ -70,7 +69,12 @@ public class MusicInfoData {
             thumbnailUrl = getMaximum(videoDetails.getJSONObject("thumbnail").getJSONArray("thumbnails"));
         publishDate = playerMicroformat.getString("publishDate");
 
-        // 頻道
+        //頻道資料
+        startIndex = result.indexOf("videoOwnerRenderer");
+        if (startIndex == -1) return;
+        startIndex = result.indexOf('{', startIndex);
+        if (startIndex == -1) return;
+        JSONObject ownerThumbnail = new JSONObject(result.substring(startIndex)).getJSONObject("thumbnail");
         channelID = videoDetails.getString("channelId");
         channelURL = ("https://www.youtube.com/channel/" + channelID);
         channelThumbnailUrl = getMaximum(ownerThumbnail.getJSONArray("thumbnails"));
