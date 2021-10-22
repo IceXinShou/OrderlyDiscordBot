@@ -33,16 +33,14 @@ public record Room(GuildSettingHelper settingHelper) {
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
         if (membersID != null) {
             String memberID = event.getMember().getId();
-            if (membersID.containsKey(memberID)) {
-                if (membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
-                    event.getChannelLeft().delete().queue();
-                    if (membersID.get(memberID).size() > 1) {
-                        GuildChannel removedChannel;
-                        if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
-                            removedChannel.delete().queue();
-                    }
-                    membersID.remove(memberID);
+            if (membersID.containsKey(memberID) && membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
+                event.getChannelLeft().delete().queue();
+                if (membersID.get(memberID).size() > 1) {
+                    GuildChannel removedChannel;
+                    if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
+                        removedChannel.delete().queue();
                 }
+                membersID.remove(memberID);
             }
         }
     }
@@ -54,16 +52,15 @@ public record Room(GuildSettingHelper settingHelper) {
         Map<String, List<String>> membersID = voiceState.get(event.getGuild().getId());
         if (membersID != null) {
             String memberID = event.getMember().getId();
-            if (membersID.containsKey(memberID))
-                if (membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
-                    event.getChannelLeft().delete().queue();
-                    if (membersID.get(memberID).size() > 1) {
-                        GuildChannel removedChannel;
-                        if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
-                            removedChannel.delete().queue();
-                    }
-                    membersID.remove(memberID);
+            if (membersID.containsKey(memberID) && membersID.get(memberID).get(0).equals(event.getChannelLeft().getId())) {
+                event.getChannelLeft().delete().queue();
+                if (membersID.get(memberID).size() > 1) {
+                    GuildChannel removedChannel;
+                    if ((removedChannel = event.getGuild().getTextChannelById(membersID.get(memberID).get(1))) != null)
+                        removedChannel.delete().queue();
                 }
+                membersID.remove(memberID);
+            }
         }
         if (data.has(event.getChannelJoined().getId()))
             newChannel(event, data);

@@ -248,10 +248,9 @@ public class StatusListener {
     //replace
     private String guildStatusReplace(String input, String format, int change, Map<String, Integer> memberStatus) {
         String result = input;
-        for (int i = 0; i < keys.length; i++) {
+        for (int i = 0; i < keys.length; i++)
             if ((change & (1 << i)) > 0)
                 result = result.replace('%' + keys[i] + '%', memberStatus.get(keys[i]).toString());
-        }
 
         StringCalculate calculate = new StringCalculate();
         result = calculate.processes(result, format);
@@ -273,9 +272,9 @@ public class StatusListener {
         }
         StringCalculate calculate = new StringCalculate();
         calculate.processes(input, format);
-        if (!calculate.haveError()) {
+        if (!calculate.haveError())
             guildChannelChange.put(channelID, needChange);
-        }
+
         return calculate;
     }
 
@@ -339,9 +338,9 @@ public class StatusListener {
         memberStatus.merge("member", 1, Integer::sum);
         memberStatus.merge(member.getOnlineStatus().name(), 1, Integer::sum);
 
-        if (!member.getUser().isBot()) {
+        if (!member.getUser().isBot())
             memberStatus.merge("member_noBot", 1, Integer::sum);
-        }
+
 
         updateGuildChannelStatus(member.getGuild(), memberStatus);
     }

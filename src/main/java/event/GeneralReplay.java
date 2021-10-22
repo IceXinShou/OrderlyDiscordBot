@@ -62,9 +62,9 @@ public class GeneralReplay {
 
 
         TextChannel channel = event.getChannel();
-        if (event.getMessage().getContentRaw().startsWith("你好乖")) {
+        if (event.getMessage().getContentRaw().startsWith("你好乖"))
             channel.sendMessage("謝謝讚美").queue(i -> Log.deleteNoLog(i, 1));
-        }
+
         switch (event.getMessage().getContentRaw()) {
             case "喵嗚~":
                 if (event.getAuthor().getId().equals("286467027705790464")) {

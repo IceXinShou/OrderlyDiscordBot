@@ -116,9 +116,8 @@ public class Log {
     }
 
     public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
-        if (!event.getGuild().getId().equals(guildID)) return;
-        if (ignoreMessageID.contains(event.getMessageId())) return;
-        if (event.getChannel().getId().equals(logChannelID)) return;
+        if (!event.getGuild().getId().equals(guildID) || ignoreMessageID.contains(event.getMessageId()) || event.getChannel().getId().equals(logChannelID))
+            return;
 
         // get message
         JSONObject channelLog = clh.getChannelFileManager(event.getGuild().getId(), event.getChannel().getId()).data;

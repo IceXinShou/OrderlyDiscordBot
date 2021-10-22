@@ -132,9 +132,9 @@ public class Ticket {
                 if (member.hasPermission(Permission.MANAGE_CHANNEL)) {
                     String voiceChannelID;
                     VoiceChannel voiceChannel;
-                    if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null) {
+                    if ((voiceChannelID = linkedVoiceChannel.get(event.getTextChannel().getId())) != null && (voiceChannel = guild.getVoiceChannelById(voiceChannelID)) != null)
                         voiceChannel.delete().queue();
-                    }
+
                     event.getTextChannel().delete().queue();
                     removeButtonPress(args, buttonPos);
                 } else
@@ -158,9 +158,9 @@ public class Ticket {
                         removePermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, List.of(VOICE_CONNECT));
                     }
                     event.deferEdit().queue();
-                } else {
+                } else
                     event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
-                }
+
                 break;
             case "uLock":
                 if (member.hasPermission(Permission.MANAGE_CHANNEL) || member.getRoles().contains(guild.getRoleById(args[5]))) {
@@ -180,9 +180,9 @@ public class Ticket {
                         addPermission(guild.retrieveMemberById(args[4]).complete(), voiceChannel, List.of(VOICE_CONNECT));
                     }
                     event.deferEdit().queue();
-                } else {
+                } else
                     event.getInteraction().deferReply(true).addEmbeds(noPermissionERROREmbed(Permission.MANAGE_CHANNEL)).queue();
-                }
+
                 break;
         }
     }

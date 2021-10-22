@@ -61,9 +61,9 @@ public class SendRequest {
             byte[] buff = new byte[1024];
             int length;
             //when read it end
-            while ((length = in.read(buff)) > 0) {
+            while ((length = in.read(buff)) > 0)
                 builder.append(new String(buff, 0, length));
-            }
+
             in.close();
             return builder.toString();
         } catch (IOException e) {

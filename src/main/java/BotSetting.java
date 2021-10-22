@@ -109,17 +109,15 @@ public class BotSetting {
             String[] args = message.split(";");
             if (args[0].equalsIgnoreCase("playing"))
                 args[0] = "DEFAULT";
-            else {
+            else
                 args[0] = args[0].toUpperCase();
-            }
-            if (args[0].equals("STREAMING")) {
-                if (args.length < 3) {
-                    System.err.println(TAG + " url not found");
-                }
-            }
-            if (args.length < 2) {
+
+            if (args[0].equals("STREAMING") && args.length < 3)
+                System.err.println(TAG + " url not found");
+
+            if (args.length < 2)
                 System.err.println(TAG + " parameter not found");
-            }
+
             activityMessages.add(args);
         }
 
@@ -230,9 +228,9 @@ public class BotSetting {
                     String[] lines = log.split(System.lineSeparator());
                     StringBuilder builder = new StringBuilder();
                     for (String line : lines) {
-                        if (line.startsWith("[") && !line.contains("ERROR")) {
+                        if (line.startsWith("[") && !line.contains("ERROR"))
                             out.println(line);
-                        } else {
+                        else {
                             if (line.startsWith("["))
                                 builder.append(time).append("[ERROR] ");
                             builder.append(line).append(System.lineSeparator());
@@ -260,14 +258,14 @@ public class BotSetting {
         consoleBuff.append(log);
         if (consoleChannel == null)
             return;
-        for (String msg : textSplit(log)) {
+        for (String msg : textSplit(log))
 //            if (msg.contains("<@"))
 //                msg.replace("<@", "@");
             if (error)
                 consoleChannel.sendMessage("```" + msg + "```").queue();
             else
                 consoleChannel.sendMessage(msg).queue();
-        }
+
         consoleBuff.setLength(0);
     }
 
@@ -275,9 +273,9 @@ public class BotSetting {
         int maxLength = 1994;
         String[] split = new String[(input.length() / maxLength) + 1];
         int i;
-        for (i = 0; i < split.length - 1; i++) {
+        for (i = 0; i < split.length - 1; i++)
             split[i] = input.substring(i * maxLength, (i + 1) * maxLength);
-        }
+
         split[i] = input.substring(i * maxLength);
         return split;
     }
@@ -313,9 +311,9 @@ public class BotSetting {
             FileInputStream in = new FileInputStream(settingFile);
             int length;
             byte[] buff = new byte[1024];
-            while ((length = in.read(buff)) > 0) {
+            while ((length = in.read(buff)) > 0)
                 out.write(buff, 0, length);
-            }
+
         } catch (IOException e) {
             System.err.println(TAG + " read " + name + " failed");
 //            System.exit(1);

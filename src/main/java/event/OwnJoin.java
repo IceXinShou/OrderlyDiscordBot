@@ -45,12 +45,12 @@ public class OwnJoin {
         if (!event.getGuild().getId().equals(guildID)) return;
         String userID = event.getUser().getId();
 
-        for (Role i : joinRoleID) {
+        for (Role i : joinRoleID)
             try {
                 guild.addRoleToMember(userID, i).queue();
             } catch (Exception ignored) {
             }
-        }
+
 
         // 打開私聊
         try {
@@ -60,9 +60,8 @@ public class OwnJoin {
                             "Your nickname had been set", 0xe5b849)).queue();
                     initMemberOnJoin(userID, channel, true);
                     FollowRoles(userID, channel);
-                } else {
+                } else
                     initMemberOnJoin(userID, channel, false);
-                }
             });
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -163,14 +162,12 @@ public class OwnJoin {
         MessageChannel channel = event.getChannel();
 
         // 手動設定
-        if (event.getName().equals("join")) {
-            if (memberData.has(userID)) {
-                event.getHook().editOriginalEmbeds(createEmbed("您已完成過暱稱設定,開始重新設定\n" +
-                        "you had set nickname before, let's reset!", 0xe5b849)).queue();
-                initMemberOnJoin(userID, channel, true);
-                // 傳送設定檔
-                askPlayingMinecraft(userID, channel, false);
-            }
+        if (event.getName().equals("join") && memberData.has(userID)) {
+            event.getHook().editOriginalEmbeds(createEmbed("您已完成過暱稱設定,開始重新設定\n" +
+                    "you had set nickname before, let's reset!", 0xe5b849)).queue();
+            initMemberOnJoin(userID, channel, true);
+            // 傳送設定檔
+            askPlayingMinecraft(userID, channel, false);
         }
 
 
@@ -255,9 +252,9 @@ public class OwnJoin {
                 initMemberOnJoin(userID, channel, true);
                 // 傳送設定檔
                 askPlayingMinecraft(userID, channel, false);
-            } else {
+            } else
                 initMemberOnJoin(userID, channel, false);
-            }
+
             return;
         }
 

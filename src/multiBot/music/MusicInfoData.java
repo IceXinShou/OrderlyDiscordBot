@@ -54,12 +54,11 @@ public class MusicInfoData {
         JSONObject videoDetails = rawData.getJSONObject("videoDetails");
 
         // 影片資訊
-        if (rawData.has("playerConfig")) {
+        if (rawData.has("playerConfig"))
             if (rawData.getJSONObject("playerConfig").getJSONObject("audioConfig").has("loudnessDb"))
                 loudness = rawData.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
             else
                 loudness = 0f;
-        }
         title = videoDetails.getString("title");
         description = videoDetails.getString("shortDescription");
         JSONObject playerMicroformat = rawData.getJSONObject("microformat").getJSONObject("playerMicroformatRenderer");
@@ -172,9 +171,8 @@ public class MusicInfoData {
         for (Object i : data) {
             JSONObject thumbnailData = (JSONObject) i;
             int width = thumbnailData.getInt("width");
-            if (width > maxWidth) {
+            if (width > maxWidth)
                 url = thumbnailData.getString("url");
-            }
         }
         return url;
     }

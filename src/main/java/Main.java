@@ -110,10 +110,10 @@ public class Main {
         threadPool.scheduleWithFixedDelay(() -> {
             String[] msg = activityMessages.get(currentIndex);
             try {
-                if (msg[0].equals("STREAMING")) {
+                if (msg[0].equals("STREAMING"))
                     // name, url
                     jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
-                } else {
+                else {
                     Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
                     jda.getPresence().setActivity(Activity.of(type, msg[1]));
                 }

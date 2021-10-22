@@ -109,9 +109,8 @@ public class MusicBot {
     public void loadAndPlaySpotify(final GenericInteractionCreateEvent event, Guild guild,
                                    final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         String[] ids = BotSetting.spotifyToYouTube.translate(trackUrl);
-        for (String i : ids) {
+        for (String i : ids)
             loadAndPlay(event, guild, "https://youtu.be/" + i, search, playNow, selectionMenuEvent);
-        }
     }
 
     public void loadAndPlay(final GenericInteractionCreateEvent event, Guild guild,
@@ -234,9 +233,8 @@ public class MusicBot {
                             " | \uD83D\uDCC5 " + musicInfo.getPublishDate().replace(',', '-')
                     , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
-        } else {
+        } else
             nowPlaying = createEmbed(0xFF0000, "**[" + lang.get(MUSICBOT_NO_PLAYING) + "]**");
-        }
 
         StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue() == null)
@@ -343,9 +341,9 @@ public class MusicBot {
         if (workCount == 0) {
             jda.getPresence().setStatus(OnlineStatus.IDLE);
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
-        } else {
+        } else
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個頻道"));
-        }
+
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
             musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
@@ -371,10 +369,10 @@ public class MusicBot {
     }
 
     public void setActivity(String[] msg) {
-        if (msg[0].equals("STREAMING")) {
+        if (msg[0].equals("STREAMING"))
             // name, url
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
-        } else {
+        else {
             Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
             jda.getPresence().setActivity(Activity.of(type, msg[1]));
         }

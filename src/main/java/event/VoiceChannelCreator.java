@@ -35,11 +35,11 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
                         has = true;
             }
             if (!has) {
-                if (category.getVoiceChannels().size() == 0) {
+                if (category.getVoiceChannels().size() == 0)
                     category.createVoiceChannel(data.getJSONObject(key).getString(AUTO_VC_NAME)).queue();
-                } else {
+                else
                     category.getVoiceChannels().get(0).createCopy().queue();
-                }
+
             }
         }
     }
@@ -55,9 +55,9 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         VoiceChannel channelJoined = event.getChannelJoined();
         if (data.has(channelJoined.getParent().getId())) {
             categoryInfo = data.getJSONObject(channelJoined.getParent().getId());
-            if (channelJoined.getName().equals(categoryInfo.getString(AUTO_VC_NAME)) && channelJoined.getMembers().size() == 1) {
+            if (channelJoined.getName().equals(categoryInfo.getString(AUTO_VC_NAME)) && channelJoined.getMembers().size() == 1)
                 guild.createCopyOfChannel(channelJoined).queue();
-            }
+
         }
     }
 
@@ -71,12 +71,11 @@ public record VoiceChannelCreator(GuildSettingHelper settingHelper) {
         JSONObject categoryInfo;
         if (data.has(channelLeft.getParent().getId())) {
             categoryInfo = data.getJSONObject(channelLeft.getParent().getId());
-            if (channelLeft.getName().equals(categoryInfo.getString(AUTO_VC_NAME)) && channelLeft.getMembers().size() == 0) {
+            if (channelLeft.getName().equals(categoryInfo.getString(AUTO_VC_NAME)) && channelLeft.getMembers().size() == 0)
                 try {
                     channelLeft.delete().complete();
                 } catch (Exception ignored) {
                 }
-            }
         }
     }
 

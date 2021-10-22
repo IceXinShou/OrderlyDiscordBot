@@ -246,10 +246,9 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdateBoostTime(GuildMemberUpdateBoostTimeEvent event) {
-        if (event.getGuild().getId().equals(guildID))
-            if (!event.getMember().getRoles().contains(boostedRole)) {
-                guild.addRoleToMember(event.getMember(), boostedRole).queue();
-            }
+        if (event.getGuild().getId().equals(guildID) && !event.getMember().getRoles().contains(boostedRole))
+            guild.addRoleToMember(event.getMember(), boostedRole).queue();
+
     }
 
     @Override

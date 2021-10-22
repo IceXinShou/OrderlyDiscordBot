@@ -43,9 +43,9 @@ public class UrlDataGetter {
             conn.setUseCaches(false);
 
             String result;
-            if (conn.getResponseCode() > 399) {
+            if (conn.getResponseCode() > 399)
                 result = readResponse(conn.getErrorStream());
-            } else
+            else
                 result = readResponse(conn.getInputStream());
             conn.disconnect();
             return result;
@@ -71,9 +71,9 @@ public class UrlDataGetter {
             payloadOut.flush();
 
             String result;
-            if (conn.getResponseCode() > 399) {
+            if (conn.getResponseCode() > 399)
                 result = readResponse(conn.getErrorStream());
-            } else
+            else
                 result = readResponse(conn.getInputStream());
             conn.disconnect();
             return result;
@@ -87,9 +87,9 @@ public class UrlDataGetter {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];
             int length;
-            while ((length = in.read(buff)) > 0) {
+            while ((length = in.read(buff)) > 0)
                 out.write(buff, 0, length);
-            }
+
             in.close();
             return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {

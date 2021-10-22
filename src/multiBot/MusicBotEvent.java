@@ -21,9 +21,8 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event,
                            Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
-        if (event != null) {
+        if (event != null)
             musicBot.displayQueue(event, search, event.getGuild(), selectionMenuEvent);
-        }
     }
 
     @Override
@@ -40,9 +39,9 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
                         " | \uD83D\uDCC5 " + musicInfo.getPublishDate().replace(',', '-')
                 , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                 0xe5b849);
-        if (search) {
+        if (search)
             event.replyEmbeds(nowPlaying).setEphemeral(true).queue();
-        } else
+        else
             event.getHook().editOriginalEmbeds(nowPlaying).queue();
         if (event.getGuild().getId().equals("882605953382514718"))
             event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(nowPlaying).content(event.getUser().getAsTag()).queue();
@@ -74,11 +73,11 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void loop(boolean loopState, SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (loopState) {
+        if (loopState)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
-        } else {
+        else
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_NORMAL_PLAY), 0xADACCC)).queue();
-        }
+
     }
 
     @Override
@@ -93,11 +92,11 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     @Override
     public void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (repeatState) {
+        if (repeatState)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REPEAT_PLAY), 0x7d95b9)).queue();
-        } else {
+        else
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_NORMAL_PLAY), 0xAFACCC)).queue();
-        }
+
     }
 
     @Override
