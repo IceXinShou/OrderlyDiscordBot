@@ -103,7 +103,11 @@
 ## Setup
 
 > Working...
-
+## Run
+### Linux
+  `./gradle run`
+### windows
+  `./gradle.bat run`
 ## Library usage:
 
 * [JDA](https://github.com/DV8FromTheWorld/JDA)
