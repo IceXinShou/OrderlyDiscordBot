@@ -183,8 +183,8 @@ public class CommandRegister {
                         new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_CHANNEL), true),
                         new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
-                new CommandData("surl", lang.get(COMMANDREGISTER_SURL))
-                        .addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
+//                new CommandData("surl", lang.get(COMMANDREGISTER_SURL))
+//                        .addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
                 new CommandData("nonereaction", "拒絕反應")
                         .addOption(STRING, "messageid", "訊息ID (需在同一個頻道)", true),
                 new CommandData("rolebutton", "按鈕切換身分組").addOptions(

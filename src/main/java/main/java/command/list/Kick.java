@@ -24,9 +24,9 @@ public class Kick {
         if (!selfMember.hasPermission(Permission.KICK_MEMBERS)) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_NO_PERMISSION), 0xFF0000)).queue();
             return;
-        } else if (!hasPermission(Permission.KICK_MEMBERS, event, true)) {
+        } else if (!hasPermission(Permission.KICK_MEMBERS, event, true))
             return;
-        }
+
         Member member = event.getOption(USER_TAG).getAsMember();
         if (member != null && !selfMember.canInteract(member)) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_PERMISSION_DENIED), 0xFF0000)).queue();

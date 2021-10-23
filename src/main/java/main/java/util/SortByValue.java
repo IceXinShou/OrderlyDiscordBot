@@ -8,9 +8,9 @@ public class SortByValue {
         list.sort((Comparator<Object>) (o1, o2) -> ((Comparable<V>) ((Map.Entry<K, V>) (o2)).getValue()).compareTo(((Map.Entry<K, V>) (o1)).getValue()));
 
         Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list) {
+        for (Map.Entry<K, V> entry : list)
             result.put(entry.getKey(), entry.getValue());
-        }
+
 
         return result;
     }

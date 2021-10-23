@@ -20,9 +20,8 @@ public class ChannelLogHelper {
             return fileManager;
 
         File filepath = new File(guildSettingFolder.getPath() + '/' + guildID + '/' + channelLogFolder.getPath());
-        if (!filepath.exists()) {
+        if (!filepath.exists())
             filepath.mkdirs();
-        }
 
         JsonFileManager channelFileManager = new JsonFileManager(filepath.getPath() + '/' + channelID + ".json");
         channelLogs.put(channelID, channelFileManager);

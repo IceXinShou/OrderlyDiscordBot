@@ -74,7 +74,7 @@ public class PopCatHelper {
         for (Map.Entry<String, Long> country : popLeaderboard.entrySet()) {
             if (builder.getOptions().size() == 24)
                 break;
-            if (++count > offset) {
+            if (++count > offset)
                 try {
                     builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(),
                             String.format("%,d", country.getValue()), Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
@@ -82,7 +82,6 @@ public class PopCatHelper {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            }
         }
     }
 
@@ -111,14 +110,13 @@ public class PopCatHelper {
         for (Map.Entry<String, Long> country : speedLeaderboard.entrySet()) {
             if (builder.getOptions().size() == 24)
                 break;
-            if (++count > offset) {
+            if (++count > offset)
                 try {
                     builder.addOption(countryName.get(country.getKey().toUpperCase()), country.getKey().toUpperCase(),
                             String.format("%,d", country.getValue()) + " PPS", Emoji.fromUnicode(countryCodeToEmoji(country.getKey())));
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            }
         }
     }
 

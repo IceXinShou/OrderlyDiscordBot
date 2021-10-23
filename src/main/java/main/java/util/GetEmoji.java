@@ -14,10 +14,11 @@ public class GetEmoji {
             int endIndex = emojiName.indexOf(">", startIndex);
             String[] ids = emojiName.substring(startIndex + 1, endIndex).split(":");
             Emote emoji;
-            if (ids.length == 3 && (emoji = guild.getJDA().getEmoteById(ids[2])) != null)
-                return Emoji.fromEmote(emoji);
             if (ids.length == 3)
-                return null;
+                if ((emoji = guild.getJDA().getEmoteById(ids[2])) != null)
+                    return Emoji.fromEmote(emoji);
+                else
+                    return null;
         }
         if ((emojiName.startsWith("U+") || emojiName.startsWith("u+")))
             return Emoji.fromUnicode(emojiName);
@@ -32,10 +33,10 @@ public class GetEmoji {
     }
 
     private static boolean isDigit(String emojiName) {
-        for (char i : emojiName.toCharArray()) {
+        for (char i : emojiName.toCharArray())
             if (i < '0' || i > '9')
                 return false;
-        }
+
         return true;
     }
 }

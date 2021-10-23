@@ -17,9 +17,9 @@ public class Base62Manager {
         long[] ret = new long[]{0, 1};
 
         b62.chars().forEach(character -> {
-            if (characters.indexOf(character) == -1) { // 不合理的字
+            if (characters.indexOf(character) == -1) // 不合理的字
                 throw new IllegalArgumentException("Invalid character(s) in string: " + character);
-            }
+
             ret[0] += characters.indexOf(character) * ret[1];
             ret[1] = ret[1] * 62;
         });

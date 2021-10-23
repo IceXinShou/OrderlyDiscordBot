@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import static main.java.BotSetting.YT_APIKEY;
 import static main.java.util.UrlDataGetter.getData;
-import static main.java.util.UrlDataGetter.postData;
 
 @SuppressWarnings("ALL")
 public class MusicInfoData {
@@ -35,44 +34,50 @@ public class MusicInfoData {
     public MusicInfoData(AudioTrack track) {
         videoID = track.getInfo().identifier;
 
-        // 影片資料
-        String url = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-        String payload = "{\"videoId\":\"" + videoID + "\",\"context\"" +
-                "{\"client\":{\"hl\":\"zh\",\"gl\":\"TW\",\"clientName\":\"MWEB\",\"clientVersion\":\"2.20210330.08.00\"}}}";
-        String result = postData(url, payload);
+        String url = "https://youtu.be/" + videoID;
+        String result = getData(url);
         if (result == null) {
             return;
         }
 
-        // 影片資訊
-        JSONObject resultJson = new JSONObject(result);
+        //get video data
+        int startIndex = result.indexOf("ytInitialPlayerResponse");
+        if (startIndex == -1) return;
+        startIndex = result.indexOf('{', startIndex);
+        if (startIndex == -1) return;
+        //get video format
+        JSONObject rawData = new JSONObject(result.substring(startIndex));
+        JSONArray videoFormats = rawData
+                .getJSONObject("streamingData")
+                .getJSONArray("adaptiveFormats");
+        //get details
+        JSONObject videoDetails = rawData.getJSONObject("videoDetails");
 
-        if (resultJson.has("playerConfig")) {
-            if (resultJson.getJSONObject("playerConfig").getJSONObject("audioConfig").has("loudnessDb"))
-                loudness = resultJson.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
+        // 影片資訊
+        if (rawData.has("playerConfig"))
+            if (rawData.getJSONObject("playerConfig").getJSONObject("audioConfig").has("loudnessDb"))
+                loudness = rawData.getJSONObject("playerConfig").getJSONObject("audioConfig").getFloat("loudnessDb");
             else
                 loudness = 0f;
-        }
-        JSONObject videoDetails = resultJson.getJSONObject("videoDetails");
         title = videoDetails.getString("title");
         description = videoDetails.getString("shortDescription");
-        JSONObject playerMicroformat = resultJson.getJSONObject("microformat").getJSONObject("playerMicroformatRenderer");
+        JSONObject playerMicroformat = rawData.getJSONObject("microformat").getJSONObject("playerMicroformatRenderer");
         JSONArray thumbnails = playerMicroformat.getJSONObject("thumbnail").getJSONArray("thumbnails");
         thumbnailUrl = getMaximum(thumbnails);
         if (thumbnailUrl == null)
             thumbnailUrl = getMaximum(videoDetails.getJSONObject("thumbnail").getJSONArray("thumbnails"));
         publishDate = playerMicroformat.getString("publishDate");
 
-        // 頻道
+        //頻道資料
+        startIndex = result.indexOf("videoOwnerRenderer");
+        if (startIndex == -1) return;
+        startIndex = result.indexOf('{', startIndex);
+        if (startIndex == -1) return;
+        JSONObject ownerThumbnail = new JSONObject(result.substring(startIndex)).getJSONObject("thumbnail");
         channelID = videoDetails.getString("channelId");
-        result = getData("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelID + "&key=" + YT_APIKEY);
         channelURL = ("https://www.youtube.com/channel/" + channelID);
-        if (result == null) return;
-//        System.out.println(result);
-//        System.out.println(channelURL);
-        JSONObject channelInfo = new JSONObject(result).getJSONArray("items").getJSONObject(0).getJSONObject("snippet");
-        channelThumbnailUrl = channelInfo.getJSONObject("thumbnails").getJSONObject("default").getString("url");
-        channelName = channelInfo.getString("title");
+        channelThumbnailUrl = getMaximum(ownerThumbnail.getJSONArray("thumbnails"));
+        channelName = videoDetails.getString("author");
 
         // 影片統計
         result = getData("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + videoID + "&key=" + YT_APIKEY);
@@ -166,9 +171,8 @@ public class MusicInfoData {
         for (Object i : data) {
             JSONObject thumbnailData = (JSONObject) i;
             int width = thumbnailData.getInt("width");
-            if (width > maxWidth) {
+            if (width > maxWidth)
                 url = thumbnailData.getString("url");
-            }
         }
         return url;
     }

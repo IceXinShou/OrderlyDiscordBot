@@ -86,9 +86,8 @@ public class MultiMusicBotManager {
                 break;
             case "s":
             case "skip":
-                if (checkVcState(event, bot)) {
+                if (checkVcState(event, bot))
                     bot.nextTrack(event, false);
-                }
                 break;
             case "remove":
                 if (checkVcState(event, bot))
@@ -122,11 +121,10 @@ public class MultiMusicBotManager {
             case "volume":
                 if (checkVcState(event, bot)) {
                     int volume = 50;
-                    if (event.getOption(COUNT) != null)
-                        if ((volume = (int) event.getOption(COUNT).getAsLong()) > 100) {
-                            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_UNKNOWN_VALUE), 0xFF0000)).queue();
-                            break;
-                        }
+                    if (event.getOption(COUNT) != null && (volume = (int) event.getOption(COUNT).getAsLong()) > 100) {
+                        event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_UNKNOWN_VALUE), 0xFF0000)).queue();
+                        break;
+                    }
                     bot.changeVolume(volume, event.getGuild(), event);
                 }
                 break;
@@ -158,11 +156,11 @@ public class MultiMusicBotManager {
 
                 // 開始撥放
                 OptionMapping url = event.getOption(NAME);
-                if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString())) {
+                if (Pattern.matches(".*\\.?youtu\\.?be(\\.com)?/+.*", url.getAsString()))
                     bot.loadAndPlay(event, event.getGuild(), url.getAsString(), false, playNow, null);
-                } else if (Pattern.matches(".*open.spotify.com/playlist/\\w*", url.getAsString())) {
+                else if (Pattern.matches(".*open.spotify.com/playlist/\\w*", url.getAsString()))
                     bot.loadAndPlaySpotify(event, event.getGuild(), url.getAsString(), false, playNow, null);
-                } else {
+                else {
 //                    if (true) {
 //                        event.getHook().editOriginalEmbeds(createEmbed("目前 YouTube API 無法使用搜尋功能！正在等待修復", 0xFF0000)).queue();
 //                        return;
@@ -189,9 +187,9 @@ public class MultiMusicBotManager {
 
                         builder.addOption(channelOwner, ((JSONObject) vinfo).getJSONObject("id").getString("videoId"), title, Emoji.fromEmote(emoji.youtubeIcon));
                     }
-                    if (builder.getOptions().size() == 0) {
+                    if (builder.getOptions().size() == 0)
                         event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_SEARCH_NO_RESULT), 0xFF0000)).queue();
-                    } else
+                    else
                         event.getHook().editOriginalComponents().setEmbeds(createEmbed(lang.get(MUSICBOT_MG_SEARCH), 0xa3d7fe)).setActionRow(builder.build()).queue();
 
                 }
@@ -283,9 +281,8 @@ public class MultiMusicBotManager {
             MusicBot bot = bots.get(args[3]);
             if (event.getMember().getVoiceState().inVoiceChannel() && !event.getMember().getVoiceState().getChannel().getType().equals(ChannelType.VOICE))
                 event.replyEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).setEphemeral(true).queue();
-            else {
+            else
                 bot.loadAndPlay(event, event.getGuild(), "https://youtu.be/" + event.getValues().get(0), true, Boolean.parseBoolean(args[4]), event);
-            }
         }
     }
 
@@ -327,9 +324,8 @@ public class MultiMusicBotManager {
             HashMap<String, MusicBot> map = new HashMap<>();
             map.put(ChannelID, musicBot);
             channelBot.put(guildID, map);
-        } else {
+        } else
             botInGuild.put(ChannelID, musicBot);
-        }
     }
 
     private void newBot(String botToken) {
@@ -369,13 +365,12 @@ public class MultiMusicBotManager {
     }
 
     public void onVoiceLeave(GuildVoiceLeaveEvent event) {
-        if (event.getMember().getUser().isBot() && bots.containsKey(event.getMember().getId())) {
+        if (event.getMember().getUser().isBot() && bots.containsKey(event.getMember().getId()))
             try {
                 MusicBot bot = channelBot.get(event.getGuild().getId()).put(event.getChannelLeft().getId(), null);
                 if (bot == null) return;
                 bot.stopPlay(null, event.getGuild());
             } catch (Exception ignored) {
             }
-        }
     }
 }

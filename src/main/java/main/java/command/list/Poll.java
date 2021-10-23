@@ -25,9 +25,9 @@ public class Poll {
             return;
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
-        for (int i = 1; i < event.getOptions().size(); i++) {
+        for (int i = 1; i < event.getOptions().size(); i++)
             fields.add(new MessageEmbed.Field(dotEmojis[i - 1].getAsMention() + event.getOptions().get(i).getAsString(), "", false));
-        }
+
         event.getChannel().sendMessageEmbeds(createEmbed(
                 event.getOption(QUESTION).getAsString(), null,
                 lang.get(POLL_MEMBER_POLL),
@@ -35,9 +35,8 @@ public class Poll {
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {
-            for (int i = 0; i < event.getOptions().size() - 1; i++) {
+            for (int i = 0; i < event.getOptions().size() - 1; i++)
                 m.addReaction(dotEmojis[i]).queue();
-            }
         });
 
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(POLL_SUCCESS), 0x9740b9)).queue();

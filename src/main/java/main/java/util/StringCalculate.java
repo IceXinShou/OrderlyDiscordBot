@@ -62,9 +62,9 @@ public class StringCalculate {
             if (isSymbol(thisChar) || thisChar == ')' || thisChar == '}') {
                 if (valueStart != -1) {
                     double value;
-                    if (hasCache) {
+                    if (hasCache)
                         value = valueCache;
-                    } else if (valueStart <= valueEnd)
+                    else if (valueStart <= valueEnd)
                         value = Double.parseDouble(input.substring(valueStart, valueEnd + 1));
                     else {
                         if (error == null)

@@ -22,16 +22,16 @@ import static main.java.util.PermissionERROR.hasPermission;
 
 public record Language(GuildSettingHelper settingHelper) {
     public void onCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true)) {
+        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
             return;
-        }
+
 
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         SelectionMenu.Builder builder = SelectionMenu.create("Lang:change:" + event.getUser().getId());
 
-        for (String i : Main.language.languagesName) {
+        for (String i : Main.language.languagesName)
             builder.addOption(i, i, Emoji.fromUnicode(countryCodeToEmoji(i.split("_")[1].toLowerCase())));
-        }
+
         event.getHook().editOriginalComponents().setEmbeds(createEmbed(lang.get(LANG_CHOOSE), 0xa3d7fe)).setActionRow(builder.build()).queue();
 
     }

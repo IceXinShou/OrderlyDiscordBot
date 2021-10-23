@@ -15,15 +15,12 @@ record Economy(GuildSettingHelper settingHelper) {
         if (!args[0].equals("Economy"))
             return;
         JSONObject data = settingHelper.getSettingData(event.getGuild(), ECONOMY_SETTING);
-        if (!data.getBoolean(ECONOMY_ENABLE)) {
+        if (!data.getBoolean(ECONOMY_ENABLE))
             return;
-        }
 
         JSONObject object = new JSONObject();
         object.put(event.getUser().getId(), data.getJSONObject(ECONOMY_BAL).getLong(ECONOMY_BAL) + 1);
         data.put(ECONOMY_BAL, object);
-
-
     }
 }
 

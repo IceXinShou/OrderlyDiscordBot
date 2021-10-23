@@ -168,9 +168,8 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
                         else
                             builder.setEmbeds(createEmbed(messageRaw, buttonColorInt));
                     }
-                } else {
+                } else
                     builder.setContent(messageRaw);
-                }
             }
         }
         // 新增按鈕

@@ -89,11 +89,9 @@ public class SettingHypixel {
         achievementPoints = playerData.getInt("achievementPoints");
         karma = playerData.getLong("karma");
         if (playerData.has("newPackageRank"))
-            if (playerData.has("monthlyPackageRank")) {
-                if (playerData.getString("monthlyPackageRank").equals("SUPERSTAR")) {
-                    rank = "[MVP++] ";
-                    color = 0xFFAA00;
-                }
+            if (playerData.has("monthlyPackageRank") && playerData.getString("monthlyPackageRank").equals("SUPERSTAR")) {
+                rank = "[MVP++] ";
+                color = 0xFFAA00;
             } else
                 switch (playerData.getString("newPackageRank")) {
                     case "MVP_PLUS" -> {

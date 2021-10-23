@@ -88,41 +88,35 @@ public record Giveaway(GuildSettingHelper settingHelper) {
 
             } else {
                 // 相對時間
-                if (event.getOption("month") != null)
-                    if (event.getOption("month").
-                            getAsLong() <= 12) time += event.getOption("month").
-                            getAsLong() * 30 * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MONTH_OUT_OF_RANGE), "", false));
+                if (event.getOption("month") != null && event.getOption("month").getAsLong() <= 12)
+                    time += event.getOption("month").getAsLong() * 30 * 24 * 60 * 60;
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MONTH_OUT_OF_RANGE), "", false));
 
-                if (event.getOption("week") != null)
-                    if (event.getOption("week").
-                            getAsLong() <= 48) time += event.getOption("week").
-                            getAsLong() * 7 * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_WEEK_OUT_OF_RANGE), "", false));
+                if (event.getOption("week") != null && event.getOption("week").getAsLong() <= 48)
+                    time += event.getOption("week").getAsLong() * 7 * 24 * 60 * 60;
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_WEEK_OUT_OF_RANGE), "", false));
 
-                if (event.getOption("day") != null)
-                    if (event.getOption("day").
-                            getAsLong() <= 365) time += event.getOption("day").
-                            getAsLong() * 24 * 60 * 60;
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_DAY_OUT_OF_RANGE), "", false));
+                if (event.getOption("day") != null && event.getOption("day").getAsLong() <= 365)
+                    time += event.getOption("day").getAsLong() * 24 * 60 * 60;
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_DAY_OUT_OF_RANGE), "", false));
 
-                if (event.getOption("hour") != null)
-                    if (event.getOption("hour").
-                            getAsLong() <= 8760) time += event.getOption("hour").
-                            getAsLong() * 60 * 60;
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_HOUR_OUT_OF_RANGE), "", false));
+                if (event.getOption("hour") != null && event.getOption("hour").getAsLong() <= 8760)
+                    time += event.getOption("hour").getAsLong() * 60 * 60;
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_HOUR_OUT_OF_RANGE), "", false));
 
-                if (event.getOption("minute") != null)
-                    if (event.getOption("minute").
-                            getAsLong() <= 625200) time += event.getOption("minute").
-                            getAsLong() * 60;
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MINUTE_OUT_OF_RANGE), "", false));
+                if (event.getOption("minute") != null && event.getOption("minute").getAsLong() <= 625200)
+                    time += event.getOption("minute").getAsLong() * 60;
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_MINUTE_OUT_OF_RANGE), "", false));
 
-                if (event.getOption("second") != null)
-                    if (event.getOption("month").
-                            getAsLong() <= 31536000) time += event.getOption("second").
-                            getAsLong();
-                    else fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_SECOND_OUT_OF_RANGE), "", false));
+                if (event.getOption("second") != null && event.getOption("month").getAsLong() <= 31536000)
+                    time += event.getOption("second").getAsLong();
+                else
+                    fields.add(new MessageEmbed.Field(lang.get(GIVEAWAY_SECOND_OUT_OF_RANGE), "", false));
             }
         }
         if (fields.size() > 0) {
@@ -166,9 +160,9 @@ public record Giveaway(GuildSettingHelper settingHelper) {
 
     private void onReadyGiveaway(Guild guild) {
         JSONObject data;
-        if ((data = settingHelper.getSettingData(guild, GIVEAWAY_SETTING)).length() == 0) {
+        if ((data = settingHelper.getSettingData(guild, GIVEAWAY_SETTING)).length() == 0)
             return;
-        }
+
         List<Long> endTime;
         if (giveawayData.containsKey(guild.getId()))
             endTime = giveawayData.get(guild.getId());
@@ -176,9 +170,9 @@ public record Giveaway(GuildSettingHelper settingHelper) {
             endTime = new ArrayList<>();
             giveawayData.put(guild.getId(), endTime);
         }
-        for (Object i : data.getJSONArray(GIVEAWAY_ARRAY)) {
+        for (Object i : data.getJSONArray(GIVEAWAY_ARRAY))
             endTime.add(((JSONObject) i).getLong(GIVEAWAY_TIME));
-        }
+
     }
 
     private static ScheduledExecutorService minThreadPool = Executors.newSingleThreadScheduledExecutor();
@@ -193,14 +187,12 @@ public record Giveaway(GuildSettingHelper settingHelper) {
         // run thread
         minThreadPool.scheduleWithFixedDelay(() -> {
             long time = System.currentTimeMillis() / 1000;
-            for (Map.Entry<String, List<Long>> data : giveawayData.entrySet()) {
+            for (Map.Entry<String, List<Long>> data : giveawayData.entrySet())
                 for (int i = 0; i < data.getValue().size(); i++) {
                     long timeLeft = data.getValue().get(i) - time;
-                    if (timeLeft <= 61) {
+                    if (timeLeft <= 61)
                         secDetectGiveaway(jda.getGuildById(data.getKey()), i);
-                    }
                 }
-            }
         }, 0, 1, TimeUnit.MINUTES);
     }
 

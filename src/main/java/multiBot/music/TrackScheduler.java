@@ -47,9 +47,9 @@ public class TrackScheduler extends AudioEventAdapter {
         if (trackList.size() == 0)
             return;
         // 加入序列
-        for (int i = 1; i < trackList.size(); i++) {
+        for (int i = 1; i < trackList.size(); i++)
             queue.add(trackList.get(i));
-        }
+
         // 嘗試播放
         queue(trackList.get(0), event, 0, false, false, null);
 
@@ -76,10 +76,10 @@ public class TrackScheduler extends AudioEventAdapter {
             musicInfo = new MusicInfoData(track);
             calculateNormalized(musicInfo.getLoudness());
             this.event.trackStart(track, event, guild, musicBot, search, selectionMenuEvent);
-        } else {
+        } else
             // 加入序列
             this.event.addToQueue(track, event, search, playNow);
-        }
+
     }
 
     public void remove(int index, SlashCommandEvent event) {
@@ -125,12 +125,12 @@ public class TrackScheduler extends AudioEventAdapter {
     public void nextTrack(GenericInteractionCreateEvent event, boolean search) {
         lastIndex = index;
         index++;
-        if (playTrack()) {
+        if (playTrack())
 //            this.event.skip(playingTrack, event, guild);
             this.event.trackStart(playingTrack, event, guild, musicBot, search, null);
-        } else {
+        else
             stopPlay(event);
-        }
+
     }
 
     @Override
@@ -161,9 +161,9 @@ public class TrackScheduler extends AudioEventAdapter {
             return null;
         AudioTrack[] out = new AudioTrack[loop ? queue.size() : queue.size() - index - 1];
         int j = 0;
-        for (int i = queue.size() - 1; i > (loop ? -1 : index); i--) {
+        for (int i = queue.size() - 1; i > (loop ? -1 : index); i--)
             out[j++] = queue.get(i);
-        }
+
         return out;
     }
 

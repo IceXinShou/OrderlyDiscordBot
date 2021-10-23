@@ -39,8 +39,8 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
                 textCategoryID = event.getOption("textcategory").getAsString();
             else
                 textCategoryID = detectChannel.getParent().getId();
-
         }
+
         if (event.getOption("voicebitrate") != null)
             voiceBitrate = Short.parseShort(event.getOption("voicebitrate").getAsString()); // 8~384
         else
@@ -50,9 +50,8 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         else
             voiceCategoryID = detectChannel.getParent().getId();
 
-        if (event.getOption("memberlimit") != null)
-            if (event.getOption("memberlimit").getAsLong() > 0)
-                memberLimit = Byte.parseByte(event.getOption("memberlimit").getAsString());
+        if (event.getOption("memberlimit") != null && event.getOption("memberlimit").getAsLong() > 0)
+            memberLimit = Byte.parseByte(event.getOption("memberlimit").getAsString());
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
@@ -68,9 +67,9 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         if (voiceBitrate * 1000 > guild.getBoostTier().getMaxBitrate())
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_BITRATE_ERROR), "", false));
 
-        if (memberLimit != null && memberLimit > 99) {
+        if (memberLimit != null && memberLimit > 99)
             fields.add(new MessageEmbed.Field(lang.get(SETTINGROOM_MEMBER_LIMIT_ERROR), "", false));
-        }
+
 
         if (fields.size() > 0) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGROOM_ERROR_REPORT), fields, 0xFF0000)).queue();
@@ -99,9 +98,9 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         }
         channelData.put(ROOM_VOICE_NAME, voiceName);
         channelData.put(ROOM_VOICE_BITRATE, voiceBitrate);
-        if (memberLimit != null) {
+        if (memberLimit != null)
             channelData.put(ROOM_VOICE_MEMBER_LIMIT, memberLimit);
-        }
+
         JSONObject roomSetting = settingHelper.getSettingData(guild, ROOM_SETTING);
         roomSetting.put(detectID, channelData);
         settingHelper.getGuildSettingManager(guild.getId()).saveFile();
@@ -118,12 +117,12 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         if (voiceState.get(guild.getId()).size() > 0) {
             Map<String, List<String>> memberData = voiceState.get(guild.getId());
             for (String key : memberData.keySet()) {
-                for (String channelID : memberData.get(key)) {
+                for (String channelID : memberData.get(key))
                     try {
                         guild.getVoiceChannelById(channelID).delete().queue();
                     } catch (Exception ignored) {
                     }
-                }
+
                 memberData.remove(key);
             }
         }

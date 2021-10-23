@@ -77,9 +77,9 @@ public class Invite {
             Member targetMember = guild.retrieveMemberById(args[3]).complete();
 
             // 加role
-            for (Role role : confirmRoleID) {
+            for (Role role : confirmRoleID)
                 guild.addRoleToMember(targetMember, role).queue();
-            }
+
             addMemberToGenealogy(event.getMember(), args[3]);
 
             logChannel.sendMessageEmbeds(
