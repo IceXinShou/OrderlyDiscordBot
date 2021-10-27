@@ -1,9 +1,9 @@
 package main.java;
 
-import main.java.event.*;
 import main.java.command.CommandRegister;
 import main.java.command.list.*;
-import main.java.command.list.Setting.*;
+import main.java.command.list.setting.*;
+import main.java.event.*;
 import main.java.util.file.GuildSettingHelper;
 import multiBot.MultiMusicBotManager;
 import net.dv8tion.jda.api.Permission;
@@ -104,6 +104,7 @@ public class ListenerManager extends ListenerAdapter {
     SettingHypixel settingHypixel = new SettingHypixel();
     NoneReaction noneReaction = new NoneReaction();
     MessageManager messageManager = new MessageManager();
+    SettingSchool settingSchool = new SettingSchool();
 
     /**
      * Guild Message
@@ -543,6 +544,18 @@ public class ListenerManager extends ListenerAdapter {
                     }
                     case "top" -> {
                         settingOsu.onTop(event);
+                        return;
+                    }
+                }
+            }
+            case "school" -> {
+                switch (event.getSubcommandName()) {
+                    case "login" -> {
+                        settingSchool.onSchoolLogin(event);
+                        return;
+                    }
+                    case "absent" -> {
+                        settingSchool.onAbsent(event);
                         return;
                     }
                 }

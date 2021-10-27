@@ -1,4 +1,4 @@
-package main.java.command.list.Setting;
+package main.java.command.list.setting;
 
 import main.java.Main;
 import net.dv8tion.jda.api.entities.MessageEmbed;

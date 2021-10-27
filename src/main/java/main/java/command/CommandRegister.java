@@ -245,6 +245,13 @@ public class CommandRegister {
                         new SubcommandData("top", lang.get(COMMANDREGISTER_OSU_SHOW_TOP))
                                 .addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME))
                 ),
+                // school
+                new CommandData("school", "台南高工學生資料取得器").addSubcommands(
+                        new SubcommandData("login", "登入以取得資料")
+                                .addOption(STRING, "id", "您的帳號 (通常為學號)", true)
+                                .addOption(STRING, "password", "您的密碼", true),
+                        new SubcommandData("absent", "缺曠課紀錄")
+                ),
                 // Hypixel
                 new CommandData("hy", lang.get(COMMANDREGISTER_HYPIXEL)).addSubcommands(
                         new SubcommandData("setuser", lang.get(COMMANDREGISTER_HYPIXEL_BIND_ACCOUNT))

@@ -82,7 +82,7 @@ public class UrlDataGetter {
         }
     }
 
-    private static String readResponse(InputStream in) {
+    public static String readResponse(InputStream in) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buff = new byte[1024];

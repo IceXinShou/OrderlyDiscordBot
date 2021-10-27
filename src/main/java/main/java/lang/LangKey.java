@@ -15,7 +15,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingHypixel}
+     * {@link main.java.command.list.setting.SettingHypixel}
      */
     public static int HYPIXEL_NAME_ERROR;
     public static int HYPIXEL_SETTING_SUCCESSFULLY;
@@ -113,7 +113,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingVCC}
+     * {@link main.java.command.list.setting.SettingVCC}
      */
     public static int SETTINGVCC_LONG_OVER_100;
     public static int SETTINGVCC_CATEGORY_ERROR;
@@ -125,7 +125,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingTicket}
+     * {@link main.java.command.list.setting.SettingTicket}
      */
     public static int SETTINGTICKET_MESSAGE_CATEGORY_ERROR;
     public static int SETTINGTICKET_BUTTON_COLOR_ERROR;
@@ -163,7 +163,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingRoom}
+     * {@link main.java.command.list.setting.SettingRoom}
      */
     public static int SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR;
     public static int SETTINGROOM_VOICE_CHANNEL_NAME_ERROR;
@@ -184,7 +184,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingYande}
+     * {@link main.java.command.list.setting.SettingYande}
      */
     public static int SETTINGYANDE_WRONG_TAG;
     public static int SETTINGYANDE_WRONG_CHANNEL_TYPE;
@@ -196,7 +196,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingOsu}
+     * {@link main.java.command.list.setting.SettingOsu}
      */
     public static int SETTINGOSU_WRONG_NAME;
     public static int SETTINGOSU_SETTING_SUCCESSFULLY;
@@ -231,7 +231,7 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingChannelStatus}
+     * {@link main.java.command.list.setting.SettingChannelStatus}
      */
     public static int SETTINGCHANNELSTATUS_FAIL;
     public static int SETTINGCHANNELSTATUS_SETTING_SUCCESS;
@@ -239,13 +239,13 @@ public class LangKey {
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingHelp}
+     * {@link main.java.command.list.setting.SettingHelp}
      */
     public static int SETTINGHELP_ADVANCE_HELP;
 
 
     /**
-     * {@link main.java.command.list.Setting.SettingJoinLeave}
+     * {@link main.java.command.list.setting.SettingJoinLeave}
      */
     public static int SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL;
     public static int SETTINGJOINLEAVE_SETTING_FAIL;
