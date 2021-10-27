@@ -554,8 +554,8 @@ public class ListenerManager extends ListenerAdapter {
                         settingSchool.onSchoolLogin(event);
                         return;
                     }
-                    case "absent" -> {
-                        settingSchool.onAbsent(event);
+                    case "info" -> {
+                        settingSchool.onInfo(event);
                         return;
                     }
                 }

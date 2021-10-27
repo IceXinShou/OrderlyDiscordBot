@@ -250,7 +250,7 @@ public class CommandRegister {
                         new SubcommandData("login", "登入以取得資料")
                                 .addOption(STRING, "id", "您的帳號 (通常為學號)", true)
                                 .addOption(STRING, "password", "您的密碼", true),
-                        new SubcommandData("absent", "缺曠課紀錄")
+                        new SubcommandData("info", "學生資料")
                 ),
                 // Hypixel
                 new CommandData("hy", lang.get(COMMANDREGISTER_HYPIXEL)).addSubcommands(
