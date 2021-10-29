@@ -1,15 +1,15 @@
-# {@link main.java.command.list.BotInfo}
+# {@link main.command.list.BotInfo}
 BOTINFO_GUILD_TOTAL_COUNT: "**伺服器总数: **"
 BOTINFO_MEMBER_TOTAL_COUNT: "**成员总数: **"
 BOTINFO_INFORMATION: "机器人资讯"
 
 
-# {@link main.java.command.list.URLShort}
+# {@link main.command.list.URLShort}
 URLSHORT_SUCCESS: "创建成功"
 URLSHORT_FAIL: "无法缩短此网址或讯息"
 
 
-# {@link main.java.command.list.Setting.SettingHypixel}
+# {@link main.command.list.Setting.SettingHypixel}
 HYPIXEL_NAME_ERROR: "名字错误"
 HYPIXEL_SETTING_SUCCESSFULLY: "设定完成"
 HYPIXEL_ERROR_PLEASE_TRY_AGAIN: "错误，请重试！"
@@ -40,14 +40,14 @@ HYPIXEL_BW_4V4: ""
 HYPIXEL_BW_TOTAL: ""
 
 
-# {@link main.java.command.list.Ban}
+# {@link main.command.list.Ban}
 BAN_NO_PERMISSION: "机器人并没有权限封禁成员"
 BAN_PERMISSION_DENIED: "此成员的力量大到让我无法执行此动作"
 BAN_DEVELOPER: "此成员为机器人的开发者"
 BAN_SUCCESS: "成功封禁成员"
 
 
-# {@link main.java.command.list.UnBan}
+# {@link main.command.list.UnBan}
 UNBAN_NO_PERMISSION: "我必须要有封禁权限才可以解除封锁"
 UNBAN_SUCCESS: "已成功解除封锁"
 UNBAN_PERMISSION_ERROR: "权限错误"
@@ -55,7 +55,7 @@ UNBAN_UNKNOWN_ERROR: "未知的错误"
 UNBAN_CAN_NOTE_FOUND_MEMBER: "无法找到此成员"
 
 
-# {@link main.java.command.list.Ticket}
+# {@link main.command.list.Ticket}
 TICKET_ALREADY_CLICKED: "您已经使用过此按扭了"
 TICKET_SIZE_LIMIT: "没有足够的空间 (类别中频道数量达到最大值)"
 TICKET_LOCK: "封存"
@@ -63,28 +63,28 @@ TICKET_DELETE: "删除"
 TICKET_UNLOCK: "解除封存"
 
 
-# {@link main.java.command.list.Support}
+# {@link main.command.list.Support}
 SUPPORT_SENDING: "传送中..."
 SUPPORT_FAIL: "传送失败"
 SUPPORT_SUCCESS: "传送成功"
 
 
-# {@link main.java.command.list.Reload}
+# {@link main.command.list.Reload}
 RELOAD_SUCCESS: "重新载入完成"
 
 
-# {@link main.java.command.list.Poll}
+# {@link main.command.list.Poll}
 POLL_MEMBER_POLL: "成员投票"
 POLL_SUCCESS: "创建成功"
 
 
-# {@link main.java.util.file.PopCatHelper}
+# {@link main.util.file.PopCatHelper}
 POPCATHELPER_PREVIEWS: "上一页"
 POPCATHELPER_NEXT: "下一页"
 POPCATHELPER_DETAIL_INFORMATION: "点击可查看详细资讯"
 
 
-# {@link main.java.command.list.Setting.SettingVCC}
+# {@link main.command.list.Setting.SettingVCC}
 SETTINGVCC_LONG_OVER_100: "语音频道名称长度不能大於 100"
 SETTINGVCC_CATEGORY_ERROR: "目录错误"
 SETTINGVCC_ERROR_REPORT: "错误回报"
@@ -94,7 +94,7 @@ SETTINGVCC_SETTING_SUCCESS: "设定成功"
 SETTINGVCC_REMOVE_SUCCESS: "移除成功"
 
 
-# {@link main.java.command.list.Setting.SettingTicket}
+# {@link main.command.list.Setting.SettingTicket}
 SETTINGTICKET_MESSAGE_CATEGORY_ERROR: "讯息频道错误"
 SETTINGTICKET_BUTTON_COLOR_ERROR: "按钮颜色错误"
 SETTINGTICKET_BUTTON_NAME_AND_EMOJI_AT_LEAST_ONCE: "按钮名称与表情符号请至少输入一项"
@@ -130,7 +130,7 @@ SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE: "此讯息无被设定纪录
 SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL: "此频道无被设定纪录"
 
 
-# {@link main.java.command.list.Setting.SettingRoom}
+# {@link main.command.list.Setting.SettingRoom}
 SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR: "文字频道名称无法包含空格"
 SETTINGROOM_VOICE_CHANNEL_NAME_ERROR: "语音频道名称长度不能大於 100"
 SETTINGROOM_TEXT_CHANNEL_NAME_ERROR: "文字频道名称长度不能大於 100"
@@ -149,7 +149,7 @@ SETTINGROOM_REMOVE_SUCCESS: "移除成功"
 SETTINGROOM_NONE: "`无`"
 
 
-# {@link main.java.command.list.Setting.SettingYande}
+# {@link main.command.list.Setting.SettingYande}
 SETTINGYANDE_WRONG_TAG: "错误的 Tag"
 SETTINGYANDE_WRONG_CHANNEL_TYPE: "您选择的频道并不是文字频道"
 SETTINGYANDE_NSFW_IS_NOT_OPEN: "尚未开启 NSFW"
@@ -159,7 +159,7 @@ SETTINGYANDE_NO_SET: "此频道未被设定过"
 SETTINGYANDE_REMOVE_SUCCESSFULLY: "移除完成"
 
 
-# {@link main.java.command.list.Setting.SettingOsu}
+# {@link main.command.list.Setting.SettingOsu}
 SETTINGOSU_WRONG_NAME: "名字错误"
 SETTINGOSU_SETTING_SUCCESSFULLY: "设定完成"
 SETTINGOSU_24H_NO_PLAY: "此玩家没有在24小时内玩过游戏"
@@ -175,30 +175,30 @@ SETTINGOSU_SCORE: "分数"
 SETTINGOSU_HOUR: "小时"
 
 
-# {@link main.java.command.list.ChannelChange}
+# {@link main.command.list.ChannelChange}
 ChannelChange_TOO_LONG: "名字长度不能超过 100 字"
 ChannelChange_CHANGE_SUCCESSFULLY: "更改完成!"
 ChannelChange_CHANNEL_TYPE_ERROR: "频道类型错误"
 ChannelChange_BITRATE_ERROR: "位元率错误"
 
 
-# {@link main.java.command.list.FileConvert}
+# {@link main.command.list.FileConvert}
 FILECONVERT_CONVERTING: "转换中..."
 FILECONVERT_WAIT_TIME: "这需要一段时间..."
 FILECONVERT_FAIL: "转换失败"
 
 
-# {@link main.java.command.list.Setting.SettingChannelStatus}
+# {@link main.command.list.Setting.SettingChannelStatus}
 SETTINGCHANNELSTATUS_FAIL: "格式化位数错误"
 SETTINGCHANNELSTATUS_SETTING_SUCCESS: "设定成功"
 SETTINGCHANNELSTATUS_REMOVE_SUCCESS: "移除成功"
 
 
-# {@link main.java.command.list.Setting.SettingHelp}
+# {@link main.command.list.Setting.SettingHelp}
 SETTINGHELP_ADVANCE_HELP: "进阶说明"
 
 
-# {@link main.java.command.list.Clear}
+# {@link main.command.list.Clear}
 CLEAR_CONFIRM_DELETE: "確定刪除 %d 則訊息?"
 CLEAR_DELETED: "已刪除"
 CLEAR_MEMBER_NOT_FOUND: "找無成員"
@@ -211,7 +211,7 @@ CLEAR_MESSAGE_ERROR_EVENT: "錯誤: "
 CLEAR_MESSAGE_COUNT: "則文字已刪除!"
 
 
-# {@link main.java.command.list.Setting.SettingJoinLeave}
+# {@link main.command.list.Setting.SettingJoinLeave}
 SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL: "找不到文字频道"
 SETTINGJOINLEAVE_SETTING_FAIL: "设定失败"
 SETTINGJOINLEAVE_NOTICE_CHANNEL: "通知频道"
@@ -224,11 +224,11 @@ SETTINGJOINLEAVE_REMOVE_SUCCESS: "移除成功"
 SETTINGJOINLEAVE_CAN_NOT_FIND: "找不到此文字频道"
 
 
-# {@link main.java.command.list.Setting.SettingJoinLeave}
+# {@link main.command.list.Setting.SettingJoinLeave}
 INFO_SERVER_COUNT: "**伺服器总数: **"
 
 
-# {@link main.java.command.CommandRegister}
+# {@link main.command.CommandRegister}
 COMMANDREGISTER_WARN: "警告成员"
 COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE: "警告你所选的成员"
 COMMANDREGISTER_WARN_REASON: "原因"
@@ -434,13 +434,13 @@ MUSICBOT_NONE: "无"
 MUSICBOT_WAITING_PLAYLIST: "待播清单"
 
 
-# {@link main.java.ListenerManager}
+# {@link main.ListenerManager}
 LISTENERMANAGER_CANT_DO_THIS: "目前无法处理此命令"
 LISTENERMANAGER_WRONG_CHANNEL: "请到指定位置使用此指令"
 LISTENERMANAGER_NOT_YOUR_BUTTON: "此为他人的按钮"
 
 
-# {@link main.java.command.list.Lang}
+# {@link main.command.list.Lang}
 LANG_CHANGE: "更换语言"
 LANG_CHOOSE: "请选择一项语言"
 LANG_SUCCESS: "更换成功"
@@ -458,7 +458,7 @@ MUSICBOT_MG_NO_BOT_IN_CHANNEL: "没有机器人在语音频道馁..."
 MUSICBOT_MG_NEED_USE_IN_CHANNEL: "请在语音频道内使用此指令"
 
 
-# {@link main.java.command.list.Kick}
+# {@link main.command.list.Kick}
 KICK_NO_PERMISSION: "我必须要有踢出权限才可以踢出成员"
 KICK_PERMISSION_DENIED: "无法踢出此成员, 他的权限太高了"
 KICK_DEVELOPER: "此成员为机器人的开发者"
@@ -467,7 +467,7 @@ KICK_PERMISSION_ERROR: "权限错误"
 KICK_UNKNOWN_ERROR: "未知的错误"
 
 
-# {@link main.java.command.list.Giveaway}
+# {@link main.command.list.Giveaway}
 GIVEAWAY_NEED_ADMIN_PERMISSION: "请给予管理员权限才能够执行此操作"
 GIVEAWAY_SINGLE_DATE_FORMAT: "只能填写一种时间格式"
 GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR: "绝对时间格式错误"
@@ -487,6 +487,6 @@ GIVEAWAY_TIME_LEFT: "结束剩馀"
 GIVEAWAY_SUCCESS: "设定成功"
 
 
-# {@link main.java.command.list.Help}
+# {@link main.command.list.Help}
 HELP_USAGE: "使用说明"
 LANG_CREATE_SUCCESS: "创建成功"

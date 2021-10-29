@@ -7,8 +7,8 @@ import java.net.URLEncoder;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static main.java.BotSetting.*;
-import static main.java.util.UrlDataGetter.*;
+import static main.BotSetting.*;
+import static main.util.UrlDataGetter.*;
 
 public class SpotifyToYouTube {
     /**

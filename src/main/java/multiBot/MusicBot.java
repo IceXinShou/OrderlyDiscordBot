@@ -7,8 +7,8 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import main.java.BotSetting;
-import main.java.Main;
+import main.BotSetting;
+import main.Main;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.MusicInfoData;
 import multiBot.music.TrackScheduler;
@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static main.java.lang.LangKey.*;
-import static main.java.util.EmbedCreator.createEmbed;
+import static main.lang.LangKey.*;
+import static main.util.EmbedCreator.createEmbed;
 
 public class MusicBot {
     private final JDA jda;

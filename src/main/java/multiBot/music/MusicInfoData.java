@@ -4,8 +4,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static main.java.BotSetting.YT_APIKEY;
-import static main.java.util.UrlDataGetter.getData;
+import static main.BotSetting.YT_APIKEY;
+import static main.util.UrlDataGetter.getData;
 
 @SuppressWarnings("ALL")
 public class MusicInfoData {

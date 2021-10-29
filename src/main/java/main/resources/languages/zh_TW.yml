@@ -1,15 +1,15 @@
-# {@link main.java.command.list.BotInfo}
+# {@link main.command.list.BotInfo}
 BOTINFO_GUILD_TOTAL_COUNT: "**伺服器總數: **"
 BOTINFO_MEMBER_TOTAL_COUNT: "**成員總數: **"
 BOTINFO_INFORMATION: "機器人資訊"
 
 
-# {@link main.java.command.list.URLShort}
+# {@link main.command.list.URLShort}
 URLSHORT_SUCCESS: "創建成功"
 URLSHORT_FAIL: "無法縮短此網址或訊息"
 
 
-# {@link main.java.command.list.Setting.SettingHypixel}
+# {@link main.command.list.Setting.SettingHypixel}
 HYPIXEL_NAME_ERROR: "名字錯誤"
 HYPIXEL_SETTING_SUCCESSFULLY: "設定完成"
 HYPIXEL_ERROR_PLEASE_TRY_AGAIN: "錯誤，請重試！"
@@ -40,14 +40,14 @@ HYPIXEL_BW_4V4: ""
 HYPIXEL_BW_TOTAL: ""
 
 
-# {@link main.java.command.list.Ban}
+# {@link main.command.list.Ban}
 BAN_NO_PERMISSION: "機器人並沒有權限封禁成員"
 BAN_PERMISSION_DENIED: "此成員的力量大到讓我無法執行此動作"
 BAN_DEVELOPER: "此成員為機器人的開發者"
 BAN_SUCCESS: "成功封禁成員"
 
 
-# {@link main.java.command.list.UnBan}
+# {@link main.command.list.UnBan}
 UNBAN_NO_PERMISSION: "我必須要有封禁權限才可以解除封鎖"
 UNBAN_SUCCESS: "已成功解除封鎖"
 UNBAN_PERMISSION_ERROR: "權限錯誤"
@@ -55,7 +55,7 @@ UNBAN_UNKNOWN_ERROR: "未知的錯誤"
 UNBAN_CAN_NOTE_FOUND_MEMBER: "無法找到此成員"
 
 
-# {@link main.java.command.list.Ticket}
+# {@link main.command.list.Ticket}
 TICKET_ALREADY_CLICKED: "您已經使用過此按鈕了"
 TICKET_SIZE_LIMIT: "沒有足夠的空間 (類別中頻道數量達到最大值)"
 TICKET_LOCK: "封存"
@@ -63,28 +63,28 @@ TICKET_DELETE: "刪除"
 TICKET_UNLOCK: "解除封存"
 
 
-# {@link main.java.command.list.Support}
+# {@link main.command.list.Support}
 SUPPORT_SENDING: "傳送中..."
 SUPPORT_FAIL: "傳送失敗"
 SUPPORT_SUCCESS: "傳送成功"
 
 
-# {@link main.java.command.list.Reload}
+# {@link main.command.list.Reload}
 RELOAD_SUCCESS: "重新載入完成"
 
 
-# {@link main.java.command.list.Poll}
+# {@link main.command.list.Poll}
 POLL_MEMBER_POLL: "成員投票"
 POLL_SUCCESS: "創建成功"
 
 
-# {@link main.java.util.file.PopCatHelper}
+# {@link main.util.file.PopCatHelper}
 POPCATHELPER_PREVIEWS: "上一頁"
 POPCATHELPER_NEXT: "下一頁"
 POPCATHELPER_DETAIL_INFORMATION: "點擊可查看詳細資訊"
 
 
-# {@link main.java.command.list.Setting.SettingVCC}
+# {@link main.command.list.Setting.SettingVCC}
 SETTINGVCC_LONG_OVER_100: "語音頻道名稱長度不能大於 100"
 SETTINGVCC_CATEGORY_ERROR: "目錄錯誤"
 SETTINGVCC_ERROR_REPORT: "錯誤回報"
@@ -94,7 +94,7 @@ SETTINGVCC_SETTING_SUCCESS: "設定成功"
 SETTINGVCC_REMOVE_SUCCESS: "移除成功"
 
 
-# {@link main.java.command.list.Setting.SettingTicket}
+# {@link main.command.list.Setting.SettingTicket}
 SETTINGTICKET_MESSAGE_CATEGORY_ERROR: "訊息頻道錯誤"
 SETTINGTICKET_BUTTON_COLOR_ERROR: "按鈕顏色錯誤"
 SETTINGTICKET_BUTTON_NAME_AND_EMOJI_AT_LEAST_ONCE: "按鈕名稱與表情符號請至少輸入一項"
@@ -130,7 +130,7 @@ SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_MESSAGE: "此訊息無被設定紀錄
 SETTINGTICKET_TICKET_REMOVE_BUTTON_FAIL_BY_CHANNEL: "此頻道無被設定紀錄"
 
 
-# {@link main.java.command.list.Setting.SettingRoom}
+# {@link main.command.list.Setting.SettingRoom}
 SETTINGROOM_TEXT_CHANNEL_NAME_SPACE_ERROR: "文字頻道名稱無法包含空格"
 SETTINGROOM_VOICE_CHANNEL_NAME_ERROR: "語音頻道名稱長度不能大於 100"
 SETTINGROOM_TEXT_CHANNEL_NAME_ERROR: "文字頻道名稱長度不能大於 100"
@@ -149,7 +149,7 @@ SETTINGROOM_REMOVE_SUCCESS: "移除成功"
 SETTINGROOM_NONE: "`無`"
 
 
-# {@link main.java.command.list.Setting.SettingYande}
+# {@link main.command.list.Setting.SettingYande}
 SETTINGYANDE_WRONG_TAG: "錯誤的 Tag"
 SETTINGYANDE_WRONG_CHANNEL_TYPE: "您選擇的頻道並不是文字頻道"
 SETTINGYANDE_NSFW_IS_NOT_OPEN: "尚未開啟 NSFW"
@@ -159,7 +159,7 @@ SETTINGYANDE_NO_SET: "此頻道未被設定過"
 SETTINGYANDE_REMOVE_SUCCESSFULLY: "移除完成"
 
 
-# {@link main.java.command.list.Setting.SettingOsu}
+# {@link main.command.list.Setting.SettingOsu}
 SETTINGOSU_WRONG_NAME: "名字錯誤"
 SETTINGOSU_SETTING_SUCCESSFULLY: "設定完成"
 SETTINGOSU_24H_NO_PLAY: "此玩家沒有在24小時內玩過遊戲"
@@ -175,30 +175,30 @@ SETTINGOSU_SCORE: "分數"
 SETTINGOSU_HOUR: "小時"
 
 
-# {@link main.java.command.list.ChannelChange}
+# {@link main.command.list.ChannelChange}
 ChannelChange_TOO_LONG: "名字長度不能超過 100 字"
 ChannelChange_CHANGE_SUCCESSFULLY: "更改完成!"
 ChannelChange_CHANNEL_TYPE_ERROR: "頻道類型錯誤"
 ChannelChange_BITRATE_ERROR: "位元率錯誤"
 
 
-# {@link main.java.command.list.FileConvert}
+# {@link main.command.list.FileConvert}
 FILECONVERT_CONVERTING: "轉換中..."
 FILECONVERT_WAIT_TIME: "這需要一段時間..."
 FILECONVERT_FAIL: "轉換失敗"
 
 
-# {@link main.java.command.list.Setting.SettingChannelStatus}
+# {@link main.command.list.Setting.SettingChannelStatus}
 SETTINGCHANNELSTATUS_FAIL: "格式化位數錯誤"
 SETTINGCHANNELSTATUS_SETTING_SUCCESS: "設定成功"
 SETTINGCHANNELSTATUS_REMOVE_SUCCESS: "移除成功"
 
 
-# {@link main.java.command.list.Setting.SettingHelp}
+# {@link main.command.list.Setting.SettingHelp}
 SETTINGHELP_ADVANCE_HELP: "進階說明"
 
 
-# {@link main.java.command.list.Clear}
+# {@link main.command.list.Clear}
 CLEAR_CONFIRM_DELETE: "確定刪除 %d 則訊息?"
 CLEAR_DELETED: "已刪除"
 CLEAR_MEMBER_NOT_FOUND: "找無成員"
@@ -211,7 +211,7 @@ CLEAR_MESSAGE_ERROR_EVENT: "錯誤: "
 CLEAR_MESSAGE_COUNT: "則文字已刪除!"
 
 
-# {@link main.java.command.list.Setting.SettingJoinLeave}
+# {@link main.command.list.Setting.SettingJoinLeave}
 SETTINGJOINLEAVE_CAN_NOT_FOUND_TEXT_CHANNEL: "找不到文字頻道"
 SETTINGJOINLEAVE_SETTING_FAIL: "設定失敗"
 SETTINGJOINLEAVE_NOTICE_CHANNEL: "通知頻道"
@@ -224,11 +224,11 @@ SETTINGJOINLEAVE_REMOVE_SUCCESS: "移除成功"
 SETTINGJOINLEAVE_CAN_NOT_FIND: "找不到此文字頻道"
 
 
-# {@link main.java.command.list.Setting.SettingJoinLeave}
+# {@link main.command.list.Setting.SettingJoinLeave}
 INFO_SERVER_COUNT: "**伺服器總數: **"
 
 
-# {@link main.java.command.CommandRegister}
+# {@link main.command.CommandRegister}
 COMMANDREGISTER_WARN: "警告成員"
 COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE: "警告你所選的成員"
 COMMANDREGISTER_WARN_REASON: "原因"
@@ -434,13 +434,13 @@ MUSICBOT_NONE: "無"
 MUSICBOT_WAITING_PLAYLIST: "待播清單"
 
 
-# {@link main.java.ListenerManager}
+# {@link main.ListenerManager}
 LISTENERMANAGER_CANT_DO_THIS: "目前無法處理此命令"
 LISTENERMANAGER_WRONG_CHANNEL: "請到指定位置使用此指令"
 LISTENERMANAGER_NOT_YOUR_BUTTON: "此為他人的按鈕"
 
 
-# {@link main.java.command.list.Lang}
+# {@link main.command.list.Lang}
 LANG_CHANGE: "更換語言"
 LANG_CHOOSE: "請選擇一項語言"
 LANG_SUCCESS: "更換成功"
@@ -458,7 +458,7 @@ MUSICBOT_MG_NO_BOT_IN_CHANNEL: "沒有機器人在語音頻道餒..."
 MUSICBOT_MG_NEED_USE_IN_CHANNEL: "請在語音頻道內使用此指令"
 
 
-# {@link main.java.command.list.Kick}
+# {@link main.command.list.Kick}
 KICK_NO_PERMISSION: "我必須要有踢出權限才可以踢出成員"
 KICK_PERMISSION_DENIED: "無法踢出此成員, 他的權限太高了"
 KICK_DEVELOPER: "此成員為機器人的開發者"
@@ -467,7 +467,7 @@ KICK_PERMISSION_ERROR: "權限錯誤"
 KICK_UNKNOWN_ERROR: "未知的錯誤"
 
 
-# {@link main.java.command.list.Giveaway}
+# {@link main.command.list.Giveaway}
 GIVEAWAY_NEED_ADMIN_PERMISSION: "請給予管理員權限才能夠執行此操作"
 GIVEAWAY_SINGLE_DATE_FORMAT: "只能填寫一種時間格式"
 GIVEAWAY_ABSOLUTE_TIME_FORMAT_ERROR: "絕對時間格式錯誤"
@@ -487,6 +487,6 @@ GIVEAWAY_TIME_LEFT: "結束剩餘"
 GIVEAWAY_SUCCESS: "設定成功"
 
 
-# {@link main.java.command.list.Help}
+# {@link main.command.list.Help}
 HELP_USAGE: "使用說明"
 LANG_CREATE_SUCCESS: "創建成功"

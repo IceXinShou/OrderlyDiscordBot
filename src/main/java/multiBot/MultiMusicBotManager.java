@@ -1,6 +1,6 @@
 package multiBot;
 
-import main.java.Main;
+import main.Main;
 import multiBot.music.GuildMusicManager;
 import multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
@@ -29,15 +29,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static main.java.BotSetting.YT_APIKEY;
-import static main.java.BotSetting.multiMusicBotTokens;
-import static main.java.Main.emoji;
-import static main.java.command.list.Invite.authChannelID;
-import static main.java.lang.LangKey.*;
-import static main.java.util.EmbedCreator.createEmbed;
-import static main.java.util.SlashCommandOption.COUNT;
-import static main.java.util.SlashCommandOption.NAME;
-import static main.java.util.UrlDataGetter.getData;
+import static main.BotSetting.YT_APIKEY;
+import static main.BotSetting.multiMusicBotTokens;
+import static main.Main.emoji;
+import static main.command.list.Invite.authChannelID;
+import static main.lang.LangKey.*;
+import static main.util.EmbedCreator.createEmbed;
+import static main.util.SlashCommandOption.COUNT;
+import static main.util.SlashCommandOption.NAME;
+import static main.util.UrlDataGetter.getData;
 
 
 public class MultiMusicBotManager {

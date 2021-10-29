@@ -1,6 +1,6 @@
 import org.json.JSONObject;
 
-import static main.java.util.UrlDataGetter.getData;
+import static main.util.UrlDataGetter.getData;
 
 public class Test {
     Test() {
