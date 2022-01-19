@@ -10,7 +10,7 @@ import java.util.List;
 
 import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.USER_ID;
 
 public class UnBan {
@@ -22,7 +22,7 @@ public class UnBan {
 
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS))
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_NO_PERMISSION), 0xFF0000)).queue();
-            else if (!hasPermission(Permission.BAN_MEMBERS, event, true))
+            else if (!permissionCheck(Permission.BAN_MEMBERS, event, true))
                 return;
             try {
                 event.getGuild().unban(event.getOption(USER_ID).getAsString()).queue();

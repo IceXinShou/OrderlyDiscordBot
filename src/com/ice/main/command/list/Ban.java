@@ -11,14 +11,14 @@ import java.util.List;
 import static com.ice.main.BotSetting.botOwnerID;
 import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.DAYS;
 import static com.ice.main.util.SlashCommandOption.USER_TAG;
 import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
     public void onCommand(SlashCommandEvent event) {
-        if (!hasPermission(BAN_MEMBERS, event, true))
+        if (!permissionCheck(BAN_MEMBERS, event, true))
             return;
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         User user = event.getOption(USER_TAG).getAsUser();

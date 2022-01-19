@@ -46,7 +46,7 @@ public class GeneralReplay {
 //                else
 //                    event.getMessage().reply("賣靠邀!").queue();
 //        }
-        if (!event.getGuild().getId().equals(guildID)) return;
+                                    if (!event.getGuild().getId().equals(guildID)) return;
 
         if (event.getChannel().getId().equals("860469251176792065") && !event.getAuthor().isSystem()) {
             event.getMessage().replyEmbeds(createEmbed("請勿在此處發送訊息，請使用 `/invite` 指令", 0xFF0000))

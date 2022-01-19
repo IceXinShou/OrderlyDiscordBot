@@ -15,7 +15,7 @@ public class PermissionERROR {
                 noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000);
     }
 
-    public static boolean hasPermission(Permission permission, SlashCommandEvent event, Boolean ownerSkip) {
+    public static boolean permissionCheck(Permission permission, SlashCommandEvent event, Boolean ownerSkip) {
         if (ownerSkip)
             if (botOwnerID.contains(event.getUser().getId()))
                 return true;

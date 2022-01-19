@@ -42,7 +42,7 @@ import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.GuildUtil.guild;
 import static com.ice.main.util.GuildUtil.guildID;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.Tag.getMemberName;
 import static com.ice.main.util.Tag.tagChannelID;
 
@@ -584,7 +584,7 @@ public class ListenerManager extends ListenerAdapter {
             }
 
             case "setting" -> {
-                if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+                if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
                     return;
                 switch (event.getSubcommandName()) {
                     case "newyande" -> {

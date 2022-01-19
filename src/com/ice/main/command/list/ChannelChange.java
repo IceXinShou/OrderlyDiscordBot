@@ -9,12 +9,12 @@ import java.util.List;
 
 import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class ChannelChange {
     public void setName(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.MANAGE_CHANNEL, event, true))
+        if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;
         GuildChannel channel;
         String newName;
@@ -34,7 +34,7 @@ public class ChannelChange {
 
     public void setBitrate(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.MANAGE_CHANNEL, event, true))
+        if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;
         GuildChannel channel;
         int bitrate;

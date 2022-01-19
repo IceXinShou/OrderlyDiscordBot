@@ -15,11 +15,11 @@ import java.util.List;
 
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.GetEmoji.toEmoji;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class ButtonRole {
     public void onCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
         TextChannel channel = (TextChannel) event.getOption("channel").getAsGuildChannel();

@@ -13,13 +13,13 @@ import java.util.List;
 import static com.ice.main.lang.LangKey.HELP_USAGE;
 import static com.ice.main.lang.LangKey.LANG_CREATE_SUCCESS;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class Help {
 
     public void onSelfAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
         event.getChannel().sendMessageEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "",
                 summonSelfAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();
@@ -35,7 +35,7 @@ public class Help {
 
     public void onNekoBotAnnouncementCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
         event.getChannel().sendMessageEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "",
                 summonNekoBotAnnouncementFields(), OffsetDateTime.now(), 0x00FFFF)).queue();

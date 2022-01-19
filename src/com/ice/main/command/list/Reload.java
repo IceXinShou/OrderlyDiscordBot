@@ -8,14 +8,14 @@ import java.util.List;
 import static com.ice.main.Main.setting;
 import static com.ice.main.lang.LangKey.RELOAD_SUCCESS;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static net.dv8tion.jda.api.Permission.ADMINISTRATOR;
 
 public class Reload {
 
     public boolean onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(ADMINISTRATOR, event, true))
+        if (!permissionCheck(ADMINISTRATOR, event, true))
             return false;
         else {
             setting.reloadConfig();

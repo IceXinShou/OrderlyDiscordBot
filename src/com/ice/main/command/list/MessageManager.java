@@ -6,11 +6,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class MessageManager {
     public void onDeleteCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
         TextChannel channel = (TextChannel) event.getOption("channel").getAsGuildChannel();
@@ -30,7 +30,7 @@ public class MessageManager {
     }
 
     public void onRemoveReactionsCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
         Message message;
@@ -50,7 +50,7 @@ public class MessageManager {
 
     public void onPinCommand(SlashCommandEvent event) {
 
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
         Message message;
@@ -70,7 +70,7 @@ public class MessageManager {
 
     public void onUnPinCommand(SlashCommandEvent event) {
 
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
         Message message;

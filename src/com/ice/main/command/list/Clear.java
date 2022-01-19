@@ -21,7 +21,7 @@ import static com.ice.main.event.Log.ignoreMessageID;
 import static com.ice.main.event.Log.logChannel;
 import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.COUNT;
 
 public class Clear {
@@ -33,7 +33,7 @@ public class Clear {
 
     public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.MESSAGE_MANAGE, event, true))
+        if (!permissionCheck(Permission.MESSAGE_MANAGE, event, true))
             return;
         OptionMapping amountOption = event.getOption(COUNT);
         int amount = amountOption == null

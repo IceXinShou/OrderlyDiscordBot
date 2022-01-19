@@ -11,7 +11,7 @@ import java.util.List;
 import static com.ice.main.BotSetting.botOwnerID;
 import static com.ice.main.lang.LangKey.*;
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.USER_TAG;
 import static com.ice.main.util.Tag.getMemberName;
 
@@ -24,7 +24,7 @@ public class Kick {
         if (!selfMember.hasPermission(Permission.KICK_MEMBERS)) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(KICK_NO_PERMISSION), 0xFF0000)).queue();
             return;
-        } else if (!hasPermission(Permission.KICK_MEMBERS, event, true))
+        } else if (!permissionCheck(Permission.KICK_MEMBERS, event, true))
             return;
 
         Member member = event.getOption(USER_TAG).getAsMember();

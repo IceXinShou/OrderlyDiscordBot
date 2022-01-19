@@ -13,7 +13,7 @@ import static com.ice.main.lang.LangKey.POLL_MEMBER_POLL;
 import static com.ice.main.lang.LangKey.POLL_SUCCESS;
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.EmojiUtil.dotEmojis;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.QUESTION;
 import static com.ice.main.util.Tag.getMemberName;
 
@@ -21,7 +21,7 @@ public class Poll {
 
     public void onCommand(SlashCommandEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        if (!hasPermission(Permission.MANAGE_CHANNEL, event, true))
+        if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;
 
         List<MessageEmbed.Field> fields = new ArrayList<>();

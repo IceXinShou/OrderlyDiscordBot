@@ -18,11 +18,11 @@ import static com.ice.main.lang.LangKey.LANG_SUCCESS;
 import static com.ice.main.util.CountryCodeToEmoji.countryCodeToEmoji;
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.JsonKeys.GUILD_LANG;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public record Language(GuildSettingHelper settingHelper) {
     public void onCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
 

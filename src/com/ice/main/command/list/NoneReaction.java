@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ice.main.util.EmbedCreator.createEmbed;
-import static com.ice.main.util.PermissionERROR.hasPermission;
+import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class NoneReaction {
 
@@ -18,7 +18,7 @@ public class NoneReaction {
     // GuildID, ChannelID, MessageID
 
     public void onCommand(SlashCommandEvent event) {
-        if (!hasPermission(Permission.ADMINISTRATOR, event, true))
+        if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
         try {
             Map<String, String> messageInfo = new HashMap<>();
