@@ -1,14 +1,26 @@
-# Welcome
+# 序之徒 Orderly\_Bot \(Java Discord Bot\)
 
-## 序之徒 Orderly\_Bot \(Java Discord Bot\)
+![OrderlyBot](https://cdn.discordapp.com/avatars/576747435653595136/23f83723ab3be18ee7d6189fcd39df99.webp?size=256)
+#### 🌐 README Languages
 
-![](https://cdn.discordapp.com/avatars/576747435653595136/23f83723ab3be18ee7d6189fcd39df99.webp?size=256)
-
-> You only need a bot to setting all of systems.   
->  You can do like: **ReactionRole**, **Ticket**, **Music**, **PopCat**, **Level**, **Poll**, **Giveaway**...   
->  All of settings can set with Playerholder!
+- English (Current Language)
+- [繁體中文](https://github.com/IceLeiYu/OrderlyDiscordBot/blob/master/README/zh_tw.md)
+- [简体中文](https://github.com/IceLeiYu/OrderlyDiscordBot/blob/master/README/zh_cn.md)
 
 ## Features
+
+機器人尚未啟動，尚在製作階段
+ -  &#9744; Ticket
+ -  &#9744; Music
+ -  &#9744; Pull
+ -  &#9744; ShortURL
+ -  &#9744; Giveaway
+ -  &#9744; Minecraft Hypixel Stats
+ -  &#9744; Auto Sort Audio Channel
+ -  &#9744; Auto Room Audio Channel
+ -  &#9744; General Commands
+
+
 
 ### Music
 
@@ -46,10 +58,6 @@
 
 * Easy to clear chat with log channel
 
-### Popcat
-
-* Get score & speed leaderboard with image to show
-* Anytime if you want
 
 ### ShrotURL
 
@@ -103,11 +111,7 @@
 ## Setup
 
 > Working...
-## Run
-### Linux
-  `./gradle run`
-### windows
-  `./gradle.bat run`
+
 ## Library usage:
 
 * [JDA](https://github.com/DV8FromTheWorld/JDA)
