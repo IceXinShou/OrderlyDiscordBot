@@ -25,12 +25,12 @@
 
      **Music bots:**
 
-  5. [![](https://cdn.discordapp.com/avatars/608080618898849825/6bf20f20f4dfb85500db342d831c7cd5.webp?size=16)**序之犬 - Doge**](https://reurl.cc/eE7Nz7)
-  6. [![](https://cdn.discordapp.com/avatars/867312327044628480/fd049658e162fdb3fc86feef61073a9d.webp?size=16)**序之狐 - Fox**](https://reurl.cc/lR4xDj)
-  7. [![](https://cdn.discordapp.com/avatars/679330758191480864/2cc6036643f6d1162232a959117eaf8f.webp?size=16)**序之螈 - Axolotl**](https://reurl.cc/mL4m0A)
-  8. [![](https://cdn.discordapp.com/avatars/635474017037451275/6f13e1dac1283aa3ca30b4a48f083ec4.webp?size=16)**序之豬 - Piggy**](https://reurl.cc/GmL34A)
-  9. [![](https://cdn.discordapp.com/avatars/867311259593998347/df8d89e908718c50fbcfb5e734a5130e.webp?size=16)**序之貓 - Kitten**](https://reurl.cc/EnL9p0)
-  10. [![](https://cdn.discordapp.com/avatars/879381238153097297/4ff436ecfd74f1cbb0dec2dd94d96a57.webp?size=16)**序之鼠 - Mouse**](https://reurl.cc/rgmvA1)
+  1. [![](https://cdn.discordapp.com/avatars/608080618898849825/6bf20f20f4dfb85500db342d831c7cd5.webp?size=16)**序之犬 - Doge**](https://reurl.cc/eE7Nz7)
+  2. [![](https://cdn.discordapp.com/avatars/867312327044628480/fd049658e162fdb3fc86feef61073a9d.webp?size=16)**序之狐 - Fox**](https://reurl.cc/lR4xDj)
+  3. [![](https://cdn.discordapp.com/avatars/679330758191480864/2cc6036643f6d1162232a959117eaf8f.webp?size=16)**序之螈 - Axolotl**](https://reurl.cc/mL4m0A)
+  4. [![](https://cdn.discordapp.com/avatars/635474017037451275/6f13e1dac1283aa3ca30b4a48f083ec4.webp?size=16)**序之豬 - Piggy**](https://reurl.cc/GmL34A)
+  5. [![](https://cdn.discordapp.com/avatars/867311259593998347/df8d89e908718c50fbcfb5e734a5130e.webp?size=16)**序之貓 - Kitten**](https://reurl.cc/EnL9p0)
+  6. [![](https://cdn.discordapp.com/avatars/879381238153097297/4ff436ecfd74f1cbb0dec2dd94d96a57.webp?size=16)**序之鼠 - Mouse**](https://reurl.cc/rgmvA1)
 
 ### Poll & Giveaway
 
