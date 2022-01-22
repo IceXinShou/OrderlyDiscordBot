@@ -15,16 +15,16 @@
 * Fast loading of songs
 * Control Button with menu
 * Supports video, playlist and stream!
-
+  
   **Usage:**
-
+  
   1. Join the com.ice.main bot to you server by using this [invite link](https://reurl.cc/eE78aM), com.ice.main bot is for controlling music bots
   2. Join least 1 music bot in your server from the following list
   3. Type `/p URL` to play music
   4. Type `/help orderly` for more usage
-
-     **Music bots:**
-
+  
+  **Music bots:**
+  
   1. [![](https://cdn.discordapp.com/avatars/608080618898849825/6bf20f20f4dfb85500db342d831c7cd5.webp?size=16)**序之犬 - Doge**](https://reurl.cc/eE7Nz7)
   2. [![](https://cdn.discordapp.com/avatars/867312327044628480/fd049658e162fdb3fc86feef61073a9d.webp?size=16)**序之狐 - Fox**](https://reurl.cc/lR4xDj)
   3. [![](https://cdn.discordapp.com/avatars/679330758191480864/2cc6036643f6d1162232a959117eaf8f.webp?size=16)**序之螈 - Axolotl**](https://reurl.cc/mL4m0A)
