@@ -1,6 +1,6 @@
 # 序之徒 Orderly\_Bot \(Java Discord Bot\)
 
-##機器人尚未啟動，尚在製作階段
+## 機器人尚未啟動，尚在製作階段
 
 ![OrderlyBot](https://cdn.discordapp.com/avatars/576747435653595136/23f83723ab3be18ee7d6189fcd39df99.webp?size=256)
 #### 🌐 README Languages
