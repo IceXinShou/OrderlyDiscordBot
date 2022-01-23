@@ -9,20 +9,20 @@
 
 ## Features
 
-機器人尚未啟動，尚在製作階段
-  &#9744; Ticket
-  &#9744; Music
-  &#9744; Pull
-  &#9744; ShortURL
-  &#9744; Giveaway
-  &#9744; Minecraft Hypixel Stats
-  &#9744; Auto Sort Audio Channel
-  &#9744; Auto Room Audio Channel
-  &#9744; Join Role
-  &#9744; Join Message
-  &#9744; Left Message
-  &#9744; Auto Room Audio Channel
-  &#9744; General Commands
+###機器人尚未啟動，尚在製作階段
+ - &#9744; Ticket
+ - &#9744; Music
+ - &#9744; Pull
+ - &#9744; ShortURL
+ - &#9744; Giveaway
+ - &#9744; Minecraft Hypixel Stats
+ - &#9744; Auto Sort Audio Channel
+ - &#9744; Auto Room Audio Channel
+ - &#9744; Join Role
+ - &#9744; Join Message
+ - &#9744; Left Message
+ - &#9744; Auto Room Audio Channel
+ - &#9744; General Commands
 
 
 
