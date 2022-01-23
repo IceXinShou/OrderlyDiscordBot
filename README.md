@@ -18,6 +18,10 @@
   &#9744; Minecraft Hypixel Stats
   &#9744; Auto Sort Audio Channel
   &#9744; Auto Room Audio Channel
+  &#9744; Join Role
+  &#9744; Join Message
+  &#9744; Left Message
+  &#9744; Auto Room Audio Channel
   &#9744; General Commands
 
 
