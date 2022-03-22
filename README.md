@@ -107,7 +107,7 @@
 ## Report and Support
 
 * [Join us](https://discord.gg/ZV3PaCscc7) and type `/support` 
-* Contact Discord: XinShou\#0404 
+* Contact Discord: XinShou\#4767 `810822763601461318`
 
 ## Language Support
 
