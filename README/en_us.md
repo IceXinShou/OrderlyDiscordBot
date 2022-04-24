@@ -1,7 +1,5 @@
 # 序之徒 Orderly\_Bot \(Java Discord Bot\)
 
-## 機器人尚未啟動，尚在製作階段
-
 ![OrderlyBot](https://cdn.discordapp.com/avatars/576747435653595136/23f83723ab3be18ee7d6189fcd39df99.webp?size=256)
 #### 🌐 README Languages
 
@@ -11,21 +9,16 @@
 
 ## Features
 
-### 製作進度
-
- - &#9744; Ticket
- - &#9744; Music
- - &#9744; Pull
- - &#9744; ShortURL
- - &#9744; Giveaway
- - &#9744; Minecraft Hypixel Stats
- - &#9744; Auto Sort Audio Channel
- - &#9744; Auto Room Audio Channel
- - &#9744; Join Role
- - &#9744; Join Message
- - &#9744; Left Message
- - &#9744; Auto Room Audio Channel
- - &#9744; General Commands
+機器人尚未啟動，尚在製作階段
+ -  &#9744; Ticket
+ -  &#9744; Music
+ -  &#9744; Pull
+ -  &#9744; ShortURL
+ -  &#9744; Giveaway
+ -  &#9744; Minecraft Hypixel Stats
+ -  &#9744; Auto Sort Audio Channel
+ -  &#9744; Auto Room Audio Channel
+ -  &#9744; General Commands
 
 
 
@@ -107,7 +100,7 @@
 ## Report and Support
 
 * [Join us](https://discord.gg/ZV3PaCscc7) and type `/support` 
-* Contact Discord: XinShou\#4767 `810822763601461318`
+* Contact Discord: XinShou\#0404 
 
 ## Language Support
 
