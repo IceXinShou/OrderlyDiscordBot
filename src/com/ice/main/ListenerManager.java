@@ -194,7 +194,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        musicManager.setupAllBot();
+//        musicManager.setupAllBot();
         statusListener.startListen(event.getJDA());
         settingYande.startThread(event.getJDA());
     }

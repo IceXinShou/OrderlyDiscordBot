@@ -6,9 +6,9 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.util.Base64;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static com.ice.main.BotSetting.*;
 import static com.ice.main.util.UrlDataGetter.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SpotifyToYouTube {
     /**

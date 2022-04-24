@@ -16,6 +16,7 @@ import static com.ice.main.util.EmojiUtil.dotEmojis;
 import static com.ice.main.util.PermissionERROR.permissionCheck;
 import static com.ice.main.util.SlashCommandOption.QUESTION;
 import static com.ice.main.util.Tag.getMemberName;
+import static com.ice.main.util.Tag.getMemberNick;
 
 public class Poll {
 
@@ -31,7 +32,7 @@ public class Poll {
         event.getChannel().sendMessageEmbeds(createEmbed(
                 event.getOption(QUESTION).getAsString(), null,
                 lang.get(POLL_MEMBER_POLL),
-                getMemberName(event), event.getUser().getAvatarUrl(),
+                getMemberNick(event), event.getUser().getAvatarUrl(),
                 fields,
                 OffsetDateTime.now(), 0x87E5CF
         )).queue(m -> {

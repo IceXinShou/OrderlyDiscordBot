@@ -1,10 +1,5 @@
 package com.ice.multiBot;
 
-import com.ice.main.BotSetting;
-import com.ice.main.Main;
-import com.ice.multiBot.music.GuildMusicManager;
-import com.ice.multiBot.music.MusicInfoData;
-import com.ice.multiBot.music.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -12,6 +7,11 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.ice.main.BotSetting;
+import com.ice.main.Main;
+import com.ice.multiBot.music.GuildMusicManager;
+import com.ice.multiBot.music.MusicInfoData;
+import com.ice.multiBot.music.TrackScheduler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -58,7 +58,7 @@ public class MusicBot {
     /**
      * command player control
      */
-    private void play(AudioPlaylist playlist, AudioChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean playNow) {
+    private void play(AudioPlaylist playlist, VoiceChannel vc, GuildMusicManager manager, GenericInteractionCreateEvent event, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         connectVC(manager.guild, vc, event, (i) -> {
             if (playNow) {
@@ -69,7 +69,7 @@ public class MusicBot {
         });
     }
 
-    private void play(AudioTrack track, AudioChannel vc, GuildMusicManager manager,
+    private void play(AudioTrack track, VoiceChannel vc, GuildMusicManager manager,
                       GenericInteractionCreateEvent event, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         connectVC(manager.guild, vc, event, (i) -> manager.scheduler.queue(track, event, -1, search, playNow, selectionMenuEvent));
     }
@@ -109,14 +109,15 @@ public class MusicBot {
     public void loadAndPlaySpotify(final GenericInteractionCreateEvent event, Guild guild,
                                    final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         String[] ids = BotSetting.spotifyToYouTube.translate(trackUrl);
-        for (String i : ids)
+        for (String i : ids) {
             loadAndPlay(event, guild, "https://youtu.be/" + i, search, playNow, selectionMenuEvent);
+        }
     }
 
     public void loadAndPlay(final GenericInteractionCreateEvent event, Guild guild,
                             final String trackUrl, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
         List<String> lang = Main.language.getGuildLang(guild.getId());
-        AudioChannel vc = event.getMember().getVoiceState().getChannel();
+        VoiceChannel vc = (VoiceChannel) event.getMember().getVoiceState().getChannel();
         GuildMusicManager manager = getMusicManager(jda.getGuildById(guild.getId()));
         // 取得音樂
         playerManager.loadItemOrdered(musicManagers, trackUrl, new AudioLoadResultHandler() {
@@ -233,8 +234,9 @@ public class MusicBot {
                             " | \uD83D\uDCC5 " + musicInfo.getPublishDate().replace(',', '-')
                     , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                     0xe5b849);
-        } else
+        } else {
             nowPlaying = createEmbed(0xFF0000, "**[" + lang.get(MUSICBOT_NO_PLAYING) + "]**");
+        }
 
         StringBuilder stringBuilder = new StringBuilder();
         if (scheduler.getQueue() == null)
@@ -292,7 +294,7 @@ public class MusicBot {
     }
 
     @SuppressWarnings("ALL")
-    private void connectVC(Guild guild, AudioChannel vc, GenericInteractionCreateEvent event, Consumer consumer) {
+    private void connectVC(Guild guild, VoiceChannel vc, GenericInteractionCreateEvent event, Consumer consumer) {
         if (!guild.getAudioManager().isConnected()) {
             try {
                 guild.getAudioManager().openAudioConnection(vc);
@@ -341,9 +343,9 @@ public class MusicBot {
         if (workCount == 0) {
             jda.getPresence().setStatus(OnlineStatus.IDLE);
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, "來點歌吧!"));
-        } else
+        } else {
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.LISTENING, workCount + " 個頻道"));
-
+        }
         if (guild.getAudioManager().isConnected()) {
             // 從頻道移除bot
             musicBotManager.setBotToChannel(guild.getId(), guild.getAudioManager().getConnectedChannel().getId(), null);
@@ -369,10 +371,10 @@ public class MusicBot {
     }
 
     public void setActivity(String[] msg) {
-        if (msg[0].equals("STREAMING"))
+        if (msg[0].equals("STREAMING")) {
             // name, url
             jda.getPresence().setActivity(Activity.of(Activity.ActivityType.STREAMING, msg[1], msg[2]));
-        else {
+        } else {
             Activity.ActivityType type = Activity.ActivityType.valueOf(msg[0]);
             jda.getPresence().setActivity(Activity.of(type, msg[1]));
         }
@@ -382,4 +384,3 @@ public class MusicBot {
         return botID;
     }
 }
-

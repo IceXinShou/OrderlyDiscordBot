@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,7 +30,6 @@ public class Main {
     public static SelfUser self;
     public static EmojiUtil emoji = new EmojiUtil();
     private final String TAG = "[Main]";
-
 
     // interval
     private ScheduledExecutorService threadPool;

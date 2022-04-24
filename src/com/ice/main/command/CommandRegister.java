@@ -5,6 +5,7 @@ import com.ice.main.util.GuildUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -130,7 +131,7 @@ public class CommandRegister {
                         .addOption(INTEGER, COUNT, lang.get(COMMANDREGISTER_CLEAR_BETWEEN_2_TO_200), true),
                 new CommandData("poll", lang.get(COMMANDREGISTER_POLL)).addOptions(
                         new OptionData(STRING, QUESTION, lang.get(COMMANDREGISTER_POLL_QUESTION), true),
-                        new OptionData(STRING, CHOICE_A, lang.get(COMMANDREGISTER_POLL_OPTION_A)),
+                        new OptionData(STRING, CHOICE_A, lang.get(COMMANDREGISTER_POLL_OPTION_A), true),
                         new OptionData(STRING, CHOICE_B, lang.get(COMMANDREGISTER_POLL_OPTION_B)),
                         new OptionData(STRING, CHOICE_C, lang.get(COMMANDREGISTER_POLL_OPTION_C)),
                         new OptionData(STRING, CHOICE_D, lang.get(COMMANDREGISTER_POLL_OPTION_D)),
@@ -140,7 +141,7 @@ public class CommandRegister {
                         new OptionData(STRING, CHOICE_H, lang.get(COMMANDREGISTER_POLL_OPTION_H)),
                         new OptionData(STRING, CHOICE_I, lang.get(COMMANDREGISTER_POLL_OPTION_I)),
                         new OptionData(STRING, CHOICE_J, lang.get(COMMANDREGISTER_POLL_OPTION_J))),
-
+/*
                 // Music
                 new CommandData("play", lang.get(COMMANDREGISTER_PLAY))
                         .addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL), true), // 若未填則開始播放音樂
@@ -164,7 +165,7 @@ public class CommandRegister {
                 new CommandData("pause", lang.get(COMMANDREGISTER_PAUSE)),
                 new CommandData("leave", lang.get(COMMANDREGISTER_LEAVE)),
                 new CommandData("disconnect", lang.get(COMMANDREGISTER_LEAVE)),
-                new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),
+                new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),*/
                 // Tool
 
                 new CommandData("rename", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(

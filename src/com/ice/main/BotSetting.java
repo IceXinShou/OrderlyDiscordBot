@@ -145,7 +145,7 @@ public class BotSetting {
         spotify_id = (String) spotify.get("id");
         spotify_secret = (String) spotify.get("secret");
         spotify_refresh = (String) spotify.get("refresh");
-        spotifyToYouTube = new SpotifyToYouTube();
+//        spotifyToYouTube = new SpotifyToYouTube();
 
         /**
          * File

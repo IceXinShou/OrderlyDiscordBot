@@ -64,7 +64,7 @@ public class Invite {
             return;
         }
 
-        event.getHook().editOriginalEmbeds(createEmbed(String.format("確定要邀請 %s ?", getMemberName(event)), 0xbc153b))
+        event.getHook().editOriginalEmbeds(createEmbed(String.format("確定要邀請 %s ?", member.getUser().getAsTag()), 0xbc153b))
                 .setActionRow(Button.danger("Invite:invite:" + userId + ':' + member.getId(), "我會為他負責"))
                 .queue();
     }

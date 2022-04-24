@@ -35,6 +35,8 @@ public class Ban {
             return;
         }
 
+//        if (event.getGuild().retrieveBanList().complete().contains(user)) {
+
         int delDays = 0;
         OptionMapping option = event.getOption(DAYS);
         if (option != null)

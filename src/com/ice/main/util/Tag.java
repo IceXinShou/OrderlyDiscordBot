@@ -59,6 +59,11 @@ public class Tag {
         return n.toString();
     }
 
+    public static String getMemberNick(GenericInteractionCreateEvent event) {
+        return (event.getMember().getNickname() == null ?
+                event.getUser().getAsTag() : event.getMember().getNickname());
+    }
+
     public static String getMemberName(GenericInteractionCreateEvent event) {
         return (event.getMember().getNickname() == null ?
                 event.getUser().getAsTag() : String.format("%s (%s)", event.getMember().getNickname(), event.getUser().getAsTag()));
