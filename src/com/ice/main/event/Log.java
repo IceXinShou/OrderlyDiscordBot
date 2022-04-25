@@ -217,7 +217,7 @@ public class Log {
             ).queue();
     }
 
-    public static void deleteNoLog(ReplyAction action, long delaySec) {
+    public static void deleteNoLog(ReplyCallbackAction action, long delaySec) {
         action.queue(act -> {
             ignoreMessageID.add(act.getInteraction().getId());
             act.deleteOriginal().queueAfter(delaySec, TimeUnit.SECONDS);

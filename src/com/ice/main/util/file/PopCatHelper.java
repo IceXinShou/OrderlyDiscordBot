@@ -131,12 +131,14 @@ public class PopCatHelper {
         else
             getSpeedLeaderboard(page == 1 ? 0 : page * 23 - 22, builder);
         builder.addOption(lang.get(POPCATHELPER_NEXT), "page:down:" + (page + 1), Emoji.fromUnicode("➡️"));
-        if (first)
-            event.getHook().editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(
-                    createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
-        else
-            event.deferReply(true).addActionRows(ActionRow.of(builder.build())).addEmbeds(
-                    createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
+        if (first) {
+            (event instanceof SelectMenuInteractionEvent ? ((SelectMenuInteractionEvent) event).getHook() : event instanceof SlashCommandInteractionEvent ? ((SlashCommandInteractionEvent) event).getHook() : null)
+                    .editOriginalEmbeds().setActionRows(ActionRow.of(builder.build())).setEmbeds(
+                            createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
+        } else
+            (event instanceof SelectMenuInteractionEvent ? ((SelectMenuInteractionEvent) event).deferReply(true) : event instanceof SlashCommandInteractionEvent ? ((SlashCommandInteractionEvent) event).deferReply(true) : null)
+                    .addActionRows(ActionRow.of(builder.build())).addEmbeds(
+                            createEmbed(lang.get(POPCATHELPER_DETAIL_INFORMATION), 0xa3d7fe)).queue();
 
     }
 

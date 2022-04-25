@@ -139,7 +139,7 @@ public class MultiMusicBotManager {
     private void play(SlashCommandInteractionEvent event, MusicBot bot, boolean playNow) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getOptions().size() > 0) {
-            if (checkVcState(event)) {
+            if (checkVcState(event, event.getHook())) {
                 if (bot == null)
                     // 取得機器人
                     for (MusicBot thisBot : bots.values()) {
@@ -209,7 +209,7 @@ public class MultiMusicBotManager {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("MusicBot"))
             return;
-        if (!checkVcState(event))
+        if (!checkVcState(event, event.getHook()))
             return;
         if (!event.getMember().getVoiceState().getChannel().getId().equals(args[4])) {
             event.deferEdit().setEmbeds(createEmbed(lang.get(MUSICBOT_MG_UNKNOWN_CHANNEL_BUTTON), 0xFF0000)).setActionRows().queue();
@@ -289,7 +289,7 @@ public class MultiMusicBotManager {
         }
     }
 
-    private boolean checkVcState(GenericInteractionCreateEvent event, MusicBot botsInChannel) {
+    private boolean checkVcState(SlashCommandInteractionEvent event, MusicBot botsInChannel) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!event.getMember().getVoiceState().inAudioChannel()) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
@@ -310,11 +310,11 @@ public class MultiMusicBotManager {
     private boolean checkVcState(GenericInteractionCreateEvent event, InteractionHook hook) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!event.getMember().getVoiceState().inAudioChannel()) {
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
+            hook.editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
             commandState = -1;
             return false;
         } else if (!event.getMember().getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
+            hook.editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_MG_NEED_USE_IN_CHANNEL), 0xFF0000)).queue();
             commandState = -1;
             return false;
         }

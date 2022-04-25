@@ -62,7 +62,10 @@ public class MusicBot {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         connectVC(manager.guild, vc, event, (i) -> {
             if (playNow) {
-                event.replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
+                if (event instanceof SelectMenuInteractionEvent)
+                    ((SelectMenuInteractionEvent) event).replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
+                else if (event instanceof SlashCommandInteractionEvent)
+                    ((SlashCommandInteractionEvent) event).replyEmbeds(createEmbed(lang.get(MUSICBOT_NOT_SUPPORT_PLAYLIST), 0xFF0000)).queue();
                 return;
             }
             manager.scheduler.addPlayListToQueue(playlist, event);
@@ -134,7 +137,10 @@ public class MusicBot {
             @Override
             public void noMatches() {
                 try {
-                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_URL_NOT_FOUND) + ": " + trackUrl, 0xFF0000)).queue();
+                    if (event instanceof SelectMenuInteractionEvent)
+                        ((SelectMenuInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_URL_NOT_FOUND) + ": " + trackUrl, 0xFF0000)).queue();
+                    else if (event instanceof SlashCommandInteractionEvent)
+                        ((SlashCommandInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_URL_NOT_FOUND) + ": " + trackUrl, 0xFF0000)).queue();
                 } catch (Exception ignored) {
                 }
             }
@@ -142,7 +148,10 @@ public class MusicBot {
             @Override
             public void loadFailed(FriendlyException exception) {
                 try {
-                    event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_CANT_PLAY_URL) + ": " + exception.getMessage(), 0xFF0000)).queue();
+                    if (event instanceof SelectMenuInteractionEvent)
+                        ((SelectMenuInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_CANT_PLAY_URL) + ": " + exception.getMessage(), 0xFF0000)).queue();
+                    else if (event instanceof SlashCommandInteractionEvent)
+                        ((SlashCommandInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_CANT_PLAY_URL) + ": " + exception.getMessage(), 0xFF0000)).queue();
                 } catch (Exception ignored) {
                 }
             }
@@ -181,11 +190,18 @@ public class MusicBot {
             SelectMenuInteractionEvent.replyEmbeds(embed[0], embed[1]).setEphemeral(true)
                     .addActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
                     .queue();
-        } else
-            event.getHook().editOriginalComponents()
-                    .setEmbeds(embed[0], embed[1])
-                    .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
-                    .queue();
+        } else {
+            if (event instanceof SelectMenuInteractionEvent)
+                ((SelectMenuInteractionEvent) event).getHook().editOriginalComponents()
+                        .setEmbeds(embed[0], embed[1])
+                        .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                        .queue();
+            else if (event instanceof SlashCommandInteractionEvent)
+                ((SlashCommandInteractionEvent) event).getHook().editOriginalComponents()
+                        .setEmbeds(embed[0], embed[1])
+                        .setActionRows(controlButtons(event.getMember().getId(), scheduler.musicPause, scheduler.loopStatus, vcID))
+                        .queue();
+        }
         if (event.getGuild().getId().equals("882605953382514718"))
             event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(embed[0], embed[1])
                     .setActionRows(controlButtons("", scheduler.musicPause, scheduler.loopStatus, vcID)).content(event.getUser().getAsTag()).queue();
@@ -308,7 +324,11 @@ public class MusicBot {
                 guild.getAudioManager().openAudioConnection(vc);
             } catch (Exception e) {
                 List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-                event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
+
+                if (event instanceof SelectMenuInteractionEvent)
+                    ((SelectMenuInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
+                else if (event instanceof SlashCommandInteractionEvent)
+                    ((SlashCommandInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOT_NO_CONNECT_PERMISSION), 0xFF0000)).queue();
                 return;
             }
             final MusicBot bot = this;
