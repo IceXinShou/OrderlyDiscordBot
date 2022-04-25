@@ -3,7 +3,7 @@ package com.ice.main.command.list;
 import com.ice.main.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import static com.ice.main.util.Tag.getMemberNick;
 
 public class Poll {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;

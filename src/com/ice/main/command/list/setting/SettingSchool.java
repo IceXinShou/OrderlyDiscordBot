@@ -2,9 +2,9 @@ package com.ice.main.command.list.setting;
 
 import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class SettingSchool {
         return null;
     }
 
-    public void onSchoolLogin(SlashCommandEvent event) {
+    public void onSchoolLogin(SlashCommandInteractionEvent event) {
         String name = onLogin(event.getOption("id").getAsString(), event.getOption("password").getAsString(), event.getUser().getId());
         if (name == null)
             event.getHook().editOriginalEmbeds(createEmbed("帳號或密碼錯誤! 請使用 `/school login`", 0xFF0000));
@@ -90,13 +90,13 @@ public class SettingSchool {
         return null;
     }
 
-    public void onSlashInfo(SlashCommandEvent event) {
+    public void onSlashInfo(SlashCommandInteractionEvent event) {
         if ((checkAccount(event.getUser().getId())) == null) {
             event.getHook().editOriginalEmbeds(createEmbed("請先使用 `/school login` 登入", 0x00FFFF)).queue();
             return;
         }
 
-        SelectionMenu.Builder builder = SelectionMenu.
+        SelectMenu.Builder builder = SelectMenu.
                 create("SS:onSI:" + event.getUser().getId() + ':');
 
         builder.addOption("完整記錄", "full");
@@ -107,7 +107,7 @@ public class SettingSchool {
         event.getHook().editOriginalComponents().setEmbeds(createEmbed("請選擇資訊", 0x00FFFF)).setActionRow(builder.build()).queue();
     }
 
-    public void onSelectInfo(SelectionMenuEvent event, String[] args) {
+    public void onSelectInfo(SelectMenuInteractionEvent event, String[] args) {
         if (!args[0].equals("SS") || !args[1].equals("onSI"))
             return;
         String userName;

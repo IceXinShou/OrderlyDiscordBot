@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,7 +38,7 @@ public record Giveaway(GuildSettingHelper settingHelper) {
     //         GuildID  EndTimeSec
     static Map<String, List<Long>> giveawayData = new HashMap<>();
 
-    public void newGiveaway(SlashCommandEvent event) {
+    public void newGiveaway(SlashCommandInteractionEvent event) {
         /**
          * Giveaway
          * /giveaway <name> [month] [week] [day] [hour] [minute] [second] [winnerCount] [emoji]

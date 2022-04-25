@@ -2,7 +2,7 @@ package com.ice.main.command.list.setting;
 
 import com.ice.main.Main;
 import com.ice.main.util.file.JsonFileManager;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.time.Instant;
@@ -26,7 +26,7 @@ public class SettingHypixel {
     }
 
 
-    public void onRegister(SlashCommandEvent event) {
+    public void onRegister(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String result = getData("https://api.mojang.com/users/profiles/minecraft/" + event.getOption("name").getAsString());
         if (result == null || result.length() == 0 || new JSONObject(result).has("error")) {
@@ -40,7 +40,7 @@ public class SettingHypixel {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(HYPIXEL_SETTING_SUCCESSFULLY), 0xFF0000)).queue();
     }
 
-    public void info(SlashCommandEvent event) {
+    public void info(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if ((uuid = getUUID(event)) == null)
@@ -147,7 +147,7 @@ public class SettingHypixel {
         }
     }
 
-    public void bedwars(SlashCommandEvent event) {
+    public void bedwars(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if ((uuid = getUUID(event)) == null)
@@ -230,7 +230,7 @@ public class SettingHypixel {
         }
     }
 
-    private String getUUID(SlashCommandEvent event) {
+    private String getUUID(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String uuid;
         if (event.getOption("name") != null) {

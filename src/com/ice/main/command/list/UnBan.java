@@ -3,7 +3,8 @@ package com.ice.main.command.list;
 import com.ice.main.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.UserSnowflake;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import static com.ice.main.util.SlashCommandOption.USER_ID;
 
 public class UnBan {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         try {
             Member selfMember = event.getGuild().getSelfMember();
@@ -25,7 +26,7 @@ public class UnBan {
             else if (!permissionCheck(Permission.BAN_MEMBERS, event, true))
                 return;
             try {
-                event.getGuild().unban(event.getOption(USER_ID).getAsString()).queue();
+                event.getGuild().unban(UserSnowflake.fromId(event.getOption(USER_ID).getAsString())).queue();
                 event.getHook().editOriginalEmbeds(createEmbed(lang.get(UNBAN_SUCCESS), 0xc5ffd2)).queue();
             } catch (Exception ex) {
                 if (ex instanceof PermissionException)

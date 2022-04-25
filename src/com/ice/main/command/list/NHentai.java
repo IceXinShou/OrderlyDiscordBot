@@ -1,17 +1,17 @@
 package com.ice.main.command.list;
 
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.json.JSONObject;
 
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.UrlDataGetter.getData;
 
 public class NHentai {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         // https://nhentai.to/g/372323/1
         // https://t.dogehls.xyz/galleries/convertedID/cover.jpg
         String id = event.getOption("id").getAsString();
@@ -40,7 +40,7 @@ public class NHentai {
                 .queue();
     }
 
-    public void onButtonClick(ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonInteractionEvent event, String[] args) {
         if (!args[0].equals("NHentai"))
             return;
         switch (args[1]) {

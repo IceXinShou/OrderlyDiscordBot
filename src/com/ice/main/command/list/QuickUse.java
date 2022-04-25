@@ -1,12 +1,12 @@
 package com.ice.main.command.list;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
-import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -267,7 +267,7 @@ public class QuickUse {
 
     public List<ActionRow> gameButtons(int size) {
         List<ActionRow> actionRow = new ArrayList<>();
-        List<Component> components = new ArrayList<>();
+        List<ItemComponent> components = new ArrayList<>();
         for (int i = 0; i < size * size; i++) {
             components.add(Button.secondary("OOXXgame;" + i, "空"));
             if (i % size == size - 1) {
@@ -278,7 +278,7 @@ public class QuickUse {
         return actionRow;
     }
 
-    public void onButtonClick(ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonInteractionEvent event, String[] args) {
         if (!args[0].equals("OOXXgame"))
             return;
 
@@ -293,7 +293,7 @@ public class QuickUse {
         int y = Integer.parseInt(args[1]) / size;
         int x = Integer.parseInt(args[1]) % size;
 
-        List<Component> newButtons = new ArrayList<>();
+        List<ItemComponent> newButtons = new ArrayList<>();
         List<Button> buttons = game.get(y).getButtons();
         for (int i = 0; i < size; i++) {
             if (!(i == x && buttons.get(i).getStyle() == ButtonStyle.SECONDARY))

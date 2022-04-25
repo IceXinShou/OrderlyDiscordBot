@@ -4,9 +4,10 @@ import com.ice.main.Main;
 import com.ice.main.util.graph.ImageGraphMaker;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -49,7 +50,7 @@ public class PopCatHelper {
     private long lastSpeedLeaderboardGetTime = System.currentTimeMillis();
     private long lastPopLeaderboardGetTime = System.currentTimeMillis();
 
-    public void getPopLeaderboard(int offset, SelectionMenu.Builder builder) {
+    public void getPopLeaderboard(int offset, SelectMenu.Builder builder) {
         if (System.currentTimeMillis() - lastPopLeaderboardGetTime > 10000 || popLeaderboard == null) {
             lastPopLeaderboardGetTime = System.currentTimeMillis();
             long endTime = lastPopLeaderboardGetTime / 1000;
@@ -85,7 +86,7 @@ public class PopCatHelper {
         }
     }
 
-    public void getSpeedLeaderboard(int offset, SelectionMenu.Builder builder) {
+    public void getSpeedLeaderboard(int offset, SelectMenu.Builder builder) {
         if (System.currentTimeMillis() - lastSpeedLeaderboardGetTime > 10000 || speedLeaderboard == null) {
             lastSpeedLeaderboardGetTime = System.currentTimeMillis();
             long endTime = lastSpeedLeaderboardGetTime / 1000;
@@ -120,7 +121,7 @@ public class PopCatHelper {
         }
     }
 
-    public void getAllData(SelectionMenu.Builder builder, GenericInteractionCreateEvent event, int page, boolean first, boolean pop) {
+    public void getAllData(SelectMenu.Builder builder, GenericInteractionCreateEvent event, int page, boolean first, boolean pop) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (page > 1) {
             builder.addOption(lang.get(POPCATHELPER_PREVIEWS), "page:up:" + (page - 1), Emoji.fromUnicode("⬅️"));
@@ -139,7 +140,7 @@ public class PopCatHelper {
 
     }
 
-    public void getOneData(SelectionMenuEvent event, boolean pop) {
+    public void getOneData(SelectMenuInteractionEvent event, boolean pop) {
         long endTime = System.currentTimeMillis() / 1000;
         long startTime = endTime - 60 * 60 * 24 * 3;
         int step = (int) ((endTime - startTime) / 50);

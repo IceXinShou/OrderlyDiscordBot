@@ -1,7 +1,7 @@
 package com.ice.main.command.list;
 
 import com.ice.main.Main;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import static net.dv8tion.jda.api.Permission.ADMINISTRATOR;
 
 public class Reload {
 
-    public boolean onCommand(SlashCommandEvent event) {
+    public boolean onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(ADMINISTRATOR, event, true))
             return false;

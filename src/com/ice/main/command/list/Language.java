@@ -6,9 +6,9 @@ import com.ice.main.util.file.GuildSettingHelper;
 import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -21,13 +21,14 @@ import static com.ice.main.util.JsonKeys.GUILD_LANG;
 import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public record Language(GuildSettingHelper settingHelper) {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
 
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
-        SelectionMenu.Builder builder = SelectionMenu.create("Lang:change:" + event.getUser().getId());
+
+        SelectMenu.Builder builder = SelectMenu.create("Lang:change:" + event.getUser().getId());
 
         for (String i : Main.language.languagesName)
             builder.addOption(i, i, Emoji.fromUnicode(countryCodeToEmoji(i.split("_")[1].toLowerCase())));
@@ -36,7 +37,7 @@ public record Language(GuildSettingHelper settingHelper) {
 
     }
 
-    public void onSelect(SelectionMenuEvent event, String[] args, CommandRegister register) {
+    public void onSelect(SelectMenuInteractionEvent event, String[] args, CommandRegister register) {
         String guildID = event.getGuild().getId();
         if (!args[0].equals("Lang"))
             return;

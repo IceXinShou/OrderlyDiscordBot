@@ -6,11 +6,12 @@ import com.ice.main.util.file.GuildSettingHelper;
 import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ import static com.ice.main.util.Tag.tagChannelID;
 public record SettingTicket(GuildSettingHelper settingHelper) {
 
     @SuppressWarnings("ConstantConditions")
-    public void newTicket(SlashCommandEvent event, boolean newTicket) {
+    public void newTicket(SlashCommandInteractionEvent event, boolean newTicket) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         List<MessageEmbed.Field> fields = new ArrayList<>();
@@ -209,7 +210,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         } else {
             //要修改的訊息有足夠大小的ActionRows
             if (message.getActionRows().size() > 0) {
-                List<Component> buttons = message.getActionRows().get(0).getComponents();
+                List<ItemComponent> buttons = message.getActionRows().get(0).getComponents();
                 buttons.add(button);
                 message.editMessageComponents(message.getActionRows()).queue();
             }
@@ -263,7 +264,7 @@ public record SettingTicket(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGTICKET_TICKET_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
-    public void removeTicket(SlashCommandEvent event, Ticket ticket) {
+    public void removeTicket(SlashCommandInteractionEvent event, Ticket ticket) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(event.getGuild());
         String channelID = event.getOption("messagechannel").getAsGuildChannel().getId();

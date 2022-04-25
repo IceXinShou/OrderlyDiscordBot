@@ -5,10 +5,10 @@ import com.ice.main.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class Ticket {
     //                 TextID  VoiceID
     private final Map<String, String> linkedVoiceChannel = new HashMap<>();
 
-    public void onButtonClick(ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonInteractionEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Ticket"))
             return;

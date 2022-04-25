@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -103,7 +103,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
         }, 0, 30000, TimeUnit.MILLISECONDS);
     }
 
-    public void newYande(SlashCommandEvent event) {
+    public void newYande(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(event.getGuild());
         TextChannel channel = event.getTextChannel();
@@ -139,7 +139,7 @@ public record SettingYande(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGYANDE_CREATE_SUCCESSFULLY), 0x00FFFF)).queue();
     }
 
-    public void removeYande(SlashCommandEvent event) {
+    public void removeYande(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = getSettingData(event.getGuild());
         if (!event.getOption("channel").getAsGuildChannel().getType().equals(ChannelType.TEXT)) {

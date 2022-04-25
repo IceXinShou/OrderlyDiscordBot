@@ -5,7 +5,7 @@ import com.ice.main.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +23,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
 
 
     @SuppressWarnings("ALL")
-    public void newJoin(SlashCommandEvent event) {
+    public void newJoin(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -70,7 +70,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_SUCCESS), fields, 0x00FFFF)).queue();
     }
 
-    public void newLeave(SlashCommandEvent event) {
+    public void newLeave(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -91,7 +91,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_SETTING_SUCCESS), fields, 0x00FFFF)).queue();
     }
 
-    public void removeJoin(SlashCommandEvent event) {
+    public void removeJoin(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;
@@ -110,7 +110,7 @@ public record SettingJoinLeave(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGJOINLEAVE_REMOVE_SUCCESS), 0x00FFFF)).queue();
     }
 
-    public void removeLeave(SlashCommandEvent event) {
+    public void removeLeave(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (event.getGuild() == null)
             return;

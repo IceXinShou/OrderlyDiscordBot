@@ -2,7 +2,7 @@ package com.ice.main.util;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import static com.ice.main.BotSetting.botOwnerID;
 import static com.ice.main.BotSetting.noPermissionStringERROR;
@@ -15,7 +15,7 @@ public class PermissionERROR {
                 noPermissionStringERROR + " `(" + permission.getName() + ")`", 0xFF0000);
     }
 
-    public static boolean permissionCheck(Permission permission, SlashCommandEvent event, Boolean ownerSkip) {
+    public static boolean permissionCheck(Permission permission, SlashCommandInteractionEvent event, Boolean ownerSkip) {
         if (ownerSkip)
             if (botOwnerID.contains(event.getUser().getId()))
                 return true;

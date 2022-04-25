@@ -8,8 +8,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.ice.multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.event.addPlayerListToQueue(playlist, event);
     }
 
-    public void queue(AudioTrack track, GenericInteractionCreateEvent event, int position, boolean search, boolean playNow, SelectionMenuEvent selectionMenuEvent) {
+    public void queue(AudioTrack track, GenericInteractionCreateEvent event, int position, boolean search, boolean playNow, SelectMenuInteractionEvent SelectMenuInteractionEvent) {
         if (position != -1)
             queue.add(position, track);
         else if (playNow && queue.size() > 0) {
@@ -75,14 +75,14 @@ public class TrackScheduler extends AudioEventAdapter {
             startPlayTime = System.currentTimeMillis();
             musicInfo = new MusicInfoData(track);
             calculateNormalized(musicInfo.getLoudness());
-            this.event.trackStart(track, event, guild, musicBot, search, selectionMenuEvent);
+            this.event.trackStart(track, event, guild, musicBot, search, SelectMenuInteractionEvent);
         } else {
             // 加入序列
             this.event.addToQueue(track, event, search, playNow);
         }
     }
 
-    public void remove(int index, SlashCommandEvent event) {
+    public void remove(int index, SlashCommandInteractionEvent event) {
         if (index > 0x7FFFFFFE)
             index = 0x7FFFFFFE;
         if (index < 1 || this.index + index + 1 > queue.size()) {
@@ -167,18 +167,18 @@ public class TrackScheduler extends AudioEventAdapter {
         return out;
     }
 
-    public void toggleRepeat(SlashCommandEvent slashCommandEvent) {
+    public void toggleRepeat(SlashCommandInteractionEvent SlashCommandInteractionEvent) {
         loop = false;
         repeat = !repeat;
         loopStatus = repeat ? 2 : 0;
-        event.repeat(playingTrack, repeat, slashCommandEvent);
+        event.repeat(playingTrack, repeat, SlashCommandInteractionEvent);
     }
 
-    public void toggleLoop(SlashCommandEvent slashCommandEvent) {
+    public void toggleLoop(SlashCommandInteractionEvent SlashCommandInteractionEvent) {
         repeat = false;
         loop = !loop;
         loopStatus = loop ? 1 : 0;
-        event.loop(loop, slashCommandEvent);
+        event.loop(loop, SlashCommandInteractionEvent);
     }
 
     /**
@@ -187,7 +187,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public boolean musicPause = false;
     private long pauseStart;
 
-    public void pause(SlashCommandEvent event) {
+    public void pause(SlashCommandInteractionEvent event) {
         if (!musicPause) {
             pauseStart = System.currentTimeMillis();
             player.setPaused(true);
@@ -200,7 +200,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.event.pauseStateChange(musicPause, event, guild);
     }
 
-    public void play(SlashCommandEvent event) {
+    public void play(SlashCommandInteractionEvent event) {
         if (musicPause) {
             startPlayTime += System.currentTimeMillis() - pauseStart;
             player.setPaused(false);
@@ -233,7 +233,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private double percent = -1;
     private int volume;
 
-    public void setVolume(Integer targetVolume, SlashCommandEvent event) {
+    public void setVolume(Integer targetVolume, SlashCommandInteractionEvent event) {
         if (targetVolume == null)
             targetVolume = defaultVolume;
 

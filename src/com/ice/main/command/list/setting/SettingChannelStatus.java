@@ -4,7 +4,7 @@ import com.ice.main.Main;
 import com.ice.main.event.StatusListener;
 import com.ice.main.util.StringCalculate;
 import com.ice.main.util.file.GuildSettingHelper;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import static com.ice.main.util.JsonKeys.*;
 
 public record SettingChannelStatus(GuildSettingHelper settingHelper) {
 
-    public void newCS(SlashCommandEvent event, StatusListener listener) {
+    public void newCS(SlashCommandInteractionEvent event, StatusListener listener) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String name = event.getOption("channelname").getAsString();
         int formatInt = Integer.parseInt(String.valueOf(event.getOption("format").getAsLong()));
@@ -40,7 +40,7 @@ public record SettingChannelStatus(GuildSettingHelper settingHelper) {
         }
     }
 
-    public void removeCS(SlashCommandEvent event) {
+    public void removeCS(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONObject data = settingHelper.getSettingData(event.getGuild(), CS_SETTING);
         String channelID = event.getOption("channel").getAsGuildChannel().getId();

@@ -3,13 +3,13 @@ package com.ice.main.command.list;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class MessageManager {
-    public void onDeleteCommand(SlashCommandEvent event) {
+    public void onDeleteCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
@@ -29,7 +29,7 @@ public class MessageManager {
         event.getHook().editOriginalEmbeds(createEmbed("刪除成功", 0x0FFFF)).queue();
     }
 
-    public void onRemoveReactionsCommand(SlashCommandEvent event) {
+    public void onRemoveReactionsCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
@@ -48,7 +48,7 @@ public class MessageManager {
         event.getHook().editOriginalEmbeds(createEmbed("刪除成功", 0x0FFFF)).queue();
     }
 
-    public void onPinCommand(SlashCommandEvent event) {
+    public void onPinCommand(SlashCommandInteractionEvent event) {
 
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
@@ -68,7 +68,7 @@ public class MessageManager {
     }
 
 
-    public void onUnPinCommand(SlashCommandEvent event) {
+    public void onUnPinCommand(SlashCommandInteractionEvent event) {
 
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
@@ -87,7 +87,7 @@ public class MessageManager {
 
     }
 
-    private Message getMessage(SlashCommandEvent event, TextChannel channel) {
+    private Message getMessage(SlashCommandInteractionEvent event, TextChannel channel) {
         try {
             return channel.retrieveMessageById(event.getOption("messageid").getAsString()).complete();
         } catch (Exception e) {

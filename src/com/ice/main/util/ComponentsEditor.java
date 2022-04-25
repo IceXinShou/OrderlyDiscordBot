@@ -2,6 +2,7 @@ package com.ice.main.util;
 
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +22,9 @@ public class ComponentsEditor {
         for (int i = 0; i < 5; ++i) {
             if (actionRowSize[i] == 0)
                 continue;
-            Collection<Component> components = new ArrayList<>();
+            Collection<ItemComponent> components = new ArrayList<>();
             for (int j = 0; j < i; ++j)
-                components.add(buttonControllers[i][j].finish());
+                components.add((ItemComponent) buttonControllers[i][j].finish());
 
             actionRows.add(ActionRow.of(components));
         }

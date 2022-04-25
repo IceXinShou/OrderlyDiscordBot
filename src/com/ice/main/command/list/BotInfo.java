@@ -2,7 +2,7 @@ package com.ice.main.command.list;
 
 import com.ice.main.Main;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import static com.ice.main.util.EmbedCreator.createEmbed;
 
 public class BotInfo {
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
 
         int members = 0;
         for (int i = 0; i < event.getJDA().getGuilds().size(); i++)

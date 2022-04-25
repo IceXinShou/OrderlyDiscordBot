@@ -1,7 +1,7 @@
 package com.ice.main.command.list;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class NoneReaction {
     Map<String, Map<String, List<String>>> info = new HashMap<>();
     // GuildID, ChannelID, MessageID
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
         try {

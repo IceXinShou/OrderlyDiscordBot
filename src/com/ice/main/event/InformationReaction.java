@@ -3,10 +3,11 @@ package com.ice.main.event;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.entities.UserSnowflake;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,22 +90,22 @@ public class InformationReaction {
         }
     }
 
-    public void onButtonClick(ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonInteractionEvent event, String[] args) {
         if (!args[0].equals("InformationReaction"))
             return;
         switch (event.getComponentId().split(":")[1]) {
             case "botActionRole" -> {
                 if (event.getMember().getRoles().contains(logRole)) {
-                    guild.removeRoleFromMember(event.getMember().getId(), logRole).queue();
+                    guild.removeRoleFromMember(UserSnowflake.fromId(event.getMember().getId()), logRole).queue();
                 } else
-                    event.getGuild().addRoleToMember(event.getMember().getId(), logRole).queue();
+                    event.getGuild().addRoleToMember(UserSnowflake.fromId(event.getMember().getId()), logRole).queue();
                 event.deferEdit().queue();
             }
             case "minecraftRole" -> {
                 if (event.getMember().getRoles().contains(internalRole))
-                    guild.removeRoleFromMember(event.getMember().getId(), internalRole).queue();
+                    guild.removeRoleFromMember(UserSnowflake.fromId(event.getMember().getId()), internalRole).queue();
                 else
-                    event.getGuild().addRoleToMember(event.getMember().getId(), internalRole).queue();
+                    event.getGuild().addRoleToMember(UserSnowflake.fromId(event.getMember().getId()), internalRole).queue();
                 event.deferEdit().queue();
             }
         }

@@ -5,10 +5,10 @@ import com.ice.main.event.Log;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
@@ -31,7 +31,7 @@ public class Clear {
      * clear 指令
      */
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.MESSAGE_MANAGE, event, true))
             return;
@@ -46,7 +46,7 @@ public class Clear {
                 .queue();
     }
 
-    public void onButton(ButtonClickEvent event, String[] args) {
+    public void onButton(ButtonInteractionEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Clear"))
             return;

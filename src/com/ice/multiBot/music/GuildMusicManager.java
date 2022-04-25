@@ -7,8 +7,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.ice.multiBot.MusicBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 
 /**
  * Holder for both the player and a track scheduler for one guild.
@@ -40,7 +40,7 @@ public class GuildMusicManager {
 
     @SuppressWarnings("ALL")
     public interface Event {
-        void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent);
+        void trackStart(AudioTrack track, GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot, boolean search, SelectMenuInteractionEvent SelectMenuInteractionEvent);
 
         void addToQueue(AudioTrack track, GenericInteractionCreateEvent event, boolean search, boolean playNow);
 
@@ -48,17 +48,17 @@ public class GuildMusicManager {
 
         void noMoreTrack(GenericInteractionCreateEvent event, Guild guild, MusicBot musicBot);
 
-        void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild);
+        void skip(AudioTrack lastTrack, SlashCommandInteractionEvent event, Guild guild);
 
-        void remove(AudioTrack removedTrack, SlashCommandEvent event);
+        void remove(AudioTrack removedTrack, SlashCommandInteractionEvent event);
 
-        void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event);
+        void repeat(AudioTrack track, boolean repeatState, SlashCommandInteractionEvent event);
 
-        void loop(boolean loopState, SlashCommandEvent event);
+        void loop(boolean loopState, SlashCommandInteractionEvent event);
 
-        void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild);
+        void pauseStateChange(boolean pause, SlashCommandInteractionEvent event, Guild guild);
 
-        void volumeChange(int volume, SlashCommandEvent event);
+        void volumeChange(int volume, SlashCommandInteractionEvent event);
 
     }
 }

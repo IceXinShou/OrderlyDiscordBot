@@ -5,11 +5,11 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import static com.ice.main.util.GetEmoji.toEmoji;
 import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class ButtonRole {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
 
@@ -102,7 +102,7 @@ public class ButtonRole {
             event.getHook().editOriginalEmbeds(createEmbed("設置成功", 0x00FFFF)).queue();
     }
 
-    public void onButtonClick(ButtonClickEvent event, String[] args) {
+    public void onButtonClick(ButtonInteractionEvent event, String[] args) {
         if (!args[0].equals("BR"))
             return;
 

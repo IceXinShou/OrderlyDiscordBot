@@ -1,7 +1,7 @@
 package com.ice.main.command.list;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class NewTicket {
         executor = Executors.newScheduledThreadPool(1);
     }
 
-    public boolean onCommand(SlashCommandEvent event) {
+    public boolean onCommand(SlashCommandInteractionEvent event) {
         // command not from guild
         if (!event.isFromGuild())
             return false;

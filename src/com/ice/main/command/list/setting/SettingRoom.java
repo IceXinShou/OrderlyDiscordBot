@@ -5,7 +5,7 @@ import com.ice.main.util.file.GuildSettingHelper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import static com.ice.main.util.JsonKeys.*;
 
 public record SettingRoom(GuildSettingHelper settingHelper) {
 
-    public void newRoom(SlashCommandEvent event) {
+    public void newRoom(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         GuildChannel detectChannel = event.getOption("detectchannel").getAsGuildChannel();
         String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();
@@ -108,7 +108,7 @@ public record SettingRoom(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGROOM_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
-    public void removeRoom(SlashCommandEvent event) {
+    public void removeRoom(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Guild guild = event.getGuild();
         String detectID = event.getOption("detectchannel").getAsGuildChannel().getId();

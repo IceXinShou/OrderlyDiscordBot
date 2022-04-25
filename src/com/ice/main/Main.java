@@ -35,7 +35,7 @@ public class Main {
     private ScheduledExecutorService threadPool;
     private int currentIndex = 0;
 
-    Main() throws LoginException {
+    Main() throws LoginException, InterruptedException {
         language = new Lang();
         setting = new BotSetting(); // 讀取設定
         language.loadLanguage();
@@ -51,7 +51,7 @@ public class Main {
                 .enableCache(CacheFlag.ONLINE_STATUS, CacheFlag.ACTIVITY)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_PRESENCES);
 
-        JDA jda = builder.build();
+        JDA jda = builder.build().awaitReady();
 
         // 註冊event
         ListenerManager listener = new ListenerManager();
@@ -126,7 +126,7 @@ public class Main {
         }, 0, 5000, TimeUnit.MILLISECONDS);
     }
 
-    public static void main(String[] args) throws LoginException {
+    public static void main(String[] args) throws LoginException, InterruptedException {
         new Main();
     }
 }

@@ -1,7 +1,7 @@
 package com.ice.main.command.list;
 
 import com.ice.main.Main;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import static com.ice.main.util.UrlDataGetter.postDataAuthorization;
 public class FileConvert {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public void onCommand(SlashCommandEvent event, URLShort urlShort) {
+    public void onCommand(SlashCommandInteractionEvent event, URLShort urlShort) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         // run thread
         executor.submit(() -> {

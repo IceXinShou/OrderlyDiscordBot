@@ -2,7 +2,7 @@ package com.ice.main.command.list;
 
 import com.ice.main.Main;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,7 +13,7 @@ import static com.ice.main.util.GuildUtil.guild;
 import static com.ice.main.util.SlashCommandOption.MESSAGE;
 
 public class Support {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SUPPORT_SENDING), 0x00FFFF)).queue();
         TextChannel channel;

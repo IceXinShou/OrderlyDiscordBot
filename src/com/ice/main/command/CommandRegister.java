@@ -5,6 +5,7 @@ import com.ice.main.util.GuildUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -111,25 +112,26 @@ public class CommandRegister {
         List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
 
+
                 // General
-//                new CommandData("warn", lang.get(COMMANDREGISTER_WARN)).addOptions(
+//                new CommandDataImpl("warn", lang.get(COMMANDREGISTER_WARN)).addOptions(
 //                        new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_WARN_MEMBER_YOU_CHOOSE), true),
 //                        new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_WARN_REASON))
 //                ),
-//                new CommandData("remove_warn", lang.get(COMMANDREGISTER_REMOVE_WARM))
+//                new CommandDataImpl("remove_warn", lang.get(COMMANDREGISTER_REMOVE_WARM))
 //                      .addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_REMOVE_MEMBER_WARN_YOU_CHOOSE), true),
-                new CommandData("kick", lang.get(COMMANDREGISTER_KICK))
+                new CommandDataImpl("kick", lang.get(COMMANDREGISTER_KICK))
                         .addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_KICK_MEMBER_YOU_CHOOSE), true),
-                new CommandData("ban", lang.get(COMMANDREGISTER_BAN)).addOptions(
+                new CommandDataImpl("ban", lang.get(COMMANDREGISTER_BAN)).addOptions(
                         new OptionData(USER, USER_TAG, lang.get(COMMANDREGISTER_BAN_MEMBER_YOU_CHOOSE), true),
                         new OptionData(INTEGER, DAYS, lang.get(COMMANDREGISTER_BAN_TIME)),
                         new OptionData(STRING, REASON, lang.get(COMMANDREGISTER_BAN_REASON))
                 ),
-                new CommandData("unban", lang.get(COMMANDREGISTER_UNBAN))
+                new CommandDataImpl("unban", lang.get(COMMANDREGISTER_UNBAN))
                         .addOption(STRING, USER_ID, lang.get(COMMANDREGISTER_UNBAN_MEMBER_YOU_CHOOSE), true),
-                new CommandData("clear", lang.get(COMMANDREGISTER_CLEAR))
+                new CommandDataImpl("clear", lang.get(COMMANDREGISTER_CLEAR))
                         .addOption(INTEGER, COUNT, lang.get(COMMANDREGISTER_CLEAR_BETWEEN_2_TO_200), true),
-                new CommandData("poll", lang.get(COMMANDREGISTER_POLL)).addOptions(
+                new CommandDataImpl("poll", lang.get(COMMANDREGISTER_POLL)).addOptions(
                         new OptionData(STRING, QUESTION, lang.get(COMMANDREGISTER_POLL_QUESTION), true),
                         new OptionData(STRING, CHOICE_A, lang.get(COMMANDREGISTER_POLL_OPTION_A), true),
                         new OptionData(STRING, CHOICE_B, lang.get(COMMANDREGISTER_POLL_OPTION_B)),
@@ -143,52 +145,51 @@ public class CommandRegister {
                         new OptionData(STRING, CHOICE_J, lang.get(COMMANDREGISTER_POLL_OPTION_J))),
 /*
                 // Music
-                new CommandData("play", lang.get(COMMANDREGISTER_PLAY))
+                new CommandDataImpl("play", lang.get(COMMANDREGISTER_PLAY))
                         .addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL), true), // 若未填則開始播放音樂
-                new CommandData("p", lang.get(COMMANDREGISTER_PLAY))
+                new CommandDataImpl("p", lang.get(COMMANDREGISTER_PLAY))
                         .addOption(STRING, NAME, lang.get(COMMANDREGISTER_PLAY_NAME_OR_URL), true), // 若未填則開始播放音樂
-                new CommandData("playnow", lang.get(COMMANDREGISTER_PLAYNOW))
+                new CommandDataImpl("playnow", lang.get(COMMANDREGISTER_PLAYNOW))
                         .addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
-                new CommandData("pn", lang.get(COMMANDREGISTER_PLAYNOW))
+                new CommandDataImpl("pn", lang.get(COMMANDREGISTER_PLAYNOW))
                         .addOption(STRING, NAME, lang.get(COMMANDREGISTER_PN_NAME_OR_URL), true),
-                new CommandData("queue", lang.get(COMMANDREGISTER_QUEUE)),
-                new CommandData("q", lang.get(COMMANDREGISTER_QUEUE)),
-                new CommandData("playing", lang.get(COMMANDREGISTER_QUEUE)),
-                new CommandData("skip", lang.get(COMMANDREGISTER_SKIP)),
-                new CommandData("s", lang.get(COMMANDREGISTER_SKIP)),
-                new CommandData("remove", lang.get(COMMANDREGISTER_REMOVE))
+                new CommandDataImpl("queue", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandDataImpl("q", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandDataImpl("playing", lang.get(COMMANDREGISTER_QUEUE)),
+                new CommandDataImpl("skip", lang.get(COMMANDREGISTER_SKIP)),
+                new CommandDataImpl("s", lang.get(COMMANDREGISTER_SKIP)),
+                new CommandDataImpl("remove", lang.get(COMMANDREGISTER_REMOVE))
                         .addOption(INTEGER, INDEX, lang.get(COMMANDREGISTER_REMOVE_POS), true),
-                new CommandData("volume", lang.get(COMMANDREGISTER_VOLUME))
+                new CommandDataImpl("volume", lang.get(COMMANDREGISTER_VOLUME))
                         .addOption(INTEGER, COUNT, lang.get(COMMANDREGISTER_VOLUME_COUNT)), // 若未填則回覆預設
-                new CommandData("loop", lang.get(COMMANDREGISTER_LOOP)),
-                new CommandData("repeat", lang.get(COMMANDREGISTER_REPEAT)),
-                new CommandData("pause", lang.get(COMMANDREGISTER_PAUSE)),
-                new CommandData("leave", lang.get(COMMANDREGISTER_LEAVE)),
-                new CommandData("disconnect", lang.get(COMMANDREGISTER_LEAVE)),
-                new CommandData("stop", lang.get(COMMANDREGISTER_LEAVE)),*/
+                new CommandDataImpl("loop", lang.get(COMMANDREGISTER_LOOP)),
+                new CommandDataImpl("repeat", lang.get(COMMANDREGISTER_REPEAT)),
+                new CommandDataImpl("pause", lang.get(COMMANDREGISTER_PAUSE)),
+                new CommandDataImpl("leave", lang.get(COMMANDREGISTER_LEAVE)),
+                new CommandDataImpl("disconnect", lang.get(COMMANDREGISTER_LEAVE)),
+                new CommandDataImpl("stop", lang.get(COMMANDREGISTER_LEAVE)),*/
                 // Tool
-
-                new CommandData("rename", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
+                new CommandDataImpl("renamechannel", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
                         new OptionData(STRING, "name", lang.get(COMMANDREGISTER_CHANNEL_RENAME_NAME), true),
                         new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_CHANNEL_RENAME_CHANNEL))
                 ),
-                new CommandData("setname", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
+                new CommandDataImpl("setchannelname", lang.get(COMMANDREGISTER_CHANNEL_RENAME)).addOptions(
                         new OptionData(STRING, "name", lang.get(COMMANDREGISTER_CHANNEL_RENAME_NAME), true),
                         new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_CHANNEL_RENAME_CHANNEL))
                 ),
-                new CommandData("rebitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
+                new CommandDataImpl("rebitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
                         new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_CHANNEL), true),
                         new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
-                new CommandData("setbitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
+                new CommandDataImpl("setbitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE)).addOptions(
                         new OptionData(CHANNEL, "channel", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_CHANNEL), true),
                         new OptionData(INTEGER, "bitrate", lang.get(COMMANDREGISTER_VOICECHANNEL_REBITRATE_INTEGER), true)
                 ),
-//                new CommandData("surl", lang.get(COMMANDREGISTER_SURL))
+//                new CommandDataImpl("surl", lang.get(COMMANDREGISTER_SURL))
 //                        .addOption(STRING, URL, lang.get(COMMANDREGISTER_SURL_URL), true),
-                new CommandData("nonereaction", "拒絕反應")
+                new CommandDataImpl("nonereaction", "拒絕反應")
                         .addOption(STRING, "messageid", "訊息ID (需在同一個頻道)", true),
-                new CommandData("rolebutton", "按鈕切換身分組").addOptions(
+                new CommandDataImpl("rolebutton", "按鈕切換身分組").addOptions(
                         new OptionData(CHANNEL, "channel", "請輸入來源訊息頻道", true),
                         new OptionData(STRING, "messageid", "請輸入來源訊息ID", true),
                         new OptionData(ROLE, "role", "請選擇身分組", true),
@@ -196,26 +197,26 @@ public class CommandRegister {
                         new OptionData(STRING, "buttonemoji", "請輸入按鈕圖示"),
                         new OptionData(STRING, "buttonstyle", "請輸入按鈕類型 (green, red, blue, gray)")
                 ),
-                new CommandData("removemessage", "刪除訊息").addOptions(
+                new CommandDataImpl("removemessage", "刪除訊息").addOptions(
                         new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
                         new OptionData(STRING, "messageid", "請輸入訊息ID", true)
                 ),
-                new CommandData("removereactions", "刪除訊息反應").addOptions(
+                new CommandDataImpl("removereactions", "刪除訊息反應").addOptions(
                         new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
                         new OptionData(STRING, "messageid", "請輸入訊息ID", true)
                 ),
-                new CommandData("pinmessage", "釘選訊息").addOptions(
+                new CommandDataImpl("pinmessage", "釘選訊息").addOptions(
                         new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
                         new OptionData(STRING, "messageid", "請輸入訊息ID", true)
                 ),
-                new CommandData("unpinmessage", "取消釘選訊息").addOptions(
+                new CommandDataImpl("unpinmessage", "取消釘選訊息").addOptions(
                         new OptionData(CHANNEL, "channel", "請輸入訊息頻道", true),
                         new OptionData(STRING, "messageid", "請輸入訊息ID", true)
                 ),
-                new CommandData("nhentai", "取得本本").addOption(INTEGER, "id", "請輸入番號", true),
-//                new CommandData("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
-//                new CommandData("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
-                new CommandData("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
+                new CommandDataImpl("nhentai", "取得本本").addOption(INTEGER, "id", "請輸入番號", true),
+//                new CommandDataImpl("popspeed", lang.get(COMMANDREGISTER_POP_SPEED)),
+//                new CommandDataImpl("poptop", lang.get(COMMANDREGISTER_POP_TOP)),
+                new CommandDataImpl("giveaway", lang.get(COMMANDREGISTER_GIVEAWAY)).addOptions(
                         new OptionData(STRING, "name", lang.get(COMMANDREGISTER_GIVEAWAY_NAME), true),
                         new OptionData(INTEGER, "winnercount", lang.get(COMMANDREGISTER_GIVEAWAY_WIN_COUNT)),
                         new OptionData(INTEGER, "emoji", lang.get(COMMANDREGISTER_GIVEAWAY_EMOJI)),
@@ -228,15 +229,15 @@ public class CommandRegister {
                         new OptionData(STRING, "time", lang.get(COMMANDREGISTER_GIVEAWAY_TIME))
                 ),
 
-                new CommandData("lang", lang.get(LANG_CHANGE)),
-                new CommandData("mp4togif", lang.get(COMMANDREGISTER_MP4_TO_GIF)).addOptions(
+                new CommandDataImpl("lang", lang.get(LANG_CHANGE)),
+                new CommandDataImpl("mp4togif", lang.get(COMMANDREGISTER_MP4_TO_GIF)).addOptions(
                         new OptionData(STRING, URL, lang.get(COMMANDREGISTER_MTG_URL), true),
                         new OptionData(STRING, "outputname", lang.get(COMMANDREGISTER_MTG_OUT_PUT_NAME)),
                         new OptionData(STRING, "fps", lang.get(COMMANDREGISTER_MTG_FPS))
                 ),
 
                 // osu
-                new CommandData("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
+                new CommandDataImpl("osu", lang.get(COMMANDREGISTER_OSU)).addSubcommands(
                         new SubcommandData("setuser", lang.get(COMMANDREGISTER_OSU_BIND_ACCOUNT))
                                 .addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME), true),
                         new SubcommandData("info", lang.get(COMMANDREGISTER_OSU_GET_INFO))
@@ -247,14 +248,14 @@ public class CommandRegister {
                                 .addOption(STRING, "name", lang.get(COMMANDREGISTER_OSU_PLEASE_TYPE_NAME))
                 ),
                 // school
-                new CommandData("school", "台南高工學生資料取得器").addSubcommands(
+                new CommandDataImpl("school", "台南高工學生資料取得器").addSubcommands(
                         new SubcommandData("login", "登入以取得資料")
                                 .addOption(STRING, "id", "您的帳號 (通常為學號)", true)
                                 .addOption(STRING, "password", "您的密碼", true),
                         new SubcommandData("info", "學生資料")
                 ),
                 // Hypixel
-                new CommandData("hy", lang.get(COMMANDREGISTER_HYPIXEL)).addSubcommands(
+                new CommandDataImpl("hy", lang.get(COMMANDREGISTER_HYPIXEL)).addSubcommands(
                         new SubcommandData("setuser", lang.get(COMMANDREGISTER_HYPIXEL_BIND_ACCOUNT))
                                 .addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME), true),
                         new SubcommandData("info", lang.get(COMMANDREGISTER_HYPIXEL_GET_INFO))
@@ -267,7 +268,7 @@ public class CommandRegister {
                                 .addOption(STRING, "name", lang.get(COMMANDREGISTER_HYPIXEL_PLEASE_TYPE_NAME))
                 ),
                 // Help
-                new CommandData("help", lang.get(COMMANDREGISTER_HELP)).addSubcommands(
+                new CommandDataImpl("help", lang.get(COMMANDREGISTER_HELP)).addSubcommands(
                         new SubcommandData("orderly", lang.get(COMMANDREGISTER_HELP_ORDERLY)),
                         new SubcommandData("orderlyannouncement", lang.get(COMMANDREGISTER_HELP_ORDERLY_ANNOUNCEMENT)),
                         new SubcommandData("neko", lang.get(COMMANDREGISTER_HELP_NEKO_BOT)),
@@ -275,7 +276,7 @@ public class CommandRegister {
                 ),
 
                 // Setting
-                new CommandData("setting", lang.get(COMMANDREGISTER_SETTING)).addSubcommands(
+                new CommandDataImpl("setting", lang.get(COMMANDREGISTER_SETTING)).addSubcommands(
                         new SubcommandData("help", lang.get(COMMANDREGISTER_S_HELP)),
 
                         // -------------------
@@ -400,19 +401,19 @@ public class CommandRegister {
     private CommandData[] ownCommands(String guildID) {
         List<String> lang = Main.language.getGuildLang(guildID);
         return new CommandData[]{
-                new CommandData("reload", lang.get(COMMANDREGISTER_RELOAD)),
-                new CommandData("nick", lang.get(COMMANDREGISTER_NICK)),
-                new CommandData("invite", lang.get(COMMANDREGISTER_INVITE))
+                new CommandDataImpl("reload", lang.get(COMMANDREGISTER_RELOAD)),
+                new CommandDataImpl("nick", lang.get(COMMANDREGISTER_NICK)),
+                new CommandDataImpl("invite", lang.get(COMMANDREGISTER_INVITE))
                         .addOption(USER, USER_TAG, lang.get(COMMANDREGISTER_INVITE_MEMBER_YOU_CHOOSE), true),
         };
     }
 
     private CommandData[] everywhereCommands() {
         return new CommandData[]{
-                new CommandData("ping", "Ping com.ice.Test (延遲測試)"),
-                new CommandData("support", "Report ERROR or Support us (傳送問題回報)")
+                new CommandDataImpl("ping", "Ping com.ice.Test (延遲測試)"),
+                new CommandDataImpl("support", "Report ERROR or Support us (傳送問題回報)")
                         .addOption(STRING, MESSAGE, "Message (訊息內容)", true),
-                new CommandData("botinfo", "Show about Bot (顯示機器人訊息)"),
+                new CommandDataImpl("botinfo", "Show about Bot (顯示機器人訊息)"),
         };
     }
 }

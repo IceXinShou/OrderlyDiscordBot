@@ -1,9 +1,9 @@
 package com.ice.main.command.list;
 
 import com.ice.main.util.file.PopCatHelper;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,33 +13,33 @@ public class PopCat {
     PopCatHelper helper = new PopCatHelper();
 
 
-    public void onCommandTop(SlashCommandEvent event) {
-        SelectionMenu.Builder builder = SelectionMenu.create("PopCat:top:" + event.getUser().getId() + ":1"); // page1
+    public void onCommandTop(SlashCommandInteractionEvent event) {
+        SelectMenu.Builder builder = SelectMenu.create("PopCat:top:" + event.getUser().getId() + ":1"); // page1
         helper.getAllData(builder, event, 1, true, true);
     }
 
-    public void onCommandSpeed(SlashCommandEvent event) {
-        SelectionMenu.Builder builder = SelectionMenu.create("PopCat:speed:" + event.getUser().getId() + ":1"); // page1
+    public void onCommandSpeed(SlashCommandInteractionEvent event) {
+        SelectMenu.Builder builder = SelectMenu.create("PopCat:speed:" + event.getUser().getId() + ":1"); // page1
         helper.getAllData(builder, event, 1, true, false);
     }
 
-    public void onSelectTop(SelectionMenuEvent event, String[] args) {
+    public void onSelectTop(SelectMenuInteractionEvent event, String[] args) {
         if (!args[0].equals("PopCat") || !args[1].equals("top"))
             return;
         if (event.getValues().get(0).startsWith("page")) {
             String[] data = event.getValues().get(0).split(":");
-            SelectionMenu.Builder builder = SelectionMenu.create("PopCat:top:" + event.getUser().getId() + ":" + Integer.parseInt(data[2])); // page1
+            SelectMenu.Builder builder = SelectMenu.create("PopCat:top:" + event.getUser().getId() + ":" + Integer.parseInt(data[2])); // page1
             helper.getAllData(builder, event, Integer.parseInt(data[2]), false, true);
         } else
             helper.getOneData(event, true);
     }
 
-    public void onSelectSpeed(SelectionMenuEvent event, String[] args) {
+    public void onSelectSpeed(SelectMenuInteractionEvent event, String[] args) {
         if (!args[0].equals("PopCat") || !args[1].equals("speed"))
             return;
         if (event.getValues().get(0).startsWith("page")) {
             String[] data = event.getValues().get(0).split(":");
-            SelectionMenu.Builder builder = SelectionMenu.create("PopCat:top:" + event.getUser().getId() + ":" + Integer.parseInt(data[2])); // page1
+            SelectMenu.Builder builder = SelectMenu.create("PopCat:top:" + event.getUser().getId() + ":" + Integer.parseInt(data[2])); // page1
             helper.getAllData(builder, event, Integer.parseInt(data[2]), false, false);
         } else
             helper.getOneData(event, false);

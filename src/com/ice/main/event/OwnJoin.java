@@ -7,7 +7,7 @@ import com.ice.main.util.QuestionStep;
 import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.json.JSONObject;
@@ -47,7 +47,7 @@ public class OwnJoin {
 
         for (Role i : joinRoleID)
             try {
-                guild.addRoleToMember(userID, i).queue();
+                guild.addRoleToMember(UserSnowflake.fromId(userID), i).queue();
             } catch (Exception ignored) {
             }
 
@@ -136,7 +136,7 @@ public class OwnJoin {
         memberFile.saveFile();
     }
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         /*
         String userID = event.getUser().getId();
         if (userID.equals(Main.botID)) return;

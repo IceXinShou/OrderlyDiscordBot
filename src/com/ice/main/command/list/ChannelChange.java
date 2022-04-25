@@ -3,7 +3,7 @@ package com.ice.main.command.list;
 import com.ice.main.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import static com.ice.main.util.EmbedCreator.createEmbed;
 import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class ChannelChange {
-    public void setName(SlashCommandEvent event) {
+    public void setName(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;
@@ -32,7 +32,7 @@ public class ChannelChange {
     }
 
 
-    public void setBitrate(SlashCommandEvent event) {
+    public void setBitrate(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.MANAGE_CHANNEL, event, true))
             return;

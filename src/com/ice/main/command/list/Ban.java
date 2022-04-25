@@ -3,7 +3,7 @@ package com.ice.main.command.list;
 import com.ice.main.Main;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import static com.ice.main.util.SlashCommandOption.USER_TAG;
 import static net.dv8tion.jda.api.Permission.BAN_MEMBERS;
 
 public class Ban {
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         if (!permissionCheck(BAN_MEMBERS, event, true))
             return;
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());

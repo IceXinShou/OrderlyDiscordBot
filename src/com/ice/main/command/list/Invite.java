@@ -4,9 +4,9 @@ import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -49,7 +49,7 @@ public class Invite {
         genealogyFile.saveFile();
     }
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         Member member = event.getOption(USER_TAG).getAsMember();
         String userId = event.getUser().getId();
         // 還沒完成使用者設定
@@ -69,7 +69,7 @@ public class Invite {
                 .queue();
     }
 
-    public void onButton(ButtonClickEvent event, String[] args) {
+    public void onButton(ButtonInteractionEvent event, String[] args) {
         if (!args[0].equals("Invite"))
             return;
 

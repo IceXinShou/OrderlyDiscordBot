@@ -5,7 +5,7 @@ import com.ice.main.util.file.GuildSettingHelper;
 import com.ice.main.util.file.JsonFileManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import static com.ice.main.util.JsonKeys.AUTO_VC_SETTING;
 
 public record SettingVCC(GuildSettingHelper settingHelper) {
 
-    public void newVCC(SlashCommandEvent event) {
+    public void newVCC(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String detectCategoryID = event.getOption("detectcategory").getAsString();
         String voiceName = event.getOption("voicename").getAsString();
@@ -49,7 +49,7 @@ public record SettingVCC(GuildSettingHelper settingHelper) {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGVCC_SETTING_SUCCESS), fields, 0x11FF99)).queue();
     }
 
-    public void removeVCC(SlashCommandEvent event) {
+    public void removeVCC(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String detectID = event.getOption("detectcategory").getAsString();
         Guild guild = event.getGuild();

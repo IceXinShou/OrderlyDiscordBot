@@ -19,9 +19,9 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -194,7 +194,7 @@ public class ListenerManager extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-//        musicManager.setupAllBot();
+        musicManager.setupAllBot();
         statusListener.startListen(event.getJDA());
         settingYande.startThread(event.getJDA());
     }
@@ -297,13 +297,12 @@ public class ListenerManager extends ListenerAdapter {
         statusListener.memberVoiceVideo(event.getMember());
     }
 
-
     /**
      * Guild Command
      */
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onButtonInteraction(ButtonInteractionEvent event) {
         // CLASS:TYPE:USERID:xxx
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals("") && !args[2].equals("everyone")) {
@@ -324,7 +323,7 @@ public class ListenerManager extends ListenerAdapter {
     }
 
     @Override
-    public void onSelectionMenu(SelectionMenuEvent event) {
+    public void onSelectMenuInteraction(SelectMenuInteractionEvent event) {
         String[] args = event.getComponentId().split(":");
         if (!args[2].equals(event.getUser().getId()) && !args[2].equals(""))
             return;
@@ -335,9 +334,10 @@ public class ListenerManager extends ListenerAdapter {
         settingSchool.onSelectInfo(event, args);
     }
 
+
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void onSlashCommand(SlashCommandEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         event.getInteraction().deferReply(true).queue();
         // 如果找不到伺服器 ->
         if (event.getGuild() == null) {
@@ -490,7 +490,7 @@ public class ListenerManager extends ListenerAdapter {
                 langCommand.onCommand(event);
                 return;
             }
-            case "rename", "setname" -> {
+            case "renamechannel", "setchannelname" -> {
                 channelChange.setName(event);
                 return;
             }

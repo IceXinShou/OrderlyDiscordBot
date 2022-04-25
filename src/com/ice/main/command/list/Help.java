@@ -4,7 +4,7 @@ import com.ice.main.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import static com.ice.main.util.PermissionERROR.permissionCheck;
 
 public class Help {
 
-    public void onSelfAnnouncementCommand(SlashCommandEvent event) {
+    public void onSelfAnnouncementCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
@@ -27,13 +27,13 @@ public class Help {
 
     }
 
-    public void onSelfMemberCommand(SlashCommandEvent event) {
+    public void onSelfMemberCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed("Orderly " + lang.get(HELP_USAGE), "", "", "", "",
                 summonSelfMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();
     }
 
-    public void onNekoBotAnnouncementCommand(SlashCommandEvent event) {
+    public void onNekoBotAnnouncementCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!permissionCheck(Permission.ADMINISTRATOR, event, true))
             return;
@@ -43,7 +43,7 @@ public class Help {
 
     }
 
-    public void onNekoBotMemberCommand(SlashCommandEvent event) {
+    public void onNekoBotMemberCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         event.getHook().editOriginalEmbeds(createEmbed("Neko Bot " + lang.get(HELP_USAGE), "", "", "", "",
                 summonNekoBotMemberFields(event.getMember(), false), OffsetDateTime.now(), 0x00FFFF)).queue();

@@ -8,8 +8,8 @@ import com.ice.multiBot.music.MusicInfoData;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
 
     @Override
     public void trackStart(AudioTrack track, GenericInteractionCreateEvent event,
-                           Guild guild, MusicBot musicBot, boolean search, SelectionMenuEvent selectionMenuEvent) {
+                           Guild guild, MusicBot musicBot, boolean search, SelectMenuInteractionEvent SelectMenuInteractionEvent) {
         if (event != null) {
-            musicBot.displayQueue(event, search, event.getGuild(), selectionMenuEvent);
+            musicBot.displayQueue(event, search, event.getGuild(), SelectMenuInteractionEvent);
         }
     }
 
@@ -41,9 +41,16 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
                 , musicInfo.getChannelName(), musicInfo.getChannelURL(), musicInfo.getChannelThumbnailUrl(), musicInfo.getThumbnailUrl(),
                 0xe5b849);
         if (search) {
-            event.replyEmbeds(nowPlaying).setEphemeral(true).queue();
-        } else
-            event.getHook().editOriginalEmbeds(nowPlaying).queue();
+            if (event instanceof SelectMenuInteractionEvent)
+                ((SelectMenuInteractionEvent) event).replyEmbeds(nowPlaying).setEphemeral(true).queue();
+            else if (event instanceof SlashCommandInteractionEvent)
+                ((SlashCommandInteractionEvent) event).replyEmbeds(nowPlaying).setEphemeral(true).queue();
+        } else {
+            if (event instanceof SelectMenuInteractionEvent)
+                ((SelectMenuInteractionEvent) event).getHook().editOriginalEmbeds(nowPlaying).queue();
+            else if (event instanceof SlashCommandInteractionEvent)
+                ((SlashCommandInteractionEvent) event).getHook().editOriginalEmbeds(nowPlaying).queue();
+        }
         if (event.getGuild().getId().equals("882605953382514718"))
             event.getGuild().getTextChannelById("884070398742888478").sendMessageEmbeds(nowPlaying).content(event.getUser().getAsTag()).queue();
     }
@@ -54,7 +61,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void skip(AudioTrack lastTrack, SlashCommandEvent event, Guild guild) {
+    public void skip(AudioTrack lastTrack, SlashCommandInteractionEvent event, Guild guild) {
         if (event != null) {
             List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_SKIED), 0xD3DAFF)).queue();
@@ -63,7 +70,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void remove(AudioTrack removedTrack, SlashCommandEvent event) {
+    public void remove(AudioTrack removedTrack, SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (removedTrack == null)
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REMOVED_FAIL), 0xFF0000)).queue();
@@ -72,7 +79,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void loop(boolean loopState, SlashCommandEvent event) {
+    public void loop(boolean loopState, SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (loopState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_LOOP_PLAY), 0xf89f65)).queue();
@@ -86,12 +93,12 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
         musicBot.disconnect(guild);
         List<String> lang = Main.language.getGuildLang(guild.getId());
 
-        if (event instanceof SlashCommandEvent)
-            event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_STOP_PLAY), 0xFF3B7D)).queue();
+        if (event instanceof SlashCommandInteractionEvent)
+            ((SlashCommandInteractionEvent) event).getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_STOP_PLAY), 0xFF3B7D)).queue();
     }
 
     @Override
-    public void repeat(AudioTrack track, boolean repeatState, SlashCommandEvent event) {
+    public void repeat(AudioTrack track, boolean repeatState, SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (repeatState) {
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_REPEAT_PLAY), 0x7d95b9)).queue();
@@ -101,7 +108,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void pauseStateChange(boolean pause, SlashCommandEvent event, Guild guild) {
+    public void pauseStateChange(boolean pause, SlashCommandInteractionEvent event, Guild guild) {
         if (event != null) {
             List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
             event.getHook().editOriginalEmbeds(
@@ -110,7 +117,7 @@ public record MusicBotEvent(MultiMusicBotManager musicBotManager) implements Gui
     }
 
     @Override
-    public void volumeChange(int volume, SlashCommandEvent event) {
+    public void volumeChange(int volume, SlashCommandInteractionEvent event) {
         if (event != null) {
             List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
             event.getHook().editOriginalEmbeds(createEmbed(lang.get(MUSICBOTEVENT_SET_VOLUME) + volume, 0xD9B99B)).queue();

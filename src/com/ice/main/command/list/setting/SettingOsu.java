@@ -2,7 +2,7 @@ package com.ice.main.command.list.setting;
 
 import com.ice.main.Main;
 import com.ice.main.util.file.JsonFileManager;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,7 +25,7 @@ public class SettingOsu {
     }
 
 
-    public void onRegister(SlashCommandEvent event) {
+    public void onRegister(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         JSONArray dataArray = new JSONArray(
                 getData("https://osu.ppy.sh/api/get_user?k=b79a9a88c8aa44d689c44b6af2fe3a356e301f48&u=" + event.getOption("name").getAsString().replace(' ', '_')));
@@ -41,7 +41,7 @@ public class SettingOsu {
         event.getHook().editOriginalEmbeds(createEmbed(lang.get(SETTINGOSU_SETTING_SUCCESSFULLY), 0xFF0000)).queue();
     }
 
-    public void onTop(SlashCommandEvent event) {
+    public void onTop(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if ((osuID = getOsuID(event)) == null)
@@ -99,7 +99,7 @@ public class SettingOsu {
         }
     }
 
-    public void onPrevious(SlashCommandEvent event) {
+    public void onPrevious(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if ((osuID = getOsuID(event)) == null)
@@ -159,7 +159,7 @@ public class SettingOsu {
         }
     }
 
-    public void info(SlashCommandEvent event) {
+    public void info(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String result;
         if (event.getOption("name") == null) {
@@ -237,7 +237,7 @@ public class SettingOsu {
 
     }
 
-    private String getOsuID(SlashCommandEvent event) {
+    private String getOsuID(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         String osuID;
         if (event.getOption("name") != null) {

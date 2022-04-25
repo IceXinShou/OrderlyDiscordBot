@@ -3,7 +3,7 @@ package com.ice.main.command.list;
 import com.ice.main.Main;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import static com.ice.main.util.Tag.getMemberName;
 
 public class Kick {
     @SuppressWarnings("ALL")
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         Member selfMember = event.getGuild().getSelfMember();
 

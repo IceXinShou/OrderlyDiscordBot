@@ -1,7 +1,7 @@
 package com.ice.main;
 
 import com.ice.main.util.file.GuildSettingHelper;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import static com.ice.main.util.JsonKeys.*;
 
 record Economy(GuildSettingHelper settingHelper) {
 
-    void onDailyCheck(ButtonClickEvent event, String[] args) {
+    void onDailyCheck(ButtonInteractionEvent event, String[] args) {
         List<String> lang = Main.language.getGuildLang(event.getGuild().getId());
         if (!args[0].equals("Economy"))
             return;
