@@ -1,6 +1,7 @@
 # 序之徒 Orderly\_Bot \(Java Discord Bot\)
 
-## Bot is updating to version 2.0
+## Bot is updating to next version
+## Please visit: [HERE](https://github.com/IceLeiYu/XsDiscordBot)
 
 ![OrderlyBot](https://cdn.discordapp.com/avatars/576747435653595136/23f83723ab3be18ee7d6189fcd39df99.webp?size=256)
 #### 🌐 README Languages
